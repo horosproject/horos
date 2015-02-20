@@ -1,15 +1,15 @@
 /*=========================================================================
-  Program:   OsiriX
-
-  Copyright (c) OsiriX Team
-  All rights reserved.
-  Distributed under GNU - LGPL
-  
-  See http://www.osirix-viewer.com/copyright.html for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.
+ Program:   OsiriX
+ 
+ Copyright (c) OsiriX Team
+ All rights reserved.
+ Distributed under GNU - LGPL
+ 
+ See http://www.osirix-viewer.com/copyright.html for details.
+ 
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.
  ---------------------------------------------------------------------------
  
  This file is part of the Horos Project.
@@ -27,29 +27,7 @@
  
  You should have received a copy of the GNU General Public License
  along with Horos.  If not, see <http://www.gnu.org/licenses/>.
-
- 
-
- 
- ---------------------------------------------------------------------------
- 
- This file is part of the Horos Project.
- 
- Current contributors to the project include Alex Bettarini and Danny Weissman.
- 
- Horos is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation,  version 3 of the License.
- 
- Horos is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- 
- You should have received a copy of the GNU General Public License
- along with Horos.  If not, see <http://www.gnu.org/licenses/>.
-
-=========================================================================*/
+ =========================================================================*/
 
 #import "BonjourPublisher.h"
 #import "BonjourBrowser.h"
@@ -95,61 +73,61 @@ extern const char *GetPrivateIP();
 
 + (BonjourPublisher*) currentPublisher // __deprecated
 {
-	return [[AppController sharedAppController] bonjourPublisher];
+    return [[AppController sharedAppController] bonjourPublisher];
 }
 
 - (id)init
 {
-	if ((self = [super init]))
-	{
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingNameDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingPasswordFlagDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingPasswordDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];		
-	}
-	return self;
+    if ((self = [super init]))
+    {
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingNameDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingPasswordFlagDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingPasswordDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
+    }
+    return self;
 }
 
 - (void) dealloc
 {
-	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey];
-	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingNameDefaultsKey];
-	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingPasswordFlagDefaultsKey];
-	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingPasswordDefaultsKey];
-
-	[dicomSendLock release];
-//	self.serviceName = NULL;
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingNameDefaultsKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingPasswordFlagDefaultsKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingPasswordDefaultsKey];
+    
+    [dicomSendLock release];
+    //	self.serviceName = NULL;
     
     [_bonjour release];
-	
-	[super dealloc];
+    
+    [super dealloc];
 }
 
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
-	if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
-		keyPath = [keyPath substringFromIndex:7];
-		if ([keyPath isEqualToString:OsirixBonjourSharingActiveFlagDefaultsKey]) {
-			[self toggleSharing:[NSUserDefaultsController IsBonjourSharingActive]];
-			return;
-		} else
-		if ([keyPath isEqualToString:OsirixBonjourSharingNameDefaultsKey]) {
-		//	[self ];
-			return;
-		} else
-		if ([keyPath isEqualToString:OsirixBonjourSharingPasswordFlagDefaultsKey]) {
-			return;
-		} else
-		if ([keyPath isEqualToString:OsirixBonjourSharingPasswordDefaultsKey]) {
-			return;
-		}
-	}
-	
-	[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
+        keyPath = [keyPath substringFromIndex:7];
+        if ([keyPath isEqualToString:OsirixBonjourSharingActiveFlagDefaultsKey]) {
+            [self toggleSharing:[NSUserDefaultsController IsBonjourSharingActive]];
+            return;
+        } else
+            if ([keyPath isEqualToString:OsirixBonjourSharingNameDefaultsKey]) {
+                //	[self ];
+                return;
+            } else
+                if ([keyPath isEqualToString:OsirixBonjourSharingPasswordFlagDefaultsKey]) {
+                    return;
+                } else
+                    if ([keyPath isEqualToString:OsirixBonjourSharingPasswordDefaultsKey]) {
+                        return;
+                    }
+    }
+    
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
 - (int) OsiriXDBCurrentPort // __deprecated
 {
-	return [_listener port];
+    return [_listener port];
 }
 
 - (void)toggleSharing:(BOOL)activate
@@ -157,11 +135,11 @@ extern const char *GetPrivateIP();
     @try {
         if (activate && !_listener) {
             _listener = [[N2ConnectionListener alloc] initWithPort:8780 connectionClass:[O2DatabaseConnection class]];
-//            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionOpened:) name:N2ConnectionListenerOpenedConnectionNotification object:_listener];
+            //            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionOpened:) name:N2ConnectionListenerOpenedConnectionNotification object:_listener];
             [_listener setThreadPerConnection:YES];
             if (_listener)
-                NSLog(@"Horos database shared on port %d", [_listener port]);
-            else NSLog(@"Warning: unable to share Horos database");
+                NSLog(@"OsiriX database shared on port %d", [_listener port]);
+            else NSLog(@"Warning: unable to share OsiriX database");
         }
         
         if (!activate && _listener) {
@@ -192,8 +170,8 @@ extern const char *GetPrivateIP();
         [txtrec setObject:[AppController UID] forKey:@"UID"];
     
     if( [_bonjour setTXTRecordData:[NSNetService dataFromTXTRecordDictionary:txtrec]] == NO)
-        NSLog(@"Warning: Horos Bonjour net service setTXTRecordData FAILED");
-
+        NSLog(@"Warning: OsiriX Bonjour net service setTXTRecordData FAILED");
+    
     if (_listener)
         [_bonjour publish];
     else [_bonjour stop];
@@ -205,14 +183,14 @@ extern const char *GetPrivateIP();
 
 - (void)netService:(NSNetService*)sender didNotPublish:(NSDictionary*)errorDict
 {
-	NSLog(@"Warning: Horos Bonjour net service did not publish, %@", errorDict);
+    NSLog(@"Warning: OsiriX Bonjour net service did not publish, %@", errorDict);
     [_bonjour release];
     _bonjour = nil;
 }
 
 - (void) netServiceDidStop:(NSNetService *)sender
 {
-    NSLog(@"Horos Bonjour net service did stop");
+    NSLog(@"OsiriX Bonjour net service did stop");
 }
 
 
@@ -222,26 +200,26 @@ extern const char *GetPrivateIP();
 //}
 
 +(NSDictionary*)dictionaryFromXTRecordData:(NSData*)data {
-	NSMutableDictionary* d = [NSMutableDictionary dictionary];
-	NSDictionary* dict = [NSNetService dictionaryFromTXTRecordData:data];
-	
-	for (NSString* key in dict) {
-		NSData* data = [dict objectForKey:key];
-		if ([key isEqualToString:@"AETitle"])
-			[d setObject:[[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease] forKey:key];
-		else if ([key isEqualToString:@"port"])
-			[d setObject:[[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease] forKey:key];
-		else if ([key isEqualToString:@"UID"])
-			[d setObject:[[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease] forKey:key];
-		else [d setObject:data forKey:key];
-	}
-	
-	return d;
+    NSMutableDictionary* d = [NSMutableDictionary dictionary];
+    NSDictionary* dict = [NSNetService dictionaryFromTXTRecordData:data];
+    
+    for (NSString* key in dict) {
+        NSData* data = [dict objectForKey:key];
+        if ([key isEqualToString:@"AETitle"])
+            [d setObject:[[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease] forKey:key];
+        else if ([key isEqualToString:@"port"])
+            [d setObject:[[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease] forKey:key];
+        else if ([key isEqualToString:@"UID"])
+            [d setObject:[[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease] forKey:key];
+        else [d setObject:data forKey:key];
+    }
+    
+    return d;
 }
 
 - (void) sendDICOMFilesToOsiriXNode:(NSDictionary*) todo
 {
-	@autoreleasepool
+    @autoreleasepool
     {
         if (dicomSendLock == nil)
             dicomSendLock = [[NSLock alloc] init];
@@ -249,14 +227,14 @@ extern const char *GetPrivateIP();
         [dicomSendLock lock];
         @try {
             DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]
-                                                                        calledAET: [todo objectForKey:@"AETitle"] 
-                                                                        hostname: [todo objectForKey:@"Address"] 
-                                                                        port: [[todo objectForKey:@"Port"] intValue] 
-                                                                        filesToSend: [todo valueForKey: @"Files"]
-                                                                        transferSyntax: [[todo objectForKey:@"TransferSyntax"] intValue] 
-                                                                        compression: 1.0
-                                                                        extraParameters: [NSDictionary dictionaryWithObject:[DicomDatabase defaultDatabase] forKey:@"DicomDatabase"]]; // nil == TLS not supported !
-                                    
+                                                                      calledAET: [todo objectForKey:@"AETitle"]
+                                                                       hostname: [todo objectForKey:@"Address"]
+                                                                           port: [[todo objectForKey:@"Port"] intValue]
+                                                                    filesToSend: [todo valueForKey: @"Files"]
+                                                                 transferSyntax: [[todo objectForKey:@"TransferSyntax"] intValue]
+                                                                    compression: 1.0
+                                                                extraParameters: [NSDictionary dictionaryWithObject:[DicomDatabase defaultDatabase] forKey:@"DicomDatabase"]]; // nil == TLS not supported !
+            
             @try
             {
                 [storeSCU run: nil];
@@ -284,12 +262,12 @@ extern const char *GetPrivateIP();
 @implementation O2DatabaseConnection
 
 - (id)initWithAddress:(NSString*)address port:(NSInteger)port tls:(BOOL)tlsFlag is:(NSInputStream*)is os:(NSOutputStream*)os {
-	if ((self = [super initWithAddress:address port:port tls:tlsFlag is:is os:os])) {
-//		[self setCloseOnRemoteClose:YES];
+    if ((self = [super initWithAddress:address port:port tls:tlsFlag is:is os:os])) {
+        //		[self setCloseOnRemoteClose:YES];
         _stack = [[NSMutableArray alloc] init];
-	}
-	
-	return self;
+    }
+    
+    return self;
 }
 
 - (void)dealloc {
@@ -361,11 +339,11 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
                 _mode = DCMSE;
             else if (strcmp(command, "DICOM") == 0)
                 _mode = DICOM;
-
+            
             if (_mode == NONE)
                 [self close];
         }
-
+        
         switch (_mode) {
             case DATAB:
                 return [self DATAB];
@@ -452,7 +430,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
 - (int)_stackReadInt {
     if (_stack.count > _hdi)
     {
-//        N2LogStackTrace( @"_stack.count > _hdi");
+        //        N2LogStackTrace( @"_stack.count > _hdi");
         return [[self _stackedObject] intValue];
     }
     int value = [self _readInt];
@@ -468,7 +446,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
     int length;
     [self.readBuffer getBytes:&length length:4];
     length = NSSwapBigIntToHost(length);
-
+    
     [self _requireDataSize:length+4];
     
     [self readData:4];
@@ -481,7 +459,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
 - (NSString*)_stackReadString {
     if (_stack.count > _hdi)
     {
-//        N2LogStackTrace( @"_stack.count > _hdi");
+        //        N2LogStackTrace( @"_stack.count > _hdi");
         return [self _stackedObject];
     }
     NSString* value = [self _readString];
@@ -494,7 +472,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
 - (DicomDatabase*)_stackIndependentDatabase {
     if (_stack.count > _hdi)
     {
-//        N2LogStackTrace( @"_stack.count > _hdi");
+        //        N2LogStackTrace( @"_stack.count > _hdi");
         return [self _stackedObject];
     }
     DicomDatabase* database = [[DicomDatabase defaultDatabase] independentDatabase];
@@ -543,7 +521,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
                 dbFileHandle = [NSFileHandle fileHandleForReadingAtPath: databasePath];
                 [self _stackObject:dbFileHandle];
             }
-                
+            
             if (self.writeBufferSize > 0) // to optimize memory usage, don't queue additional data until the send buffer is empty
                 return;
             
@@ -578,7 +556,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
         [self writeData:representationToSend];
     
     NSLog(@"Bonjour connection received from %@", _address);
-
+    
     _mode = DONE;
 }
 
@@ -621,7 +599,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
 
 - (void)VERSI {
     DicomDatabase* idatabase = [self _stackIndependentDatabase];
-
+    
     NSTimeInterval val = [idatabase timeOfLastModification];
     
     NSSwappedDouble swappedValue = NSSwapHostDoubleToBig( val);
@@ -705,7 +683,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
     }
     
     [self writeData:representationToSend];
-
+    
     _mode = DONE;
 }
 
@@ -713,14 +691,14 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
     int size = [self _stackReadInt];
     
     [self _requireDataSize:size];
-//    NSData* da = [self readData:size];
+    //    NSData* da = [self readData:size];
     
-//    NSDictionary* d = [NSPropertyListSerialization propertyListFromData:da mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
-//
-//    if (d)
-//    {
-//        NSString *message = [d objectForKey:@"message"];
-//    }
+    //    NSDictionary* d = [NSPropertyListSerialization propertyListFromData:da mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
+    //
+    //    if (d)
+    //    {
+    //        NSString *message = [d objectForKey:@"message"];
+    //    }
     
     _mode = DONE;
 }
@@ -776,7 +754,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
                                       errorDescription:NULL];
     
     if (!d) [NSException raise:NSGenericException format:@"can't parse parameters"];
-
+    
     NSArray *studies = [d objectForKey:@"albumStudies"];
     NSString *albumUID = [d objectForKey:@"albumUID"];
     
@@ -795,7 +773,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
         }
         
         [idatabase save:nil];
-
+        
         [[BrowserController currentBrowser] performSelectorOnMainThread:@selector(refreshDatabase:) withObject:self waitUntilDone:NO];
     }
     
@@ -805,9 +783,9 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
     }
     @finally {
     }
-
+    
     _mode = DONE;
-
+    
 }
 
 - (void)SETVA {
@@ -827,7 +805,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
             if( [[item valueForKeyPath: key] isKindOfClass: [NSNumber class]]) [item setValue: [NSNumber numberWithInt: [value intValue]] forKeyPath: key];
             else
             {
-                if( [key isEqualToString: @"reportURL"] == YES)
+                if( [key isEqualToString: @"reportURL"])
                 {
                     if( value == nil)
                     {
@@ -883,10 +861,10 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
     NSString* TransferSyntax = [self _stackReadString];
     
     int noOfFiles = [self _stackReadInt];
-
+    
     NSMutableArray* localPaths = [self _stackedObject];
     if (!localPaths) [self _stackObject:(localPaths = [NSMutableArray array])];
-
+    
     while (localPaths.count < noOfFiles)
     {
         NSString* path = [self _stackReadString];
@@ -917,7 +895,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
     NSDictionary *todo = [NSDictionary dictionaryWithObjectsAndKeys: Address, @"Address", TransferSyntax, @"TransferSyntax", Port, @"Port", AETitle, @"AETitle", localPaths, @"Files", nil];
     
     [NSThread detachNewThreadSelector:@selector(sendDICOMFilesToOsiriXNode:) toTarget:[BonjourPublisher currentPublisher] withObject: todo];
-
+    
     _mode = DONE;
 }
 
@@ -975,7 +953,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
             //						[localPaths addObject:xmlPath];
             //					}
             //				}
-
+            
             [self _unstack]; // the string
         }
         

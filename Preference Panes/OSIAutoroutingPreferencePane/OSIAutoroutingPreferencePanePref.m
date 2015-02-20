@@ -64,31 +64,31 @@
 
 - (id) initWithBundle:(NSBundle *)bundle
 {
-	if( self = [super init])
-	{
-		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIAutoroutingPreferencePanePref" bundle: nil] autorelease];
-		[nib instantiateNibWithOwner:self topLevelObjects: nil];
-		
-		[self setMainView: [mainWindow contentView]];
-		[self mainViewDidLoad];
-	}
-	
-	return self;
+    if( self = [super init])
+    {
+        NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIAutoroutingPreferencePanePref" bundle: nil] autorelease];
+        [nib instantiateNibWithOwner:self topLevelObjects: nil];
+        
+        [self setMainView: [mainWindow contentView]];
+        [self mainViewDidLoad];
+    }
+    
+    return self;
 }
 
 - (void) mainViewDidLoad
 {
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	
-	routesArray = [[defaults arrayForKey:@"AUTOROUTINGDICTIONARY"] mutableCopy];
-	if (routesArray == 0L) routesArray = [[NSMutableArray alloc] initWithCapacity: 0];
-	
-	for( int i = 0 ; i < [routesArray count] ; i++)
-	{
-		NSMutableDictionary	*newDict = [NSMutableDictionary dictionaryWithDictionary: [routesArray objectAtIndex: i]];
-		
-		if( [newDict valueForKey:@"activated"] == 0)
-			[newDict setValue: @YES forKey:@"activated"];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    routesArray = [[defaults arrayForKey:@"AUTOROUTINGDICTIONARY"] mutableCopy];
+    if (routesArray == 0L) routesArray = [[NSMutableArray alloc] initWithCapacity: 0];
+    
+    for( int i = 0 ; i < [routesArray count] ; i++)
+    {
+        NSMutableDictionary	*newDict = [NSMutableDictionary dictionaryWithDictionary: [routesArray objectAtIndex: i]];
+        
+        if( [newDict valueForKey:@"activated"] == 0)
+            [newDict setValue: @YES forKey:@"activated"];
         
         if( [[newDict valueForKey: @"version"] intValue] < 1)
         {
@@ -99,110 +99,114 @@
         }
         
         if( [newDict valueForKey:@"imagesOnly"] == nil)
-			[newDict setValue: @NO forKey:@"imagesOnly"];
+            [newDict setValue: @NO forKey:@"imagesOnly"];
         
         [routesArray replaceObjectAtIndex: i withObject:newDict];
-	}
-	
-	[routesTable reloadData];
-	
-	[routesTable setDelegate:self];
-	[routesTable setDoubleAction:@selector(editRoute:)];
-	[routesTable setTarget: self];
+    }
+    
+    [routesTable reloadData];
+    
+    [routesTable setDelegate:self];
+    [routesTable setDoubleAction:@selector(editRoute:)];
+    [routesTable setTarget: self];
 }
 
 -(void) willSelect
 {
     [serversArray release];
-	serversArray = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"] retain];
+    serversArray = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"] retain];
     
     for( int i = 0; i < [routesArray count]; i++)
-	{
-		NSLog( @"%@", [[routesArray objectAtIndex:i] valueForKey:@"server"]);
-		
-		BOOL found = NO;
-		for( int x = 0; x < [serversArray count]; x++)
-		{
-			if( [[[serversArray objectAtIndex: x] valueForKey:@"Activated"] boolValue] && [[[serversArray objectAtIndex: x] valueForKey:@"Description"] isEqualToString: [[routesArray objectAtIndex:i] valueForKey:@"server"]]) found = YES;
-		}
-		
-		if( found == NO)
-			NSRunCriticalAlertPanel(NSLocalizedString(@"Unknown Server", nil), NSLocalizedString( @"This server doesn't exist in the Locations list: %@", nil),NSLocalizedString( @"OK", nil), nil, nil, [[routesArray objectAtIndex: i] valueForKey:@"server"]);
-	}
+    {
+        NSLog( @"%@", [[routesArray objectAtIndex:i] valueForKey:@"server"]);
+        
+        BOOL found = NO;
+        for( int x = 0; x < [serversArray count]; x++)
+        {
+            if( [[[serversArray objectAtIndex: x] valueForKey:@"Activated"] boolValue] &&
+               [[[serversArray objectAtIndex: x] valueForKey:@"Description"] isEqualToString: [[routesArray objectAtIndex:i] valueForKey:@"server"]])
+            {
+                found = YES;
+            }
+        }
+        
+        if( found == NO)
+            NSRunCriticalAlertPanel(NSLocalizedString(@"Unknown Server", nil), NSLocalizedString( @"This server doesn't exist in the Locations list: %@", nil),NSLocalizedString( @"OK", nil), nil, nil, [[routesArray objectAtIndex: i] valueForKey:@"server"]);
+    }
 }
 
 -(void) willUnselect
 {
-	[[[self mainView] window] makeFirstResponder: nil];
-
-	[[NSUserDefaults standardUserDefaults] setObject: routesArray forKey:@"AUTOROUTINGDICTIONARY"];
+    [[[self mainView] window] makeFirstResponder: nil];
+    
+    [[NSUserDefaults standardUserDefaults] setObject: routesArray forKey:@"AUTOROUTINGDICTIONARY"];
 }
 
 - (void)dealloc
 {
-	NSLog(@"dealloc OSIAutoroutingPreferencePanePref");
-	
-	[routesArray release];
-	[serversArray release];
-	
-	[super dealloc];
+    NSLog(@"dealloc OSIAutoroutingPreferencePanePref");
+    
+    [routesArray release];
+    [serversArray release];
+    
+    [super dealloc];
 }
 
 - (IBAction) syntaxHelpButtons:(id) sender
 {
-	if( [sender tag] == 0)
-	{
+    if( [sender tag] == 0)
+    {
         [[NSFileManager defaultManager] removeItemAtPath: @"/tmp/OsiriXTables.pdf" error:nil];
         [[NSFileManager defaultManager] copyItemAtPath: [[NSBundle mainBundle] pathForResource:@"OsiriXTables" ofType:@"pdf"] toPath: @"/tmp/OsiriXTables.pdf" error: nil];
-		[[NSWorkspace sharedWorkspace] openFile: @"/tmp/OsiriXTables.pdf"];
-	}
-	
-	if( [sender tag] == 1)
-	{
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://developer.apple.com/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html#//apple_ref/doc/uid/TP40001795"]];
-	}
+        [[NSWorkspace sharedWorkspace] openFile: @"/tmp/OsiriXTables.pdf"];
+    }
+    
+    if( [sender tag] == 1)
+    {
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://developer.apple.com/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html#//apple_ref/doc/uid/TP40001795"]];
+    }
 }
 
 static BOOL newRouteMode = NO;
 
 - (IBAction) endNewRoute:(id) sender
 {
-	if( [sender tag] == 1)
-	{
-		[routesArray replaceObjectAtIndex: [routesTable selectedRow] withObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [newName stringValue], @"name", @YES, @"activated", [newDescription stringValue], @"description", [newFilter stringValue], @"filter", [[serversArray objectAtIndex: [serverPopup indexOfSelectedItem]] objectForKey:@"Description"], @"server", [NSNumber numberWithInt: [previousPopup selectedTag]], @"previousStudies", [NSNumber numberWithBool: [previousModality state]], @"previousModality", [NSNumber numberWithBool: [previousDescription state]], @"previousDescription", [NSNumber numberWithInt: [failurePopup selectedTag]], @"failureRetry",  [NSNumber numberWithBool: [cfindTest state]], @"cfindTest", [NSNumber numberWithInt: filterType], @"filterType", [NSNumber numberWithInt: imagesOnly], @"imagesOnly", @CURRENTVERSION, @"version", nil]];
-	}
-	else
-	{
-		if( newRouteMode)
-		{
-			[routesArray removeObjectAtIndex: [routesTable selectedRow]];
-		}
-	}
-	
-	[routesTable reloadData];
-	[newRoute orderOut:sender];
-	[NSApp endSheet: newRoute returnCode:[sender tag]];
+    if( [sender tag] == 1)
+    {
+        [routesArray replaceObjectAtIndex: [routesTable selectedRow] withObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [newName stringValue], @"name", @YES, @"activated", [newDescription stringValue], @"description", [newFilter stringValue], @"filter", [[serversArray objectAtIndex: [serverPopup indexOfSelectedItem]] objectForKey:@"Description"], @"server", [NSNumber numberWithInt: [previousPopup selectedTag]], @"previousStudies", [NSNumber numberWithBool: [previousModality state]], @"previousModality", [NSNumber numberWithBool: [previousDescription state]], @"previousDescription", [NSNumber numberWithInt: [failurePopup selectedTag]], @"failureRetry",  [NSNumber numberWithBool: [cfindTest state]], @"cfindTest", [NSNumber numberWithInt: filterType], @"filterType", [NSNumber numberWithInt: imagesOnly], @"imagesOnly", @CURRENTVERSION, @"version", nil]];
+    }
+    else
+    {
+        if( newRouteMode)
+        {
+            [routesArray removeObjectAtIndex: [routesTable selectedRow]];
+        }
+    }
+    
+    [routesTable reloadData];
+    [newRoute orderOut:sender];
+    [NSApp endSheet: newRoute returnCode:[sender tag]];
 }
 
 - (IBAction) selectPrevious:(id) sender
 {
-	if( [sender selectedTag])
-	{
-		[previousModality setEnabled: YES];
-		[previousDescription setEnabled: YES];
-	}
-	else
-	{
-		[previousModality setEnabled: NO];
-		[previousDescription setEnabled: NO];
-	}
+    if( [sender selectedTag])
+    {
+        [previousModality setEnabled: YES];
+        [previousDescription setEnabled: YES];
+    }
+    else
+    {
+        [previousModality setEnabled: NO];
+        [previousDescription setEnabled: NO];
+    }
 }
 
 - (IBAction) selectServer:(id) sender
 {
-	int i = [sender indexOfSelectedItem];
-	
-	[addressAndPort setStringValue: [NSString stringWithFormat:@"%@ : %@", [[serversArray objectAtIndex: i] objectForKey:@"Address"], [[serversArray objectAtIndex: i] objectForKey:@"Port"]]];
+    int i = [sender indexOfSelectedItem];
+    
+    [addressAndPort setStringValue: [NSString stringWithFormat:@"%@ : %@", [[serversArray objectAtIndex: i] objectForKey:@"Address"], [[serversArray objectAtIndex: i] objectForKey:@"Port"]]];
 }
 
 - (IBAction) editRoute:(id) sender
@@ -227,7 +231,7 @@ static BOOL newRouteMode = NO;
                 
                 while( [serverPopup itemWithTitle: name] != nil)
                     name = [name stringByAppendingString: @" "];
-                    
+                
                 [serverPopup addItemWithTitle: name];
             }
             
@@ -290,36 +294,36 @@ static BOOL newRouteMode = NO;
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
-	if( [aTableView tag] == 0)	return [routesArray count];
-	
-	return 0;
+    if( [aTableView tag] == 0)	return [routesArray count];
+    
+    return 0;
 }
 
 - (void)tableView:(NSTableView *)tableView didClickTableColumn:(NSTableColumn *)tableColumn
 {
-	if( [tableView tag] == 0)
-	{
-		[routesArray sortUsingDescriptors: [routesTable sortDescriptors]];
-		[routesTable reloadData];
-	}
+    if( [tableView tag] == 0)
+    {
+        [routesArray sortUsingDescriptors: [routesTable sortDescriptors]];
+        [routesTable reloadData];
+    }
 }
 
 - (id)tableView:(NSTableView *)aTableView
-    objectValueForTableColumn:(NSTableColumn *)aTableColumn
-    row:(NSInteger)rowIndex
+objectValueForTableColumn:(NSTableColumn *)aTableColumn
+            row:(NSInteger)rowIndex
 {
-	NSMutableDictionary *theRecord;
-	
-	if( [aTableView tag] == 0)
-	{
-		NSParameterAssert(rowIndex >= 0 && rowIndex < [routesArray count]);
-		
-		theRecord = [routesArray objectAtIndex:rowIndex];
-		
-		return [theRecord objectForKey:[aTableColumn identifier]];
-	}
-	
-	return 0L;
+    NSMutableDictionary *theRecord;
+    
+    if( [aTableView tag] == 0)
+    {
+        NSParameterAssert(rowIndex >= 0 && rowIndex < [routesArray count]);
+        
+        theRecord = [routesArray objectAtIndex:rowIndex];
+        
+        return [theRecord objectForKey:[aTableColumn identifier]];
+    }
+    
+    return 0L;
 }
 
 - (void)tableView:(NSTableView *)aTableView setObjectValue:(id)anObject forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
@@ -330,6 +334,6 @@ static BOOL newRouteMode = NO;
 
 - (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
-	return YES;
+    return YES;
 }
 @end

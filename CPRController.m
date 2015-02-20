@@ -4542,7 +4542,7 @@ static float deg2rad = M_PI / 180.0;
 		[dicomExport setOffset:[imageRep offset]];
 		[dicomExport setSigned:NO];
 		
-//		if( [[[self viewer2D] modality] isEqualToString:@"PT"] == YES)
+//		if( [[[self viewer2D] modality] isEqualToString:@"PT"])
 //		{
 //			float slope = firstObject.appliedFactorPET2SUV * firstObject.slope;
 //			[exportDCM setSlope: slope];

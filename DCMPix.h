@@ -28,27 +28,6 @@
  You should have received a copy of the GNU General Public License
  along with Horos.  If not, see <http://www.gnu.org/licenses/>.
 
- 
-
- 
- ---------------------------------------------------------------------------
- 
- This file is part of the Horos Project.
- 
- Current contributors to the project include Alex Bettarini and Danny Weissman.
- 
- Horos is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation,  version 3 of the License.
- 
- Horos is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- 
- You should have received a copy of the GNU General Public License
- along with Horos.  If not, see <http://www.gnu.org/licenses/>.
-
 =========================================================================*/
 //2L
 #ifndef DCMPIX_H_INCLUDED
@@ -63,7 +42,7 @@
 #define ORIENTATION_SENSIBILITY 0.001
 
 typedef struct {
-   double x,y,z;
+    double x,y,z;
 } XYZ;
 
 
@@ -71,7 +50,7 @@ typedef struct {
 extern "C"
 {
 #endif /*cplusplus*/
-extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
+    extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 #ifdef __cplusplus
 }
 #endif /*cplusplus*/
@@ -97,156 +76,153 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
     BOOL                fileTypeHasPrefixDICOM;
     int                 numberOfFrames;
     
-	NSArray				*pixArray;
+    NSArray				*pixArray;
     NSManagedObjectID	*imageObjectID;	/**< Core data object ID for image */
-	float				*fImage /**< float buffer of image Data */, *fExternalOwnedImage;  /**< float buffer of image Data - provided by another source, not owned by this object, not release by this object */
-	
-//DICOM TAGS
-
-//	orientation
-	BOOL				isOriginDefined;
-	double				originX /**< x position of image origin */ , originY /**< y Position of image origin */ , originZ /**< Z position of image origin*/;
-	double				orientation[ 9];  /**< pointer to orientation vectors  */
-
-//	pixel representation
+    float				*fImage /**< float buffer of image Data */, *fExternalOwnedImage;  /**< float buffer of image Data - provided by another source, not owned by this object, not release by this object */
+    
+    //DICOM TAGS
+    
+    //	orientation
+    BOOL				isOriginDefined;
+    double				originX /**< x position of image origin */ , originY /**< y Position of image origin */ , originZ /**< Z position of image origin*/;
+    double				orientation[ 9];  /**< pointer to orientation vectors  */
+    
+    //	pixel representation
     BOOL				fIsSigned;
-	short				bitsAllocated, bitsStored;
+    short				bitsAllocated, bitsStored;
     long                height, width;
     float               slope, offset;
     
-//	window level & width
-	float				savedWL, savedWW;
-
-//	planar configuration
+    //	window level & width
+    float				savedWL, savedWW;
+    
+    //	planar configuration
     long				fPlanarConf;
     double				pixelSpacingX, pixelSpacingY, pixelRatio;
     double              estimatedRadiographicMagnificationFactor;
-	BOOL				pixelSpacingFromUltrasoundRegions;
-
-//	photointerpretation
-	BOOL				isRGB, inverseVal;
-
-//  US Regions
+    BOOL				pixelSpacingFromUltrasoundRegions;
+    
+    //	photointerpretation
+    BOOL				isRGB, inverseVal;
+    
+    //  US Regions
     NSMutableArray      *usRegions;
     
-//  Waveform data
+    //  Waveform data
     DCMWaveform         *waveform;
     
-//  image type
+    //  image type
     NSString*           imageType;
     
-//--------------------------------------
-
-// DICOM params needed for SUV calculations
+    //--------------------------------------
+    
+    // DICOM params needed for SUV calculations
     float				patientsWeight;
-
+    
     NSString            *repetitiontime, *echotime, *flipAngle;
-
-	NSString			*laterality, *viewPosition, *patientPosition, *acquisitionDate, *SOPClassUID, *frameofReferenceUID, *rescaleType;
-	BOOL				hasSUV, SUVConverted, displaySUVValue;
-	NSString			*units, *decayCorrection;
-	float				decayFactor, factorPET2SUV, radionuclideTotalDose, radionuclideTotalDoseCorrected;
-	NSCalendarDate		*acquisitionTime, *radiopharmaceuticalStartTime;
-	float				halflife, frameReferenceTime, philipsFactor;
-
-// DICOM params for Overlays - 0x6000 group	
-	int					oRows, oColumns, oType, oOrigin[ 2], oBits, oBitPosition;
-	unsigned char		*oData;
-	
-//	DSA-subtraction	
-	float				*subtractedfImage;
-	NSPoint				subPixOffset, subMinMax;
-	float				subtractedfPercent, subtractedfZ, subtractedfZero, subtractedfGamma;
-	GammaFunction		subGammaFunction;
-	
-	long				maskID;
-	float				maskTime, fImageTime;
-	
+    
+    NSString			*laterality, *viewPosition, *patientPosition, *acquisitionDate, *SOPClassUID, *frameofReferenceUID, *rescaleType;
+    BOOL				hasSUV, SUVConverted, displaySUVValue;
+    NSString			*units, *decayCorrection;
+    float				decayFactor, factorPET2SUV, radionuclideTotalDose, radionuclideTotalDoseCorrected;
+    NSCalendarDate		*acquisitionTime, *radiopharmaceuticalStartTime;
+    float				halflife, frameReferenceTime, philipsFactor;
+    
+    // DICOM params for Overlays - 0x6000 group
+    int					oRows, oColumns, oType, oOrigin[ 2], oBits, oBitPosition;
+    unsigned char		*oData;
+    
+    //	DSA-subtraction
+    float				*subtractedfImage;
+    NSPoint				subPixOffset, subMinMax;
+    float				subtractedfPercent, subtractedfZ, subtractedfZero, subtractedfGamma;
+    GammaFunction		subGammaFunction;
+    
+    long				maskID;
+    float				maskTime, fImageTime;
+    
     NSNumber			*positionerPrimaryAngle;
     NSNumber			*positionerSecondaryAngle;
     
-    long				shutterRect_x;
-    long				shutterRect_y;
-    long				shutterRect_w;
-    long				shutterRect_h;
+    BOOL                shutterEnabled;
+    NSRect              shutterRect;
     
-    long				shutterCircular_x;
-    long				shutterCircular_y;
+    
+    NSPoint             shutterCircular;
     long				shutterCircular_radius;
     
-    BOOL				DCMPixShutterOnOff;
-	
-	NSPoint	 			*shutterPolygonal;
-	long				shutterPolygonalSize;
-
-//-------------------------------------------------------	
-	long				frameNo, serieNo, imID, imTot;
-    char                *baseAddr;
-
-//convolution	
-	BOOL				convolution, updateToBeApplied;
-	short				kernelsize;
-	float				normalization, kernel[25];
-	float				cineRate;
-
-//slice
-    double				sliceInterval, sliceLocation, sliceThickness, spacingBetweenSlices;
-	
-//stack
-	short				stack, stackMode, pixPos, stackDirection;
-//thickslab
-    BOOL				thickSlabVRActivated;
-	ThickSlabController *thickSlab;
-	
-	float				countstackMean;
-    float				ww, wl;
-	float				fullww, fullwl;
-	BOOL				fixed8bitsWLWW;	
-    float               maxValueOfSeries, minValueOfSeries;
-	
-	BOOL				generated;
-    NSString			*generatedName;
-	NSRecursiveLock		*checking;
-	
-	BOOL				notAbleToLoadImage, VOILUTApplied;
-	int					VOILUT_first;
-	unsigned int		VOILUT_number, VOILUT_depth, *VOILUT_table;
-	
-	unsigned short *shortRed, *shortGreen, *shortBlue;
-	
-	char				blackIndex;
-	
-	NSData				*transferFunction;
-	float				*transferFunctionPtr;
-	
-/** custom annotations */
-	NSMutableDictionary *annotationsDictionary, *annotationsDBFields;
-    NSString            *yearOld, *yearOldAcquisition;
-	
-/** 12 bit monitors */
-	BOOL				isLUT12Bit;
-	unsigned char		*LUT12baseAddr;
-	
-    BOOL				full32bitPipeline;
-	BOOL				needToCompute8bitRepresentation;
-
-/** Papyrus Loading variables */	
-	
-	NSString			*modalityString;
-	unsigned short		clutEntryR, clutEntryG, clutEntryB;
-	unsigned short		clutDepthR, clutDepthG, clutDepthB;
-	unsigned char		*clutRed, *clutGreen, *clutBlue;
-	BOOL				fSetClut, fSetClut16;
-	
-	int					savedHeightInDB, savedWidthInDB;
-	
-	id					retainedCacheGroup;
     
-// Ophtalmic fundus images
+    NSPoint	 			*shutterPolygonal;
+    long				shutterPolygonalSize;
+    
+    //-------------------------------------------------------
+    long				frameNo, serieNo, imID, imTot;
+    char                *baseAddr;
+    
+    //convolution
+    BOOL				convolution, updateToBeApplied;
+    short				kernelsize;
+    float				normalization, kernel[25];
+    float				cineRate;
+    
+    //slice
+    double				sliceInterval, sliceLocation, sliceThickness, spacingBetweenSlices;
+    
+    //stack
+    short				stack, stackMode, pixPos, stackDirection;
+    //thickslab
+    BOOL				thickSlabVRActivated;
+    ThickSlabController *thickSlab;
+    
+    float				countstackMean;
+    float				ww, wl;
+    float				fullww, fullwl;
+    BOOL				fixed8bitsWLWW;
+    float               maxValueOfSeries, minValueOfSeries;
+    
+    BOOL				generated;
+    NSString			*generatedName;
+    NSRecursiveLock		*checking;
+    
+    BOOL				notAbleToLoadImage, VOILUTApplied;
+    int					VOILUT_first;
+    unsigned int		VOILUT_number, VOILUT_depth, *VOILUT_table;
+    
+    unsigned short *shortRed, *shortGreen, *shortBlue;
+    
+    char				blackIndex;
+    
+    NSData				*transferFunction;
+    float				*transferFunctionPtr;
+    
+    /** custom annotations */
+    NSMutableDictionary *annotationsDictionary, *annotationsDBFields;
+    NSString            *yearOld, *yearOldAcquisition;
+    
+    /** 12 bit monitors */
+    BOOL				isLUT12Bit;
+    unsigned char		*LUT12baseAddr;
+    
+    BOOL				full32bitPipeline;
+    BOOL				needToCompute8bitRepresentation;
+    
+    /** Papyrus Loading variables */
+    
+    NSString			*modalityString;
+    unsigned short		clutEntryR, clutEntryG, clutEntryB;
+    unsigned short		clutDepthR, clutDepthG, clutDepthB;
+    unsigned char		*clutRed, *clutGreen, *clutBlue;
+    BOOL				fSetClut, fSetClut16;
+    
+    int					savedHeightInDB, savedWidthInDB;
+    
+    id					retainedCacheGroup;
+    
+    // Ophtalmic fundus images
     
     NSString            *referencedSOPInstanceUID;
     float               referenceCoordinates[ 4];
-
+    
     DCMTKFileFormat     *dcmtkDcmFileFormat;
 }
 
@@ -261,8 +237,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 @property (nonatomic) long pwidth, pheight;
 
 /** Is it an RGB image (ARGB) or float image?
-Note setter is different to not break existing usage. :-( */
-@property(nonatomic, setter=setRGB:) BOOL isRGB;  
+ Note setter is different to not break existing usage. :-( */
+@property(nonatomic, setter=setRGB:) BOOL isRGB;
 
 /** Pointer to image data */
 @property(setter=setfImage:) float* fImage;
@@ -305,12 +281,12 @@ Note setter is different to not break existing usage. :-( */
 @property(readonly) double spacingBetweenSlices;
 
 /**  8-bit TransferFunction */
-@property(nonatomic, retain) NSData *transferFunction; 
+@property(nonatomic, retain) NSData *transferFunction;
 
 @property(nonatomic) NSPoint subPixOffset;
 
-@property long DCMPixShutterRectWidth, DCMPixShutterRectHeight;
-@property long DCMPixShutterRectOriginX, DCMPixShutterRectOriginY;
+@property(nonatomic) BOOL shutterEnabled;
+@property(nonatomic) NSRect shutterRect;
 
 @property(retain) NSString *repetitiontime, *echotime;
 @property(readonly) NSString *flipAngle;
@@ -374,77 +350,77 @@ Note setter is different to not break existing usage. :-( */
 
 + (void) checkUserDefaults: (BOOL) update;  /**< Check User Default for needed setting */
 + (void) resetUserDefaults;  /**< Reset the defaults */
- /** Determine if a point is inside a polygon
- * @param x is the NSPoint to check. 
- * @param  poly is a pointer to an array of NSPoints. 
- * @param count is the number of 
+/** Determine if a point is inside a polygon
+ * @param x is the NSPoint to check.
+ * @param  poly is a pointer to an array of NSPoints.
+ * @param count is the number of
  * points in the polygon.
-*/
-+ (BOOL) IsPoint:(NSPoint) x inPolygon:(NSPoint*) poly size:(int) count; 
+ */
++ (BOOL) IsPoint:(NSPoint) x inPolygon:(NSPoint*) poly size:(int) count;
 
 - (void) compute8bitRepresentation;
 - (void) changeWLWW:(float)newWL :(float)newWW;  /**< Change window level to window width to the new values */
 - (void) computePixMinPixMax;  /**< Compute the min and max values in the image */
 
 // Compute ROI data
-/** Calculates the cofactor used Calcium scoring.  
-* Depends on the threshold used for scoring 
-* Threshold is usually 90 or 120 depending on whether the source is
-* Electron Beam or Multislice CT
-*/
-- (int)calciumCofactorForROI:(ROI *)roi threshold:(int)threshold;  
+/** Calculates the cofactor used Calcium scoring.
+ * Depends on the threshold used for scoring
+ * Threshold is usually 90 or 120 depending on whether the source is
+ * Electron Beam or Multislice CT
+ */
+- (int)calciumCofactorForROI:(ROI *)roi threshold:(int)threshold;
 
 /** returns calculated values for ROI:
-*  mean, total, deviation, min, max
-*/
+ *  mean, total, deviation, min, max
+ */
 - (void) computeROI:(ROI*) roi :(float *)mean :(float *)total :(float *)dev :(float *)min :(float *)max :(float*) skewness :(float*) kurtosis;
 - (void) computeROI:(ROI*) roi :(float *)mean :(float *)total :(float *)dev :(float *)min :(float *)max;
 
 /** Fill a ROI with a value
-* @param roi  Selected ROI
-* @param newVal  The replacement value
-* @param minValue  Lower threshold
-* @param maxValue Upper threshold
-* @param outside  if YES replace outside the ROI
-* @param orientationStack  
-* @param stackNo  
-* @param restore  
-* @param addition  
-*/
+ * @param roi  Selected ROI
+ * @param newVal  The replacement value
+ * @param minValue  Lower threshold
+ * @param maxValue Upper threshold
+ * @param outside  if YES replace outside the ROI
+ * @param orientationStack
+ * @param stackNo
+ * @param restore
+ * @param addition
+ */
 - (void) fillROI:(ROI*) roi newVal:(float) newVal minValue:(float) minValue maxValue:(float) maxValue outside:(BOOL) outside orientationStack:(long) orientationStack stackNo:(long) stackNo restore:(BOOL) restore addition:(BOOL) addition;
 - (void) fillROI:(ROI*) roi newVal:(float) newVal minValue:(float) minValue maxValue:(float) maxValue outside:(BOOL) outside orientationStack:(long) orientationStack stackNo:(long) stackNo restore:(BOOL) restore addition:(BOOL) addition spline:(BOOL) spline;
 - (void) fillROI:(ROI*) roi newVal :(float) newVal minValue :(float) minValue maxValue :(float) maxValue outside :(BOOL) outside orientationStack :(long) orientationStack stackNo :(long) stackNo restore :(BOOL) restore addition:(BOOL) addition spline:(BOOL) spline clipMin: (NSPoint) clipMin clipMax: (NSPoint) clipMax;
 
 /** Fill a ROI with a value
-* @param roi  Selected ROI
-* @param newVal  The replacement value
-* @param minValue  lower threshold
-* @param maxValue  upper threshold
-* @param outside  if YES replace outside the ROI
-* @param orientationStack  ?
-* @param  stackNo  
-* @param  restore  
-*/
+ * @param roi  Selected ROI
+ * @param newVal  The replacement value
+ * @param minValue  lower threshold
+ * @param maxValue  upper threshold
+ * @param outside  if YES replace outside the ROI
+ * @param orientationStack  ?
+ * @param  stackNo
+ * @param  restore
+ */
 - (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientationStack :(long) stackNo :(BOOL) restore;
 
 /** Fill a ROI with a value
-* @param roi  Selected ROI
-* @param newVal  The replacement value
-* @param minValue  lower threshold
-* @param maxValue  upper threshold
-* @param outside  if YES replace outside the ROI
-* @param orientation  
-* @param stackNo   
-*/
+ * @param roi  Selected ROI
+ * @param newVal  The replacement value
+ * @param minValue  lower threshold
+ * @param maxValue  upper threshold
+ * @param outside  if YES replace outside the ROI
+ * @param orientation
+ * @param stackNo
+ */
 - (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside :(long) orientation :(long) stackNo;
 
 /** Fill a ROI with a value.
-* @param roi Selected ROI
-* @param newVal  The replacement value
-* @param minValue  Lower threshold
-* @param maxValue  Upper threshold
-* @param outside  If YES replace outside the ROI
-*/
+ * @param roi Selected ROI
+ * @param newVal  The replacement value
+ * @param minValue  Lower threshold
+ * @param maxValue  Upper threshold
+ * @param outside  If YES replace outside the ROI
+ */
 - (void) fillROI:(ROI*) roi :(float) newVal :(float) minValue :(float) maxValue :(BOOL) outside;
 
 - (unsigned char*) getMapFromPolygonROI:(ROI*) roi size:(NSSize*) size origin:(NSPoint*) origin; /**< Map from Polygon ROI */
@@ -454,33 +430,33 @@ Note setter is different to not break existing usage. :-( */
 - (BOOL) isInROI:(ROI*) roi :(NSPoint) pt;
 
 /** Returns a pointer with all pixels values contained in the current ROI
-* User must Free the pointer with the free() function
-* Returns reference number of pixels in numberOfValues
-* Returns a pointer to the pixel locations. Each point has the x position followed by the y position
-* Locations is malloced but not freed
-*/
+ * User must Free the pointer with the free() function
+ * Returns reference number of pixels in numberOfValues
+ * Returns a pointer to the pixel locations. Each point has the x position followed by the y position
+ * Locations is malloced but not freed
+ */
 - (float*) getROIValue :(long*) numberOfValues :(ROI*) roi :(float**) locations;
 
 /** Returns a pointer with all pixels values contained in the current ROI
-* User must Free the pointer with the free() function
-* Returns reference number of pixels in numberOfValues
-* Returns a pointer to the pixel locations. Each point has the x position followed by the y position
-* Locations is malloced but not freed
-*/
+ * User must Free the pointer with the free() function
+ * Returns reference number of pixels in numberOfValues
+ * Returns a pointer to the pixel locations. Each point has the x position followed by the y position
+ * Locations is malloced but not freed
+ */
 - (float*) getLineROIValue :(long*) numberOfValues :(ROI*) roi;
 
 
 /** Utility methods to convert user supplied pixel coords to DICOM patient coords float d[3] (in mm)
-* using current slice location and orientation
-*/
+ * using current slice location and orientation
+ */
 - (void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d;
 - (void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) d pixelCenter: (BOOL) pixelCenter;
 
 - (void) getSliceCenter3DCoords: (float*) center;
 
 /** Utility methods to convert user supplied pixel coords to DICOM patient coords double d[3] (in mm)
-* using current slice location and orientation
-*/
+ * using current slice location and orientation
+ */
 - (void) convertPixDoubleX: (double) x pixY: (double) y toDICOMCoords: (double*) d;
 - (void) convertPixDoubleX: (double) x pixY: (double) y toDICOMCoords: (double*) d pixelCenter: (BOOL) pixelCenter;
 
@@ -493,7 +469,7 @@ Note setter is different to not break existing usage. :-( */
 - (void) convertDICOMCoordsDouble: (double*) dc toSliceCoords: (double*) sc pixelCenter:(BOOL) pixelCenter;
 
 /** Return index & sliceCoords */
-+(int) nearestSliceInPixelList: (NSArray*)pixlist withDICOMCoords: (float*)dc sliceCoords: (float*) sc;  
++(int) nearestSliceInPixelList: (NSArray*)pixlist withDICOMCoords: (float*)dc sliceCoords: (float*) sc;
 
 - (DicomImage*) imageObj;
 - (DicomSeries*) seriesObj;
@@ -501,16 +477,16 @@ Note setter is different to not break existing usage. :-( */
 
 - (BOOL) thickSlabVRActivated; /**< Activate Thick Slab VR */
 
-/** convert to Black and White. 
-* @param mode values: 0 Use Red Channel, 1 use Green Channel 2 use Blue Channel  3 Merge and use RGB
-*/
-- (void) ConvertToBW:(long) mode; 
+/** convert to Black and White.
+ * @param mode values: 0 Use Red Channel, 1 use Green Channel 2 use Blue Channel  3 Merge and use RGB
+ */
+- (void) ConvertToBW:(long) mode;
 
-/** convert to RGB. 
-* @param mode values: 0 create Red Channel, 1 create Green Channel 2 create Blue Channel  3 create all channels
-* @param  cwl  = window level to use
-* @param cww = window width to use
-*/
+/** convert to RGB.
+ * @param mode values: 0 create Red Channel, 1 create Green Channel 2 create Blue Channel  3 create all channels
+ * @param  cwl  = window level to use
+ * @param cww = window width to use
+ */
 - (void) ConvertToRGB:(long) mode :(long) cwl :(long) cww;
 - (void) setPixelX: (int) x Y:(int) y value:(float) v;
 - (float) cineRate;  /**< Returns the Cine rate */
@@ -548,10 +524,6 @@ Note setter is different to not break existing usage. :-( */
 - (void) setBlackIndex:(int) i;
 + (NSImage*) resizeIfNecessary:(NSImage*) currentImage dcmPix: (DCMPix*) dcmPix;
 
-- (void) DCMPixShutterRect:(long)x :(long)y :(long)w :(long)h;
-- (BOOL) DCMPixShutterOnOff;
-- (void) DCMPixShutterOnOff:(BOOL)newDCMPixShutterOnOff;
-
 - (void) computeTotalDoseCorrected;
 - (void) setRGB : (BOOL) val;
 - (void) setConvolutionKernel:(float*)val :(short) size :(float) norm;
@@ -572,64 +544,64 @@ Note setter is different to not break existing usage. :-( */
 - (DCMPix*) renderInRectSize:(NSSize) rectSize atPosition:(NSPoint) oo rotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF;
 - (DCMPix*) renderInRectSize:(NSSize) rectSize atPosition:(NSPoint) oo rotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF smartCrop: (BOOL) smartCrop;
 - (NSImage*) renderNSImageInRectSize:(NSSize) rectSize atPosition:(NSPoint) oo rotation:(float) r scale:(float) scale xFlipped:(BOOL) xF yFlipped: (BOOL) yF;
-/**  calls 
-* myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO
-* with hello = NO and iO = nil
-*/
+/**  calls
+ * myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO
+ * with hello = NO and iO = nil
+ */
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss;
 - (id) initWithPath:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss;
 
 /**  Initialize
-* doesn't load pix data, only initializes instance variables
-* @param s  filename
-* @param pos  imageID  Position in array.
-* @param tot  imTot  Total number of images. 
-* @param ptr  pointer to volume
-* @param f  frame number
-* @param ss  series number
-* @param hello  flag to indicate remote bonjour file
-* @param iO  coreData image Entity for image
-*/ 
+ * doesn't load pix data, only initializes instance variables
+ * @param s  filename
+ * @param pos  imageID  Position in array.
+ * @param tot  imTot  Total number of images.
+ * @param ptr  pointer to volume
+ * @param f  frame number
+ * @param ss  series number
+ * @param hello  flag to indicate remote bonjour file
+ * @param iO  coreData image Entity for image
+ */
 - (id) myinit:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO;
 - (id) initWithPath:(NSString*) s :(long) pos :(long) tot :(float*) ptr :(long) f :(long) ss isBonjour:(BOOL) hello imageObj: (NSManagedObject*) iO;
 
 /** init with data pointer
-* @param im  pointer to image data
-* @param pixelSize  pixelDepth in bits
-* @param xDim  image width
-* @param yDim =image height
-* @param xSpace  pixel width
-* @param ySpace  pxiel height
-* @param oX x position of origin
-* @param oY y position of origin
-* @param oZ z position of origin
-*/
+ * @param im  pointer to image data
+ * @param pixelSize  pixelDepth in bits
+ * @param xDim  image width
+ * @param yDim =image height
+ * @param xSpace  pixel width
+ * @param ySpace  pxiel height
+ * @param oX x position of origin
+ * @param oY y position of origin
+ * @param oZ z position of origin
+ */
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ;
 - (id) initWithData :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ;
 
 /** init with data pointer
-* @param im = pointer to image data
-* @param pixelSize = pixelDepth in bits
-* @param xDim  image width
-* @param yDim  image height
-* @param xSpace  pixel width
-* @param ySpace  pxiel height
-* @param oX x position of origin
-* @param oY y position of origin
-* @param oZ z position of origin
-* @param volSize ?
-*/
+ * @param im = pointer to image data
+ * @param pixelSize = pixelDepth in bits
+ * @param xDim  image width
+ * @param yDim  image height
+ * @param xSpace  pixel width
+ * @param ySpace  pxiel height
+ * @param oX x position of origin
+ * @param oY y position of origin
+ * @param oZ z position of origin
+ * @param volSize ?
+ */
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize;
 - (id) initWithData :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize;
 
 + (id) dcmPixWithImageObj: (DicomImage*) image;
 - (id) initWithImageObj: (DicomImage *) image;
 
-- (id) initWithContentsOfFile: (NSString *)file; 
+- (id) initWithContentsOfFile: (NSString *)file;
 /** create an NSImage from the current pix
-* @param newWW  window width to use
-* @param newWL window level to use;
-*/
+ * @param newWW  window width to use
+ * @param newWL window level to use;
+ */
 - (NSImage*) generateThumbnailImageWithWW: (float)newWW WL: (float)newWL;
 - (void) allocate8bitRepresentation;
 
@@ -660,8 +632,8 @@ Note setter is different to not break existing usage. :-( */
 #endif
 
 /** Load the DICOM image using Papyrus.
-* There should be no reason to call this. The class will call it when needed.
-*/
+ * There should be no reason to call this. The class will call it when needed.
+ */
 - (BOOL) loadDICOMPapyrus;
 
 /** Reset the Annotations */
@@ -669,9 +641,9 @@ Note setter is different to not break existing usage. :-( */
 
 
 /** Parses the file. Extracts necessary data. Load image data.
-* This class will be called by the class when necessay. 
-* There should be no need to call it externally
-*/
+ * This class will be called by the class when necessay.
+ * There should be no need to call it externally
+ */
 - (void) CheckLoadIn;
 
 /** Calls CheckLoadIn when needed */
@@ -682,14 +654,14 @@ Note setter is different to not break existing usage. :-( */
 - (float*) computefImage;
 
 /** Sets fusion paramaters
-* @param m  stack mode
-* @param s stack
-* @param direction stack direction
-*/
+ * @param m  stack mode
+ * @param s stack
+ * @param direction stack direction
+ */
 - (void) setFusion:(short) m :(short) s :(short) direction;
 
-/** Sets updateToBeApplied to YES. It is called whenver a setting has been changed.  
-* Should be called by the class automatically when needed */
+/** Sets updateToBeApplied to YES. It is called whenver a setting has been changed.
+ * Should be called by the class automatically when needed */
 - (void) setUpdateToApply;
 
 
@@ -711,11 +683,11 @@ Note setter is different to not break existing usage. :-( */
 /** Releases the restored DCMPix from the restoreCache */
 - (void) freeRestore;
 
-/** Sets flag for when Horos is running in protected mode */
-+ (void) setRunHorosInProtectedMode:(BOOL) v;
+/** Sets flag for when OsiriX is running in protected mode */
++ (void) setRunOsiriXInProtectedMode:(BOOL) v;
 
 /** Returns flag for protected mode */
-+ (BOOL) isRunHorosInProtectedModeActivated;
++ (BOOL) isRunOsiriXInProtectedModeActivated;
 
 /** Clears the papyrus group cache */
 - (void) clearCachedDCMFrameworkFiles;

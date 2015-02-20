@@ -28,29 +28,7 @@
  You should have received a copy of the GNU General Public License
  along with Horos.  If not, see <http://www.gnu.org/licenses/>.
 
- 
-
- 
- ---------------------------------------------------------------------------
- 
- This file is part of the Horos Project.
- 
- Current contributors to the project include Alex Bettarini and Danny Weissman.
- 
- Horos is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation,  version 3 of the License.
- 
- Horos is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- 
- You should have received a copy of the GNU General Public License
- along with Horos.  If not, see <http://www.gnu.org/licenses/>.
-
 =========================================================================*/
-
 #import "DicomStudy.h"
 #import "DicomStudy+Report.h"
 #import "DicomSeries.h"
@@ -88,120 +66,120 @@
 
 NSString* soundex4( NSString *inString)
 {
-	char *p, *p1;
-	int i;
-	char workbuf[WBUFSIZE + 1];
-	char priorletter;
-	
-	if( inString == nil) return nil;
-	
-      /* Make a working copy  */
-	
-      strncpy(workbuf, [[inString uppercaseString] UTF8String], WBUFSIZE);
-      workbuf[WBUFSIZE] = 0;
-	  
-      /* Convert all vowels to 'A'  */
-
-      for (p = workbuf; *p; ++p)
-      {
-            if (strchr("AEIOUY", *p))
-                  *p = 'A';
-      }
-
-      /* Prefix transformations: done only once on the front of a name */
-
-      if ( 0 == strncmp(workbuf, "MAC", 3))     /* MAC to MCC    */
-            workbuf[1] = 'C';
-      else if ( 0 == strncmp(workbuf, "KN", 2)) /* KN to NN      */
-            workbuf[0] = 'N';
-      else if ('K' == workbuf[0])                     /* K to C        */
-            workbuf[0] = 'C';
-      else if ( 0 == strncmp(workbuf, "PF", 2)) /* PF to FF      */
-            workbuf[0] = 'F';
-      else if ( 0 == strncmp(workbuf, "SCH", 3))/* SCH to SSS    */
-            workbuf[1] = workbuf[2] = 'S';
-
-      /*
-      ** Infix transformations: done after the first letter,
-      ** left to right
-      */
-
-      while ((p = strstr(workbuf, "DG")) > workbuf)   /* DG to GG      */
-            p[0] = 'G';
-      while ((p = strstr(workbuf, "CAAN")) > workbuf) /* CAAN to TAAN  */
-            p[0] = 'T';
-      while ((p = strchr(workbuf, 'D')) > workbuf)    /* D to T        */
-            p[0] = 'T';
-      while ((p = strstr(workbuf, "NST")) > workbuf)  /* NST to NSS    */
-            p[2] = 'S';
-      while ((p = strstr(workbuf, "AV")) > workbuf)   /* AV to AF      */
-            p[1] = 'F';
-      while ((p = strchr(workbuf, 'Q')) > workbuf)    /* Q to G        */
-            p[0] = 'G';
-      while ((p = strchr(workbuf, 'Z')) > workbuf)    /* Z to S        */
-            p[0] = 'S';
-      while ((p = strchr(workbuf, 'M')) > workbuf)    /* M to N        */
-            p[0] = 'N';
-      while ((p = strstr(workbuf, "KN")) > workbuf)   /* KN to NN      */
-            p[0] = 'N';
-      while ((p = strchr(workbuf, 'K')) > workbuf)    /* K to C        */
-            p[0] = 'C';
-      while ((p = strstr(workbuf, "AH")) > workbuf)   /* AH to AA      */
-            p[1] = 'A';
-      while ((p = strstr(workbuf, "HA")) > workbuf)   /* HA to AA      */
-            p[0] = 'A';
-      while ((p = strstr(workbuf, "AW")) > workbuf)   /* AW to AA      */
-            p[1] = 'A';
-      while ((p = strstr(workbuf, "PH")) > workbuf)   /* PH to FF      */
-            p[0] = p[1] = 'F';
-      while ((p = strstr(workbuf, "SCH")) > workbuf)  /* SCH to SSS    */
-            p[0] = p[1] = 'S';
-
-      /*
-      ** Suffix transformations: done on the end of the word,
-      ** right to left
-      */
-
-      /* (1) remove terminal 'A's and 'S's      */
-
-      for (i = strlen(workbuf) - 1;
-            (i > 0) && ('A' == workbuf[i] || 'S' == workbuf[i]);
-            --i)
-      {
-            workbuf[i] = 0;
-      }
-
-      /* (2) terminal NT to TT      */
-
-      for (i = strlen(workbuf) - 1;
-            (i > 1) && ('N' == workbuf[i - 1] || 'T' == workbuf[i]);
-            --i)
-      {
-            workbuf[i - 1] = 'T';
-      }
-
-      /* Now strip out all the vowels except the first     */
-
-      p = p1 = workbuf;
-      while ( 0 != (*p1++ = *p++))
-      {
-            while ('A' == *p)
-                  ++p;
-      }
-
-      /* Remove all duplicate letters     */
-
-      p = p1 = workbuf;
-      priorletter = 0;
-      do {
-            while (*p == priorletter)
-                  ++p;
-            priorletter = *p;
-      } while (0 != (*p1++ = *p++));
-
-      /* Finish up */
-	
-	  return [NSString stringWithUTF8String: workbuf];
+    char *p, *p1;
+    int i;
+    char workbuf[WBUFSIZE + 1];
+    char priorletter;
+    
+    if( inString == nil) return nil;
+    
+    /* Make a working copy  */
+    
+    strncpy(workbuf, [[inString uppercaseString] UTF8String], WBUFSIZE);
+    workbuf[WBUFSIZE] = 0;
+    
+    /* Convert all vowels to 'A'  */
+    
+    for (p = workbuf; *p; ++p)
+    {
+        if (strchr("AEIOUY", *p))
+            *p = 'A';
+    }
+    
+    /* Prefix transformations: done only once on the front of a name */
+    
+    if ( 0 == strncmp(workbuf, "MAC", 3))     /* MAC to MCC    */
+        workbuf[1] = 'C';
+    else if ( 0 == strncmp(workbuf, "KN", 2)) /* KN to NN      */
+        workbuf[0] = 'N';
+    else if ('K' == workbuf[0])                     /* K to C        */
+        workbuf[0] = 'C';
+    else if ( 0 == strncmp(workbuf, "PF", 2)) /* PF to FF      */
+        workbuf[0] = 'F';
+    else if ( 0 == strncmp(workbuf, "SCH", 3))/* SCH to SSS    */
+        workbuf[1] = workbuf[2] = 'S';
+    
+    /*
+     ** Infix transformations: done after the first letter,
+     ** left to right
+     */
+    
+    while ((p = strstr(workbuf, "DG")) > workbuf)   /* DG to GG      */
+        p[0] = 'G';
+    while ((p = strstr(workbuf, "CAAN")) > workbuf) /* CAAN to TAAN  */
+        p[0] = 'T';
+    while ((p = strchr(workbuf, 'D')) > workbuf)    /* D to T        */
+        p[0] = 'T';
+    while ((p = strstr(workbuf, "NST")) > workbuf)  /* NST to NSS    */
+        p[2] = 'S';
+    while ((p = strstr(workbuf, "AV")) > workbuf)   /* AV to AF      */
+        p[1] = 'F';
+    while ((p = strchr(workbuf, 'Q')) > workbuf)    /* Q to G        */
+        p[0] = 'G';
+    while ((p = strchr(workbuf, 'Z')) > workbuf)    /* Z to S        */
+        p[0] = 'S';
+    while ((p = strchr(workbuf, 'M')) > workbuf)    /* M to N        */
+        p[0] = 'N';
+    while ((p = strstr(workbuf, "KN")) > workbuf)   /* KN to NN      */
+        p[0] = 'N';
+    while ((p = strchr(workbuf, 'K')) > workbuf)    /* K to C        */
+        p[0] = 'C';
+    while ((p = strstr(workbuf, "AH")) > workbuf)   /* AH to AA      */
+        p[1] = 'A';
+    while ((p = strstr(workbuf, "HA")) > workbuf)   /* HA to AA      */
+        p[0] = 'A';
+    while ((p = strstr(workbuf, "AW")) > workbuf)   /* AW to AA      */
+        p[1] = 'A';
+    while ((p = strstr(workbuf, "PH")) > workbuf)   /* PH to FF      */
+        p[0] = p[1] = 'F';
+    while ((p = strstr(workbuf, "SCH")) > workbuf)  /* SCH to SSS    */
+        p[0] = p[1] = 'S';
+    
+    /*
+     ** Suffix transformations: done on the end of the word,
+     ** right to left
+     */
+    
+    /* (1) remove terminal 'A's and 'S's      */
+    
+    for (i = strlen(workbuf) - 1;
+         (i > 0) && ('A' == workbuf[i] || 'S' == workbuf[i]);
+         --i)
+    {
+        workbuf[i] = 0;
+    }
+    
+    /* (2) terminal NT to TT      */
+    
+    for (i = strlen(workbuf) - 1;
+         (i > 1) && ('N' == workbuf[i - 1] || 'T' == workbuf[i]);
+         --i)
+    {
+        workbuf[i - 1] = 'T';
+    }
+    
+    /* Now strip out all the vowels except the first     */
+    
+    p = p1 = workbuf;
+    while ( 0 != (*p1++ = *p++))
+    {
+        while ('A' == *p)
+            ++p;
+    }
+    
+    /* Remove all duplicate letters     */
+    
+    p = p1 = workbuf;
+    priorletter = 0;
+    do {
+        while (*p == priorletter)
+            ++p;
+        priorletter = *p;
+    } while (0 != (*p1++ = *p++));
+    
+    /* Finish up */
+    
+    return [NSString stringWithUTF8String: workbuf];
 }
 
 @implementation DicomStudy
@@ -239,21 +217,21 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 + (NSRecursiveLock*) dbModifyLock
 {
-	if( dbModifyLock == nil)
-		dbModifyLock = [[NSRecursiveLock alloc] init];
-		
-	return dbModifyLock;
+    if( dbModifyLock == nil)
+        dbModifyLock = [[NSRecursiveLock alloc] init];
+    
+    return dbModifyLock;
 }
 
 + (NSString*) soundex: (NSString*) s
 {
-	NSArray *a = [s componentsSeparatedByString:@" "];
-	NSMutableString *r = [NSMutableString string];
-	
-	for( NSString *w in a)
-		[r appendFormat:@" %@", soundex4( w)];
-	
-	return r;
+    NSArray *a = [s componentsSeparatedByString:@" "];
+    NSMutableString *r = [NSMutableString string];
+    
+    for( NSString *w in a)
+        [r appendFormat:@" %@", soundex4( w)];
+    
+    return r;
 }
 
 + (NSString*) scrambleString: (NSString*) t
@@ -310,12 +288,12 @@ static NSRecursiveLock *dbModifyLock = nil;
         return [self primitiveValueForKey: @"series"];
     else
         return [[self primitiveValueForKey: @"series"] objectsPassingTest:^BOOL(DicomSeries *obj, BOOL *stop)
-            {
-                if( obj.isDeleted)
-                    return NO;
-                
-                return YES;
-            }];
+                {
+                    if( obj.isDeleted)
+                        return NO;
+                    
+                    return YES;
+                }];
 }
 
 
@@ -362,7 +340,7 @@ static NSRecursiveLock *dbModifyLock = nil;
     
     return s;
     
-//    return [DicomStudy scrambleString: [self primitiveValueForKey: @"name"]];
+    //    return [DicomStudy scrambleString: [self primitiveValueForKey: @"name"]];
 }
 
 - (BOOL) isDistant
@@ -382,9 +360,9 @@ static NSRecursiveLock *dbModifyLock = nil;
     
     avoidReentry3++;
     
-	#ifndef OSIRIX_LIGHT
-	if( [self.hasDICOM boolValue] == YES)
-	{
+#ifndef OSIRIX_LIGHT
+    if( [self.hasDICOM boolValue] == YES)
+    {
         @try
         {
             NSManagedObject *archivedAnnotations = [self annotationsSRImage];
@@ -404,34 +382,34 @@ static NSRecursiveLock *dbModifyLock = nil;
         }
         @finally {
         }
-	}
-	#endif
+    }
+#endif
     
     avoidReentry3--;
 }
 
 - (void) applyAnnotationsFromDictionary: (NSDictionary*) rootDict
 {
-	if( rootDict == nil)
-	{
-		NSLog( @"******** applyAnnotationsFromDictionary : rootDict == nil");
-		return;
-	}
-	
-	if( [self.studyInstanceUID isEqualToString: [rootDict valueForKey: @"studyInstanceUID"]] == NO) // || [self.patientUID compare: [rootDict valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
-	{
-		NSLog( @"******** WARNING applyAnnotationsFromDictionary will not be applied - studyInstanceUID are NOT corresponding: %@ / %@", [rootDict valueForKey: @"studyInstanceUID"], self.studyInstanceUID);
-	}
-	else
-	{
-		@try
-		{
-			// We are at root level
-			if( [rootDict valueForKey: @"comment"]) {[self willChangeValueForKey: @"comment"];[self setPrimitiveValue: [rootDict valueForKey: @"comment"] forKey: @"comment"]; [self didChangeValueForKey: @"comment"];}
+    if( rootDict == nil)
+    {
+        NSLog( @"******** applyAnnotationsFromDictionary : rootDict == nil");
+        return;
+    }
+    
+    if( [self.studyInstanceUID isEqualToString: [rootDict valueForKey: @"studyInstanceUID"]] == NO) // || [self.patientUID compare: [rootDict valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
+    {
+        NSLog( @"******** WARNING applyAnnotationsFromDictionary will not be applied - studyInstanceUID are NOT corresponding: %@ / %@", [rootDict valueForKey: @"studyInstanceUID"], self.studyInstanceUID);
+    }
+    else
+    {
+        @try
+        {
+            // We are at root level
+            if( [rootDict valueForKey: @"comment"]) {[self willChangeValueForKey: @"comment"];[self setPrimitiveValue: [rootDict valueForKey: @"comment"] forKey: @"comment"]; [self didChangeValueForKey: @"comment"];}
             if( [rootDict valueForKey: @"comment2"]) {[self willChangeValueForKey: @"comment2"];[self setPrimitiveValue: [rootDict valueForKey: @"comment2"] forKey: @"comment2"]; [self didChangeValueForKey: @"comment2"];}
             if( [rootDict valueForKey: @"comment3"]) {[self willChangeValueForKey: @"comment3"];[self setPrimitiveValue: [rootDict valueForKey: @"comment3"] forKey: @"comment3"]; [self didChangeValueForKey: @"comment3"];}
             if( [rootDict valueForKey: @"comment4"]) {[self willChangeValueForKey: @"comment4"];[self setPrimitiveValue: [rootDict valueForKey: @"comment4"] forKey: @"comment4"]; [self didChangeValueForKey: @"comment4"];}
-			
+            
             if( [rootDict valueForKey: @"stateText"])
             {
                 [self willChangeValueForKey: @"stateText"];
@@ -443,199 +421,199 @@ static NSRecursiveLock *dbModifyLock = nil;
             req.predicate = [NSPredicate predicateWithValue: YES];
             NSArray* albums = [self.managedObjectContext executeFetchRequest: req error: nil];
             
-			for( NSString *name in [rootDict valueForKey: @"albums"])
-			{
-				NSUInteger index = [[albums valueForKey: @"name"] indexOfObject: name];
-				
-				if( index != NSNotFound)
-				{
-					if( [[[albums objectAtIndex: index] valueForKey: @"smartAlbum"] boolValue] == NO)
-					{
-						NSMutableSet *studies = [[albums objectAtIndex: index] mutableSetValueForKey: @"studies"];	
-						
-						[studies addObject: self];
-					}
-				}
-			}
-			
-			NSArray *seriesArray = [self.series allObjects];
-			
-			NSArray *allImages = nil, *compressedSopInstanceUIDArray = nil;
-			
-			for( NSDictionary *series in [rootDict valueForKey: @"series"])
-			{
-				// -------------------------
-				// Find corresponding series
-				if( [series valueForKey: @"seriesInstanceUID"] && [series valueForKey: @"seriesDICOMUID"])
-				{
-					NSUInteger index = [[seriesArray valueForKey: @"seriesInstanceUID"] indexOfObject: [series valueForKey: @"seriesInstanceUID"]];
-					
-					if( index == NSNotFound)
-						index = [[seriesArray valueForKey: @"seriesDICOMUID"] indexOfObject: [series valueForKey: @"seriesDICOMUID"]];
-					
-					if( index != NSNotFound)
-					{
-						DicomSeries *s = [seriesArray objectAtIndex: index];
-						
-						if( [series valueForKey:@"comment"]) {[s willChangeValueForKey: @"comment"];[s setPrimitiveValue: [series valueForKey: @"comment"] forKey: @"comment"]; [s didChangeValueForKey: @"comment"];}
-						if( [series valueForKey:@"comment2"]) {[s willChangeValueForKey: @"comment2"];[s setPrimitiveValue: [series valueForKey: @"comment2"] forKey: @"comment2"]; [s didChangeValueForKey: @"comment2"];};
-						if( [series valueForKey:@"comment3"]) {[s willChangeValueForKey: @"comment3"];[s setPrimitiveValue: [series valueForKey: @"comment3"] forKey: @"comment3"]; [s didChangeValueForKey: @"comment3"];};
-						if( [series valueForKey:@"comment4"]) {[s willChangeValueForKey: @"comment4"];[s setPrimitiveValue: [series valueForKey: @"comment4"] forKey: @"comment4"]; [s didChangeValueForKey: @"comment4"];};
-						
-						if( [series valueForKey:@"stateText"])
+            for( NSString *name in [rootDict valueForKey: @"albums"])
+            {
+                NSUInteger index = [[albums valueForKey: @"name"] indexOfObject: name];
+                
+                if( index != NSNotFound)
+                {
+                    if( [[[albums objectAtIndex: index] valueForKey: @"smartAlbum"] boolValue] == NO)
+                    {
+                        NSMutableSet *studies = [[albums objectAtIndex: index] mutableSetValueForKey: @"studies"];
+                        
+                        [studies addObject: self];
+                    }
+                }
+            }
+            
+            NSArray *seriesArray = [self.series allObjects];
+            
+            NSArray *allImages = nil, *compressedSopInstanceUIDArray = nil;
+            
+            for( NSDictionary *series in [rootDict valueForKey: @"series"])
+            {
+                // -------------------------
+                // Find corresponding series
+                if( [series valueForKey: @"seriesInstanceUID"] && [series valueForKey: @"seriesDICOMUID"])
+                {
+                    NSUInteger index = [[seriesArray valueForKey: @"seriesInstanceUID"] indexOfObject: [series valueForKey: @"seriesInstanceUID"]];
+                    
+                    if( index == NSNotFound)
+                        index = [[seriesArray valueForKey: @"seriesDICOMUID"] indexOfObject: [series valueForKey: @"seriesDICOMUID"]];
+                    
+                    if( index != NSNotFound)
+                    {
+                        DicomSeries *s = [seriesArray objectAtIndex: index];
+                        
+                        if( [series valueForKey:@"comment"]) {[s willChangeValueForKey: @"comment"];[s setPrimitiveValue: [series valueForKey: @"comment"] forKey: @"comment"]; [s didChangeValueForKey: @"comment"];}
+                        if( [series valueForKey:@"comment2"]) {[s willChangeValueForKey: @"comment2"];[s setPrimitiveValue: [series valueForKey: @"comment2"] forKey: @"comment2"]; [s didChangeValueForKey: @"comment2"];};
+                        if( [series valueForKey:@"comment3"]) {[s willChangeValueForKey: @"comment3"];[s setPrimitiveValue: [series valueForKey: @"comment3"] forKey: @"comment3"]; [s didChangeValueForKey: @"comment3"];};
+                        if( [series valueForKey:@"comment4"]) {[s willChangeValueForKey: @"comment4"];[s setPrimitiveValue: [series valueForKey: @"comment4"] forKey: @"comment4"]; [s didChangeValueForKey: @"comment4"];};
+                        
+                        if( [series valueForKey:@"stateText"])
                         {
                             [s willChangeValueForKey: @"stateText"];
-							[s setPrimitiveValue: [series valueForKey:@"stateText"] forKey: @"stateText"];
+                            [s setPrimitiveValue: [series valueForKey:@"stateText"] forKey: @"stateText"];
                             [s didChangeValueForKey: @"stateText"];
-						}
+                        }
                         
-						for( NSDictionary *image in [series valueForKey: @"images"])
-						{
-							if( allImages == nil)
-							{
-								allImages = [NSArray array];
-								for( id w in seriesArray)
-									allImages = [allImages arrayByAddingObjectsFromArray: [[w valueForKey: @"images"] allObjects]];
-									
-								compressedSopInstanceUIDArray = [allImages filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"]];
-							}
-							
-							NSPredicate	*predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: [image valueForKey: @"sopInstanceUID"]]] customSelector: @selector(isEqualToSopInstanceUID:)];
-							NSArray	*found = [compressedSopInstanceUIDArray filteredArrayUsingPredicate: predicate];
-					
-							// -------------------------
-							// Find corresponding image
-							if( [found count] > 0)
-							{
-								DicomImage *i = [found lastObject];
-								
-								if( [image valueForKey:@"isKeyImage"])
+                        for( NSDictionary *image in [series valueForKey: @"images"])
+                        {
+                            if( allImages == nil)
+                            {
+                                allImages = [NSArray array];
+                                for( id w in seriesArray)
+                                    allImages = [allImages arrayByAddingObjectsFromArray: [[w valueForKey: @"images"] allObjects]];
+                                
+                                compressedSopInstanceUIDArray = [allImages filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"]];
+                            }
+                            
+                            NSPredicate	*predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: [image valueForKey: @"sopInstanceUID"]]] customSelector: @selector(isEqualToSopInstanceUID:)];
+                            NSArray	*found = [compressedSopInstanceUIDArray filteredArrayUsingPredicate: predicate];
+                            
+                            // -------------------------
+                            // Find corresponding image
+                            if( [found count] > 0)
+                            {
+                                DicomImage *i = [found lastObject];
+                                
+                                if( [image valueForKey:@"isKeyImage"])
                                 {
                                     [i willChangeValueForKey: @"storedIsKeyImage"];
-									[i setPrimitiveValue: [image valueForKey:@"isKeyImage"] forKey: @"storedIsKeyImage"];
+                                    [i setPrimitiveValue: [image valueForKey:@"isKeyImage"] forKey: @"storedIsKeyImage"];
                                     [i didChangeValueForKey: @"storedIsKeyImage"];
                                 }
-							}
-//							else NSLog( @"----- applyAnnotationsFromDictionary : image not found : %@", [image valueForKey: @"sopInstanceUID"]);
-						}
-					}
-//					else NSLog( @"----- applyAnnotationsFromDictionary : series not found : %@", [series valueForKey: @"seriesInstanceUID"]);
-				}
-			}
-		}
-		@catch (NSException * e)
-		{
+                            }
+                            //							else NSLog( @"----- applyAnnotationsFromDictionary : image not found : %@", [image valueForKey: @"sopInstanceUID"]);
+                        }
+                    }
+                    //					else NSLog( @"----- applyAnnotationsFromDictionary : series not found : %@", [series valueForKey: @"seriesInstanceUID"]);
+                }
+            }
+        }
+        @catch (NSException * e)
+        {
             N2LogExceptionWithStackTrace(e);
-		}
-	}
+        }
+    }
 }
 
 - (NSDictionary*) annotationsAsDictionary
 {
-	// Comments - Study / Series
-	
-	// State - Study / Series
-	
-	// Albums - Study
-	
-	// Key Images - Image
-	
-	// ***************************************************************************************************
-	
-	// Study Level
-	
-	NSMutableDictionary *rootDict = [NSMutableDictionary dictionary];
-	
-	if( self.studyInstanceUID)
-		[rootDict setObject: self.studyInstanceUID forKey: @"studyInstanceUID"];
-	
-	if( self.name)
-		[rootDict setObject: self.name forKey: @"patientsName"];
-	
-	if( self.patientID)
-		[rootDict setObject: self.patientID forKey: @"patientID"];
-	
-	if( self.patientUID)
-		[rootDict setObject: self.patientUID forKey: @"patientUID"];
-	
-	if( self.comment) [rootDict setObject: self.comment forKey: @"comment"];
-	if( self.comment2) [rootDict setObject: self.comment2 forKey: @"comment2"];
-	if( self.comment3) [rootDict setObject: self.comment3 forKey: @"comment3"];
-	if( self.comment4) [rootDict setObject: self.comment4 forKey: @"comment4"];
-	
-	if( self.stateText)
-		[rootDict setObject: self.stateText forKey: @"stateText"];
-	
-	NSMutableArray *albumsArray = [NSMutableArray array];
-	
-	for( DicomAlbum * a in [[self.albums allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES] autorelease]]])
-	{
-		if( [[a valueForKey: @"smartAlbum"] boolValue] == NO)
-		{
-			NSString *name = [a valueForKey: @"name"];
-			[albumsArray addObject: name];
-		}
-	}
-	
-	[rootDict setObject: albumsArray forKey: @"albums"];
-	
-	// ***************************************************************************************************
-	
-	// Series Level
-	
-	NSMutableArray *seriesArray = [NSMutableArray array];
-	
-	for( DicomSeries *series in [[self.series allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]])
-	{
-		NSMutableDictionary *seriesDict = [NSMutableDictionary dictionary];
-		
-		if( [series valueForKey:@"seriesInstanceUID"] && [series valueForKey:@"seriesDICOMUID"])
-		{
-			if( [series valueForKey:@"comment"]) [seriesDict setObject: [series valueForKey:@"comment"] forKey: @"comment"];
-			if( [series valueForKey:@"comment2"]) [seriesDict setObject: [series valueForKey:@"comment2"] forKey: @"comment2"];
-			if( [series valueForKey:@"comment3"]) [seriesDict setObject: [series valueForKey:@"comment3"] forKey: @"comment3"];
-			if( [series valueForKey:@"comment4"]) [seriesDict setObject: [series valueForKey:@"comment4"] forKey: @"comment4"];
-			
-			if( [series valueForKey:@"stateText"])
-				[seriesDict setObject: [series valueForKey:@"stateText"] forKey: @"stateText"];
-			
-			// ***************************************************************************************************
-			
-			// Images Level
-			
-			NSMutableArray *imagesArray = [NSMutableArray array];
-			for( DicomSeries *image in [[[series valueForKey: @"images"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]])
-			{
-				NSMutableDictionary *imageDict = [NSMutableDictionary dictionary];
-				
-				if( [image valueForKey:@"sopInstanceUID"])
-				{
-					if( [image valueForKey:@"storedIsKeyImage"])
-					{
-						[imageDict setObject: [image valueForKey:@"isKeyImage"] forKey: @"isKeyImage"];
-						[imageDict setObject: [image valueForKey:@"sopInstanceUID"] forKey: @"sopInstanceUID"];
-						[imagesArray addObject: imageDict];
-					}
-				}
-			}
-			
-			if( [imagesArray count] > 0)
-				[seriesDict setObject: imagesArray forKey: @"images"];
-			
-			if( [seriesDict count] > 0)
-			{
-				[seriesDict setObject: [series valueForKey:@"seriesInstanceUID"] forKey: @"seriesInstanceUID"];
-				[seriesDict setObject: [series valueForKey:@"seriesDICOMUID"] forKey: @"seriesDICOMUID"];
-				
-				[seriesArray addObject: seriesDict];
-			}
-		}
-	}
-	
-	if( [seriesArray count] > 0)
-		[rootDict setObject: seriesArray forKey: @"series"];
-	
-	return rootDict;
+    // Comments - Study / Series
+    
+    // State - Study / Series
+    
+    // Albums - Study
+    
+    // Key Images - Image
+    
+    // ***************************************************************************************************
+    
+    // Study Level
+    
+    NSMutableDictionary *rootDict = [NSMutableDictionary dictionary];
+    
+    if( self.studyInstanceUID)
+        [rootDict setObject: self.studyInstanceUID forKey: @"studyInstanceUID"];
+    
+    if( self.name)
+        [rootDict setObject: self.name forKey: @"patientsName"];
+    
+    if( self.patientID)
+        [rootDict setObject: self.patientID forKey: @"patientID"];
+    
+    if( self.patientUID)
+        [rootDict setObject: self.patientUID forKey: @"patientUID"];
+    
+    if( self.comment) [rootDict setObject: self.comment forKey: @"comment"];
+    if( self.comment2) [rootDict setObject: self.comment2 forKey: @"comment2"];
+    if( self.comment3) [rootDict setObject: self.comment3 forKey: @"comment3"];
+    if( self.comment4) [rootDict setObject: self.comment4 forKey: @"comment4"];
+    
+    if( self.stateText)
+        [rootDict setObject: self.stateText forKey: @"stateText"];
+    
+    NSMutableArray *albumsArray = [NSMutableArray array];
+    
+    for( DicomAlbum * a in [[self.albums allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES] autorelease]]])
+    {
+        if( [[a valueForKey: @"smartAlbum"] boolValue] == NO)
+        {
+            NSString *name = [a valueForKey: @"name"];
+            [albumsArray addObject: name];
+        }
+    }
+    
+    [rootDict setObject: albumsArray forKey: @"albums"];
+    
+    // ***************************************************************************************************
+    
+    // Series Level
+    
+    NSMutableArray *seriesArray = [NSMutableArray array];
+    
+    for( DicomSeries *series in [[self.series allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]])
+    {
+        NSMutableDictionary *seriesDict = [NSMutableDictionary dictionary];
+        
+        if( [series valueForKey:@"seriesInstanceUID"] && [series valueForKey:@"seriesDICOMUID"])
+        {
+            if( [series valueForKey:@"comment"]) [seriesDict setObject: [series valueForKey:@"comment"] forKey: @"comment"];
+            if( [series valueForKey:@"comment2"]) [seriesDict setObject: [series valueForKey:@"comment2"] forKey: @"comment2"];
+            if( [series valueForKey:@"comment3"]) [seriesDict setObject: [series valueForKey:@"comment3"] forKey: @"comment3"];
+            if( [series valueForKey:@"comment4"]) [seriesDict setObject: [series valueForKey:@"comment4"] forKey: @"comment4"];
+            
+            if( [series valueForKey:@"stateText"])
+                [seriesDict setObject: [series valueForKey:@"stateText"] forKey: @"stateText"];
+            
+            // ***************************************************************************************************
+            
+            // Images Level
+            
+            NSMutableArray *imagesArray = [NSMutableArray array];
+            for( DicomSeries *image in [[[series valueForKey: @"images"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]])
+            {
+                NSMutableDictionary *imageDict = [NSMutableDictionary dictionary];
+                
+                if( [image valueForKey:@"sopInstanceUID"])
+                {
+                    if( [image valueForKey:@"storedIsKeyImage"])
+                    {
+                        [imageDict setObject: [image valueForKey:@"isKeyImage"] forKey: @"isKeyImage"];
+                        [imageDict setObject: [image valueForKey:@"sopInstanceUID"] forKey: @"sopInstanceUID"];
+                        [imagesArray addObject: imageDict];
+                    }
+                }
+            }
+            
+            if( [imagesArray count] > 0)
+                [seriesDict setObject: imagesArray forKey: @"images"];
+            
+            if( [seriesDict count] > 0)
+            {
+                [seriesDict setObject: [series valueForKey:@"seriesInstanceUID"] forKey: @"seriesInstanceUID"];
+                [seriesDict setObject: [series valueForKey:@"seriesDICOMUID"] forKey: @"seriesDICOMUID"];
+                
+                [seriesArray addObject: seriesDict];
+            }
+        }
+    }
+    
+    if( [seriesArray count] > 0)
+        [rootDict setObject: seriesArray forKey: @"series"];
+    
+    return rootDict;
 }
 
 - (void) archiveAnnotationsAsDICOMSR
@@ -650,30 +628,30 @@ static NSRecursiveLock *dbModifyLock = nil;
     
     avoidReentry2++;
     
-	#ifndef OSIRIX_LIGHT
-	if ([self.hasDICOM boolValue] == YES)
-	{
-		@try {
+#ifndef OSIRIX_LIGHT
+    if ([self.hasDICOM boolValue] == YES)
+    {
+        @try {
             BOOL isMainDB = self.managedObjectContext.persistentStoreCoordinator == BrowserController.currentBrowser.database.managedObjectContext.persistentStoreCoordinator;
-
-			NSManagedObject *archivedAnnotations = [self annotationsSRImage];
-			NSString *dstPath = [archivedAnnotations valueForKey: @"completePath"];
-			
-			if( dstPath == nil)
-				dstPath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
-			
-			NSDictionary *annotationsDict = [self annotationsAsDictionary];
-			
-			SRAnnotation *w = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
-			if( [[w annotations] isEqualToDictionary: annotationsDict] == NO)
-			{
+            
+            NSManagedObject *archivedAnnotations = [self annotationsSRImage];
+            NSString *dstPath = [archivedAnnotations valueForKey: @"completePath"];
+            
+            if( dstPath == nil)
+                dstPath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
+            
+            NSDictionary *annotationsDict = [self annotationsAsDictionary];
+            
+            SRAnnotation *w = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
+            if( [[w annotations] isEqualToDictionary: annotationsDict] == NO)
+            {
                 if( w)
                     dstPath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
                 
-				// Save or Re-Save it as DICOM SR
-				SRAnnotation *r = [[[SRAnnotation alloc] initWithDictionary: annotationsDict path: dstPath forImage: [[[self.series anyObject] valueForKey:@"images"] anyObject]] autorelease];
-				[r writeToFileAtPath: dstPath];
-				
+                // Save or Re-Save it as DICOM SR
+                SRAnnotation *r = [[[SRAnnotation alloc] initWithDictionary: annotationsDict path: dstPath forImage: [[[self.series anyObject] valueForKey:@"images"] anyObject]] autorelease];
+                [r writeToFileAtPath: dstPath];
+                
                 DicomDatabase *idb = nil;
                 if( [[NSThread currentThread] isMainThread])
                     idb = BrowserController.currentBrowser.database;
@@ -682,27 +660,27 @@ static NSRecursiveLock *dbModifyLock = nil;
                 
                 if( isMainDB)
                     [idb addFilesAtPaths: [NSArray arrayWithObject: dstPath]
-                                                               postNotifications: NO
-                                                                       dicomOnly: YES
-                                                             rereadExistingItems: YES
-                                                               generatedByOsiriX: YES];
+                       postNotifications: NO
+                               dicomOnly: YES
+                     rereadExistingItems: YES
+                       generatedByOsiriX: YES];
                 else
                     [[DicomDatabase databaseAtPath: @"/tmp"] addFilesAtPaths: [NSArray arrayWithObject: dstPath]
                                                            postNotifications: NO
                                                                    dicomOnly: YES
                                                          rereadExistingItems: YES
                                                            generatedByOsiriX: YES];
-			}
-		}
-		@catch (NSException* e) {
+            }
+        }
+        @catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
-		}
+        }
         @finally {
         }
-	}
+    }
     avoidReentry2--;
     
-	#endif
+#endif
 }
 
 - (void) archiveWindowsStateAsDICOMSR
@@ -734,8 +712,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (void) archiveReportAsDICOMSR
 {
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"archiveReportsAndAnnotationsAsDICOMSR"] == NO)
-		return;
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"archiveReportsAndAnnotationsAsDICOMSR"] == NO)
+        return;
     
     static int avoidReentry = 0;
     
@@ -747,81 +725,81 @@ static NSRecursiveLock *dbModifyLock = nil;
     
     avoidReentry++;
     
-	#ifndef OSIRIX_LIGHT
-	if( [self.hasDICOM boolValue] == YES)
-	{
-		[self.managedObjectContext lock];
-		@try
-		{
+#ifndef OSIRIX_LIGHT
+    if( [self.hasDICOM boolValue] == YES)
+    {
+        [self.managedObjectContext lock];
+        @try
+        {
             BOOL isMainDB = self.managedObjectContext.persistentStoreCoordinator == BrowserController.currentBrowser.database.managedObjectContext.persistentStoreCoordinator;
-
-			// Report
-			NSString *zippedFile = @"/tmp/zippedReport.zip";
-			BOOL needToArchive = NO;
-			NSString *dstPath = nil;
-			DicomImage *reportImage = [self reportImage];
-			
-			dstPath = [reportImage valueForKey: @"completePathResolved"];
-			
-			if( dstPath == nil)
-				dstPath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
-			
-			if( [self.reportURL hasPrefix: @"http://"] || [self.reportURL hasPrefix: @"https://"])
-			{
-				SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
-				if( [self.reportURL isEqualToString: [r reportURL]] == NO)
-					needToArchive = YES;
-			}
-			else if( [[NSFileManager defaultManager] fileExistsAtPath: self.reportURL])
-			{
-				NSDate *storedModifDate = [reportImage valueForKey: @"date"];
-				NSDate *fileModifDate = [[[NSFileManager defaultManager] attributesOfItemAtPath: self.reportURL error: nil] valueForKey: NSFileModificationDate];
-				
-				if( reportImage == nil || [[storedModifDate description] isEqualToString: [fileModifDate description]] == NO) // We want to compare only date and time, without milliseconds
-				{
-					[BrowserController encryptFileOrFolder: self.reportURL inZIPFile: zippedFile password: nil deleteSource: NO showGUI: NO];
-				
-					if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
-					{
-						SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
-						if( [[NSData dataWithContentsOfFile: zippedFile] isEqualToData: [r dataEncapsulated]] == NO)
-							needToArchive = YES;
-					}
-				}
-			}
-			else //empty or deleted report?
-			{
-				if( [reportImage valueForKey: @"completePath"] && [[NSFileManager defaultManager] fileExistsAtPath: [reportImage valueForKey: @"completePath"]])
-				{
-					needToArchive = YES;
-					zippedFile = nil;	//We will archive an empty NSData
-				}
-				
-				if( self.reportURL && [[NSFileManager defaultManager] fileExistsAtPath: self.reportURL])
-					[[NSFileManager defaultManager] removeItemAtPath: self.reportURL error: nil];
-				
+            
+            // Report
+            NSString *zippedFile = @"/tmp/zippedReport.zip";
+            BOOL needToArchive = NO;
+            NSString *dstPath = nil;
+            DicomImage *reportImage = [self reportImage];
+            
+            dstPath = [reportImage valueForKey: @"completePathResolved"];
+            
+            if( dstPath == nil)
+                dstPath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
+            
+            if( [self.reportURL hasPrefix: @"http://"] || [self.reportURL hasPrefix: @"https://"])
+            {
+                SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
+                if( [self.reportURL isEqualToString: [r reportURL]] == NO)
+                    needToArchive = YES;
+            }
+            else if( [[NSFileManager defaultManager] fileExistsAtPath: self.reportURL])
+            {
+                NSDate *storedModifDate = [reportImage valueForKey: @"date"];
+                NSDate *fileModifDate = [[[NSFileManager defaultManager] attributesOfItemAtPath: self.reportURL error: nil] valueForKey: NSFileModificationDate];
+                
+                if( reportImage == nil || [[storedModifDate description] isEqualToString: [fileModifDate description]] == NO) // We want to compare only date and time, without milliseconds
+                {
+                    [BrowserController encryptFileOrFolder: self.reportURL inZIPFile: zippedFile password: nil deleteSource: NO showGUI: NO];
+                    
+                    if( [[NSFileManager defaultManager] fileExistsAtPath: zippedFile])
+                    {
+                        SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dstPath] autorelease];
+                        if( [[NSData dataWithContentsOfFile: zippedFile] isEqualToData: [r dataEncapsulated]] == NO)
+                            needToArchive = YES;
+                    }
+                }
+            }
+            else //empty or deleted report?
+            {
+                if( [reportImage valueForKey: @"completePath"] && [[NSFileManager defaultManager] fileExistsAtPath: [reportImage valueForKey: @"completePath"]])
+                {
+                    needToArchive = YES;
+                    zippedFile = nil;	//We will archive an empty NSData
+                }
+                
+                if( self.reportURL && [[NSFileManager defaultManager] fileExistsAtPath: self.reportURL])
+                    [[NSFileManager defaultManager] removeItemAtPath: self.reportURL error: nil];
+                
                 
                 [self willChangeValueForKey: @"reportURL"];
-				[self setPrimitiveValue: nil forKey: @"reportURL"];
+                [self setPrimitiveValue: nil forKey: @"reportURL"];
                 [self didChangeValueForKey: @"reportURL"];
-			}
-			
-			if( needToArchive)
-			{
-				SRAnnotation *r = nil;
-				
-				NSLog( @"--- Report -> DICOM SR : %@", self.name);
-				
-				if( [self.reportURL hasPrefix: @"http://"] || [self.reportURL hasPrefix: @"https://"])
-					r = [[[SRAnnotation alloc] initWithURLReport: self.reportURL path: dstPath forImage: [[[self.series anyObject] valueForKey:@"images"] anyObject]] autorelease];
-				else
-				{
-					NSDate *modifDate = [[[NSFileManager defaultManager] attributesOfItemAtPath: self.reportURL error: nil] valueForKey: NSFileModificationDate];
-					r = [[[SRAnnotation alloc] initWithFileReport: zippedFile path: dstPath forImage: [[[self.series anyObject] valueForKey:@"images"] anyObject] contentDate: modifDate] autorelease];
-				}
-				
-				[r writeToFileAtPath: dstPath];
-				
+            }
+            
+            if( needToArchive)
+            {
+                SRAnnotation *r = nil;
+                
+                NSLog( @"--- Report -> DICOM SR : %@", self.name);
+                
+                if( [self.reportURL hasPrefix: @"http://"] || [self.reportURL hasPrefix: @"https://"])
+                    r = [[[SRAnnotation alloc] initWithURLReport: self.reportURL path: dstPath forImage: [[[self.series anyObject] valueForKey:@"images"] anyObject]] autorelease];
+                else
+                {
+                    NSDate *modifDate = [[[NSFileManager defaultManager] attributesOfItemAtPath: self.reportURL error: nil] valueForKey: NSFileModificationDate];
+                    r = [[[SRAnnotation alloc] initWithFileReport: zippedFile path: dstPath forImage: [[[self.series anyObject] valueForKey:@"images"] anyObject] contentDate: modifDate] autorelease];
+                }
+                
+                [r writeToFileAtPath: dstPath];
+                
                 [self.managedObjectContext save: nil];
                 
                 DicomDatabase *idb = nil;
@@ -832,48 +810,48 @@ static NSRecursiveLock *dbModifyLock = nil;
                 
                 if( isMainDB)
                     [idb addFilesAtPaths: [NSArray arrayWithObject: dstPath]
-                                                               postNotifications: YES
-                                                                       dicomOnly: YES
-                                                             rereadExistingItems: YES
-                                                               generatedByOsiriX: YES];
+                       postNotifications: YES
+                               dicomOnly: YES
+                     rereadExistingItems: YES
+                       generatedByOsiriX: YES];
                 else
                     [[DicomDatabase databaseAtPath: @"/tmp"] addFilesAtPaths: [NSArray arrayWithObject: dstPath]
                                                            postNotifications: YES
                                                                    dicomOnly: YES
                                                          rereadExistingItems: YES
                                                            generatedByOsiriX: YES];
-			}
-			
-			if( zippedFile)
-				[[NSFileManager defaultManager] removeItemAtPath: zippedFile error: nil];
-		}
-		@catch (NSException* e) {
+            }
+            
+            if( zippedFile)
+                [[NSFileManager defaultManager] removeItemAtPath: zippedFile error: nil];
+        }
+        @catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
-		}
+        }
         @finally {
             [self.managedObjectContext unlock];
         }
-	}
+    }
     
     avoidReentry--;
     
-	#endif
+#endif
 }
 
 - (BOOL)validateForDelete:(NSError **)error
 {
-	BOOL delete = [super validateForDelete: error];
-	if (delete)
-	{
-		if( self.reportURL && [[NSFileManager defaultManager] fileExistsAtPath: self.reportURL])
-			[[NSFileManager defaultManager] removeItemAtPath: self.reportURL error: nil];
-	}
-	return delete;
+    BOOL delete = [super validateForDelete: error];
+    if (delete)
+    {
+        if( self.reportURL && [[NSFileManager defaultManager] fileExistsAtPath: self.reportURL])
+            [[NSFileManager defaultManager] removeItemAtPath: self.reportURL error: nil];
+    }
+    return delete;
 }
 
 - (NSString*) soundex
 {
-	return [DicomStudy soundex: self.name];
+    return [DicomStudy soundex: self.name];
 }
 
 + (NSString*) displayedModalitiesForSeries: (NSArray*) seriesModalities
@@ -890,7 +868,7 @@ static NSRecursiveLock *dbModifyLock = nil;
             SC = YES;
         else if( [mod isEqualToString:@"PR"])
             PR = YES;
-        else if( [mod isEqualToString:@"RTSTRUCT"] == YES && [r containsString: mod] == NO)
+        else if( [mod isEqualToString:@"RTSTRUCT"] && [r containsString: mod] == NO)
             [r addObject: @"RT"];
         else if( [mod isEqualToString:@"OT"])
             OT = YES;
@@ -959,8 +937,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (void) dealloc
 {
-	[self didTurnIntoFault];
-	[super dealloc];
+    [self didTurnIntoFault];
+    [super dealloc];
 }
 
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key
@@ -969,172 +947,172 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (BOOL) isHidden;
 {
-	return isHidden;
+    return isHidden;
 }
 
 - (void) setHidden: (BOOL) h;
 {
-	isHidden = h;
+    isHidden = h;
 }
 
 - (NSString*) type
 {
-	return @"Study";
+    return @"Study";
 }
 
 - (void) dcmodifyThread: (NSDictionary*) dict
 {
-	#ifdef OSIRIX_VIEWER
-	#ifndef OSIRIX_LIGHT
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-	[[DicomStudy dbModifyLock] lock];
-	@try {
+#ifdef OSIRIX_VIEWER
+#ifndef OSIRIX_LIGHT
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    [[DicomStudy dbModifyLock] lock];
+    @try {
         NSMutableArray *files = [NSMutableArray arrayWithArray: [dict objectForKey: @"files"]];
-		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
-		NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files objectAtIndex: 0]] objectAtIndex: 0]];
+        NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
+        NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files objectAtIndex: 0]] objectAtIndex: 0]];
         
-		if( [dict objectForKey: @"value"] == nil || [(NSString*)[dict objectForKey: @"value"] length] == 0)
-			[params addObjectsFromArray: [NSArray arrayWithObjects: @"-e", [dict objectForKey: @"field"], nil]];
-		else
+        if( [dict objectForKey: @"value"] == nil || [(NSString*)[dict objectForKey: @"value"] length] == 0)
+            [params addObjectsFromArray: [NSArray arrayWithObjects: @"-e", [dict objectForKey: @"field"], nil]];
+        else
         {
             if( [[dict objectForKey: @"value"] canBeConvertedToEncoding: encoding])
                 [params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", [dict objectForKey: @"field"], [dict objectForKey: @"value"]], nil]];
             else
                 NSLog( @"---- cannot convert [dict objectForKey: value] to this encoding: %ld", (long) encoding);
-		}
+        }
         
-		if( files)
-		{
-			[files removeDuplicatedStrings];
-			
-			[params addObjectsFromArray: files];
-			
-			@try
-			{
-				[XMLController modifyDicom: params encoding: encoding];
-				
-				for( id loopItem in files)
+        if( files)
+        {
+            [files removeDuplicatedStrings];
+            
+            [params addObjectsFromArray: files];
+            
+            @try
+            {
+                [XMLController modifyDicom: params encoding: encoding];
+                
+                for( id loopItem in files)
                 {
-					[[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
+                    [[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
                 }
-			}
-			@catch (NSException * e)
-			{
-				NSLog(@"**** DicomStudy setComment: %@", e);
-			}
-		}
-	}
-	@catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	}
+            }
+            @catch (NSException * e)
+            {
+                NSLog(@"**** DicomStudy setComment: %@", e);
+            }
+        }
+    }
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
     @finally {
         [[DicomStudy dbModifyLock] unlock];
         [pool release];
     }
-	#endif
-	#endif
+#endif
+#endif
 }
 
 - (void) setComment: (NSString*) c
 {
-	if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] && [[DicomDatabase databaseForContext:[self managedObjectContext]] isLocal])
-	{
-		if( c == nil)
-			c = @"";
-			
-		if( ([(NSString*)[self primitiveValueForKey: @"comment"] length] != 0 || [c length] != 0))
-		{
-			if( [c isEqualToString: [self primitiveValueForKey: @"comment"]] == NO)
-			{
-				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [[self paths] allObjects], @"files", @"(0032,4000)", @"field", c, @"value", nil];
-				
-				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(dcmodifyThread:) object: dict] autorelease];
-				t.name = NSLocalizedString( @"Updating DICOM files...", nil);
-				t.status = N2LocalizedSingularPluralCount( [[dict objectForKey: @"files"] count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
+    if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] && [[DicomDatabase databaseForContext:[self managedObjectContext]] isLocal])
+    {
+        if( c == nil)
+            c = @"";
+        
+        if( ([(NSString*)[self primitiveValueForKey: @"comment"] length] != 0 || [c length] != 0))
+        {
+            if( [c isEqualToString: [self primitiveValueForKey: @"comment"]] == NO)
+            {
+                NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [[self paths] allObjects], @"files", @"(0032,4000)", @"field", c, @"value", nil];
                 
-				[[ThreadsManager defaultManager] addThreadAndStart: t];
-			}
-		}
-	}
-	
-	NSString *previousValue = [self primitiveValueForKey: @"comment"];
-	
-	[self willChangeValueForKey: @"comment"];
-	[self setPrimitiveValue: c forKey: @"comment"];
-	[self didChangeValueForKey: @"comment"];
-	
-	if( [previousValue length] != 0 || [c length] != 0)
-	{
-		if( [c isEqualToString: previousValue] == NO)
-			[self archiveAnnotationsAsDICOMSR];
-	}
+                NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(dcmodifyThread:) object: dict] autorelease];
+                t.name = NSLocalizedString( @"Updating DICOM files...", nil);
+                t.status = N2LocalizedSingularPluralCount( [[dict objectForKey: @"files"] count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
+                
+                [[ThreadsManager defaultManager] addThreadAndStart: t];
+            }
+        }
+    }
+    
+    NSString *previousValue = [self primitiveValueForKey: @"comment"];
+    
+    [self willChangeValueForKey: @"comment"];
+    [self setPrimitiveValue: c forKey: @"comment"];
+    [self didChangeValueForKey: @"comment"];
+    
+    if( [previousValue length] != 0 || [c length] != 0)
+    {
+        if( [c isEqualToString: previousValue] == NO)
+            [self archiveAnnotationsAsDICOMSR];
+    }
 }
 
 - (void) setComment2: (NSString*) c
 {
-	NSString *previousValue = [self primitiveValueForKey: @"comment2"];
-	
-	[self willChangeValueForKey: @"comment2"];
-	[self setPrimitiveValue: c forKey: @"comment2"];
-	[self didChangeValueForKey: @"comment2"];
-	
-	if( [previousValue length] != 0 || [c length] != 0)
-	{
-		if( [c isEqualToString: previousValue] == NO)
-			[self archiveAnnotationsAsDICOMSR];
-	}
+    NSString *previousValue = [self primitiveValueForKey: @"comment2"];
+    
+    [self willChangeValueForKey: @"comment2"];
+    [self setPrimitiveValue: c forKey: @"comment2"];
+    [self didChangeValueForKey: @"comment2"];
+    
+    if( [previousValue length] != 0 || [c length] != 0)
+    {
+        if( [c isEqualToString: previousValue] == NO)
+            [self archiveAnnotationsAsDICOMSR];
+    }
 }
 
 - (void) setComment3: (NSString*) c
 {
-	NSString *previousValue = [self primitiveValueForKey: @"comment3"];
-	
-	[self willChangeValueForKey: @"comment3"];
-	[self setPrimitiveValue: c forKey: @"comment3"];
-	[self didChangeValueForKey: @"comment3"];
-	
-	if( [previousValue length] != 0 || [c length] != 0)
-	{
-		if( [c isEqualToString: previousValue] == NO)
-			[self archiveAnnotationsAsDICOMSR];
-	}
+    NSString *previousValue = [self primitiveValueForKey: @"comment3"];
+    
+    [self willChangeValueForKey: @"comment3"];
+    [self setPrimitiveValue: c forKey: @"comment3"];
+    [self didChangeValueForKey: @"comment3"];
+    
+    if( [previousValue length] != 0 || [c length] != 0)
+    {
+        if( [c isEqualToString: previousValue] == NO)
+            [self archiveAnnotationsAsDICOMSR];
+    }
 }
 
 - (void) setComment4: (NSString*) c
 {
-	NSString *previousValue = [self primitiveValueForKey: @"comment4"];
-	
-	[self willChangeValueForKey: @"comment4"];
-	[self setPrimitiveValue: c forKey: @"comment4"];
-	[self didChangeValueForKey: @"comment4"];
-	
-	if( [previousValue length] != 0 || [c length] != 0)
-	{
-		if( [c isEqualToString: previousValue] == NO)
-			[self archiveAnnotationsAsDICOMSR];
-	}
+    NSString *previousValue = [self primitiveValueForKey: @"comment4"];
+    
+    [self willChangeValueForKey: @"comment4"];
+    [self setPrimitiveValue: c forKey: @"comment4"];
+    [self didChangeValueForKey: @"comment4"];
+    
+    if( [previousValue length] != 0 || [c length] != 0)
+    {
+        if( [c isEqualToString: previousValue] == NO)
+            [self archiveAnnotationsAsDICOMSR];
+    }
 }
 
 - (void) setStateText: (NSNumber*) c
 {
-	#ifdef OSIRIX_VIEWER
-	#ifndef OSIRIX_LIGHT
-	@try 
-	{
-		if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] && [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] == NO)
-		{
-			if( c == nil)
-				c = [NSNumber numberWithInt: 0];
-			
-			if( [c intValue] != [[self primitiveValueForKey: @"stateText"] intValue])
-			{
-				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [[self paths] allObjects], @"files", @"(4008,0212)", @"field", [c stringValue], @"value", nil];
-				
-				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(dcmodifyThread:) object: dict] autorelease];
-				t.name = NSLocalizedString( @"Updating DICOM files...", nil);
-				t.status = N2LocalizedSingularPluralCount( [[dict objectForKey: @"files"] count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
+#ifdef OSIRIX_VIEWER
+#ifndef OSIRIX_LIGHT
+    @try
+    {
+        if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] && [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] == NO)
+        {
+            if( c == nil)
+                c = [NSNumber numberWithInt: 0];
+            
+            if( [c intValue] != [[self primitiveValueForKey: @"stateText"] intValue])
+            {
+                NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [[self paths] allObjects], @"files", @"(4008,0212)", @"field", [c stringValue], @"value", nil];
                 
-				[[ThreadsManager defaultManager] addThreadAndStart: t];
+                NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(dcmodifyThread:) object: dict] autorelease];
+                t.name = NSLocalizedString( @"Updating DICOM files...", nil);
+                t.status = N2LocalizedSingularPluralCount( [[dict objectForKey: @"files"] count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
+                
+                [[ThreadsManager defaultManager] addThreadAndStart: t];
             }
         }
         
@@ -1173,118 +1151,118 @@ static NSRecursiveLock *dbModifyLock = nil;
                     N2LogExceptionWithStackTrace(e);
                 }
             }
-		}
-	}
-	@catch (NSException * e) 
-	{
-		N2LogExceptionWithStackTrace(e);
-	}
-	#endif
-	#endif
-	
-	NSNumber *previousState = [self primitiveValueForKey: @"stateText"];
-	
-	[self willChangeValueForKey: @"stateText"];
-	[self setPrimitiveValue: c forKey: @"stateText"];
-	[self didChangeValueForKey: @"stateText"];
-	
-	if( [c intValue] != [previousState intValue])
-		[self archiveAnnotationsAsDICOMSR];
+        }
+    }
+    @catch (NSException * e)
+    {
+        N2LogExceptionWithStackTrace(e);
+    }
+#endif
+#endif
+    
+    NSNumber *previousState = [self primitiveValueForKey: @"stateText"];
+    
+    [self willChangeValueForKey: @"stateText"];
+    [self setPrimitiveValue: c forKey: @"stateText"];
+    [self didChangeValueForKey: @"stateText"];
+    
+    if( [c intValue] != [previousState intValue])
+        [self archiveAnnotationsAsDICOMSR];
 }
 
 - (void) setReportURL: (NSString*) url
 {
-	#ifdef OSIRIX_VIEWER
-	BrowserController *cB = [BrowserController currentBrowser];
-	
-	if( url)
-	{
-		if( [url hasPrefix: @"http://"] == NO && [url hasPrefix: @"https://"] == NO)
-		{
-		   NSString *commonPath = [[cB fixedDocumentsDirectory] commonPrefixWithString: url options: NSLiteralSearch];
-		
-			if( [commonPath isEqualToString: [cB fixedDocumentsDirectory]])
-			{
-				url = [url substringFromIndex: [[cB fixedDocumentsDirectory] length]];
-				
-				if( [url hasPrefix: @"TEMP.noindex/"])
-					url = [url stringByReplacingOccurrencesOfString: @"TEMP.noindex/" withString: @"REPORTS/"];
-				
-				if( [url characterAtIndex: 0] == '/') url = [url substringFromIndex: 1];
-			}
-		}
-	}
-	#endif
-	
-	[self willChangeValueForKey: @"reportURL"];
-	[self setPrimitiveValue: url forKey: @"reportURL"];
-	[self didChangeValueForKey: @"reportURL"];
-	
-	[self archiveReportAsDICOMSR];
+#ifdef OSIRIX_VIEWER
+    BrowserController *cB = [BrowserController currentBrowser];
+    
+    if( url)
+    {
+        if( [url hasPrefix: @"http://"] == NO && [url hasPrefix: @"https://"] == NO)
+        {
+            NSString *commonPath = [[cB fixedDocumentsDirectory] commonPrefixWithString: url options: NSLiteralSearch];
+            
+            if( [commonPath isEqualToString: [cB fixedDocumentsDirectory]])
+            {
+                url = [url substringFromIndex: [[cB fixedDocumentsDirectory] length]];
+                
+                if( [url hasPrefix: @"TEMP.noindex/"])
+                    url = [url stringByReplacingOccurrencesOfString: @"TEMP.noindex/" withString: @"REPORTS/"];
+                
+                if( [url characterAtIndex: 0] == '/') url = [url substringFromIndex: 1];
+            }
+        }
+    }
+#endif
+    
+    [self willChangeValueForKey: @"reportURL"];
+    [self setPrimitiveValue: url forKey: @"reportURL"];
+    [self didChangeValueForKey: @"reportURL"];
+    
+    [self archiveReportAsDICOMSR];
 }
 
 - (NSString*) reportURL
 {
-	NSString *url = [self primitiveValueForKey: @"reportURL"];
-	
-	#ifdef OSIRIX_VIEWER
-	if( url && [url length])
-	{
-		if( [url hasPrefix: @"http://"] == NO && [url hasPrefix: @"https://"] == NO)
-		{
-			BrowserController *cB = [BrowserController currentBrowser];
-			
-			if( [cB isBonjour: [self managedObjectContext]])
-			{
-				// We will give a path with TEMP.noindex, instead of REPORTS
-				if( [url characterAtIndex: 0] != '/')
-				{
-					if( [url hasPrefix: @"REPORTS/"])
-						url = [url stringByReplacingOccurrencesOfString: @"REPORTS/" withString: @"TEMP.noindex/"];
-					url = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: url];
-				}
-			}
-			else
-			{
-				if( [url characterAtIndex: 0] != '/')
-					url = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: url];
-				else
-				{	// Should we convert it to a local path?
-					NSString *commonPath = [[cB fixedDocumentsDirectory] commonPrefixWithString: url options: NSLiteralSearch];
-					if( [commonPath isEqualToString: [cB fixedDocumentsDirectory]])
+    NSString *url = [self primitiveValueForKey: @"reportURL"];
+    
+#ifdef OSIRIX_VIEWER
+    if( url && [url length])
+    {
+        if( [url hasPrefix: @"http://"] == NO && [url hasPrefix: @"https://"] == NO)
+        {
+            BrowserController *cB = [BrowserController currentBrowser];
+            
+            if( [cB isBonjour: [self managedObjectContext]])
+            {
+                // We will give a path with TEMP.noindex, instead of REPORTS
+                if( [url characterAtIndex: 0] != '/')
+                {
+                    if( [url hasPrefix: @"REPORTS/"])
+                        url = [url stringByReplacingOccurrencesOfString: @"REPORTS/" withString: @"TEMP.noindex/"];
+                    url = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: url];
+                }
+            }
+            else
+            {
+                if( [url characterAtIndex: 0] != '/')
+                    url = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: url];
+                else
+                {	// Should we convert it to a local path?
+                    NSString *commonPath = [[cB fixedDocumentsDirectory] commonPrefixWithString: url options: NSLiteralSearch];
+                    if( [commonPath isEqualToString: [cB fixedDocumentsDirectory]])
                     {
                         [self willChangeValueForKey: @"reportURL"];
-						[self setPrimitiveValue: url forKey: @"reportURL"];
+                        [self setPrimitiveValue: url forKey: @"reportURL"];
                         [self didChangeValueForKey: @"reportURL"];
                     }
-				}
-			}
-		}
-	}
-	#endif
-	
-	return url;
+                }
+            }
+        }
+    }
+#endif
+    
+    return url;
 }
 
 - (NSString *) localstring
 {
-	BOOL local = YES;
-	
-	[self.managedObjectContext lock];
-	@try {
-		NSManagedObject* obj = [[[self.series anyObject] valueForKey:@"images"] anyObject];
-		local = [[obj valueForKey:@"inDatabaseFolder"] boolValue];
-	}
-	@catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	}
+    BOOL local = YES;
+    
+    [self.managedObjectContext lock];
+    @try {
+        NSManagedObject* obj = [[[self.series anyObject] valueForKey:@"images"] anyObject];
+        local = [[obj valueForKey:@"inDatabaseFolder"] boolValue];
+    }
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
     @finally {
         [self.managedObjectContext unlock];
     }
-	
-	if (local)
+    
+    if (local)
         return @"L";
-	else return @"";
+    else return @"";
 }
 
 - (void) setDate:(NSDate*) date
@@ -1315,16 +1293,16 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (id) valueForUndefinedKey:(NSString *)key
 {
-	NSSet *paths = [self paths];
-	
-	if( [paths count])
-	{
-		id value = [DicomFile getDicomField: key forFile: [[paths anyObject] completePath]];
-		if (value)
-			return value;
-	}
-	
-	return [super valueForUndefinedKey: key];
+    NSSet *paths = [self paths];
+    
+    if( [paths count])
+    {
+        id value = [DicomFile getDicomField: key forFile: [[paths anyObject] completePath]];
+        if (value)
+            return value;
+    }
+    
+    return [super valueForUndefinedKey: key];
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
@@ -1339,31 +1317,31 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 + (NSString*) yearOldAcquisition:(NSDate*) acquisitionDate FromDateOfBirth: (NSDate*) dateOfBirth
 {
-	if( dateOfBirth && acquisitionDate)
-	{
-		NSCalendarDate *momsBDay = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [dateOfBirth timeIntervalSinceReferenceDate]];
-		NSCalendarDate *dateOfBirth = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [acquisitionDate timeIntervalSinceReferenceDate]];
-		
-		NSInteger years, months, days;
-		
-		[dateOfBirth years:&years months:&months days:&days hours:NULL minutes:NULL seconds:NULL sinceDate:momsBDay];
-		
-		if( years < 2)
-		{
-			if( years < 1)
-			{
-				if( months < 1)
-				{
-					if( days < 0) return @"";
-					else return [NSString stringWithFormat: NSLocalizedString( @"%d d", @"d = day"), days];
-				}
-				else return [NSString stringWithFormat: @"%d%@", (int) months, NSLocalizedString( @" m", @"m = month")];
-			}
-			else return [NSString stringWithFormat: @"%d%@ %d%@", (int) years, NSLocalizedString( @" y", @"y = year"), (int) months, NSLocalizedString( @" m", @"m = month")];
-		}
-		else return [NSString stringWithFormat: @"%d%@", (int) years, NSLocalizedString( @" y", @"y = year")];
-	}
-	else return @"";
+    if( dateOfBirth && acquisitionDate)
+    {
+        NSCalendarDate *momsBDay = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [dateOfBirth timeIntervalSinceReferenceDate]];
+        NSCalendarDate *dateOfBirth = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [acquisitionDate timeIntervalSinceReferenceDate]];
+        
+        NSInteger years, months, days;
+        
+        [dateOfBirth years:&years months:&months days:&days hours:NULL minutes:NULL seconds:NULL sinceDate:momsBDay];
+        
+        if( years < 2)
+        {
+            if( years < 1)
+            {
+                if( months < 1)
+                {
+                    if( days < 0) return @"";
+                    else return [NSString stringWithFormat: NSLocalizedString( @"%d d", @"d = day"), days];
+                }
+                else return [NSString stringWithFormat: @"%d%@", (int) months, NSLocalizedString( @" m", @"m = month")];
+            }
+            else return [NSString stringWithFormat: @"%d%@ %d%@", (int) years, NSLocalizedString( @" y", @"y = year"), (int) months, NSLocalizedString( @" m", @"m = month")];
+        }
+        else return [NSString stringWithFormat: @"%d%@", (int) years, NSLocalizedString( @" y", @"y = year")];
+    }
+    else return @"";
 }
 
 - (NSString*) yearOldAcquisition
@@ -1374,35 +1352,35 @@ static NSRecursiveLock *dbModifyLock = nil;
 + (NSString*) yearOldFromDateOfBirth: (NSDate*) dateOfBirth
 {
     if( dateOfBirth)
-	{
-		NSCalendarDate *momsBDay = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [dateOfBirth timeIntervalSinceReferenceDate]];
-		NSCalendarDate *dateOfBirth = [NSCalendarDate date];
-		
-		NSInteger years, months, days;
-		
-		[dateOfBirth years:&years months:&months days:&days hours:NULL minutes:NULL seconds:NULL sinceDate:momsBDay];
-		
-		if( years < 2)
-		{
-			if( years < 1)
-			{
-				if( months < 1)
-				{
-					if( days < 0) return @"";
-					else return [NSString stringWithFormat: NSLocalizedString( @"%d d", @"d = day"), days];
-				}
-				else return [NSString stringWithFormat: @"%d%@", (int) months, NSLocalizedString( @" m", @"m = month")];
-			}
-			else return [NSString stringWithFormat: @"%d%@ %d%@", (int) years, NSLocalizedString( @" y", @"y = year"), (int) months, NSLocalizedString( @" m", @"m = month")];
-		}
-		else return [NSString stringWithFormat: @"%d%@", (int) years, NSLocalizedString( @" y", @"y = year")];
-	}
-	else return @"";
+    {
+        NSCalendarDate *momsBDay = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [dateOfBirth timeIntervalSinceReferenceDate]];
+        NSCalendarDate *dateOfBirth = [NSCalendarDate date];
+        
+        NSInteger years, months, days;
+        
+        [dateOfBirth years:&years months:&months days:&days hours:NULL minutes:NULL seconds:NULL sinceDate:momsBDay];
+        
+        if( years < 2)
+        {
+            if( years < 1)
+            {
+                if( months < 1)
+                {
+                    if( days < 0) return @"";
+                    else return [NSString stringWithFormat: NSLocalizedString( @"%d d", @"d = day"), days];
+                }
+                else return [NSString stringWithFormat: @"%d%@", (int) months, NSLocalizedString( @" m", @"m = month")];
+            }
+            else return [NSString stringWithFormat: @"%d%@ %d%@", (int) years, NSLocalizedString( @" y", @"y = year"), (int) months, NSLocalizedString( @" m", @"m = month")];
+        }
+        else return [NSString stringWithFormat: @"%d%@", (int) years, NSLocalizedString( @" y", @"y = year")];
+    }
+    else return @"";
 }
 
 - (NSString*) yearOld
 {
-	return [DicomStudy yearOldFromDateOfBirth: self.dateOfBirth];
+    return [DicomStudy yearOldFromDateOfBirth: self.dateOfBirth];
 }
 
 
@@ -1410,27 +1388,27 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (void) setModality:(NSString *) s
 {
-	if( [s isEqualToString:@"SC"] ||
-		[s isEqualToString:@"PR"] ||
-		[s isEqualToString:@"SR"] ||
-		[s isEqualToString:@"RTSTRUCT"] ||
-		[s isEqualToString:@"RT"] ||
-		[s isEqualToString:@"KO"])
-	{
-		if( self.modality.length > 0)
-			return; //We are not insterested in these 'technical' modalities, we prefer true modalities like CT, MR, ...
-	}
-		   
-	[self willChangeValueForKey: @"modality"];
-	[self setPrimitiveValue: s forKey:@"modality"];
-	[self didChangeValueForKey: @"modality"];
+    if( [s isEqualToString:@"SC"] ||
+       [s isEqualToString:@"PR"] ||
+       [s isEqualToString:@"SR"] ||
+       [s isEqualToString:@"RTSTRUCT"] ||
+       [s isEqualToString:@"RT"] ||
+       [s isEqualToString:@"KO"])
+    {
+        if( self.modality.length > 0)
+            return; //We are not insterested in these 'technical' modalities, we prefer true modalities like CT, MR, ...
+    }
+    
+    [self willChangeValueForKey: @"modality"];
+    [self setPrimitiveValue: s forKey:@"modality"];
+    [self didChangeValueForKey: @"modality"];
 }
 
 - (void) setNumberOfImages:(NSNumber *) n
 {
     @synchronized (self) {
-//        [cachedRawNoFiles release];
-//        cachedRawNoFiles = nil;
+        //        [cachedRawNoFiles release];
+        //        cachedRawNoFiles = nil;
         
         [cachedModalites release];
         cachedModalites = nil;
@@ -1460,31 +1438,31 @@ static NSRecursiveLock *dbModifyLock = nil;
     @finally {
         [self.managedObjectContext unlock];
     }
-
+    
     return [NSNumber numberWithInt:sum];
 }
 
 - (NSNumber *) noFilesExcludingMultiFrames
 {
-	if ([[self primitiveValueForKey:@"numberOfImages"] intValue] <= 0) // There are frames !
-	{
-		[self.managedObjectContext lock];
-		@try {
+    if ([[self primitiveValueForKey:@"numberOfImages"] intValue] <= 0) // There are frames !
+    {
+        [self.managedObjectContext lock];
+        @try {
             int sum = 0;
-			for (DicomSeries* s in [self.series allObjects])
+            for (DicomSeries* s in [self.series allObjects])
             {
                 sum += [[s valueForKey:@"noFilesExcludingMultiFrames"] intValue];
             }
             return [NSNumber numberWithInt:sum];
-		}
-		@catch (NSException* e) {
+        }
+        @catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
-		}
+        }
         @finally {
             [self.managedObjectContext unlock];
         }
-	}
-	return [self noFiles];
+    }
+    return [self noFiles];
 }
 
 - (NSNumber *) noSeries
@@ -1494,55 +1472,55 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSNumber *) noFiles
 {
-	int n = [[self primitiveValueForKey:@"numberOfImages"] intValue];
-	if (n == 0)
-	{
-		int sum = 0;
-		NSNumber *no = nil;
-		
-		[self.managedObjectContext lock];
-		@try {
-			BOOL framesInSeries = NO;
-			
-			for( DicomSeries *s in [self.series allObjects])
-			{
+    int n = [[self primitiveValueForKey:@"numberOfImages"] intValue];
+    if (n == 0)
+    {
+        int sum = 0;
+        NSNumber *no = nil;
+        
+        [self.managedObjectContext lock];
+        @try {
+            BOOL framesInSeries = NO;
+            
+            for( DicomSeries *s in [self.series allObjects])
+            {
                 if( [DCMAbstractSyntaxUID isStructuredReport: [s valueForKey: @"seriesSOPClassUID"]] == NO &&
-                    [DCMAbstractSyntaxUID isSupportedPrivateClasses: [s valueForKey: @"seriesSOPClassUID"]] == NO &&
-                    [DCMAbstractSyntaxUID isPresentationState: [s valueForKey: @"seriesSOPClassUID"]] == NO)
+                   [DCMAbstractSyntaxUID isSupportedPrivateClasses: [s valueForKey: @"seriesSOPClassUID"]] == NO &&
+                   [DCMAbstractSyntaxUID isPresentationState: [s valueForKey: @"seriesSOPClassUID"]] == NO)
                 {
                     sum += [[s valueForKey:@"noFiles"] intValue];
                     
                     if( [[s primitiveValueForKey:@"numberOfImages"] intValue] < 0) // There are frames !
                         framesInSeries = YES;
                 }
-			}
-			
-			if( framesInSeries)
-				sum = -sum;
-			
-			no = [NSNumber numberWithInt: sum];
-			
-			[self willChangeValueForKey: @"numberOfImages"];
-			[self setPrimitiveValue: no forKey:@"numberOfImages"];
-			[self didChangeValueForKey: @"numberOfImages"];
-		}
-		@catch (NSException* e) {
+            }
+            
+            if( framesInSeries)
+                sum = -sum;
+            
+            no = [NSNumber numberWithInt: sum];
+            
+            [self willChangeValueForKey: @"numberOfImages"];
+            [self setPrimitiveValue: no forKey:@"numberOfImages"];
+            [self didChangeValueForKey: @"numberOfImages"];
+        }
+        @catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
-		}
-		@finally {
+        }
+        @finally {
             [self.managedObjectContext unlock];
         }
-		
-		if (sum < 0)
-			return [NSNumber numberWithInt: -sum];
-		else return no;
-	}
-	else
-	{
-		if (n < 0)
-			return [NSNumber numberWithInt: -n];
-		else return [self primitiveValueForKey:@"numberOfImages"];
-	}
+        
+        if (sum < 0)
+            return [NSNumber numberWithInt: -sum];
+        else return no;
+    }
+    else
+    {
+        if (n < 0)
+            return [NSNumber numberWithInt: -n];
+        else return [self primitiveValueForKey:@"numberOfImages"];
+    }
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
@@ -1550,39 +1528,39 @@ static NSRecursiveLock *dbModifyLock = nil;
 - (NSSet*) paths
 {
     [self.managedObjectContext lock];
-	@try {
+    @try {
         NSMutableSet *set = [NSMutableSet set];
-		for (id subset in [self valueForKeyPath:@"series.images.completePath"])
-			[set unionSet: subset];
+        for (id subset in [self valueForKeyPath:@"series.images.completePath"])
+            [set unionSet: subset];
         return set;
-	}
-	@catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	}
+    }
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
     @finally {
         [self.managedObjectContext unlock];
     }
     
-	return nil;
+    return nil;
 }
 
 - (NSSet*) pathsForForkedProcess
 {
     [self.managedObjectContext lock];
-	@try {
+    @try {
         NSMutableSet* set = [NSMutableSet set];
-		for (id subset in [self valueForKeyPath:@"series.images.completePathWithNoDownloadAndLocalOnly"])
-			[set unionSet:subset];
+        for (id subset in [self valueForKeyPath:@"series.images.completePathWithNoDownloadAndLocalOnly"])
+            [set unionSet:subset];
         return set;
-	}
-	@catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	}
+    }
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
     @finally {
         [self.managedObjectContext unlock];
     }
     
-	return nil;
+    return nil;
 }
 
 
@@ -1591,20 +1569,20 @@ static NSRecursiveLock *dbModifyLock = nil;
 - (NSSet*) keyImages
 {
     [self.managedObjectContext lock];
-	@try {
+    @try {
         NSMutableSet* set = [NSMutableSet set];
-		for (id object in self.series)
-			[set unionSet:[object keyImages]];
+        for (id object in self.series)
+            [set unionSet:[object keyImages]];
         return set;
-	}
-	@catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	}
+    }
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
     @finally {
         [self.managedObjectContext unlock];
     }
     
-	return nil;
+    return nil;
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ------------------------ Series subselections-----------------------------------ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
@@ -1631,9 +1609,9 @@ static NSRecursiveLock *dbModifyLock = nil;
         
         if ([DCMAbstractSyntaxUID isStructuredReport:uid] && [description hasPrefix: @"OsiriX ROI SR"] == NO && [description hasPrefix: @"OsiriX Annotations SR"] == NO && [description hasPrefix: @"OsiriX Report SR"] == NO && [description hasPrefix: @"OsiriX WindowsState SR"] == NO)
             return YES;
-	}
+    }
     
-	return NO;
+    return NO;
 }
 
 + (BOOL) displaySeriesWithSOPClassUID: (NSString*) uid andSeriesDescription: (NSString*) description
@@ -1644,20 +1622,20 @@ static NSRecursiveLock *dbModifyLock = nil;
 - (NSSet*)images
 {
     [self.managedObjectContext lock];
-	@try {
+    @try {
         NSMutableSet* images = [NSMutableSet set];
-		for (id subset in [self valueForKeyPath: @"series.images"])
-			[images unionSet: subset];
+        for (id subset in [self valueForKeyPath: @"series.images"])
+            [images unionSet: subset];
         return images;
-	}
-	@catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	}
+    }
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
     @finally {
         [self.managedObjectContext unlock];
     }
     
-	return nil;
+    return nil;
 }
 
 + (NSArray*) seriesSortDescriptors
@@ -1680,25 +1658,25 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSArray*)imageSeriesContainingPixels:(BOOL) pixels
 {
-	[self.managedObjectContext lock];
+    [self.managedObjectContext lock];
     @try {
         NSMutableArray* newArray = [NSMutableArray array];
-		for (DicomSeries* series in [self.series sortedArrayUsingDescriptors: [DicomStudy seriesSortDescriptors]])
-			@try {
+        for (DicomSeries* series in [self.series sortedArrayUsingDescriptors: [DicomStudy seriesSortDescriptors]])
+            @try {
                 if ([DicomStudy displaySeriesWithSOPClassUID:series.seriesSOPClassUID andSeriesDescription:series.name containingOnlyPixels: pixels])
                     [newArray addObject:series];
             } @catch (...) {
             }
         return newArray;
-	}
+    }
     @catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	}
+        N2LogExceptionWithStackTrace(e);
+    }
     @finally {
         [self.managedObjectContext unlock];
     }
     
-	return nil;
+    return nil;
 }
 
 - (NSArray*)imageSeries
@@ -1709,517 +1687,533 @@ static NSRecursiveLock *dbModifyLock = nil;
 - (NSArray*)keyObjectSeries
 {
     [self.managedObjectContext lock];
-	@try {
+    @try {
         NSMutableArray *newArray = [NSMutableArray array];
-		for (DicomSeries *series in self.series)
-			if ( [[DCMAbstractSyntaxUID keyObjectSelectionDocumentStorage] isEqualToString:[series valueForKey:@"seriesSOPClassUID"]])
-				[newArray addObject:series];
+        for (DicomSeries *series in self.series)
+            if ( [[DCMAbstractSyntaxUID keyObjectSelectionDocumentStorage] isEqualToString:[series valueForKey:@"seriesSOPClassUID"]])
+                [newArray addObject:series];
         return newArray;
-	}
-	@catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	}
+    }
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
     @finally {
         [self.managedObjectContext unlock];
     }
     
-	return nil;
+    return nil;
 }
 
 - (NSArray*)keyObjects
 {
     [self.managedObjectContext lock];
-	@try {
+    @try {
         NSMutableSet *set = [NSMutableSet set];
-		for (DicomSeries *series in [self keyObjectSeries])
-			[set unionSet: series.images];
+        for (DicomSeries *series in [self keyObjectSeries])
+            [set unionSet: series.images];
         return [set allObjects];
-	}
-	@catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	}
+    }
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
     @finally {
         [self.managedObjectContext unlock];
     }
     
-	return nil;
+    return nil;
 }
 
 - (NSArray *)presentationStateSeries
 {
     [self.managedObjectContext lock];
-	@try {
+    @try {
         NSMutableArray *newArray = [NSMutableArray array];
-		for (DicomSeries *series in self.series)
-			if ([DCMAbstractSyntaxUID isPresentationState:[series valueForKey:@"seriesSOPClassUID"]])
-				[newArray addObject:series];
+        for (DicomSeries *series in self.series)
+            if ([DCMAbstractSyntaxUID isPresentationState:[series valueForKey:@"seriesSOPClassUID"]])
+                [newArray addObject:series];
         return newArray;
-	}
-	@catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	}
+    }
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
     @finally {
         [self.managedObjectContext unlock];
     }
     
-	return nil;
+    return nil;
 }
 
 - (NSArray *)waveFormSeries
 {
     [self.managedObjectContext lock];
-	@try {
+    @try {
         NSMutableArray *newArray = [NSMutableArray array];
-		for (DicomSeries *series in self.series)
-			if ([DCMAbstractSyntaxUID isWaveform:[series valueForKey:@"seriesSOPClassUID"]])
-				[newArray addObject:series];
+        for (DicomSeries *series in self.series)
+            if ([DCMAbstractSyntaxUID isWaveform:[series valueForKey:@"seriesSOPClassUID"]])
+                [newArray addObject:series];
         return newArray;
-	}
-	@catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	}
+    }
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
     @finally {
         [self.managedObjectContext unlock];
     }
     
-	return nil;
+    return nil;
 }
 
 
 - (NSManagedObject *) annotationsSRImage // Comments, Status, Key Images, ...
 {
-	NSSet* array = self.series;
-	if( array.count < 1) return nil;
-	
-	[self.managedObjectContext lock];
-	@try {
+    NSSet* array = self.series;
+    if( array.count < 1) return nil;
+    
+    [self.managedObjectContext lock];
+    @try {
         NSMutableArray* newArray = [NSMutableArray array];
         NSManagedObject* image = nil;
-
-		for( DicomSeries *series in array)
-		{
-			if( [[series valueForKey:@"id"] intValue] == 5004 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX Annotations SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
-				[newArray addObject: series];
-		}
-		
-		// Take the most recent series
-		if( [newArray count] > 1)
-		{
-			NSLog( @"****** multiple (%d) annotationsSRImage 5004 series: Delete the extra series and merge the images...", (int) [newArray count]);
-			
-			@try
-			{
-				NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
-			
-				for( DicomSeries *i in newArray)
-				{
-					if( i != [newArray lastObject])
-					{
-						[r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
-						
-						NSMutableSet *o = [i mutableSetValueForKey: @"images"];
-						[o setValue: [NSNumber numberWithBool: NO] forKeyPath: @"inDatabaseFolder"];
-						[o removeAllObjects];
-						[[self managedObjectContext] deleteObject: i];
-					}
-				}
+        
+        for( DicomSeries *series in array)
+        {
+            if([[series valueForKey:@"id"] intValue] == 5004 &&
+               [[series valueForKey:@"name"] isEqualToString: @"OsiriX Annotations SR"] &&
+               [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
+            {
+                [newArray addObject: series];
+            }
+        }
+        
+        // Take the most recent series
+        if( [newArray count] > 1)
+        {
+            NSLog( @"****** multiple (%d) annotationsSRImage 5004 series: Delete the extra series and merge the images...", (int) [newArray count]);
+            
+            @try
+            {
+                NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
                 
-				[self.managedObjectContext save:nil];
-				
-				[r setValue: [NSNumber numberWithBool: YES] forKeyPath: @"inDatabaseFolder"];
-			}
-			@catch (NSException * e)
-			{
+                for( DicomSeries *i in newArray)
+                {
+                    if( i != [newArray lastObject])
+                    {
+                        [r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
+                        
+                        NSMutableSet *o = [i mutableSetValueForKey: @"images"];
+                        [o setValue: [NSNumber numberWithBool: NO] forKeyPath: @"inDatabaseFolder"];
+                        [o removeAllObjects];
+                        [[self managedObjectContext] deleteObject: i];
+                    }
+                }
+                
+                [self.managedObjectContext save:nil];
+                
+                [r setValue: [NSNumber numberWithBool: YES] forKeyPath: @"inDatabaseFolder"];
+            }
+            @catch (NSException * e)
+            {
                 N2LogExceptionWithStackTrace(e);
-			}
+            }
             
             [self setNumberOfImages: nil];
-		}
-		
-		if( [[[newArray lastObject] valueForKey: @"images"] count] > 1)
-		{
-			NSArray *images = [[[newArray lastObject] valueForKey: @"images"] allObjects];
-			
-			// Take the most recent image
-			images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES]]];
-			image = [images lastObject];
-		}
-		else
+        }
+        
+        if( [[[newArray lastObject] valueForKey: @"images"] count] > 1)
+        {
+            NSArray *images = [[[newArray lastObject] valueForKey: @"images"] allObjects];
+            
+            // Take the most recent image
+            images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES]]];
+            image = [images lastObject];
+        }
+        else
             image = [[[newArray lastObject] valueForKey: @"images"] anyObject];
-
+        
         return image;
-	}
-	@catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	}
+    }
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
     @finally {
         [self.managedObjectContext unlock];
     }
     
-	return nil;
+    return nil;
 }
 
 - (DicomImage*) reportImage
 {
-	NSArray *images = nil;
-	
-	@try 
-	{
-		images = [[[self reportSRSeries] valueForKey: @"images"] allObjects];
-		
-		if( [images count] > 1)
-		{
-			// Take the most recent image
-			images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]];
-		}
-	}
-	@catch (NSException * e) 
-	{
-		N2LogExceptionWithStackTrace(e);
-	}
-	
-	return [images lastObject];
+    NSArray *images = nil;
+    
+    @try
+    {
+        images = [[[self reportSRSeries] valueForKey: @"images"] allObjects];
+        
+        if( [images count] > 1)
+        {
+            // Take the most recent image
+            images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]];
+        }
+    }
+    @catch (NSException * e)
+    {
+        N2LogExceptionWithStackTrace(e);
+    }
+    
+    return [images lastObject];
 }
 
 - (NSManagedObject *) reportSRSeries
 {
-	NSSet* array = self.series;
-	if (array.count < 1) return nil;
-	
-	[self.managedObjectContext lock];
-	@try {
-        NSMutableArray *newArray = [NSMutableArray array];
+    NSSet* array = self.series;
+    if (array.count < 1) return nil;
     
-		for( DicomSeries *series in array)
-		{
-			if( [[series valueForKey:@"id"] intValue] == 5003 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX Report SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
-				[newArray addObject:series];
-		}
-		
-		if( [newArray count] > 1)
-		{
-			NSLog( @"****** multiple (%d) reportSRSeries: Delete the extra series and merge the images...", (int) [newArray count]);
-			
-			@try
-			{
-				NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
-			
-				for( DicomSeries *i in newArray)
-				{
-					if( i != [newArray lastObject])
-					{
-						[r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
-						
-						NSMutableSet *o = [i mutableSetValueForKey: @"images"];
-						[o setValue: [NSNumber numberWithBool: NO] forKeyPath: @"inDatabaseFolder"];
-						[o removeAllObjects];
-						[[self managedObjectContext] deleteObject: i];
-					}
-				}
-
+    [self.managedObjectContext lock];
+    @try {
+        NSMutableArray *newArray = [NSMutableArray array];
+        
+        for( DicomSeries *series in array)
+        {
+            if( [[series valueForKey:@"id"] intValue] == 5003 &&
+               [[series valueForKey:@"name"] isEqualToString: @"OsiriX Report SR"] &&
+               [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
+            {
+                [newArray addObject:series];
+            }
+        }
+        
+        if( [newArray count] > 1)
+        {
+            NSLog( @"****** multiple (%d) reportSRSeries: Delete the extra series and merge the images...", (int) [newArray count]);
+            
+            @try
+            {
+                NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
+                
+                for( DicomSeries *i in newArray)
+                {
+                    if( i != [newArray lastObject])
+                    {
+                        [r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
+                        
+                        NSMutableSet *o = [i mutableSetValueForKey: @"images"];
+                        [o setValue: [NSNumber numberWithBool: NO] forKeyPath: @"inDatabaseFolder"];
+                        [o removeAllObjects];
+                        [[self managedObjectContext] deleteObject: i];
+                    }
+                }
+                
                 [self setNumberOfImages: nil];
                 
-				[self.managedObjectContext save:nil];
-
-				[r setValue: [NSNumber numberWithBool: YES] forKeyPath: @"inDatabaseFolder"];
-			}
-			@catch (NSException * e)
-			{
+                [self.managedObjectContext save:nil];
+                
+                [r setValue: [NSNumber numberWithBool: YES] forKeyPath: @"inDatabaseFolder"];
+            }
+            @catch (NSException * e)
+            {
                 N2LogExceptionWithStackTrace(e);
-			}
-		}
-
+            }
+        }
+        
         return [newArray lastObject];
-	}
-	@catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	}
-	@finally {
+    }
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
+    @finally {
         [self.managedObjectContext unlock];
     }
-	
-	return nil;
+    
+    return nil;
 }
 
 - (NSArray*) allWindowsStateSRSeries
 {
-	NSArray *images = nil;
-	
-	@try
-	{
-		images = [[[self windowsStateSRSeries] valueForKey: @"images"] allObjects];
-		
-		if( [images count] > 1)
-		{
-			// Take the most recent image
-			images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]];
-		}
-	}
-	@catch (NSException * e)
-	{
-		N2LogExceptionWithStackTrace(e);
-	}
-	
-	return images;
+    NSArray *images = nil;
+    
+    @try
+    {
+        images = [[[self windowsStateSRSeries] valueForKey: @"images"] allObjects];
+        
+        if( [images count] > 1)
+        {
+            // Take the most recent image
+            images = [images sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]];
+        }
+    }
+    @catch (NSException * e)
+    {
+        N2LogExceptionWithStackTrace(e);
+    }
+    
+    return images;
 }
 
 - (DicomImage*) windowsStateImage // most recent state
 {
-	return [[self allWindowsStateSRSeries] lastObject];
+    return [[self allWindowsStateSRSeries] lastObject];
 }
 
 - (NSManagedObject *) windowsStateSRSeries
 {
-	NSSet* array = self.series;
-	if (array.count < 1) return nil;
-	
-	[self.managedObjectContext lock];
-	@try {
+    NSSet* array = self.series;
+    if (array.count < 1) return nil;
+    
+    [self.managedObjectContext lock];
+    @try {
         NSMutableArray *newArray = [NSMutableArray array];
         
-		for( DicomSeries *series in array)
-		{
-			if( [[series valueForKey:@"id"] intValue] == 5006 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX WindowsState SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
-				[newArray addObject:series];
-		}
-		
-		if( [newArray count] > 1)
-		{
-			NSLog( @"****** multiple (%d) reportSRSeries: Delete the extra series and merge the images...", (int) [newArray count]);
-			
-			@try
-			{
-				NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
+        for( DicomSeries *series in array)
+        {
+            if( [[series valueForKey:@"id"] intValue] == 5006 &&
+               [[series valueForKey:@"name"] isEqualToString: @"OsiriX WindowsState SR"] &&
+               [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
+            {
+                [newArray addObject:series];
+            }
+        }
+        
+        if( [newArray count] > 1)
+        {
+            NSLog( @"****** multiple (%d) reportSRSeries: Delete the extra series and merge the images...", (int) [newArray count]);
+            
+            @try
+            {
+                NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
                 
-				for( DicomSeries *i in newArray)
-				{
-					if( i != [newArray lastObject])
-					{
-						[r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
-						
-						NSMutableSet *o = [i mutableSetValueForKey: @"images"];
-						[o setValue: [NSNumber numberWithBool: NO] forKeyPath: @"inDatabaseFolder"];
-						[o removeAllObjects];
-						[[self managedObjectContext] deleteObject: i];
-					}
-				}
+                for( DicomSeries *i in newArray)
+                {
+                    if( i != [newArray lastObject])
+                    {
+                        [r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
+                        
+                        NSMutableSet *o = [i mutableSetValueForKey: @"images"];
+                        [o setValue: [NSNumber numberWithBool: NO] forKeyPath: @"inDatabaseFolder"];
+                        [o removeAllObjects];
+                        [[self managedObjectContext] deleteObject: i];
+                    }
+                }
                 
                 [self setNumberOfImages: nil];
                 
-				[self.managedObjectContext save:nil];
+                [self.managedObjectContext save:nil];
                 
-				[r setValue: [NSNumber numberWithBool: YES] forKeyPath: @"inDatabaseFolder"];
-			}
-			@catch (NSException * e)
-			{
+                [r setValue: [NSNumber numberWithBool: YES] forKeyPath: @"inDatabaseFolder"];
+            }
+            @catch (NSException * e)
+            {
                 N2LogExceptionWithStackTrace(e);
-			}
-		}
+            }
+        }
         
         return [newArray lastObject];
-	}
-	@catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	}
-	@finally {
+    }
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
+    @finally {
         [self.managedObjectContext unlock];
     }
-	
-	return nil;
+    
+    return nil;
 }
 
 - (NSManagedObject *)roiSRSeries
 {
-	NSSet* array = self.series;
-	if (array.count < 1) return nil;
-	
-	[self.managedObjectContext lock];
-	@try {
+    NSSet* array = self.series;
+    if (array.count < 1) return nil;
+    
+    [self.managedObjectContext lock];
+    @try {
         NSMutableArray *newArray = [NSMutableArray array];
-		for( DicomSeries *series in array)
-		{
-			if( [[series valueForKey:@"id"] intValue] == 5002 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX ROI SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
-				[newArray addObject:series];
-		}
-		
-		if( [newArray count] > 1)
-		{
-			NSLog( @"****** multiple (%d) roiSRSeries: Delete the extra series and merge the images...", (int) [newArray count]);
-			
-			@try
-			{
-				NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
-			
-				for( DicomSeries *i in newArray)
-				{
-					if( i != [newArray lastObject])
-					{
-						[r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
-						
-						NSMutableSet *o = [i mutableSetValueForKey: @"images"];
-						[o setValue: [NSNumber numberWithBool: NO] forKeyPath: @"inDatabaseFolder"];
-						[o removeAllObjects];
-						[[self managedObjectContext] deleteObject: i];
-					}
-				}
+        for( DicomSeries *series in array)
+        {
+            if( [[series valueForKey:@"id"] intValue] == 5002 &&
+               [[series valueForKey:@"name"] isEqualToString: @"OsiriX ROI SR"] &&
+               [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
+            {
+                [newArray addObject:series];
+            }
+        }
+        
+        if( [newArray count] > 1)
+        {
+            NSLog( @"****** multiple (%d) roiSRSeries: Delete the extra series and merge the images...", (int) [newArray count]);
+            
+            @try
+            {
+                NSMutableSet *r = [[newArray lastObject] mutableSetValueForKey: @"images"];
+                
+                for( DicomSeries *i in newArray)
+                {
+                    if( i != [newArray lastObject])
+                    {
+                        [r addObjectsFromArray: [[i valueForKey: @"images"] allObjects]];
+                        
+                        NSMutableSet *o = [i mutableSetValueForKey: @"images"];
+                        [o setValue: [NSNumber numberWithBool: NO] forKeyPath: @"inDatabaseFolder"];
+                        [o removeAllObjects];
+                        [[self managedObjectContext] deleteObject: i];
+                    }
+                }
                 
                 [self setNumberOfImages: nil];
                 
-				[self.managedObjectContext save:nil];
-
-				[r setValue: [NSNumber numberWithBool: YES] forKeyPath: @"inDatabaseFolder"];
-			}
-			@catch (NSException * e)
-			{
+                [self.managedObjectContext save:nil];
+                
+                [r setValue: [NSNumber numberWithBool: YES] forKeyPath: @"inDatabaseFolder"];
+            }
+            @catch (NSException * e)
+            {
                 N2LogExceptionWithStackTrace(e);
-			}
-		}
+            }
+        }
         return [newArray lastObject];
-	}
-	@catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	}
+    }
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
     @finally {
         [self.managedObjectContext unlock];
     }
-	
-	return nil;
+    
+    return nil;
 }
 
 - (DicomImage*) roiForImage: (DicomImage*) image inArray: (NSArray*) roisArray
 {
-	[self.managedObjectContext lock];
-	@try  {
-		NSString *searchedUID = [image valueForKey: @"sopInstanceUID"];
-		
-		searchedUID = [searchedUID stringByAppendingFormat: @"-%d", [[image valueForKey: @"frameID"] intValue]];
-		
-		if( roisArray == nil)
-			roisArray = [[[self roiSRSeries] valueForKey: @"images"] allObjects];
-		
-		NSArray	*found = [roisArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"comment == %@", searchedUID]];
-		
-		// Take the most recent roi
-		if( [found count] > 1)
-		{
-			found = [[[found sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]] mutableCopy] autorelease];
-			NSLog( @"--- multiple rois array for same sopInstanceUID (roiForImage) : %d", (int) [found count]);
-			
-			// Merge the other ROIs with this ROI, and empty the old ones
-			NSMutableArray *r = [NSMutableArray array];
-			for( DicomImage *i in found)
-			{
-				if( i != [found lastObject])
-				{
-					@try
-					{
-						if( [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]])
-						{
-							// Not modified on the 'bonjour client side'?
-							if( [[i valueForKey:@"inDatabaseFolder"] boolValue])
-							{
-								// The ROI file was maybe changed on the server -> delete it
-								[[NSFileManager defaultManager] removeItemAtPath: [i valueForKey: @"completePath"] error: nil];
-							}
-						}
-						
-						NSData *d = [SRAnnotation roiFromDICOM: [i valueForKey: @"completePathResolved"]];
-						
-						if( d)
-						{
-							NSArray *o = [NSUnarchiver unarchiveObjectWithData: d];
-							
-							if( [o count])
-							{
-								[r addObjectsFromArray: o];
-								[SRAnnotation archiveROIsAsDICOM: [NSArray array] toPath: [i valueForKey: @"completePathResolved"] forImage: image];
-							}
-						}
-					}
-					@catch (NSException * e)
-					{
+    [self.managedObjectContext lock];
+    @try  {
+        NSString *searchedUID = [image valueForKey: @"sopInstanceUID"];
+        
+        searchedUID = [searchedUID stringByAppendingFormat: @"-%d", [[image valueForKey: @"frameID"] intValue]];
+        
+        if( roisArray == nil)
+            roisArray = [[[self roiSRSeries] valueForKey: @"images"] allObjects];
+        
+        NSArray	*found = [roisArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"comment == %@", searchedUID]];
+        
+        // Take the most recent roi
+        if( [found count] > 1)
+        {
+            found = [[[found sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]] mutableCopy] autorelease];
+            NSLog( @"--- multiple rois array for same sopInstanceUID (roiForImage) : %d", (int) [found count]);
+            
+            // Merge the other ROIs with this ROI, and empty the old ones
+            NSMutableArray *r = [NSMutableArray array];
+            for( DicomImage *i in found)
+            {
+                if( i != [found lastObject])
+                {
+                    @try
+                    {
+                        if( [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]])
+                        {
+                            // Not modified on the 'bonjour client side'?
+                            if( [[i valueForKey:@"inDatabaseFolder"] boolValue])
+                            {
+                                // The ROI file was maybe changed on the server -> delete it
+                                [[NSFileManager defaultManager] removeItemAtPath: [i valueForKey: @"completePath"] error: nil];
+                            }
+                        }
+                        
+                        NSData *d = [SRAnnotation roiFromDICOM: [i valueForKey: @"completePathResolved"]];
+                        
+                        if( d)
+                        {
+                            NSArray *o = [NSUnarchiver unarchiveObjectWithData: d];
+                            
+                            if( [o count])
+                            {
+                                [r addObjectsFromArray: o];
+                                [SRAnnotation archiveROIsAsDICOM: [NSArray array] toPath: [i valueForKey: @"completePathResolved"] forImage: image];
+                            }
+                        }
+                    }
+                    @catch (NSException * e)
+                    {
                         N2LogExceptionWithStackTrace(e);
-					}
-				}
-			}
-			
-			if( [r count])
-			{
-				NSArray *o = [NSUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: [[found lastObject] valueForKey: @"completePathResolved"]]];
-				[r addObjectsFromArray: o];
+                    }
+                }
+            }
+            
+            if( [r count])
+            {
+                NSArray *o = [NSUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: [[found lastObject] valueForKey: @"completePathResolved"]]];
+                [r addObjectsFromArray: o];
                 
-				[SRAnnotation archiveROIsAsDICOM: r toPath: [[found lastObject] valueForKey: @"completePathResolved"] forImage: image];
-			}
-		}
-		
-		if( [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]])
-		{
-			// Not modified on the 'bonjour client side'?
-			if( [[[found lastObject] valueForKey:@"inDatabaseFolder"] boolValue])
-			{
-				// The ROI file was maybe changed on the server -> delete it
-				if( [[found lastObject] valueForKey: @"completePath"])
-					[[NSFileManager defaultManager] removeItemAtPath: [[found lastObject] valueForKey: @"completePath"] error: nil];
-			}
-		}
-		
-		return [found lastObject];
-	}
-	@catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	}
+                [SRAnnotation archiveROIsAsDICOM: r toPath: [[found lastObject] valueForKey: @"completePathResolved"] forImage: image];
+            }
+        }
+        
+        if( [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]])
+        {
+            // Not modified on the 'bonjour client side'?
+            if( [[[found lastObject] valueForKey:@"inDatabaseFolder"] boolValue])
+            {
+                // The ROI file was maybe changed on the server -> delete it
+                if( [[found lastObject] valueForKey: @"completePath"])
+                    [[NSFileManager defaultManager] removeItemAtPath: [[found lastObject] valueForKey: @"completePath"] error: nil];
+            }
+        }
+        
+        return [found lastObject];
+    }
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
     @finally {
         [self.managedObjectContext unlock];
     }
-	
-	return nil;
+    
+    return nil;
 }
 
 - (NSString*) roiPathForImage: (DicomImage*) image
 {
-	return [self roiPathForImage: image inArray: nil];
+    return [self roiPathForImage: image inArray: nil];
 }
 
 - (NSString*) roiPathForImage: (DicomImage*) image inArray: (NSArray*) roisArray
 {
-	NSString *path = nil;
-	
-	@try 
-	{
-		DicomImage *roi = [self roiForImage: image inArray: roisArray];
-		
-		path = [roi valueForKey: @"completePathResolved"];
-		
-		if( path == nil) // Try the 'old' ROIs folder
-			path = [image SRPath];
-	}
-	@catch (NSException * e) 
-	{
-		N2LogExceptionWithStackTrace(e);
-	}
-	
-	return path;
+    NSString *path = nil;
+    
+    @try 
+    {
+        DicomImage *roi = [self roiForImage: image inArray: roisArray];
+        
+        path = [roi valueForKey: @"completePathResolved"];
+        
+        if( path == nil) // Try the 'old' ROIs folder
+            path = [image SRPath];
+    }
+    @catch (NSException * e) 
+    {
+        N2LogExceptionWithStackTrace(e);
+    }
+    
+    return path;
 }
 
 - (NSComparisonResult)compareName:(DicomStudy*)study;
 {
-	return [self.name caseInsensitiveCompare:[study valueForKey:@"name"]];
+    return [self.name caseInsensitiveCompare:[study valueForKey:@"name"]];
 }
 
 - (NSString*) albumsNames
 {
-	[self.managedObjectContext lock];
-	@try {
-		return [[[self.albums allObjects] valueForKey:@"name"] componentsJoinedByString:@"/"];
-	}
-	@catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	}
-	@finally {
+    [self.managedObjectContext lock];
+    @try {
+        return [[[self.albums allObjects] valueForKey:@"name"] componentsJoinedByString:@"/"];
+    }
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
+    @finally {
         [self.managedObjectContext unlock];
     }
-	
-	return nil;
+    
+    return nil;
 }
 
 -(NSArray*) roiImages
@@ -2326,7 +2320,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 {
     NSArray *comparatives = nil;
     NSFetchRequest *req = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
-	req.predicate = [NSPredicate predicateWithFormat: @"(patientUID == %@)", self.patientUID];
+    req.predicate = [NSPredicate predicateWithFormat: @"(patientUID == %@)", self.patientUID];
     
     @try {
         comparatives = [self.managedObjectContext executeFetchRequest: req error: nil];
