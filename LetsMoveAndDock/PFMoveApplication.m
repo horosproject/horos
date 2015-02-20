@@ -72,9 +72,9 @@ void PFMoveToApplicationsFolderIfNecessary() {
 	{
 		NSString *informativeText = nil;
 
-		[alert setMessageText:(installToUserApplications ? NSLocalizedString( @"Move OsiriX to Applications folder in your Home folder?", nil) : NSLocalizedString( @"Move OsiriX to Applications folder?", nil))];
+		[alert setMessageText:(installToUserApplications ? NSLocalizedString( @"Move Horos to Applications folder in your Home folder?", nil) : NSLocalizedString( @"Move Horos to Applications folder?", nil))];
 
-		informativeText = NSLocalizedString( @"OsiriX is currently not in the Applications folder. It is recommended to run OsiriX from the Applications folder. I can move it now, add an icon to the dock and restart, if you agree? (recommended)", nil);
+		informativeText = NSLocalizedString( @"Horos is currently not in the Applications folder. It is recommended to run Horos from the Applications folder. I can move it now, add an icon to the dock and restart, if you agree? (recommended)", nil);
 
 		if (needAuthorization) {
 			informativeText = [informativeText stringByAppendingString:@" "];
@@ -89,7 +89,7 @@ void PFMoveToApplicationsFolderIfNecessary() {
 		[alert setInformativeText:informativeText];
 
 		// Add accept button
-		[alert addButtonWithTitle:NSLocalizedString( @"Move OsiriX to Applications Folder", nil)];
+		[alert addButtonWithTitle:NSLocalizedString( @"Move Horos to Applications Folder", nil)];
 
 		// Add deny button
 		NSButton *cancelButton = [alert addButtonWithTitle:NSLocalizedString( @"Do Not Move", nil)];
