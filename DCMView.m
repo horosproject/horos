@@ -2367,10 +2367,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         [showDescriptionInLargeText release];
         showDescriptionInLargeText = nil;
         
-#ifdef WITH_RED_CAPTION
-        [warningNotice release];
-        warningNotice = nil;
-#endif
+
         
         [blendingView release];
         blendingView = nil;
@@ -8601,54 +8598,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         yRaster = size.origin.y + size.size.height-2;
         xRaster = size.origin.x + size.size.width-2;
         if( fullText)
-            [self DrawNSStringGL: @"Made In OsiriX" :fontList :xRaster :yRaster rightAlignment:YES useStringTexture:YES];
+            [self DrawNSStringGL: @"Made In Horos" :fontList :xRaster :yRaster rightAlignment:YES useStringTexture:YES];
     }
     
-    if( size.size.width > 500*sf && [AppController isFDACleared] == NO)
-    {
-#ifdef WITH_RED_CAPTION
-        if( warningNotice == nil && [self class] == [DCMView class] && fullText)
-        {
-            NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
-            [stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica" size: 17] forKey: NSFontAttributeName];
-            if( whiteBackground)
-                [stanStringAttrib setObject: [NSColor colorWithDeviceRed:0.2f green:0.2 blue:0.2 alpha: 1.0] forKey: NSForegroundColorAttributeName];
-            else
-                [stanStringAttrib setObject: [NSColor colorWithDeviceRed:1.0f green:0.8 blue:0.8 alpha: 1.0] forKey: NSForegroundColorAttributeName];
-            NSString *s = NSLocalizedString( @"NOT FOR MEDICAL USAGE", nil);
-            if( [[s stringByReplacingOccurrencesOfString:@" " withString:@""] stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]].length < 5)
-                s = @"NOT FOR MEDICAL USAGE";
-            
-            NSAttributedString *text = [[[NSAttributedString alloc] initWithString:s  attributes: stanStringAttrib] autorelease];
-            
-            if( text.size.width <= 100) {
-                s = [NSString stringWithFormat: @"%s %s %s %s", "NOT", "FOR", "MEDICAL", "USAGE"];
-                text = [[[NSAttributedString alloc] initWithString:s  attributes: stanStringAttrib] autorelease];
-            }
-            
-            warningNotice = [[GLString alloc] initWithAttributedString: text withBoxColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:0.4f] withBorderColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:1.0f]];
-        }
-        
-        if( warningNotice)
-        {
-            glColor4f( 1.0, 1.0, 1.0, 1.0);
-            
-            NSRect r = NSMakeRect( size.origin.x + size.size.width/2 - [self convertSizeToBacking: [warningNotice frameSize]].width/2, size.origin.y + size.size.height - 35*sf - [self convertSizeToBacking: [warningNotice frameSize]].height, [self convertSizeToBacking: [warningNotice frameSize]].width, [self convertSizeToBacking: [warningNotice frameSize]].height);
-            
-            [warningNotice drawWithBounds: r];
-        }
-#endif // WITH_RED_CAPTION
-    }
-}
-
-- (void) setWhiteBackground:(BOOL)w
-{
-    whiteBackground = w;
-    
-#ifdef WITH_RED_CAPTION
-    [warningNotice release];
-    warningNotice = nil;
-#endif
+   
 }
 
 - (void) drawTextualData:(NSRect) size :(long) annotations
@@ -8693,10 +8646,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             }
             previousScalingFactor = self.window.backingScaleFactor;
             
-#ifdef WITH_RED_CAPTION
-            [warningNotice release];
-            warningNotice = nil;
-#endif
+
             [DCMView purgeStringTextureCache];
             
             [[NSNotificationCenter defaultCenter] postNotificationName: OsirixLabelGLFontChangeNotification object: self];
