@@ -371,7 +371,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 
 -(void)restartIfRunning {
 	if (isAcceptingConnections) {
-		NSLog( @"----- cannot restart web server -> you have to restart OsiriX");
+		NSLog( @"----- cannot restart web server -> you have to restart Horos");
 //		[self stopAcceptingConnections];
 //		[self startAcceptingConnections];
 	}
@@ -525,7 +525,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
         [temporaryUsersTimer release];
         temporaryUsersTimer = nil;
         
-		NSLog( @"----- cannot stop web server -> you have to restart OsiriX");
+		NSLog( @"----- cannot stop web server -> you have to restart Horos");
 	}
 	
 }

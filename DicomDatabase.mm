@@ -1483,7 +1483,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     NSString* errorsDirPath = self.errorsDirPath;
     NSString* dataDirPath = self.dataDirPath;
     NSString* reportsDirPath = self.reportsDirPath;
-    NSString* tempDirPath = self.tempDirPath;
+    //NSString* tempDirPath = self.tempDirPath;
     
     [thread enterOperation];
     thread.status = [NSString stringWithFormat:NSLocalizedString(@"Scanning %@", nil), N2LocalizedSingularPluralCount(paths.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
@@ -1504,7 +1504,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         if ([[NSFileManager defaultManager] fileExistsAtPath: reportsDirPath] == NO)
             [[NSFileManager defaultManager] createDirectoryAtPath: reportsDirPath attributes:nil];
         
-        if (chunkRange.length == 0) break;
+        if (chunkRange.length == 0)
+            break;
         
         BOOL isCDMedia = [BrowserController isItCD:[paths objectAtIndex:chunkRange.location]];
         [DicomFile setFilesAreFromCDMedia:isCDMedia];
@@ -1518,7 +1519,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                 start = [NSDate timeIntervalSinceReferenceDate];
             }
             
-            
+        
             NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
             @try {
                 NSString* newFile = [paths objectAtIndex:i];
@@ -1539,7 +1540,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                 if (curFile)
                 {
                     curDict = [curFile dicomElements];
-                    
                     if (dicomOnly)
                     {
                         if ([[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == NO)
@@ -1607,7 +1607,12 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         //        NSLog(@"before: %X", self.managedObjectContext);
         //      NSArray* addedImagesArray = [self addFilesInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
         
-        NSArray* objectIDs = [self addFilesDescribedInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX importedFiles: importedFiles returnArray: returnArray];
+        NSArray* objectIDs = [self addFilesDescribedInDictionaries:dicomFilesArray
+                                                 postNotifications:postNotifications
+                                               rereadExistingItems:rereadExistingItems
+                                                 generatedByOsiriX:generatedByOsiriX
+                                                     importedFiles: importedFiles
+                                                       returnArray: returnArray];
         
         [thread exitOperation];
         
@@ -2828,10 +2833,12 @@ static BOOL protectionAgainstReentry = NO;
 
 -(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI
 {
-    return [self importFilesFromIncomingDir: showGUI listenerCompressionSettings: [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"]];
+    return [self importFilesFromIncomingDir: showGUI
+                listenerCompressionSettings: [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"]];
 }
 
--(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI listenerCompressionSettings: (BOOL) listenerCompressionSettings
+-(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI
+           listenerCompressionSettings: (BOOL) listenerCompressionSettings
 {
     NSMutableArray* compressedPathArray = [NSMutableArray array];
     NSThread* thread = [NSThread currentThread];
@@ -2869,7 +2876,8 @@ static BOOL protectionAgainstReentry = NO;
         NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
         NSTimeInterval start = startTime;
         
-        while([filesArray count] < maxNumberOfFiles && ([NSDate timeIntervalSinceReferenceDate]-startTime < ([[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"]*3)) // don't let them wait more than (incomingdelay*3) seconds
+        while([filesArray count] < maxNumberOfFiles &&
+              ([NSDate timeIntervalSinceReferenceDate]-startTime < ([[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"]*3)) // don't let them wait more than (incomingdelay*3) seconds
               && (pathname = [enumer nextObject]))
         {
             if (thread.isCancelled)
@@ -3053,7 +3061,8 @@ static BOOL protectionAgainstReentry = NO;
                     
                     
                     
-                    if ([[srcPath pathExtension] isEqualToString: @"zip"] || [[srcPath pathExtension] isEqualToString: @"osirixzip"])
+                    if ([[srcPath pathExtension] isEqualToString: @"zip"] ||
+                        [[srcPath pathExtension] isEqualToString: @"osirixzip"])
                     {
                         NSString *compressedPath = [self.decompressionDirPath stringByAppendingPathComponent: lastPathComponent];
                         [[NSFileManager defaultManager] moveItemAtPath:srcPath toPath:compressedPath error:NULL];
@@ -3074,9 +3083,10 @@ static BOOL protectionAgainstReentry = NO;
                         {
                             if (isDicomFile && isImage)
                             {
-                                if ((isJPEGCompressed == YES && listenerCompressionSettings == 1) || (isJPEGCompressed == NO && listenerCompressionSettings == 2
+                                if ((isJPEGCompressed == YES && listenerCompressionSettings == 1) ||    // Decompress
+                                    (isJPEGCompressed == NO  && listenerCompressionSettings == 2        // Compress
 #ifndef OSIRIX_LIGHT
-                                                                                                      && [DicomDatabase fileNeedsDecompression: srcPath]
+                     && [DicomDatabase fileNeedsDecompression: srcPath]
 #else
 #endif
                                                                                                       ))
@@ -3089,7 +3099,10 @@ static BOOL protectionAgainstReentry = NO;
                                 
                                 dstPath = [self uniquePathForNewDataFileWithExtension:@"dcm"];
                             }
-                            else dstPath = [self uniquePathForNewDataFileWithExtension:[[srcPath pathExtension] lowercaseString]];
+                            else
+                            {
+                                dstPath = [self uniquePathForNewDataFileWithExtension:[[srcPath pathExtension] lowercaseString]];
+                            }
                             
                             BOOL result;
                             
@@ -3100,7 +3113,9 @@ static BOOL protectionAgainstReentry = NO;
                             }
                             else
                             {
-                                result = [[NSFileManager defaultManager] moveItemAtPath:srcPath toPath: dstPath error:NULL];
+                                result = [[NSFileManager defaultManager] moveItemAtPath:srcPath
+                                                                                 toPath:dstPath
+                                                                                  error:NULL];
                             }
                             
                             if (result == YES)
@@ -3248,7 +3263,8 @@ static BOOL protectionAgainstReentry = NO;
     return NO;
 }
 
-- (void)kickstartCompressDecompress {
+- (void)kickstartCompressDecompress
+{
     @synchronized (_compressQueue) {
         @synchronized (_decompressQueue) {
             DicomDatabase* mdb = self.isMainDatabase? self : self.mainDatabase;
@@ -3262,7 +3278,8 @@ static BOOL protectionAgainstReentry = NO;
     }
 }
 
-- (void)_threadCompressDecompress {
+- (void)_threadCompressDecompress
+{
     while (true) {
         for (int i = 0; i < 2; ++i) // i 0 -> compression; i 1 -> decompression
             @autoreleasepool {

@@ -29,7 +29,6 @@
  along with Horos.  If not, see <http://www.gnu.org/licenses/>.
 
 =========================================================================*/
-//2L
 #ifndef DCMPIX_H_INCLUDED
 #define DCMPIX_H_INCLUDED
 

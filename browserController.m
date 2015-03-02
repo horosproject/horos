@@ -17116,11 +17116,11 @@ restart:
                 {
                     switch( [compressionMatrix selectedTag])
                     {
-                        case 1:
+                        case 1: // compress
                             [files2Compress addObject: dest];
                             break;
                             
-                        case 2:
+                        case 2: // decompress
                             [files2Compress addObject: dest];
                             break;
                     }
@@ -18993,7 +18993,7 @@ restart:
         [toolbarItem setImage: [NSImage imageNamed:  ToggleDrawerToolbarItemIdentifier]];
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(drawerToggle:)];
-    } 
+    }
     else if ([itemIdent isEqualToString: SearchToolbarItemIdentifier])
     {
         [toolbarItem setLabel: NSLocalizedString(@"Search by All Fields", nil)];
@@ -19068,7 +19068,6 @@ restart:
     
     return toolbarItem;
 }
-
 
 - (NSArray *)toolbarDefaultItemIdentifiers: (NSToolbar *)toolbar
 {

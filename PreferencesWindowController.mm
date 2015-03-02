@@ -67,6 +67,8 @@
 #import <Foundation/NSObjCRuntime.h>
 #include <algorithm>
 
+#include "url.h"
+
 //static NSMutableDictionary *paneBundles = nil;
 
 //#define DATAFILEPATH @"/Database.dat"
@@ -163,7 +165,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 //    {
 //        if (err == noErr)
 //        {
-//            char* rightName = (char*)"com.rossetantoine.osirix.preferences.allowalways";
+//            char* rightName = (char*)"BUNDLE_IDENTIFIER.preferences.allowalways";
 //            if (AuthorizationRightGet(rightName, NULL) == errAuthorizationDenied)
 //            {
 //                if ((err = AuthorizationRightSet(authRef, rightName, CFSTR(kAuthorizationRuleClassAllow), CFSTR("You are always authorized."), NULL, NULL)) != noErr)
@@ -306,11 +308,11 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[authView setDelegate:self];
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
 	{
-		[authView setString:"com.rossetantoine.osirix.preferences.database"];
+		[authView setString:"BUNDLE_IDENTIFIER.preferences.database"];
 	}
 	else
 	{
-		[authView setString:"com.rossetantoine.osirix.preferences.allowalways"];
+		[authView setString:"BUNDLE_IDENTIFIER.preferences.allowalways"];
 		[authView setEnabled:NO];
 	}
 	[authView updateStatus:self];

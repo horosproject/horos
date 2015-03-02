@@ -35,6 +35,7 @@
 #include "Binaries/dcmtk-source/dcmjpls/djencode.h" //JPEG-LS
 
 #include "options.h"
+#include "url.h"
 
 extern "C"
 {
@@ -51,7 +52,7 @@ NSThread				*mainThread = 0L;
 BOOL					NEEDTOREBUILD = NO;
 NSMutableDictionary		*DATABASECOLUMNS = 0L;
 short					Altivec = 0;
-short					UseOpenJpeg = 1, Use_kdu_IfAvailable = 1;
+short					UseOpenJpeg = 1, Use_kdu_IfAvailable = 0;
 
 extern void dcmtkSetJPEGColorSpace( int);
 
@@ -123,7 +124,7 @@ int main(int argc, const char *argv[])
 	// _NXTermWindow: error releasing window (1002)
 	[NSApplication sharedApplication];
 	
-	
+
 	//	argv[ 1] : in path
 	//	argv[ 2] : what
 	
@@ -173,7 +174,7 @@ int main(int argc, const char *argv[])
 		NSInteger fileListFirstItemIndex = 3;
 		
 		NSMutableDictionary* dict = [DefaultsOsiriX getDefaults];
-		[dict addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.rossetantoine.osirix"]];
+		[dict addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] persistentDomainForName:@BUNDLE_IDENTIFIER]];
 		
 		if ([what isEqualToString:@"SettingsPlist"])
 		{
@@ -222,8 +223,9 @@ int main(int argc, const char *argv[])
 				else
 					curFileDest = [curFile stringByAppendingString: @" temp"];
 				
-				if( [[curFile pathExtension] isEqualToString: @"zip"] || [[curFile pathExtension] isEqualToString: @"osirixzip"])
-				{
+				if( [[curFile pathExtension] isEqualToString: @"zip"] ||
+                [[curFile pathExtension] isEqualToString: @"osirixzip"])
+                {
                     NSString *tempCurFileDest = [[curFileDest stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat: @".%@", [curFileDest lastPathComponent]]];
                     
                     myunlink([tempCurFileDest fileSystemRepresentation]);
@@ -303,12 +305,14 @@ int main(int argc, const char *argv[])
                                 switch( compression)
                                 {
                                     case compression_JPEGLS:
-                                        if( original_xfer.getXfer() == EXS_JPEGLSLossless || original_xfer.getXfer() == EXS_JPEGLSLossy)
+                                        if( original_xfer.getXfer() == EXS_JPEGLSLossless ||
+                                           original_xfer.getXfer() == EXS_JPEGLSLossy)
                                             alreadyCompressed = YES;
                                     break;
                                     
                                     case compression_JPEG2000:
-                                        if( original_xfer.getXfer() == EXS_JPEG2000 || original_xfer.getXfer() == EXS_JPEG2000LosslessOnly)
+                                        if( original_xfer.getXfer() == EXS_JPEG2000 ||
+                                           original_xfer.getXfer() == EXS_JPEG2000LosslessOnly)
                                             alreadyCompressed = YES;
                                     break;
                                     
@@ -372,7 +376,9 @@ int main(int argc, const char *argv[])
 //                                    }
 //                                }
 //                                else
-                                    if( compression == compression_JPEG || compression == compression_JPEG2000 || compression == compression_JPEGLS)
+                                    if( compression == compression_JPEG ||
+                                       compression == compression_JPEG2000 ||
+                                       compression == compression_JPEGLS)
                                 {
                                     DcmRepresentationParameter *params = nil;
                                     E_TransferSyntax tSyntax;

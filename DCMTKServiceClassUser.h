@@ -62,7 +62,6 @@ Super Class for SCU classes such as verifySCU, storeSCU, moveSCU, findSCU
 #ifdef __cplusplus
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
-#include "dcdatset.h"
 #include "dimse.h"
 #include "dccodec.h"
 

@@ -146,7 +146,8 @@ static NSString *appStartingDate = nil;
 BOOL					NEEDTOREBUILD = NO;
 BOOL					COMPLETEREBUILD = NO;
 BOOL					USETOOLBARPANEL = NO;
-short					Altivec = 1, Use_kdu_IfAvailable = 1;
+short					Altivec = 1;
+short                   Use_kdu_IfAvailable = 0;
 AppController			*appController = nil;
 DCMTKQueryRetrieveSCP   *dcmtkQRSCP = nil, *dcmtkQRSCPTLS = nil;
 NSRecursiveLock			*PapyrusLock = nil, *STORESCP = nil, *STORESCPTLS = nil;			// Papyrus is NOT thread-safe
@@ -1512,7 +1513,8 @@ static NSDate *lastWarningDate = nil;
             {
                 NSDictionary *defaultSettings = [[defaults arrayForKey: @"CompressionSettings"] objectAtIndex: 0];
                 
-                if( [[defaultSettings valueForKey: @"compression"] intValue] == 0 || [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO)
+                if( [[defaultSettings valueForKey: @"compression"] intValue] == 0 ||
+                   [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO)
                 {
                     NSMutableDictionary *d = [[defaultSettings mutableCopy] autorelease];
                     
@@ -1533,7 +1535,8 @@ static NSDate *lastWarningDate = nil;
             {
                 NSDictionary *defaultSettings = [[defaults arrayForKey: @"CompressionSettingsLowRes"] objectAtIndex: 0];
                 
-                if( [[defaultSettings valueForKey: @"compression"] intValue] == 0 || [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO)
+                if( [[defaultSettings valueForKey: @"compression"] intValue] == 0 ||
+                   [[defaultSettings valueForKey: @"modality"] isEqualToString: NSLocalizedString( @"default", nil)] == NO)
                 {
                     NSMutableDictionary *d = [[defaultSettings mutableCopy] autorelease];
                     
@@ -2338,6 +2341,7 @@ static NSDate *lastWarningDate = nil;
 		NSDictionary *params = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"TLSEnabled"];
 		
 		dcmtkQRSCP = [[DCMTKQueryRetrieveSCP alloc] initWithPort:port  aeTitle:(NSString *)aeTitle  extraParamaters:(NSDictionary *)params];
+        
 		[dcmtkQRSCP run];
 	}
 	@catch (NSException * e) 
@@ -3001,7 +3005,8 @@ static BOOL initialized = NO;
 				[[NSUserDefaults standardUserDefaults] registerDefaults: [DefaultsOsiriX getDefaults]];
                 
                 
-                if( [BrowserController _currentModifierFlags] & NSCommandKeyMask && [BrowserController _currentModifierFlags] & NSAlternateKeyMask)
+                if( [BrowserController _currentModifierFlags] & NSCommandKeyMask &&
+                   [BrowserController _currentModifierFlags] & NSAlternateKeyMask)
                 {
                     NSInteger result = NSRunInformationalAlertPanel( NSLocalizedString(@"Reset Preferences", nil), NSLocalizedString(@"Are you sure you want to reset ALL preferences of Horos? All the preferences will be reseted to their default values.", nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"OK",nil),  nil);
                     
@@ -3016,7 +3021,7 @@ static BOOL initialized = NO;
                 
                 
                 
-//				[[NSUserDefaults standardUserDefaults] addSuiteNamed: @"com.rossetantoine.osirix"]; // Backward compatibility
+//				[[NSUserDefaults standardUserDefaults] addSuiteNamed: @BUNDLE_IDENTIFIER]; // Backward compatibility
                 [[NSUserDefaults standardUserDefaults] setInteger:200 forKey:@"NSInitialToolTipDelay"];
                 [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"DontUseUndoQueueForROIs"];
                 [[NSUserDefaults standardUserDefaults] setInteger: 20 forKey: @"UndoQueueSize"];
@@ -3727,7 +3732,7 @@ static BOOL initialized = NO;
 	
 	NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary: dict];
 	
-	NSDictionary *handlerForOsiriX = [NSDictionary dictionaryWithObjectsAndKeys: @"com.rossetantoine.osirix", @"LSHandlerRoleAll", @"dicom", @"LSHandlerURLScheme", nil];
+	NSDictionary *handlerForOsiriX = [NSDictionary dictionaryWithObjectsAndKeys: @BUNDLE_IDENTIFIER, @"LSHandlerRoleAll", @"dicom", @"LSHandlerURLScheme", nil];
 	
 	[mutableDict setObject: [[dict objectForKey: @"LSHandlers"] arrayByAddingObject: handlerForOsiriX] forKey: @"LSHandlers"];
 	
@@ -4159,8 +4164,8 @@ static BOOL initialized = NO;
 		
 	[[NSUserDefaults standardUserDefaults] setBool: [AppController hasMacOSXSnowLeopard] forKey: @"hasMacOSXSnowLeopard"];
 	
-    [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"UseKDUForJPEG2000"];
-    [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseOpenJpegForJPEG2000"];
+    [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseKDUForJPEG2000"];
+    [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"UseOpenJpegForJPEG2000"];
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"useDCMTKForJP2K"];
     
     if( [[[NSUserDefaults standardUserDefaults] objectForKey:@"HOTKEYS"] count] < SetKeyImageAction) {
@@ -4197,8 +4202,6 @@ static BOOL initialized = NO;
             for (NSString* f in [[NSFileManager defaultManager] enumeratorAtPath:path filesOnly:NO recursive:NO])
                 [[NSFileManager defaultManager] moveItemAtPath:[path stringByAppendingPathComponent:f] toPath:[inc stringByAppendingPathComponent:f] error:NULL];
     }
-    
-    
 	
 //	[self checkForOsirixMimeType];
 	
@@ -4208,8 +4211,6 @@ static BOOL initialized = NO;
 
 	if( [AppController isKDUEngineAvailable])
 		NSLog( @"/*\\ /*\\ KDU Engine AVAILABLE /*\\ /*\\");
-	else
-		NSLog( @"KDU Engine NOT available");
 }
 
 - (IBAction) updateViews:(id) sender

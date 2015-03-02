@@ -9339,7 +9339,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 }
 -(NSNumber*) positionerSecondaryAngle{return positionerSecondaryAngle;}
 
-//-(void) DCMPixShutterRect:(long)x :(long)y :(long)w :(long)h;
 -(void) setShutterRect:(NSRect) s
 {
     shutterRect  = s;

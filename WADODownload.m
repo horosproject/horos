@@ -121,7 +121,7 @@
 
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
 {
-	//We dont want to store the images in the cache! Caches/com.rossetantoine.osirix/Cache.db
+	//We dont want to store the images in the cache! Caches/BUNDLE_IDENTIFIER/Cache.db
 	return nil;
 }
 

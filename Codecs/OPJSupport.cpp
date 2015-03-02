@@ -2,22 +2,28 @@
 //  OPJSupport.cpp
 //  OsiriX_Lion
 //
-//  Created by Aaron Boxer on 1/21/14.
-//
+//  Created by Aaron Boxer on 21 Jan 2014
+//  Updated by Alex Bettarini on 17 Feb 2015
 
+#import <assert.h>
+#import <stdlib.h>
 #include "OPJSupport.h"
 #include "../Binaries/openjpeg/openjpeg.h"
 #include "format_defs.h"
 
+//#define WITH_OPJ_BUFFER_STREAM
+#define WITH_OPJ_FILE_STREAM
+//#define OPJ_VERBOSE
+
 typedef struct decode_info
 {
-	opj_codec_t *codec;
-	opj_stream_t *stream;
-	opj_image_t *image;
+    opj_codec_t *codec;
+    opj_stream_t *stream;
+    opj_image_t *image;
     opj_codestream_info_v2_t* cstr_info;
-	opj_codestream_index_t* cstr_index;
-	OPJ_BOOL   deleteImage;
-
+    opj_codestream_index_t* cstr_index;
+    OPJ_BOOL deleteImage;
+    
 } decode_info_t;
 
 #define JP2_RFC3745_MAGIC "\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a"
@@ -28,45 +34,48 @@ typedef struct decode_info
 // Adapted from infile_format() in /src/bin/jp2/opj_decompress.c
 static int buffer_format(void * buf)
 {
-	int magic_format;
+    int magic_format;
     
-	if (memcmp(buf, JP2_RFC3745_MAGIC, 12) == 0 || memcmp(buf, JP2_MAGIC, 4) == 0) {
-		magic_format = JP2_CFMT;
-	}
-	else if (memcmp(buf, J2K_CODESTREAM_MAGIC, 4) == 0) {
-		magic_format = J2K_CFMT;
-	}
-	else
-		return -1;
+    if (memcmp(buf, JP2_RFC3745_MAGIC, 12) == 0 ||
+        memcmp(buf, JP2_MAGIC, 4) == 0)
+    {
+        magic_format = JP2_CFMT;
+    }
+    else if (memcmp(buf, J2K_CODESTREAM_MAGIC, 4) == 0)
+    {
+        magic_format = J2K_CFMT;
+    }
+    else
+        return -1;
     
-	return magic_format;
+    return magic_format;
 }
 
 const char *clr_space(OPJ_COLOR_SPACE i)
 {
-	if(i == OPJ_CLRSPC_SRGB) return "OPJ_CLRSPC_SRGB";
-	if(i == OPJ_CLRSPC_GRAY) return "OPJ_CLRSPC_GRAY";
-	if(i == OPJ_CLRSPC_SYCC) return "OPJ_CLRSPC_SYCC";
-	if(i == OPJ_CLRSPC_UNKNOWN) return "OPJ_CLRSPC_UNKNOWN";
-	return "CLRSPC_UNDEFINED";
+    if(i == OPJ_CLRSPC_SRGB) return "OPJ_CLRSPC_SRGB";
+    if(i == OPJ_CLRSPC_GRAY) return "OPJ_CLRSPC_GRAY";
+    if(i == OPJ_CLRSPC_SYCC) return "OPJ_CLRSPC_SYCC";
+    if(i == OPJ_CLRSPC_UNKNOWN) return "OPJ_CLRSPC_UNKNOWN";
+    return "CLRSPC_UNDEFINED";
 }
 
 void release(decode_info_t *decodeInfo)
 {
-	if(decodeInfo->codec) {
-		opj_destroy_codec(decodeInfo->codec);
-		decodeInfo->codec = NULL;
-	}
-
-	if(decodeInfo->stream) {
-		opj_stream_destroy(decodeInfo->stream);
-		decodeInfo->stream = NULL;
-	}
-
-	if(decodeInfo->deleteImage && decodeInfo->image) {
-		opj_image_destroy(decodeInfo->image);
-		decodeInfo->image = NULL;
-	}
+    if(decodeInfo->codec) {
+        opj_destroy_codec(decodeInfo->codec);
+        decodeInfo->codec = NULL;
+    }
+    
+    if(decodeInfo->stream) {
+        opj_stream_destroy(decodeInfo->stream);
+        decodeInfo->stream = NULL;
+    }
+    
+    if(decodeInfo->deleteImage && decodeInfo->image) {
+        opj_image_destroy(decodeInfo->image);
+        decodeInfo->image = NULL;
+    }
 }
 
 OPJSupport::OPJSupport() {}
@@ -80,23 +89,23 @@ OPJSupport::~OPJSupport() {}
  sample error debug callback expecting no client object
  */
 static void error_callback(const char *msg, void *client_data) {
-	(void)client_data;
-	fprintf(stdout, "[OPJ ERROR] %s", msg);
+    (void)client_data;
+    fprintf(stdout, "[OPJ ERROR] %s", msg);
 }
-#if 0
+#ifdef OPJ_VERBOSE
 /**
  sample warning debug callback expecting no client object
  */
 static void warning_callback(const char *msg, void *client_data) {
-	(void)client_data;
-	fprintf(stdout, "[OPJ WARNING] %s", msg);
+    (void)client_data;
+    fprintf(stdout, "[OPJ WARNING] %s", msg);
 }
 /**
  sample debug callback expecting no client object
  */
 static void info_callback(const char *msg, void *client_data) {
-	(void)client_data;
-	fprintf(stdout, "[OPJ INFO] %s", msg);
+    (void)client_data;
+    fprintf(stdout, "[OPJ INFO] %s", msg);
 }
 #endif
 
@@ -111,26 +120,30 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
                                              long *decompressedBufferSize,
                                              int *colorModel)
 {
+    opj_dparameters_t parameters;
+    int i;
+    int width, height;
+    OPJ_BOOL hasAlpha, fails = OPJ_FALSE;
+    OPJ_CODEC_FORMAT codec_format;
+    unsigned char rc, gc, bc, ac;
     
     if (jp2DataSize<12)
         return 0;
     
-    opj_dparameters_t parameters;
-	//OPJ_BOOL hasFile = OPJ_FALSE;
-
-	int i;
-	int width, height;
-	OPJ_BOOL hasAlpha, fails = OPJ_FALSE;
-	OPJ_CODEC_FORMAT codec_format;
-	unsigned char rc, gc, bc, ac;
-
-	decode_info_t decodeInfo;
-	memset(&decodeInfo, 0, sizeof(decode_info_t));
+    decode_info_t decodeInfo;
+    memset(&decodeInfo, 0, sizeof(decode_info_t));
     
-	opj_set_default_decoder_parameters(&parameters);   
-	parameters.decod_format = buffer_format(jp2Data);
+    opj_set_default_decoder_parameters(&parameters);
+    parameters.decod_format = buffer_format(jp2Data);
     
-	/*-----------------------------------------------*/
+    // Create the stream
+    decodeInfo.stream = opj_stream_create_buffer_stream((OPJ_BYTE *)jp2Data, (OPJ_SIZE_T)jp2DataSize, OPJ_STREAM_READ);
+    if (!decodeInfo.stream) {
+        fprintf(stderr,"%s:%d:\n\tNO decodeInfo.stream\n",__FILE__,__LINE__);
+        return NULL;
+    }
+    
+    /*-----------------------------------------------*/
     switch (parameters.decod_format) {
         case J2K_CFMT:                      /* JPEG-2000 codestream */
             codec_format = OPJ_CODEC_J2K;
@@ -146,34 +159,27 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
             
         case -1:
         default:
-            /* clarified in infile_format() : */
             release(&decodeInfo);
             fprintf(stderr,"%s:%d: decode format missing\n",__FILE__,__LINE__);
-            return 0;
-            //break;
+            return NULL;
     }
     
     while(1)
     {
-        int tile_index=-1, user_changed_tile=0, user_changed_reduction=0;
+        int user_changed_tile=0, user_changed_reduction=0;
         int max_tiles=0, max_reduction=0;
         fails = OPJ_TRUE;
         
-        // Create the stream
-        decodeInfo.stream = opj_stream_create_buffer_stream((OPJ_BYTE *)jp2Data, (OPJ_SIZE_T)jp2DataSize, OPJ_STREAM_READ);
-
-        if (decodeInfo.stream == NULL) {
-            fprintf(stderr,"%s:%d:\n\tNO decodeInfo.stream\n",__FILE__,__LINE__);
-            break;
-        }
-        
-        /* see openjpeg.c:164 */
         decodeInfo.codec = opj_create_decompress(codec_format);
         if (decodeInfo.codec == NULL) {
             fprintf(stderr,"%s:%d:\n\tNO codec\n",__FILE__,__LINE__);
             break;
         }
-
+        
+#ifdef OPJ_VERBOSE
+        opj_set_info_handler(decodeInfo.codec, info_callback, this);
+        opj_set_warning_handler(decodeInfo.codec, warning_callback, this);
+#endif
         opj_set_error_handler(decodeInfo.codec, error_callback, this);
         
         // Setup the decoder decoding parameters
@@ -181,7 +187,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
             fprintf(stderr,"%s:%d:\n\topj_setup_decoder failed\n",__FILE__,__LINE__);
             break;
         }
-
+        
         if (user_changed_tile && user_changed_reduction)
         {
             int reduction=0;
@@ -197,7 +203,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
             fprintf(stderr,"%s:%d:\n\topj_read_header failed\n",__FILE__,__LINE__);
             break;
         }
-
+        
         if ( !(user_changed_tile && user_changed_reduction)
             || (max_tiles <= 0) || (max_reduction <= 0) )
         {
@@ -208,73 +214,74 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
             
             decodeInfo.cstr_index = opj_get_cstr_index(decodeInfo.codec);
         }
-
-        if (tile_index < 0)
+        
+        if (!parameters.nb_tile_to_decode)
         {
-            unsigned int x0, y0, x1, y1;
             int user_changed_area=0;
-
-            x0 = y0 = x1 = y1 = 0;
-
-
+            
             if(user_changed_area)
             {
-
+                
             }
-
-            if( !opj_set_decode_area(decodeInfo.codec, decodeInfo.image, x0, y0, x1, y1)) {
+            
+            /* Optional if you want decode the entire image */
+            if (!opj_set_decode_area(decodeInfo.codec, decodeInfo.image,
+                                     (OPJ_INT32)parameters.DA_x0,
+                                     (OPJ_INT32)parameters.DA_y0,
+                                     (OPJ_INT32)parameters.DA_x1,
+                                     (OPJ_INT32)parameters.DA_y1)) {
                 fprintf(stderr,"%s:%d:\n\topj_set_decode_area failed\n",__FILE__,__LINE__);
                 break;
             }
-
-            if( !opj_decode(decodeInfo.codec, decodeInfo.stream, decodeInfo.image)) {
+            
+            /* Get the decoded image */
+            if (!opj_decode(decodeInfo.codec, decodeInfo.stream, decodeInfo.image)) {
                 fprintf(stderr,"%s:%d:\n\topj_decode failed\n",__FILE__,__LINE__);
+                return NULL;
+            }
+            
+            if (!opj_end_decompress(decodeInfo.codec, decodeInfo.stream)) {
+                fprintf(stderr,"%s:%d:\n\topj_end_decompress failed\n",__FILE__,__LINE__);
                 break;
             }
-        }	/* if(tile_index < 0) */
+            
+        }
         else
         {
-// [4]
-            if( !opj_get_decoded_tile(decodeInfo.codec, decodeInfo.stream, decodeInfo.image, tile_index))
+            if (!opj_get_decoded_tile(decodeInfo.codec, decodeInfo.stream, decodeInfo.image, parameters.tile_index))
             {
                 fprintf(stderr,"%s:%d:\n\topj_get_decoded_tile failed\n",__FILE__,__LINE__);
                 break;
             }
         }
-
-        if( !opj_end_decompress(decodeInfo.codec, decodeInfo.stream)) {
-            fprintf(stderr,"%s:%d:\n\topj_end_decompress failed\n",__FILE__,__LINE__);
-            break;
-        }
-
+        
         fails = OPJ_FALSE;
         break;
-        
     } // while
-
+    
     decodeInfo.deleteImage = fails;
-
+    
     if (fails)
-        return 0;
+        return NULL;
     
     decodeInfo.deleteImage = OPJ_TRUE;
-
+    
+    if(decodeInfo.image->color_space == OPJ_CLRSPC_SYCC)
+    {
+        //disable for now
+        //color_sycc_to_rgb(decodeInfo.image);
+    }
+    
     if (decodeInfo.image->color_space != OPJ_CLRSPC_SYCC
-       && decodeInfo.image->numcomps == 3
-       && decodeInfo.image->comps[0].dx == decodeInfo.image->comps[0].dy
-       && decodeInfo.image->comps[1].dx != 1)
+        && decodeInfo.image->numcomps == 3
+        && decodeInfo.image->comps[0].dx == decodeInfo.image->comps[0].dy
+        && decodeInfo.image->comps[1].dx != 1)
     {
         decodeInfo.image->color_space = OPJ_CLRSPC_SYCC;
     }
     else if(decodeInfo.image->numcomps <= 2)
     {
-	    decodeInfo.image->color_space = OPJ_CLRSPC_GRAY;
-    }
-
-    if(decodeInfo.image->color_space == OPJ_CLRSPC_SYCC)
-    {
-        //disable for now
-        //color_sycc_to_rgb(decodeInfo.image);
+        decodeInfo.image->color_space = OPJ_CLRSPC_GRAY;
     }
     
     if (decodeInfo.image->icc_profile_buf)
@@ -282,76 +289,78 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
 #if defined(HAVE_LIBLCMS1) || defined(HAVE_LIBLCMS2)
         color_apply_icc_profile(decodeInfo.image);
 #endif
+        free(decodeInfo.image->icc_profile_buf);
         decodeInfo.image->icc_profile_buf = NULL;
         decodeInfo.image->icc_profile_len = 0;
     }
-
+    
+    //---
+    
     width = decodeInfo.image->comps[0].w;
     height = decodeInfo.image->comps[0].h;
-
+    
     long depth = (decodeInfo.image->comps[0].prec + 7)/8;
     long decompressSize = width * height * decodeInfo.image->numcomps * depth;
     if (decompressedBufferSize)
         *decompressedBufferSize = decompressSize;;
-
-   
+    
     if (!inputBuffer ) {
         inputBuffer =  malloc(decompressSize);
     }
-
+    
     if (colorModel)
         *colorModel = 0;
-
+    
     if ((decodeInfo.image->numcomps >= 3
-	 && decodeInfo.image->comps[0].dx == decodeInfo.image->comps[1].dx
-	 && decodeInfo.image->comps[1].dx == decodeInfo.image->comps[2].dx
-	 && decodeInfo.image->comps[0].dy == decodeInfo.image->comps[1].dy
-	 && decodeInfo.image->comps[1].dy == decodeInfo.image->comps[2].dy
-	 && decodeInfo.image->comps[0].prec == decodeInfo.image->comps[1].prec
-	 && decodeInfo.image->comps[1].prec == decodeInfo.image->comps[2].prec
-	 )/* RGB[A] */
-	||
-	(decodeInfo.image->numcomps == 2
-	 && decodeInfo.image->comps[0].dx == decodeInfo.image->comps[1].dx
-	 && decodeInfo.image->comps[0].dy == decodeInfo.image->comps[1].dy
-	 && decodeInfo.image->comps[0].prec == decodeInfo.image->comps[1].prec
-	 )
-	) /* GA */
+         && decodeInfo.image->comps[0].dx == decodeInfo.image->comps[1].dx
+         && decodeInfo.image->comps[1].dx == decodeInfo.image->comps[2].dx
+         && decodeInfo.image->comps[0].dy == decodeInfo.image->comps[1].dy
+         && decodeInfo.image->comps[1].dy == decodeInfo.image->comps[2].dy
+         && decodeInfo.image->comps[0].prec == decodeInfo.image->comps[1].prec
+         && decodeInfo.image->comps[1].prec == decodeInfo.image->comps[2].prec
+         )/* RGB[A] */
+        ||
+        (decodeInfo.image->numcomps == 2
+         && decodeInfo.image->comps[0].dx == decodeInfo.image->comps[1].dx
+         && decodeInfo.image->comps[0].dy == decodeInfo.image->comps[1].dy
+         && decodeInfo.image->comps[0].prec == decodeInfo.image->comps[1].prec
+         )
+        ) /* GA */
     {
         int  has_alpha4, has_alpha2, has_rgb;
         int *red, *green, *blue, *alpha;
-
+        
         if (colorModel)
             *colorModel = 1;
-
+        
         alpha = NULL;
-
+        
         has_rgb = (decodeInfo.image->numcomps == 3);
         has_alpha4 = (decodeInfo.image->numcomps == 4);
         has_alpha2 = (decodeInfo.image->numcomps == 2);
         hasAlpha = (has_alpha4 || has_alpha2);
-
+        
         if(has_rgb)
         {
             red = decodeInfo.image->comps[0].data;
             green = decodeInfo.image->comps[1].data;
             blue = decodeInfo.image->comps[2].data;
-
+            
             if(has_alpha4)
             {
-            alpha = decodeInfo.image->comps[3].data;
+                alpha = decodeInfo.image->comps[3].data;
             }
-
+            
         }	/* if(has_rgb) */
         else
         {
             red = green = blue = decodeInfo.image->comps[0].data;
             if(has_alpha2)
             {
-            alpha = decodeInfo.image->comps[1].data;
+                alpha = decodeInfo.image->comps[1].data;
             }
         }	/* if(has_rgb) */
-
+        
         ac = 255;/* 255: FULLY_OPAQUE; 0: FULLY_TRANSPARENT */
         
         int* ptrIBody = (int*)inputBuffer;
@@ -362,23 +371,23 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
             bc = (unsigned char)*blue++;
             if(hasAlpha)
             {
-            
+                
                 ac = (unsigned char)*alpha++;;
             }
             
             /*                         A        R          G       B
              */
             *ptrIBody++ = (int)((ac<<24) | (rc<<16) | (gc<<8) | bc);
-
+            
         }	/* for(i) */
     }/* if (decodeInfo.image->numcomps >= 3  */
     else if(decodeInfo.image->numcomps == 1) /* Grey */
-	{
-	    /* 1 component 8 or 16 bpp decodeInfo.image
-	     */
-	    int *grey = decodeInfo.image->comps[0].data;
-	    if(decodeInfo.image->comps[0].prec <= 8)
-	    {
+    {
+        /* 1 component 8 or 16 bpp decodeInfo.image
+         */
+        int *grey = decodeInfo.image->comps[0].data;
+        if(decodeInfo.image->comps[0].prec <= 8)
+        {
             char* ptrBBody = (char*)inputBuffer;
             for(i=0; i<width*height; i++)
             {
@@ -386,14 +395,14 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
             }
             /* Replace image8 buffer:
              */
-	    }
-	    else /* prec[9:16] */
-	    {
+        }
+        else /* prec[9:16] */
+        {
             int *grey = decodeInfo.image->comps[0].data;
             //int ushift = 0, dshift = 0, force16 = 0;
-
+            
             short* ptrSBody = (short*)inputBuffer;
-
+            
             for(i=0; i<width*height; i++)
             {
                 //disable shift up for signed data: don't know why we are doing this
@@ -401,32 +410,32 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
             }
             /* Replace image16 buffer:
              */
-	    }
-	}
-	else
-	{
-	    int *grey;
-
-	    fprintf(stderr,"%s:%d:Can show only first component of decodeInfo.image\n"
-		    "  components(%d) prec(%d) color_space[%d](%s)\n"
-		    "  RECT(%d,%d,%d,%d)\n",__FILE__,__LINE__,decodeInfo.image->numcomps,
-		    decodeInfo.image->comps[0].prec,
-		    decodeInfo.image->color_space,clr_space(decodeInfo.image->color_space),
-		    decodeInfo.image->x0,decodeInfo.image->y0,decodeInfo.image->x1,decodeInfo.image->y1 );
-
-	    for(i = 0; i < decodeInfo.image->numcomps; ++i)
-	    {
+        }
+    }
+    else
+    {
+        int *grey;
+        
+        fprintf(stderr,"%s:%d:Can show only first component of decodeInfo.image\n"
+                "  components(%d) prec(%d) color_space[%d](%s)\n"
+                "  RECT(%d,%d,%d,%d)\n",__FILE__,__LINE__,decodeInfo.image->numcomps,
+                decodeInfo.image->comps[0].prec,
+                decodeInfo.image->color_space,clr_space(decodeInfo.image->color_space),
+                decodeInfo.image->x0,decodeInfo.image->y0,decodeInfo.image->x1,decodeInfo.image->y1 );
+        
+        for(i = 0; i < decodeInfo.image->numcomps; ++i)
+        {
             fprintf(stderr,"[%d]dx(%d) dy(%d) w(%d) h(%d) signed(%u)\n",i,
-                decodeInfo.image->comps[i].dx ,decodeInfo.image->comps[i].dy,
-                decodeInfo.image->comps[i].w,decodeInfo.image->comps[i].h,
-                decodeInfo.image->comps[i].sgnd);
-	    }
-
-	    /* 1 component 8 or 16 bpp decodeInfo.image
-	     */
-	    grey = decodeInfo.image->comps[0].data;
-	    if(decodeInfo.image->comps[0].prec <= 8)
-	    {
+                    decodeInfo.image->comps[i].dx ,decodeInfo.image->comps[i].dy,
+                    decodeInfo.image->comps[i].w,decodeInfo.image->comps[i].h,
+                    decodeInfo.image->comps[i].sgnd);
+        }
+        
+        /* 1 component 8 or 16 bpp decodeInfo.image
+         */
+        grey = decodeInfo.image->comps[0].data;
+        if(decodeInfo.image->comps[0].prec <= 8)
+        {
             char* ptrBBody = (char*)inputBuffer;
             for(i=0; i<width*height; i++)
             {
@@ -434,32 +443,347 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
             }
             /* Replace image8 buffer:
              */
-	    }
-	    else /* prec[9:16] */
-	    {
+        }
+        else /* prec[9:16] */
+        {
             int *grey;
             //int ushift = 0, dshift = 0, force16 = 0;
-
+            
             grey = decodeInfo.image->comps[0].data;
-
+            
             short* ptrSBody = (short*)inputBuffer;
-
+            
             for(i=0; i<width*height; i++)
             {
                 *ptrSBody++ = *grey++;
             }
             /* Replace image16 buffer:
              */
-	    }
-	}
-
+        }
+    }
+    
     release(&decodeInfo);
-
+    opj_destroy_cstr_index(&(decodeInfo.cstr_index));
+    
     return inputBuffer;
 }
 
-void* OPJSupport::compressJPEG2K( void *data, int samplesPerPixel, int rows, int columns, int precision, bool sign, int rate, long *compressedDataSize)
+template<typename T>
+void rawtoimage_fill(T *inputbuffer, int w, int h, int numcomps, opj_image_t *image, int pc)
 {
-    // TODO
-    return 0;
+    T *p = inputbuffer;
+    if( pc )
+    {
+        for(int compno = 0; compno < numcomps; compno++)
+        {
+            for (int i = 0; i < w * h; i++)
+            {
+                /* compno : 0 = GREY, (0, 1, 2) = (R, G, B) */
+                image->comps[compno].data[i] = *p;
+                ++p;
+            }
+        }
+    }
+    else
+    {
+        for (int i = 0; i < w * h; i++)
+        {
+            for(int compno = 0; compno < numcomps; compno++)
+            {
+                /* compno : 0 = GREY, (0, 1, 2) = (R, G, B) */
+                image->comps[compno].data[i] = *p;
+                ++p;
+            }
+        }
+    }
+}
+
+static
+opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
+                        int fragment_size, int image_width, int image_height, int sample_pixel,
+                        int bitsallocated, int bitsstored, int sign, /*int quality,*/ int pc)
+{
+    //(void)quality;
+    int w, h;
+    int numcomps;
+    OPJ_COLOR_SPACE color_space;
+    opj_image_cmptparm_t cmptparm[3]; /* maximum of 3 components */
+    opj_image_t * image = NULL;
+    
+    assert( sample_pixel == 1 || sample_pixel == 3 );
+    if( sample_pixel == 1 )
+    {
+        numcomps = 1;
+        color_space = OPJ_CLRSPC_GRAY;
+    }
+    else // sample_pixel == 3
+    {
+        numcomps = 3;
+        color_space = OPJ_CLRSPC_SRGB;
+        /* Does OpenJPEG support: OPJ_CLRSPC_SYCC ?? */
+    }
+    if( bitsallocated % 8 != 0 )
+    {
+        return 0;
+    }
+    assert( bitsallocated % 8 == 0 );
+    // eg. fragment_size == 63532 and 181 * 117 * 3 * 8 == 63531 ...
+    assert( ((fragment_size + 1)/2 ) * 2 == ((image_height * image_width * numcomps * (bitsallocated/8) + 1)/ 2 )* 2 );
+    int subsampling_dx = parameters->subsampling_dx;
+    int subsampling_dy = parameters->subsampling_dy;
+    
+    // FIXME
+    w = image_width;
+    h = image_height;
+    
+    /* initialize image components */
+    memset(&cmptparm[0], 0, 3 * sizeof(opj_image_cmptparm_t));
+    //assert( bitsallocated == 8 );
+    for(int i = 0; i < numcomps; i++) {
+        cmptparm[i].prec = bitsstored;
+        cmptparm[i].bpp = bitsallocated;
+        cmptparm[i].sgnd = sign;
+        cmptparm[i].dx = subsampling_dx;
+        cmptparm[i].dy = subsampling_dy;
+        cmptparm[i].w = w;
+        cmptparm[i].h = h;
+    }
+    
+    /* create the image */
+    image = opj_image_create(numcomps, &cmptparm[0], color_space);
+    if(!image) {
+        return NULL;
+    }
+    /* set image offset and reference grid */
+    image->x0 = parameters->image_offset_x0;
+    image->y0 = parameters->image_offset_y0;
+    image->x1 = parameters->image_offset_x0 + (w - 1) * subsampling_dx + 1;
+    image->y1 = parameters->image_offset_y0 + (h - 1) * subsampling_dy + 1;
+    
+    /* set image data */
+    
+    //assert( fragment_size == numcomps*w*h*(bitsallocated/8) );
+    if (bitsallocated <= 8)
+    {
+        if( sign )
+        {
+            rawtoimage_fill<int8_t>((int8_t*)inputbuffer,w,h,numcomps,image,pc);
+        }
+        else
+        {
+            rawtoimage_fill<uint8_t>((uint8_t*)inputbuffer,w,h,numcomps,image,pc);
+        }
+    }
+    else if (bitsallocated <= 16)
+    {
+        if( sign )
+        {
+            rawtoimage_fill<int16_t>((int16_t*)inputbuffer,w,h,numcomps,image,pc);
+        }
+        else
+        {
+            rawtoimage_fill<uint16_t>((uint16_t*)inputbuffer,w,h,numcomps,image,pc);
+        }
+    }
+    else if (bitsallocated <= 32)
+    {
+        if( sign )
+        {
+            rawtoimage_fill<int32_t>((int32_t*)inputbuffer,w,h,numcomps,image,pc);
+        }
+        else
+        {
+            rawtoimage_fill<uint32_t>((uint32_t*)inputbuffer,w,h,numcomps,image,pc);
+        }
+    }
+    else
+    {
+        return NULL;
+    }
+    
+    return image;
+}
+
+unsigned char *
+OPJSupport::compressJPEG2K(  void *data,
+                           int samplesPerPixel,
+                           int rows,
+                           int columns,
+                           int bitsstored, //precision,
+                           unsigned char bitsAllocated,
+                           bool sign,
+                           int rate,
+                           long *compressedDataSize)
+{
+    opj_cparameters_t parameters;
+    
+    opj_stream_t *l_stream = 00;
+    opj_codec_t* l_codec = 00;
+    opj_image_t *image = NULL;
+    
+    OPJ_BOOL bSuccess;
+    OPJ_BOOL bUseTiles = OPJ_FALSE; /* OPJ_TRUE */
+    OPJ_UINT32 l_nb_tiles = 4;
+    
+    OPJ_BOOL fails = OPJ_FALSE;
+    OPJ_CODEC_FORMAT codec_format;
+    
+    memset(&parameters, 0, sizeof(parameters));
+    opj_set_default_encoder_parameters(&parameters);
+    parameters.tcp_numlayers = 1;
+    parameters.cp_disto_alloc = 1;
+    parameters.tcp_rates[0] = rate;
+    parameters.cod_format = JP2_CFMT;//J2K_CFMT; /* J2K format output */
+#ifdef WITH_OPJ_FILE_STREAM
+    strcpy(parameters.outfile,tmpnam(NULL));
+#endif
+    
+    int image_width = columns;
+    int image_height = rows;
+    int sample_pixel = samplesPerPixel;
+    
+    image = rawtoimage( (char*) data,
+                       &parameters,
+                       static_cast<int>( columns*rows*samplesPerPixel*bitsAllocated/8), // [data length], fragment_size
+                       columns, rows,
+                       samplesPerPixel,
+                       bitsAllocated,
+                       bitsstored, sign, /*quality,*/ 0);
+    
+    /*-----------------------------------------------*/
+    switch (parameters.cod_format) {
+        case J2K_CFMT:                      /* JPEG-2000 codestream */
+            codec_format = OPJ_CODEC_J2K;
+            break;
+            
+        case JP2_CFMT:                      /* JPEG 2000 compressed image data */
+            codec_format = OPJ_CODEC_JP2;
+            break;
+            
+        case JPT_CFMT:                      /* JPEG 2000, JPIP */
+            codec_format = OPJ_CODEC_JPT;
+            break;
+            
+        case -1:
+        default:
+            fprintf(stderr,"%s:%d: encode format missing\n",__FILE__,__LINE__);
+            return NULL;
+    }
+    
+    /* see test_tile_encoder.c:232 and opj_compress.c:1746 */
+    l_codec = opj_create_compress(codec_format);
+    if (!l_codec) {
+        fprintf(stderr,"%s:%d:\n\tNO codec\n",__FILE__,__LINE__);
+        return NULL;
+    }
+    
+#ifdef OPJ_VERBOSE
+    opj_set_info_handler(l_codec, info_callback, this);
+    opj_set_warning_handler(l_codec, warning_callback, this);
+#endif
+    opj_set_error_handler(l_codec, error_callback, this);
+    
+    if ( !opj_setup_encoder(l_codec, &parameters, image)) {
+        fprintf(stderr,"%s:%d:\n\topj_setup_decoder failed\n",__FILE__,__LINE__);
+        return NULL;
+    }
+    
+    // Create the stream
+#ifdef WITH_OPJ_BUFFER_STREAM
+    OPJ_SIZE_T jp2DataSize = rows * columns;
+    l_stream = opj_stream_create_buffer_stream((OPJ_BYTE *)data, jp2DataSize, OPJ_STREAM_WRITE);
+#endif
+    
+#ifdef WITH_OPJ_FILE_STREAM
+    l_stream = opj_stream_create_default_file_stream(parameters.outfile, OPJ_STREAM_WRITE);
+#endif
+    if (!l_stream){
+        fprintf(stderr,"%s:%d:\n\tstream creation failed\n",__FILE__,__LINE__);
+        return NULL;
+    }
+    
+    while(1)
+    {
+        //        int tile_index=-1, user_changed_tile=0, user_changed_reduction=0;
+        //        int max_tiles=0, max_reduction=0;
+        fails = OPJ_TRUE;
+        
+        /* encode the image */
+        bSuccess = opj_start_compress(l_codec, image, l_stream);
+        if (!bSuccess) {
+            fprintf(stderr,"%s:%d:\n\topj_start_compress failed\n",__FILE__,__LINE__);
+            break;
+        }
+        
+        if ( bSuccess && bUseTiles ) {
+            OPJ_BYTE *l_data;
+            OPJ_UINT32 l_data_size = 512*512*3;
+            l_data = (OPJ_BYTE*) malloc( l_data_size * sizeof(OPJ_BYTE));
+            memset(l_data, 0, l_data_size );
+            assert( l_data );
+            for (int i=0;i<l_nb_tiles;++i) {
+                if (! opj_write_tile(l_codec,i,l_data,l_data_size,l_stream)) {
+                    fprintf(stderr, "ERROR -> test_tile_encoder: failed to write the tile %d!\n",i);
+                    opj_stream_destroy(l_stream);
+                    opj_destroy_codec(l_codec);
+                    opj_image_destroy(image);
+                    return NULL;
+                }
+            }
+            free(l_data);
+        }
+        else {
+            if (!opj_encode(l_codec, l_stream)) {
+                fprintf(stderr,"%s:%d:\n\topj_encode failed\n",__FILE__,__LINE__);
+                break;
+            }
+        }
+        
+        if (!opj_end_compress(l_codec, l_stream)) {
+            fprintf(stderr,"%s:%d:\n\topj_end_compress failed\n",__FILE__,__LINE__);
+            break;
+        }
+        
+        fails = OPJ_FALSE;
+        break;
+    } // while
+    
+#ifdef WITH_OPJ_FILE_STREAM
+    // Open the temp file and get the encoded data into 'to'
+    // and the length into 'length'
+    FILE *f = fopen(parameters.outfile, "rb");
+    fseek(f, 0, SEEK_END);
+    long length = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    
+    if (length % 2) {
+        length++; // ensure even length
+        fprintf(stdout,"Padded to %li\n", length);
+    }
+    
+    unsigned char *to = (unsigned char *)malloc(length);
+    fread(to, length, 1, f);
+    fclose(f);
+    
+    *compressedDataSize = length;
+    
+    if (parameters.outfile)
+        remove(parameters.outfile);
+#endif
+    
+    /* close and free the byte stream */
+    opj_stream_destroy(l_stream);
+    
+    /* free remaining compression structures */
+    opj_destroy_codec(l_codec);
+    
+    /* free image data */
+    opj_image_destroy(image);
+    
+    if (fails) {
+        fprintf(stderr, "failed to encode image\n");
+        remove(parameters.outfile);
+    }
+    
+    return to;
 }

@@ -183,7 +183,7 @@
 	<key>CFBundleIconFile</key>
 	<string>Osirix.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.rossetantoine.osirix-lite</string>
+	<string>com.horosproject.horos-lite</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>

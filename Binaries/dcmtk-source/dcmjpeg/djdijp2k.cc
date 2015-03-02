@@ -124,7 +124,11 @@ OFCondition DJDecompressJP2k::decode(
 		int colorModel;
 		
         OPJSupport opj;
-        opj.decompressJPEG2KWithBuffer( uncompressedFrameBuffer, compressedFrameBuffer, compressedFrameBufferSize, &decompressedBufferSize, &colorModel);
+        opj.decompressJPEG2KWithBuffer( uncompressedFrameBuffer,
+                                       compressedFrameBuffer,
+                                       compressedFrameBufferSize,
+                                       &decompressedBufferSize,
+                                       &colorModel);
         
 		if( colorModel == 1)
 			decompressedColorModel = (EP_Interpretation) EPI_RGB;

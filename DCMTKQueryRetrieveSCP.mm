@@ -237,7 +237,6 @@ void errmsg(const char* msg, ...)
     OFCmdUnsignedInt overrideMaxPDU = 0;
     DcmQueryRetrieveOptions options;
 
-
 	//verbose
 	options.verbose_= 0;
 	
@@ -374,13 +373,6 @@ void errmsg(const char* msg, ...)
     setuid(getuid());
 #endif
 
-	
-	
-	
-	
-	
-	
-	
 #ifdef WITH_OPENSSL // joris
 	
 	DcmTLSTransportLayer *tLayer = NULL;
@@ -540,7 +532,6 @@ void errmsg(const char* msg, ...)
 			return;
 		}
 	}
-	
 #endif
 	
 	

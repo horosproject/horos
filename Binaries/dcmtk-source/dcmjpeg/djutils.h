@@ -184,6 +184,7 @@ const unsigned short EJCode_IJG12_Compression   = 0x0102;
 const unsigned short EJCode_IJG12_Decompression = 0x0103;
 const unsigned short EJCode_IJG16_Compression   = 0x0104;
 const unsigned short EJCode_IJG16_Decompression = 0x0105;
+const unsigned short EJCode_IJG2K_Compression   = 0x0200; // LXIV addition
 
 /** helper class with static methods used from different dcmjpeg classes
  *  (in particular from the encoder and the decoder part).

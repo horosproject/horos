@@ -10071,7 +10071,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                                 if( pix != curDCM)
                                 {
                                     [pix.imageObj setValue: nil forKey: @"scale"];
-                                    //[pix.imageObj setValue: [NSNumber numberWithFloat: [self scaleToFitForDCMPix: pix]] forKey: @"scale"];
+                                    
                                     
                                     NSPoint o = NSMakePoint( 0, 0);
                                     if( pix.shutterEnabled)

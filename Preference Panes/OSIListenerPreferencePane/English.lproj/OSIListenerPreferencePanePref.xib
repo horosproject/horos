@@ -27,7 +27,7 @@
         <window title="&lt;&lt; do not localize &gt;&gt;" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="632" height="726"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
             <value key="minSize" type="size" width="224.66300000000001" height="10"/>
             <view key="contentView" horizontalCompressionResistancePriority="1000" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="632" height="726"/>
@@ -35,7 +35,7 @@
                 <subviews>
                     <button misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="101">
                         <rect key="frame" x="24" y="691" width="502" height="18"/>
-                        <buttonCell key="cell" type="check" title="Activate DICOM listener when Horos is running" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="309">
+                        <buttonCell key="cell" type="check" title="Activate DICOM listener when OsiriX is running" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="309">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -697,9 +697,9 @@
                                         <binding destination="296" name="value" keyPath="values.activateCFINDSCP" id="1070"/>
                                     </connections>
                                 </button>
-                                <button misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="965" userLabel="Activate Horos database sharing, and publish it using the name:">
+                                <button misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="965">
                                     <rect key="frame" x="15" y="187" width="363" height="18"/>
-                                    <buttonCell key="cell" type="check" title="Activate Horos database sharing, and publish it using the name:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="968" userLabel="Activate Horos database sharing, and publish it using the name:">
+                                    <buttonCell key="cell" type="check" title="Activate OsiriX database sharing, and publish it using the name:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="968">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -909,7 +909,7 @@
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="178" y="371" width="415" height="520"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
             <view key="contentView" id="727">
                 <rect key="frame" x="0.0" y="0.0" width="415" height="520"/>
                 <autoresizingMask key="autoresizingMask"/>

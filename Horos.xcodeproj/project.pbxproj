@@ -11996,9 +11996,12 @@
 				BuildIndependentTargetsInParallel = NO;
 				LastTestingUpgradeCheck = 0510;
 				LastUpgradeCheck = 0500;
-				ORGANIZATIONNAME = "OsiriX Team";
+				ORGANIZATIONNAME = "The Horos Project";
 				TargetAttributes = {
 					59BDEC2C117C92B2007F1F2C = {
+						DevelopmentTeam = KM2Q4CB65V;
+					};
+					AB0F3A2B1046BD2B004129DD = {
 						DevelopmentTeam = KM2Q4CB65V;
 					};
 					AB28B42E05B7921E00A9906C = {
@@ -16150,7 +16153,6 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_WARN_EMPTY_BODY = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -16228,7 +16230,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -16592,7 +16593,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -16694,7 +16694,6 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_WARN_EMPTY_BODY = YES;
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
