@@ -368,8 +368,6 @@ static float deg2rad = M_PI/180.0;
 
 - (void) showWindow:(id) sender
 {
-    [self applyViewsPosition];
-    
 	mprView1.dontUseAutoLOD = YES;
 	mprView2.dontUseAutoLOD = YES;
 	mprView3.dontUseAutoLOD = YES;
@@ -424,6 +422,8 @@ static float deg2rad = M_PI/180.0;
 	mprView3.dontUseAutoLOD = NO;
 	
 	[self setLOD: 1];
+    
+    [self applyViewsPosition];
 }
 
 -(void)splitViewWillResizeSubviews:(NSNotification *)notification

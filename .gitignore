@@ -33,5 +33,4 @@ options.h
 url.h
 
 *.xcscheme
-
-nitrogen/Nitrogen.xcodeproj/xcuserdata/admin.xcuserdatad/xcschemes/xcschememanagement.plist
+xcuserdata/
