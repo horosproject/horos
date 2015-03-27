@@ -345,6 +345,25 @@
     }
 }
 
+- (BOOL)getCubicInterpolatedFloat:(float *)floatPtr atDicomVector:(N3Vector)vector
+{
+    CPRVolumeDataInlineBuffer inlineBuffer;
+
+    if (_isValid == NO) {
+        return NO;
+    }
+
+    if ([self aquireInlineBuffer:&inlineBuffer]) {
+        *floatPtr = CPRVolumeDataCubicInterpolatedFloatAtDicomVector(&inlineBuffer, vector);
+        [self releaseInlineBuffer:&inlineBuffer];
+        return YES;
+    } else {
+        [self releaseInlineBuffer:&inlineBuffer];
+        *floatPtr = 0.0;
+        return NO;
+    }
+}
+
 
 - (NSUInteger)tempBufferSizeForNumVectors:(NSUInteger)numVectors
 {
