@@ -10661,8 +10661,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                     {
                                         value = [NSString stringWithFormat:@"%.6g", [echotime floatValue]];;
                                     }
-                                    else if(fileNb>=0)
-                                        value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] papyLink:fileNb];
+                                    else if (dcmObject)
+                                        value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] DCMLink:dcmObject];
                                     else
                                         value = nil;
                                     
