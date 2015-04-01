@@ -61,6 +61,7 @@ CF_EXTERN_C_BEGIN
 enum _CPRInterpolationMode {
     CPRInterpolationModeLinear, // don't use this, it is not implemented
     CPRInterpolationModeNearestNeighbor,
+    CPRInterpolationModeCubic,
 	
 	CPRInterpolationModeNone = 0xFFFFFF,
 };
@@ -137,6 +138,7 @@ typedef struct { // build one of these on the stack and then use -[CPRVolumeData
 - (BOOL)getFloat:(float *)floatPtr atPixelCoordinateX:(NSUInteger)x y:(NSUInteger)y z:(NSUInteger)z; // returns YES if the float was sucessfully gotten
 - (BOOL)getLinearInterpolatedFloat:(float *)floatPtr atDicomVector:(N3Vector)vector; // these are slower, use the inline buffer if you care about speed
 - (BOOL)getNearestNeighborInterpolatedFloat:(float *)floatPtr atDicomVector:(N3Vector)vector; // these are slower, use the inline buffer if you care about speed
+- (BOOL)getCubicInterpolatedFloat:(float *)floatPtr atDicomVector:(N3Vector)vector; // these are slower, use the inline buffer if you care about speed
 
 - (BOOL)aquireInlineBuffer:(CPRVolumeDataInlineBuffer *)inlineBuffer; // make sure to pair this with a releaseInlineBuffer (even if it returns NO!), returns YES if the data is valid. The data will be locked and remain valid until releaseInlineBuffer: is called
 - (void)releaseInlineBuffer:(CPRVolumeDataInlineBuffer *)inlineBuffer; 
@@ -288,6 +290,119 @@ CF_INLINE float CPRVolumeDataNearestNeighborInterpolatedFloatAtVolumeCoordinate(
     return CPRVolumeDataGetFloatAtPixelCoordinate(inlineBuffer, roundX, roundY, roundZ);
 }
 
+CF_INLINE NSInteger CPRVolumeDataIndexAtCoordinate(NSInteger x, NSInteger y, NSInteger z, NSUInteger pixelsWide, NSInteger pixelsHigh, NSInteger pixelsDeep, NSInteger outOfBoundsIndex)
+{
+    if (x < 0 || x >= pixelsWide ||
+        y < 0 || y >= pixelsHigh ||
+        z < 0 || z >= pixelsDeep) {
+        return outOfBoundsIndex;
+    }
+    return x + pixelsWide*(y + pixelsHigh*z);
+}
+
+CF_INLINE NSInteger CPRVolumeDataUncheckedIndexAtCoordinate(NSInteger x, NSInteger y, NSInteger z, NSUInteger pixelsWide, NSInteger pixelsHigh, NSInteger pixelsDeep)
+{
+    return x + pixelsWide*(y + pixelsHigh*z);
+}
+
+CF_INLINE void CPRVolumeDataGetCubicIndexes(NSInteger cubicIndexes[64], NSInteger x, NSInteger y, NSInteger z, NSUInteger pixelsWide, NSInteger pixelsHigh, NSInteger pixelsDeep, NSInteger outOfBoundsIndex)
+{
+    if (x <= 2 || y <= 2 || z <= 2 || x >= pixelsWide-3 || y >= pixelsHigh-3 || z >= pixelsDeep-3) {
+        for (int i = 0; i < 4; ++i) {
+            for (int j = 0; j < 4; ++j) {
+                for (int k = 0; k < 4; ++k) {
+                    cubicIndexes[i+4*(j+4*k)] = CPRVolumeDataIndexAtCoordinate(x+i-1, y+j-1, z+k-1, pixelsWide, pixelsHigh, pixelsDeep, outOfBoundsIndex);
+                }
+            }
+        }
+    } else {
+        for (int i = 0; i < 4; ++i) {
+            for (int j = 0; j < 4; ++j) {
+                for (int k = 0; k < 4; ++k) {
+                    cubicIndexes[i+4*(j+4*k)] = CPRVolumeDataUncheckedIndexAtCoordinate(x+i-1, y+j-1, z+k-1, pixelsWide, pixelsHigh, pixelsDeep);
+                }
+            }
+        }
+    }
+}
+
+CF_INLINE float CPRVolumeDataCubicInterpolatedFloatAtVolumeCoordinate(CPRVolumeDataInlineBuffer *inlineBuffer, CGFloat x, CGFloat y, CGFloat z) // coordinate in the pixel space
+{
+#if CGFLOAT_IS_DOUBLE
+    const CGFloat x_floor = floor(x);
+    const CGFloat y_floor = floor(y);
+    const CGFloat z_floor = floor(z);
+#else
+    const CGFloat x_floor = floorf(x);
+    const CGFloat y_floor = floorf(y);
+    const CGFloat z_floor = floorf(z);
+#endif
+
+    const CGFloat dx = x-x_floor;
+    const CGFloat dy = y-y_floor;
+    const CGFloat dz = z-z_floor;
+
+    const CGFloat dxx = dx*dx;
+    const CGFloat dxxx = dxx*dx;
+
+    const CGFloat dyy = dy*dy;
+    const CGFloat dyyy = dyy*dy;
+
+    const CGFloat dzz = dz*dz;
+    const CGFloat dzzz = dzz*dz;
+
+    const CGFloat wx0 = 0.5 * (    - dx + 2.0*dxx -       dxxx);
+    const CGFloat wx1 = 0.5 * (2.0      - 5.0*dxx + 3.0 * dxxx);
+    const CGFloat wx2 = 0.5 * (      dx + 4.0*dxx - 3.0 * dxxx);
+    const CGFloat wx3 = 0.5 * (         -     dxx +       dxxx);
+
+    const CGFloat wy0 = 0.5 * (    - dy + 2.0*dyy -       dyyy);
+    const CGFloat wy1 = 0.5 * (2.0      - 5.0*dyy + 3.0 * dyyy);
+    const CGFloat wy2 = 0.5 * (      dy + 4.0*dyy - 3.0 * dyyy);
+    const CGFloat wy3 = 0.5 * (         -     dyy +       dyyy);
+
+    const CGFloat wz0 = 0.5 * (    - dz + 2.0*dzz -       dzzz);
+    const CGFloat wz1 = 0.5 * (2.0      - 5.0*dzz + 3.0 * dzzz);
+    const CGFloat wz2 = 0.5 * (      dz + 4.0*dzz - 3.0 * dzzz);
+    const CGFloat wz3 = 0.5 * (         -     dzz +       dzzz);
+
+    // this is a horible hack, but it works
+    // what I'm doing is looking at memory addresses to find an index into inlineBuffer->floatBytes that would jump out of
+    // the array and instead point to inlineBuffer->outOfBoundsValue which is on the stack
+    // This relies on both inlineBuffer->floatBytes and inlineBuffer->outOfBoundsValue being on a sizeof(float) boundry
+    NSInteger outOfBoundsIndex = (((NSInteger)&(inlineBuffer->outOfBoundsValue)) - ((NSInteger)inlineBuffer->floatBytes)) / sizeof(float);
+
+    NSInteger cubicIndexes[64];
+    CPRVolumeDataGetCubicIndexes(cubicIndexes, x_floor, y_floor, z_floor, inlineBuffer->pixelsWide, inlineBuffer->pixelsHigh, inlineBuffer->pixelsDeep, outOfBoundsIndex);
+
+    const float *floatBytes = inlineBuffer->floatBytes;
+
+    return wz0*(
+             wy0*(wx0 * floatBytes[cubicIndexes[0+4*(0+4*0)]] + wx1 * floatBytes[cubicIndexes[1+4*(0+4*0)]] +  wx2 * floatBytes[cubicIndexes[2+4*(0+4*0)]] + wx3 * floatBytes[cubicIndexes[3+4*(0+4*0)]]) +
+             wy1*(wx0 * floatBytes[cubicIndexes[0+4*(1+4*0)]] + wx1 * floatBytes[cubicIndexes[1+4*(1+4*0)]] +  wx2 * floatBytes[cubicIndexes[2+4*(1+4*0)]] + wx3 * floatBytes[cubicIndexes[3+4*(1+4*0)]]) +
+             wy2*(wx0 * floatBytes[cubicIndexes[0+4*(2+4*0)]] + wx1 * floatBytes[cubicIndexes[1+4*(2+4*0)]] +  wx2 * floatBytes[cubicIndexes[2+4*(2+4*0)]] + wx3 * floatBytes[cubicIndexes[3+4*(2+4*0)]]) +
+             wy3*(wx0 * floatBytes[cubicIndexes[0+4*(3+4*0)]] + wx1 * floatBytes[cubicIndexes[1+4*(3+4*0)]] +  wx2 * floatBytes[cubicIndexes[2+4*(3+4*0)]] + wx3 * floatBytes[cubicIndexes[3+4*(3+4*0)]])
+             ) +
+        wz1*(
+             wy0*(wx0 * floatBytes[cubicIndexes[0+4*(0+4*1)]] + wx1 * floatBytes[cubicIndexes[1+4*(0+4*1)]] +  wx2 * floatBytes[cubicIndexes[2+4*(0+4*1)]] + wx3 * floatBytes[cubicIndexes[3+4*(0+4*1)]]) +
+             wy1*(wx0 * floatBytes[cubicIndexes[0+4*(1+4*1)]] + wx1 * floatBytes[cubicIndexes[1+4*(1+4*1)]] +  wx2 * floatBytes[cubicIndexes[2+4*(1+4*1)]] + wx3 * floatBytes[cubicIndexes[3+4*(1+4*1)]]) +
+             wy2*(wx0 * floatBytes[cubicIndexes[0+4*(2+4*1)]] + wx1 * floatBytes[cubicIndexes[1+4*(2+4*1)]] +  wx2 * floatBytes[cubicIndexes[2+4*(2+4*1)]] + wx3 * floatBytes[cubicIndexes[3+4*(2+4*1)]]) +
+             wy3*(wx0 * floatBytes[cubicIndexes[0+4*(3+4*1)]] + wx1 * floatBytes[cubicIndexes[1+4*(3+4*1)]] +  wx2 * floatBytes[cubicIndexes[2+4*(3+4*1)]] + wx3 * floatBytes[cubicIndexes[3+4*(3+4*1)]])
+             ) +
+        wz2*(
+             wy0*(wx0 * floatBytes[cubicIndexes[0+4*(0+4*2)]] + wx1 * floatBytes[cubicIndexes[1+4*(0+4*2)]] +  wx2 * floatBytes[cubicIndexes[2+4*(0+4*2)]] + wx3 * floatBytes[cubicIndexes[3+4*(0+4*2)]]) +
+             wy1*(wx0 * floatBytes[cubicIndexes[0+4*(1+4*2)]] + wx1 * floatBytes[cubicIndexes[1+4*(1+4*2)]] +  wx2 * floatBytes[cubicIndexes[2+4*(1+4*2)]] + wx3 * floatBytes[cubicIndexes[3+4*(1+4*2)]]) +
+             wy2*(wx0 * floatBytes[cubicIndexes[0+4*(2+4*2)]] + wx1 * floatBytes[cubicIndexes[1+4*(2+4*2)]] +  wx2 * floatBytes[cubicIndexes[2+4*(2+4*2)]] + wx3 * floatBytes[cubicIndexes[3+4*(2+4*2)]]) +
+             wy3*(wx0 * floatBytes[cubicIndexes[0+4*(3+4*2)]] + wx1 * floatBytes[cubicIndexes[1+4*(3+4*2)]] +  wx2 * floatBytes[cubicIndexes[2+4*(3+4*2)]] + wx3 * floatBytes[cubicIndexes[3+4*(3+4*2)]])
+             ) +
+        wz3*(
+             wy0*(wx0 * floatBytes[cubicIndexes[0+4*(0+4*3)]] + wx1 * floatBytes[cubicIndexes[1+4*(0+4*3)]] +  wx2 * floatBytes[cubicIndexes[2+4*(0+4*3)]] + wx3 * floatBytes[cubicIndexes[3+4*(0+4*3)]]) +
+             wy1*(wx0 * floatBytes[cubicIndexes[0+4*(1+4*3)]] + wx1 * floatBytes[cubicIndexes[1+4*(1+4*3)]] +  wx2 * floatBytes[cubicIndexes[2+4*(1+4*3)]] + wx3 * floatBytes[cubicIndexes[3+4*(1+4*3)]]) +
+             wy2*(wx0 * floatBytes[cubicIndexes[0+4*(2+4*3)]] + wx1 * floatBytes[cubicIndexes[1+4*(2+4*3)]] +  wx2 * floatBytes[cubicIndexes[2+4*(2+4*3)]] + wx3 * floatBytes[cubicIndexes[3+4*(2+4*3)]]) +
+             wy3*(wx0 * floatBytes[cubicIndexes[0+4*(3+4*3)]] + wx1 * floatBytes[cubicIndexes[1+4*(3+4*3)]] +  wx2 * floatBytes[cubicIndexes[2+4*(3+4*3)]] + wx3 * floatBytes[cubicIndexes[3+4*(3+4*3)]])
+             );
+}
+
 CF_INLINE float CPRVolumeDataLinearInterpolatedFloatAtDicomVector(CPRVolumeDataInlineBuffer *inlineBuffer, N3Vector vector) // coordinate in mm dicom space
 {
     vector = N3VectorApplyTransform(vector, inlineBuffer->volumeTransform);
@@ -300,6 +415,12 @@ CF_INLINE float CPRVolumeDataNearestNeighborInterpolatedFloatAtDicomVector(CPRVo
     return CPRVolumeDataNearestNeighborInterpolatedFloatAtVolumeCoordinate(inlineBuffer, vector.x, vector.y, vector.z);
 }
 
+CF_INLINE float CPRVolumeDataCubicInterpolatedFloatAtDicomVector(CPRVolumeDataInlineBuffer *inlineBuffer, N3Vector vector) // coordinate in mm dicom space
+{
+    vector = N3VectorApplyTransform(vector, inlineBuffer->volumeTransform);
+    return CPRVolumeDataCubicInterpolatedFloatAtVolumeCoordinate(inlineBuffer, vector.x, vector.y, vector.z);
+}
+
 CF_INLINE float CPRVolumeDataLinearInterpolatedFloatAtVolumeVector(CPRVolumeDataInlineBuffer *inlineBuffer, N3Vector vector)
 {
     return CPRVolumeDataLinearInterpolatedFloatAtVolumeCoordinate(inlineBuffer, vector.x, vector.y, vector.z);
@@ -308,6 +429,11 @@ CF_INLINE float CPRVolumeDataLinearInterpolatedFloatAtVolumeVector(CPRVolumeData
 CF_INLINE float CPRVolumeDataNearestNeighborInterpolatedFloatAtVolumeVector(CPRVolumeDataInlineBuffer *inlineBuffer, N3Vector vector)
 {
     return CPRVolumeDataNearestNeighborInterpolatedFloatAtVolumeCoordinate(inlineBuffer, vector.x, vector.y, vector.z);
+}
+
+CF_INLINE float CPRVolumeDataCubicInterpolatedFloatAtVolumeVector(CPRVolumeDataInlineBuffer *inlineBuffer, N3Vector vector)
+{
+    return CPRVolumeDataCubicInterpolatedFloatAtVolumeCoordinate(inlineBuffer, vector.x, vector.y, vector.z);
 }
 
 CF_EXTERN_C_END

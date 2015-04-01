@@ -59,6 +59,7 @@
 
 - (void)_nearestNeighborFill;
 - (void)_linearInterpolatingFill;
+- (void)_cubicInterpolatingFill;
 - (void)_unknownInterpolatingFill;
 
 @end
@@ -118,6 +119,8 @@
             [self _linearInterpolatingFill];
         } else if (_interpolationMode == CPRInterpolationModeNearestNeighbor) {
             [self _nearestNeighborFill];
+        } else if (_interpolationMode == CPRInterpolationModeCubic) {
+            [self _cubicInterpolatingFill];
         } else {
             [self _unknownInterpolatingFill];
         }
@@ -180,17 +183,17 @@
     N3VectorArray volumeVectors;
     N3VectorArray volumeNormals;
     CPRVolumeDataInlineBuffer inlineBuffer;
-    
+
     volumeVectors = malloc(_width * sizeof(N3Vector));
     memcpy(volumeVectors, _vectors, _width * sizeof(N3Vector));
     N3VectorApplyTransformToVectors(_volumeData.volumeTransform, volumeVectors, _width);
-    
+
     volumeNormals = malloc(_width * sizeof(N3Vector));
     memcpy(volumeNormals, _normals, _width * sizeof(N3Vector));
     vectorTransform = _volumeData.volumeTransform;
     vectorTransform.m41 = vectorTransform.m42 = vectorTransform.m43 = 0.0;
     N3VectorApplyTransformToVectors(vectorTransform, volumeNormals, _width);
-    
+
     if ([_volumeData aquireInlineBuffer:&inlineBuffer]) {
 		for (y = 0; y < _height; y++) {
 			if ([self isCancelled]) {
@@ -212,6 +215,48 @@
     free(volumeVectors);
     free(volumeNormals);
 }
+
+- (void)_cubicInterpolatingFill
+{
+    NSUInteger x;
+    NSUInteger y;
+    N3AffineTransform vectorTransform;
+    N3VectorArray volumeVectors;
+    N3VectorArray volumeNormals;
+    CPRVolumeDataInlineBuffer inlineBuffer;
+
+    volumeVectors = malloc(_width * sizeof(N3Vector));
+    memcpy(volumeVectors, _vectors, _width * sizeof(N3Vector));
+    N3VectorApplyTransformToVectors(_volumeData.volumeTransform, volumeVectors, _width);
+
+    volumeNormals = malloc(_width * sizeof(N3Vector));
+    memcpy(volumeNormals, _normals, _width * sizeof(N3Vector));
+    vectorTransform = _volumeData.volumeTransform;
+    vectorTransform.m41 = vectorTransform.m42 = vectorTransform.m43 = 0.0;
+    N3VectorApplyTransformToVectors(vectorTransform, volumeNormals, _width);
+
+    if ([_volumeData aquireInlineBuffer:&inlineBuffer]) {
+		for (y = 0; y < _height; y++) {
+			if ([self isCancelled]) {
+				break;
+			}
+
+			for (x = 0; x < _width; x++) {
+				_floatBytes[y*_width + x] = CPRVolumeDataCubicInterpolatedFloatAtVolumeVector(&inlineBuffer, volumeVectors[x]);
+			}
+
+			N3VectorAddVectors(volumeVectors, volumeNormals, _width);
+		}
+	} else {
+        memset(_floatBytes, 0, _height * _width * sizeof(float));
+    }
+
+    [_volumeData releaseInlineBuffer:&inlineBuffer];
+
+    free(volumeVectors);
+    free(volumeNormals);
+}
+
 
 - (void)_unknownInterpolatingFill
 {
