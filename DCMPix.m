@@ -5500,7 +5500,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     //orientation
     
     NSArray *ipp = [dcmObject attributeArrayWithName:@"ImagePositionPatient"];
-    if( ipp)
+    if( ipp && [ipp count])
     {
         originX = [[ipp objectAtIndex:0] doubleValue];
         originY = [[ipp objectAtIndex:1] doubleValue];
