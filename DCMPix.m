@@ -3644,6 +3644,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             URIRepresentationAbsoluteString =  [[[[[iO valueForKeyPath:@"series.study"] objectID] URIRepresentation] absoluteString] retain];
             fileTypeHasPrefixDICOM = [[iO valueForKey:@"fileType"] hasPrefix:@"DICOM"];
             numberOfFrames = [[iO valueForKey: @"numberOfFrames"] intValue];
+            self->modalityString = [[NSString stringWithString:[iO valueForKeyPath:@"series.modality"]] retain];
             
             if( [iO valueForKeyPath: @"series.study.dateOfBirth"])
                 self.yearOld = [iO valueForKeyPath: @"series.study.yearOld"];
@@ -3781,6 +3782,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     copy->maxValueOfSeries = self->maxValueOfSeries;
     copy->minValueOfSeries = self->minValueOfSeries;
     copy->isOriginDefined = self->isOriginDefined;
+    copy->modalityString = [[NSString stringWithString:self->modalityString] retain];
     
     return copy;
 }
@@ -5498,7 +5500,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     //orientation
     
     NSArray *ipp = [dcmObject attributeArrayWithName:@"ImagePositionPatient"];
-    if( ipp)
+    if( ipp && [ipp count])
     {
         originX = [[ipp objectAtIndex:0] doubleValue];
         originY = [[ipp objectAtIndex:1] doubleValue];

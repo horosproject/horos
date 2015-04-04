@@ -5463,6 +5463,8 @@ static volatile int numberOfThreadsForRelisce = 0;
     for( DCMView *v in self.imageViews)
         [v computeColor];
     
+    [self buildSeriesPopup];
+    
     needsToBuildSeriesMatrix = NO;
 }
 
