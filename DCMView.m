@@ -92,6 +92,7 @@ static		NSMutableArray				*globalStringTextureCache = nil;
 
 NSString *pasteBoardOsiriX = @"OsiriX pasteboard";
 NSString *pasteBoardOsiriXPlugin = @"OsiriXPluginDataType";
+NSString *OsirixPluginPboardUTI = @"com.opensource.osirix.plugin.uti";
 
 // intersect3D_SegmentPlane(): intersect a segment and a plane
 //    Input:  S = a segment, and Pn = a plane = {Point V0; Vector n;}
