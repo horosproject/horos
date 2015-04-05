@@ -783,6 +783,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
         }
         
         NSMutableArray* pathsOfPluginsToLoad = [NSMutableArray array];
+        NSMutableArray* dontLoadOtherWithTheseNames = [NSMutableArray array];
         
         for (id path in paths)
             @try {
@@ -795,7 +796,15 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 
                 NSEnumerator* e = nil;
                 if ([path isKindOfClass:[NSString class]])
-                    e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
+                {
+                    NSArray* pluginsInDir = [[NSFileManager defaultManager] directoryContentsAtPath:path];
+                    e = [[pluginsInDir filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSString* plugin, NSDictionary* bindings) {
+                        BOOL listed = [dontLoadOtherWithTheseNames containsObject:plugin];
+                        if (listed)
+                            NSLog(@"Won't load %@ from %@ in favor of %@", plugin, path, [[pathsOfPluginsToLoad filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"lastPathComponent = %@", plugin]] lastObject]);
+                        return !listed;
+                    }]] objectEnumerator];
+                }
                 else if (path == [NSNull null])
                 {
                     path = @"/";
@@ -803,7 +812,9 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                     NSArray* args = [[NSProcessInfo processInfo] arguments];
                     for (NSInteger i = 0; i < [args count]; ++i)
                         if ([[args objectAtIndex:i] isEqualToString:@"--LoadPlugin"] && [args count] > i+1) {
-                            [cl addObject:[args objectAtIndex:++i]];
+                            NSString* pluginpath = [args objectAtIndex:++i];
+                            [cl addObject:pluginpath];
+                            [dontLoadOtherWithTheseNames addObject:pluginpath.lastPathComponent];
                         }
                     e = [cl objectEnumerator];
                 }
