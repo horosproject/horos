@@ -2877,7 +2877,7 @@ CA
                                                                             <constraint firstItem="14751" firstAttribute="leading" secondItem="14635" secondAttribute="leading" constant="10" id="tF0-Ig-GKw"/>
                                                                         </constraints>
                                                                     </customView>
-                                                                    <button fixedFrame="YES" id="14622">
+                                                                    <button fixedFrame="YES" hidden="YES" id="14622">
                                                                         <rect key="frame" x="0.0" y="372" width="386" height="30"/>
                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                         <buttonCell key="cell" type="squareTextured" bezelStyle="texturedSquare" image="DefaultBanner" imagePosition="only" alignment="center" state="on" imageScaling="proportionallyDown" inset="2" id="14623">
@@ -3907,7 +3907,7 @@ Gw
                                     <rect key="frame" x="61" y="49" width="334" height="34"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" id="14508">
                                         <font key="font" metaFont="systemBold"/>
-                                        <string key="title">This version of OsiriX cannot open large series, 
+                                        <string key="title">This version of OsiriX cannot open large series,
 update to OsiriX 64-bit:</string>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

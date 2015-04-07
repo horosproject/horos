@@ -34,3 +34,6 @@ url.h
 
 *.xcscheme
 xcuserdata/
+
+DerivedData/
+
