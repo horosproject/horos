@@ -131,7 +131,7 @@ static NSString *DCM_MPEG2Main = @"1.2.840.10008.1.2.4.100";
 	return [[[DCMTransferSyntax alloc] initWithTS:DCM_JPEGLSLossy] autorelease];
 }
 
-+(id)RLETransferSyntax{
++(id)RLELosslessTransferSyntax{
 	return [[[DCMTransferSyntax alloc] initWithTS:DCM_RLELossless] autorelease];
 }
 

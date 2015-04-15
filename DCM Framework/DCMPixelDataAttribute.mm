@@ -34,6 +34,9 @@
 
 #import "DCMPixelDataAttribute.h"
 #import "DCM.h"
+
+#include "interface.h"
+
 #import "jpeglib12.h"
 #import <stdio.h>
 #import "jpegdatasrc.h"
@@ -1140,7 +1143,7 @@ static inline int int_ceildivpow2(int a, int b) {
     {
         long decompressedLength = 0;
         
-        int processors = 0;
+        unsigned long processors = 0;
         
         if( [jpegData length] > 512*1024)
             processors = [[NSProcessInfo processInfo] processorCount] /2;
@@ -1413,6 +1416,44 @@ static inline int int_ceildivpow2(int a, int b) {
     }
     return decompressedData;
 }
+
+
+- (NSData *)convertJPEGLSToHost:(NSData *)jpegLsData
+{
+    NSMutableData* pixelData = nil;
+    
+    unsigned long processors = 0;
+    
+    if( [jpegLsData length] > 512*1024)
+        processors = [[NSProcessInfo processInfo] processorCount] /2;
+    
+    JlsParameters jlsParameters = {};
+    JLS_ERROR readHeaderResult = JpegLsReadHeader([jpegLsData bytes], [jpegLsData length], &jlsParameters);
+    
+    if (readHeaderResult == 0)
+    {
+        size_t uncompressedLength = jlsParameters.height * jlsParameters.bytesperline;
+        void *uncompressedData = (void*) malloc(uncompressedLength);
+        
+        if (uncompressedData)
+        {
+            JLS_ERROR decodeResult = JpegLsDecode(uncompressedData, uncompressedLength, [jpegLsData bytes],[jpegLsData length], NULL);
+            if (decodeResult != 0)
+            {
+                free(uncompressedData);
+            }
+            else
+            {
+                pixelData = [NSMutableData dataWithBytesNoCopy:uncompressedData
+                                                        length:uncompressedLength
+                                                  freeWhenDone:YES];
+            }
+        }
+    }
+    
+    return pixelData;
+}
+
 
 - (NSMutableData *)encodeJPEG2000:(NSMutableData *)data quality:(int)quality
 {
@@ -3518,7 +3559,7 @@ static inline int int_ceildivpow2(int a, int b) {
             
             if( [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax]] == NO &&
                [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax]]  == NO && 
-               [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax RLETransferSyntax]] == NO)
+               [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax RLELosslessTransferSyntax]] == NO)
             {
                 depth = scanJpegDataForBitDepth( (unsigned char *) [subData bytes], [subData length]);
                 if( depth == 0)
@@ -3530,7 +3571,8 @@ static inline int int_ceildivpow2(int a, int b) {
                 data = [self convertJPEG8ToHost:subData];
                 colorspaceIsConverted = YES;
             }
-            // 8 bit jpegs
+            
+            //JPEG 8 bit
             else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] && depth <= 8)
             {
                 colorspaceIsConverted = YES;
@@ -3544,7 +3586,8 @@ static inline int int_ceildivpow2(int a, int b) {
             { 
                 data = [self convertJPEG8LosslessToHost:subData];
             }
-            //12 bit jpegs
+            
+            //JPEG 12 bit
             else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] && depth <= 12)
             {
                 data = [self convertJPEG12ToHost:subData];
@@ -3557,7 +3600,8 @@ static inline int int_ceildivpow2(int a, int b) {
             {
                 data = [self convertJPEG12ToHost:subData];
             }
-            //jpeg 16s
+            
+            //JPEG 16 bit
             else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGExtendedTransferSyntax]] && depth <= 16)
             {
                 data = [self convertJPEG16ToHost:subData];		
@@ -3570,16 +3614,30 @@ static inline int int_ceildivpow2(int a, int b) {
             {
                 data = [self convertJPEG16ToHost:subData];		
             }
+            
             //JPEG 2000
-            else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax]] || [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax]] )
+            else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax]] ||
+                     [transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEG2000LossyTransferSyntax]] )
             {
                 colorspaceIsConverted = YES;
                 data = [self convertJPEG2000ToHost:subData];
             }
-            else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax RLETransferSyntax]])
+            else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax RLELosslessTransferSyntax]])
             {
                 data = [self convertRLEToHost:subData];
             }
+
+            //JPEG-LS
+            else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLSLosslessTransferSyntax]])
+            {
+                data = [self convertJPEGLSToHost:subData];
+            }
+            else if ([transferSyntax isEqualToTransferSyntax:[DCMTransferSyntax JPEGLSLossyTransferSyntax]])
+            {
+                data = [self convertJPEGLSToHost:subData];
+            }
+            
+            //NOT KNOW OR NOT IMPLEMENTED
             else
             {
                 NSLog( @"DCM Framework: Unknown compressed transfer syntax: %@ %@", transferSyntax.description, transferSyntax.transferSyntax);
