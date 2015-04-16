@@ -730,6 +730,7 @@
 		84E191FB1369966A008DCFC8 /* WADODownload.h in Headers */ = {isa = PBXBuildFile; fileRef = 84E191F91369966A008DCFC8 /* WADODownload.h */; };
 		84E191FC1369966A008DCFC8 /* WADODownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E191FA1369966A008DCFC8 /* WADODownload.m */; };
 		84F453570FC3DF5400D29666 /* ILCrashReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
+		99CDC0F51ADF0D0900F34F19 /* libCharLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB451802149F464B006674BF /* libCharLS.a */; };
 		A0344496143DE4AA003E1AFA /* DCMUSRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = A085E104141E53210072BF0D /* DCMUSRegion.m */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
 		A90202BF0B980CD60001A00B /* PluginManagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90202BB0B980CD60001A00B /* PluginManagerController.m */; };
@@ -2392,7 +2393,6 @@
 		AB3886AC0B2449CD00831F74 /* SagSmallOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB7598280AEE62CE005EE3A9 /* SagSmallOpposite.tif */; };
 		AB3F4A1F0672674000E61A6C /* Window3DController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3F4A1D0672674000E61A6C /* Window3DController.h */; };
 		AB3F4A200672674000E61A6C /* Window3DController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3F4A1E0672674000E61A6C /* Window3DController.m */; };
-		AB451813149F464B006674BF /* libCharLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB451802149F464B006674BF /* libCharLS.a */; };
 		AB451815149F464B006674BF /* scan.h in Headers */ = {isa = PBXBuildFile; fileRef = AB451803149F464B006674BF /* scan.h */; };
 		AB451817149F464B006674BF /* util.h in Headers */ = {isa = PBXBuildFile; fileRef = AB451804149F464B006674BF /* util.h */; };
 		AB451819149F464B006674BF /* colortransform.h in Headers */ = {isa = PBXBuildFile; fileRef = AB451805149F464B006674BF /* colortransform.h */; };
@@ -7071,6 +7071,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				99CDC0F51ADF0D0900F34F19 /* libCharLS.a in Frameworks */,
 				434B47AE1A1A1AD4008CF8CF /* libopenjp2.a in Frameworks */,
 				BFE0652B06755B7200AC4B67 /* Cocoa.framework in Frameworks */,
 				7E47658007428C80000C9A74 /* Accelerate.framework in Frameworks */,
@@ -7297,7 +7298,6 @@
 				4362177F1A2F3730006FA27A /* libITKVideoCore-4.7.a in Frameworks */,
 				4362182B1A2F375C006FA27A /* libvtkInteractionStyle-6.2.a in Frameworks */,
 				436217621A2F3730006FA27A /* libITKIOStimulate-4.7.a in Frameworks */,
-				AB451813149F464B006674BF /* libCharLS.a in Frameworks */,
 				436218011A2F375C006FA27A /* libvtkDomainsChemistry-6.2.a in Frameworks */,
 				436217751A2F3730006FA27A /* libitkpng-4.7.a in Frameworks */,
 				436217441A2F3730006FA27A /* libitkgdcmDICT-4.7.a in Frameworks */,
@@ -16200,6 +16200,7 @@
 					"$(PROJECT_DIR)/Binaries/LibTiff",
 					"$(PROJECT_DIR)/Binaries/ITKLibs",
 					"$(PROJECT_DIR)/Binaries/VTKLibs",
+					"$(PROJECT_DIR)/Binaries/CharLS",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -16280,6 +16281,7 @@
 					Binaries/openjpeg,
 					"$(PROJECT_DIR)/Binaries/VTKLibs",
 					"$(PROJECT_DIR)/Binaries/LibTiff",
+					"$(PROJECT_DIR)/Binaries/CharLS",
 				);
 				OTHER_LDFLAGS = (
 					"-seg1addr",
@@ -16643,6 +16645,7 @@
 					Binaries/openjpeg,
 					"$(PROJECT_DIR)/Binaries/VTKLibs",
 					"$(PROJECT_DIR)/Binaries/LibTiff",
+					"$(PROJECT_DIR)/Binaries/CharLS",
 				);
 				OTHER_LDFLAGS = (
 					"-seg1addr",
@@ -16740,6 +16743,7 @@
 					"$(PROJECT_DIR)/Binaries/LibTiff",
 					"$(PROJECT_DIR)/Binaries/ITKLibs",
 					"$(PROJECT_DIR)/Binaries/VTKLibs",
+					"$(PROJECT_DIR)/Binaries/CharLS",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
