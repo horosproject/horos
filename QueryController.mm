@@ -4043,7 +4043,7 @@ extern "C"
 				
 				NSManagedObject	*series = [seriesArray objectAtIndex: 0];
 				
-				[[BrowserController currentBrowser] openViewerFromImages: [NSArray arrayWithObject: [[BrowserController currentBrowser] childrenArray: series]] movie: nil viewer :nil keyImagesOnly:NO];
+				[[BrowserController currentBrowser] openViewerFromImages: [NSArray arrayWithObject: [[BrowserController currentBrowser] childrenArray: series]] movie: NO viewer :nil keyImagesOnly:NO];
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
 					[NSApp sendAction: @selector(tileWindows:) to:nil from: self];

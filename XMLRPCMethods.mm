@@ -931,7 +931,7 @@
                                                                           hostname:[source objectForKey:@"Address"]
                                                                               port:[[source objectForKey:@"Port"] intValue]
                                                                     transferSyntax:0
-                                                                       compression:nil
+                                                                       compression:0.f
                                                                    extraParameters:source];
         
         NSMutableArray* filters = [NSMutableArray array];

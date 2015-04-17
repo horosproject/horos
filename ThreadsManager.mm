@@ -75,7 +75,7 @@
 -(NSUInteger)threadsCount {
 	@synchronized (_threadsController) {
 		return [_threadsController.arrangedObjects count];
-	} return nil;
+	} return 0;
 }
 
 -(NSThread*)threadAtIndex:(NSUInteger)index {

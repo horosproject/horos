@@ -513,7 +513,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 	else
     {
         NSMutableString *imageDisplayFormat = [NSMutableString stringWithString: imageDisplayFormatTag[[[dict valueForKey: @"imageDisplayFormatTag"] intValue]]];
-        [imageDisplayFormat replaceOccurrencesOfString: @" " withString: @"\\" options: nil range: NSMakeRange(0, [imageDisplayFormat length])];
+        [imageDisplayFormat replaceOccurrencesOfString: @" " withString: @"\\" options:NSCaseInsensitiveSearch range: NSMakeRange(0, [imageDisplayFormat length])];
         
         int ipp = imageDisplayFormatNumbers[[[dict valueForKey: @"imageDisplayFormatTag"] intValue]];
         int rows = imageDisplayFormatRows[[[dict valueForKey: @"imageDisplayFormatTag"] intValue]];
@@ -559,8 +559,8 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
                     NSXMLElement *filmbox = [NSXMLElement elementWithName: @"filmbox"];
                     
                     NSMutableString *filmSize = [NSMutableString stringWithString: filmSizeTag[[[dict valueForKey: @"filmSizeTag"] intValue]]];
-                    [filmSize replaceOccurrencesOfString: @" " withString: @"" options: nil range: NSMakeRange(0, [filmSize length])];
-                    [filmSize replaceOccurrencesOfString: @"." withString: @"_" options: nil range: NSMakeRange(0, [filmSize length])];
+                    [filmSize replaceOccurrencesOfString: @" " withString: @"" options:NSCaseInsensitiveSearch range: NSMakeRange(0, [filmSize length])];
+                    [filmSize replaceOccurrencesOfString: @"." withString: @"_" options:NSCaseInsensitiveSearch range: NSMakeRange(0, [filmSize length])];
 
                     [filmbox addAttribute: [NSXMLNode attributeWithName: @"image_display_format" stringValue: [imageDisplayFormat uppercaseString]]];
                     [filmbox addAttribute: [NSXMLNode attributeWithName: @"film_orientation" stringValue: [filmOrientationTag[[[dict valueForKey: @"filmOrientationTag"] intValue]] uppercaseString]]];
