@@ -172,7 +172,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
     
     [_filterField.cell setControlSize:NSSmallControlSize];
     _filterField.font = [NSFont controlContentFontOfSize:[NSFont smallSystemFontSize]];
-    _filterField.bezelStyle = NSRoundedBezelStyle;
+    _filterField.bezelStyle = NSTextFieldRoundedBezel;//NSRoundedBezelStyle;
     [_filterField sizeToFit];
     [_filterField setFocusRingType:NSFocusRingTypeNone];
     
