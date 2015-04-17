@@ -12067,9 +12067,9 @@
 			productReference = 59BDEC2D117C92B2007F1F2C /* Horos Launcher.app */;
 			productType = "com.apple.product-type.application";
 		};
-		7E0B3A3E067526CD00908593 /* DCM API */ = {
+		7E0B3A3E067526CD00908593 /* DCM Framework */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7E76BEC0085757B60073649A /* Build configuration list for PBXNativeTarget "DCM API" */;
+			buildConfigurationList = 7E76BEC0085757B60073649A /* Build configuration list for PBXNativeTarget "DCM Framework" */;
 			buildPhases = (
 				7E0B3A3A067526CD00908593 /* Headers */,
 				7E0B3A3B067526CD00908593 /* Resources */,
@@ -12080,7 +12080,7 @@
 			);
 			dependencies = (
 			);
-			name = "DCM API";
+			name = "DCM Framework";
 			productName = DCM;
 			productReference = 844719AF0FD8EF50003BFDF8 /* DCMAPI.framework */;
 			productType = "com.apple.product-type.framework";
@@ -12271,7 +12271,7 @@
 				AB28B42E05B7921E00A9906C /* Horos */,
 				59BDEC2C117C92B2007F1F2C /* Horos Launcher */,
 				AB0F3A2B1046BD2B004129DD /* Horos API */,
-				7E0B3A3E067526CD00908593 /* DCM API */,
+				7E0B3A3E067526CD00908593 /* DCM Framework */,
 				9966A18E1AE099A400F2D81A /* OsiriX API (Deprecated) */,
 				9966A1B91AE0B7E000F2D81A /* OsiriX DCM Framework (Deprecated) */,
 				AB724F300ADE6ECB00A212A0 /* Decompress */,
@@ -15826,7 +15826,7 @@
 		};
 		4A2F590D078D124B00C514A2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 7E0B3A3E067526CD00908593 /* DCM API */;
+			target = 7E0B3A3E067526CD00908593 /* DCM Framework */;
 			targetProxy = 4A2F590C078D124B00C514A2 /* PBXContainerItemProxy */;
 		};
 		59BDEE6B117CB393007F1F2C /* PBXTargetDependency */ = {
@@ -17510,7 +17510,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
 		};
-		7E76BEC0085757B60073649A /* Build configuration list for PBXNativeTarget "DCM API" */ = {
+		7E76BEC0085757B60073649A /* Build configuration list for PBXNativeTarget "DCM Framework" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E76BEC1085757B60073649A /* Development */,
