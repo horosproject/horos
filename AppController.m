@@ -5733,7 +5733,7 @@ static NSMutableDictionary* _receivingDict = nil;
 
 -(void)_receivingIconUpdate {
 	if (!_receivingDict.count)
-		[NSApp setApplicationIconImage:[NSImage imageNamed:@"Osirix.icns"]];
+		[NSApp setApplicationIconImage:[NSImage imageNamed:@"Horos.icns"]];
 	else [NSApp setApplicationIconImage:[NSImage imageNamed:@"OsirixDownload.icns"]];
 }
 

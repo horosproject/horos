@@ -246,22 +246,22 @@ int main(int argc, char** argv)
 	const NSString* const OsirixLiteLocation = @"/tmp/";
 	NSTask* task;
 	
-	// make directory to hold OsiriX Lite
+	// make directory to hold Horos Lite
 	task = [NSTask launchedTaskWithLaunchPath:@"/bin/mkdir" arguments:[NSArray arrayWithObjects: @"-p", OsirixLiteLocation, NULL]];
 	[task waitUntilExit];
 	
-	// unzip OsiriX Lite
-	task = [NSTask launchedTaskWithLaunchPath:@"/usr/bin/unzip" arguments:[NSArray arrayWithObjects: @"-od", OsirixLiteLocation, [[NSBundle mainBundle] pathForResource:@"OsiriX Lite" ofType:@"zip"], NULL]];
+	// unzip Horos Lite
+	task = [NSTask launchedTaskWithLaunchPath:@"/usr/bin/unzip" arguments:[NSArray arrayWithObjects: @"-od", OsirixLiteLocation, [[NSBundle mainBundle] pathForResource:@"Horos Lite" ofType:@"zip"], NULL]];
 	[task waitUntilExit];
 	
-	// launch OsiriX if available
+	// launch Horos if available
 	
-	NSString* appName = @"OsiriX.app";
+	NSString* appName = @"Horos.app";
 	
 	BOOL launched = [[NSWorkspace sharedWorkspace] launchApplication:appName];
 	
 	if (!launched) {
-		appName = @"OsiriX Lite.app";
+		appName = @"Horos Lite.app";
 		launched = [[NSWorkspace sharedWorkspace] launchApplication:[OsirixLiteLocation stringByAppendingPathComponent:appName]];
 	}
 	

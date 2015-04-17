@@ -2,8 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.8</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>Horos Lite</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -174,18 +178,14 @@
 			<true/>
 		</dict>
 	</array>
-	<key>CFBundleExecutable</key>
-	<string>Horos</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Horos v1.0</string>
+	<string>Horos Lite v.5.9</string>
 	<key>CFBundleIconFile</key>
 	<string>Osirix.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.rossetantoine.osirix</string>
+	<string>com.horosproject.horos-lite</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>Horos</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -208,31 +208,17 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>20141210</string>
-	<key>GitHash</key>
-	<string></string>
-	<key>GitState</key>
-	<string></string>
-	<key>LSApplicationCategoryType</key>
-	<string>public.app-category.medical</string>
+	<string>20140701</string>
 	<key>LSCanProvideIMVideoDataSource</key>
 	<string>Yes</string>
-	<key>LSMinimumSystemVersion</key>
-	<string>10.8</string>
-	<key>LSRequiresNativeExecution</key>
-	<true/>
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
-	<key>NSContactsUsageDescription</key>
-	<string>Your account will be used for the built-in iChat sharing service. If you don't allow access, you cannot use the iChat functions.</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright 2003-2014, Pixmeo</string>
+	<string>Copyright 2015, The Horos Project</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>OSAScriptingDefinition</key>
-	<string>OsiriX.sdef</string>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>
@@ -259,5 +245,11 @@
 			</dict>
 		</dict>
 	</array>
+	<key>OSAScriptingDefinition</key>
+	<string>Horos.sdef</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Your account will be used for the built-in iChat sharing service. If you don&apos;t allow access, you cannot use the iChat functions.</string>
+	<key>GitHash</key>
+	<string>6c260272a15386f84aa24ea238c8bd7d3264fa7f</string>
 </dict>
 </plist>

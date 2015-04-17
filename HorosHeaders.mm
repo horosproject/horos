@@ -53,9 +53,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface Dummy_OsiriXHeaders_Class : NSObject
+@interface Dummy_HorosHeaders_Class : NSObject
 @end
-@implementation Dummy_OsiriXHeaders_Class
+@implementation Dummy_HorosHeaders_Class
 
 - (id)init
 {

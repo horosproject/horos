@@ -179,7 +179,7 @@
 	<key>CFBundleGetInfoString</key>
 	<string>Horos v1.0.4</string>
 	<key>CFBundleIconFile</key>
-	<string>Osirix.icns</string>
+	<string>Horos.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.horosproject.horos</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -224,7 +224,7 @@
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Your account will be used for the built-in iChat sharing service. If you don&apos;t allow access, you cannot use the iChat functions.</string>
+	<string>Your account will be used for the built-in iChat sharing service. If you don't allow access, you cannot use the iChat functions.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright 2015, The Horos Project</string>
 	<key>NSMainNibFile</key>
@@ -232,7 +232,7 @@
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>OSAScriptingDefinition</key>
-	<string>OsiriX.sdef</string>
+	<string>Horos.sdef</string>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>
