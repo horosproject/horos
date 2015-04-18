@@ -68,10 +68,24 @@
 
 - (id)reformationView // returns the actual view that does the reformation. I expect hacky calls that do and do screen grabs and such will need this
 {
-    if (_reformationType == CPRViewStraightenedReformationType) {
+    if (_reformationType == CPRViewStraightenedReformationType)
+    {
         return _straightenedView;
-    } else {
+    } else
+    {
         return _stretchedView;
+    }
+}
+
+- (void) _setNeedsNewRequest
+{
+    if (_reformationType == CPRViewStraightenedReformationType)
+    {
+        [self->_straightenedView _setNeedsNewRequest];
+    }
+    else
+    {
+        [self->_stretchedView _setNeedsNewRequest];
     }
 }
 

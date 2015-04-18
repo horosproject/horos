@@ -81,7 +81,6 @@ extern int splitPosition[ 3];
 
 - (CGFloat)_relativeSegmentPosition;
 
-- (void)_setNeedsNewRequest;
 - (void)_sendNewRequestIfNeeded;
 - (void)_sendNewRequest;
 
@@ -719,6 +718,8 @@ extern int splitPosition[ 3];
         mmPerPixel = (_sectionWidth / _renderingScale)/([self convertSizeToBacking:[self bounds].size].width*1.4);
         
         request = [[CPRObliqueSliceGeneratorRequest alloc] initWithCenter:vector pixelsWide: [self convertSizeToBacking:[self bounds].size].width*1.4 pixelsHigh: [self convertSizeToBacking:[self bounds].size].height*1.4 xBasis:N3VectorScalarMultiply(cross, mmPerPixel) yBasis:N3VectorScalarMultiply(normal, mmPerPixel)];
+        
+        request.interpolationMode = [[self windowController] selectedInterpolationMode];
 		
         if ([_lastRequest isEqual:request] == NO) {
 			CPRVolumeData *curvedVolume;
