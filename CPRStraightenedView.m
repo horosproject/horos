@@ -122,7 +122,6 @@ extern int splitPosition[ 3];
 
 + (NSInteger)_fusionModeForCPRViewClippingRangeMode:(CPRViewClippingRangeMode)clippingRangeMode;
 
-- (void)_setNeedsNewRequest;
 - (void)_sendNewRequestIfNeeded;
 - (void)_sendNewRequest;
 
@@ -1324,6 +1323,8 @@ extern int splitPosition[ 3];
     if ([_curvedPath.bezierPath elementCount] >= 3)
 	{
         request = [[CPRStraightenedGeneratorRequest alloc] init];
+        
+        request.interpolationMode = [[self windowController] selectedInterpolationMode];
         
         if( [[self windowController] viewsPosition] == VerticalPosition)
         {
