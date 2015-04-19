@@ -261,6 +261,7 @@ static NSString*	OpenROIsToolbarItemIdentifier	= @"ROIs.tif";
 static NSString*	ViewersToolbarItemIdentifier	= @"windows.tif";
 static NSString*	WebServerSingleNotification	= @"Safari.tif";
 static NSString*	AddStudiesToUserItemIdentifier	= @"NSUserAccounts";
+static NSString*    ResetSplitViewsItemIdentifier = @"Reset.pdf";
 
 static NSTimeInterval gLastActivity = 0;
 static BOOL dontShowOpenSubSeries = NO;
@@ -19027,6 +19028,15 @@ restart:
         [toolbarItem setMinSize:NSMakeSize(NSWidth([modalityFilterView frame]), NSHeight([modalityFilterView frame]))];
         [toolbarItem setMaxSize:NSMakeSize(NSWidth([modalityFilterView frame]), NSHeight([modalityFilterView frame]))];
     }
+    else if ([itemIdent isEqualToString: ResetSplitViewsItemIdentifier])
+    {
+        [toolbarItem setLabel: NSLocalizedString(@"Restore Views",nil)];
+        [toolbarItem setPaletteLabel: NSLocalizedString(@"Restore Views",nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Restore Views To Original State",nil)];
+        [toolbarItem setImage: [NSImage imageNamed: ResetSplitViewsItemIdentifier]];
+        [toolbarItem setTarget: self];
+        [toolbarItem setAction: @selector(restoreWindowState:)];
+    }
     else
     {
         // Is it a plugin menu item?
@@ -19067,6 +19077,52 @@ restart:
     }
     
     return toolbarItem;
+}
+
+- (void) restoreWindowState:(id) sender
+{
+    [splitDrawer restoreDefault: @"SplitDrawer"];
+    [splitAlbums restoreDefault: @"SplitAlbums"];
+    [splitViewHorz restoreDefault: @"SplitHorz2"];
+    [splitComparative restoreDefault: @"SplitComparative"];
+    [splitViewVert restoreDefault: @"SplitVert2"];
+    
+    for (NSView* _view in [splitDrawer subviews])
+    {
+        [_view setHidden:NO];
+        [splitDrawer resizeSubviewsWithOldSize:splitDrawer.bounds.size];
+    }
+    
+    for (NSView* _view in [splitAlbums subviews])
+    {
+        [_view setHidden:NO];
+        [splitAlbums resizeSubviewsWithOldSize:splitAlbums.bounds.size];
+    }
+
+    for (NSView* _view in [splitViewHorz subviews])
+    {
+        [_view setHidden:NO];
+        [splitViewHorz resizeSubviewsWithOldSize:splitViewHorz.bounds.size];
+    }
+    
+    for (NSView* _view in [splitComparative subviews])
+    {
+        [_view setHidden:NO];
+        [splitComparative resizeSubviewsWithOldSize:splitComparative.bounds.size];
+    }
+    
+    for (NSView* _view in [splitViewVert subviews])
+    {
+        [_view setHidden:NO];
+        [splitViewVert resizeSubviewsWithOldSize:splitViewVert.bounds.size];
+    }
+    
+    [splitDrawer restoreDefault: @"SplitDrawer"];
+    [splitAlbums restoreDefault: @"SplitAlbums"];
+    [splitViewHorz restoreDefault: @"SplitHorz2"];
+    [splitComparative restoreDefault: @"SplitComparative"];
+    [splitViewVert restoreDefault: @"SplitVert2"];
+
 }
 
 - (NSArray *)toolbarDefaultItemIdentifiers: (NSToolbar *)toolbar
@@ -19126,6 +19182,7 @@ restart:
                              TrashToolbarItemIdentifier,
                              ReportToolbarItemIdentifier,
                              ToggleDrawerToolbarItemIdentifier,
+                             ResetSplitViewsItemIdentifier,
                              nil];
     
     NSArray*		allPlugins = [[PluginManager pluginsDict] allKeys];
