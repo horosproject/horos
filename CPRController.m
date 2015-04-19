@@ -64,6 +64,7 @@ static float deg2rad = M_PI / 180.0;
 
 @implementation CPRController
 
+@synthesize selectedInterpolationMode = _selectedInterpolationMode;
 @synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit1, horizontalSplit2, verticalSplit, lowLOD;
 @synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, blendingModeAvailable, highResolutionMode;
@@ -196,6 +197,8 @@ static float deg2rad = M_PI / 180.0;
 {
 	@try
 	{
+        self->selectedInterpolationMode = CPRInterpolationModeNearestNeighbor;
+        
 		if( [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
 			[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 		
@@ -606,8 +609,66 @@ static float deg2rad = M_PI / 180.0;
         [self loadBezierPathFromFile: path];
 }
 
+
+- (CPRInterpolationMode) selectedInterpolationMode
+{
+    @synchronized(self)
+    {
+        return self->selectedInterpolationMode;
+    }
+}
+
+
+- (NSNumber*) interpolationMode
+{
+    return [NSNumber numberWithInteger:self.selectedInterpolationMode];
+}
+
+
+- (void) setInterpolationMode:(NSNumber*)value
+{
+    self.selectedInterpolationMode = [value integerValue];
+}
+
+
+- (void) setSelectedInterpolationMode:(CPRInterpolationMode) value
+{
+    @synchronized(self)
+    {
+        if (self.selectedInterpolationMode != value)
+        {
+            self->selectedInterpolationMode = value;
+            [[NSUserDefaults standardUserDefaults] setInteger:self.selectedInterpolationMode
+                                                       forKey:@"selectedCPRInterpolationMode"];
+            [ self->topTransverseView    _setNeedsNewRequest ];
+            [ self->middleTransverseView _setNeedsNewRequest ];
+            [ self->bottomTransverseView _setNeedsNewRequest ];
+            [ self->cprView _setNeedsNewRequest ];
+        }
+    }
+}
+
 -(void) awakeFromNib
 {
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"selectedCPRInterpolationMode"])
+    {
+        [self willChangeValueForKey:@"interpolationMode"];
+        self->selectedInterpolationMode = [[NSUserDefaults standardUserDefaults] integerForKey:@"selectedCPRInterpolationMode"];
+        if (self->selectedInterpolationMode !=  CPRInterpolationModeNearestNeighbor &&
+            self->selectedInterpolationMode != CPRInterpolationModeCubic)
+        {
+            self->selectedInterpolationMode = CPRInterpolationModeNearestNeighbor;
+        }
+        [self didChangeValueForKey:@"interpolationMode"];
+    }
+    else
+    {
+        self->selectedInterpolationMode = CPRInterpolationModeNearestNeighbor;
+        [[NSUserDefaults standardUserDefaults] setInteger:self.selectedInterpolationMode
+                                                   forKey:@"selectedCPRInterpolationMode"];
+    }
+    
+    
 	NSScreen *s = [viewer2D get3DViewerScreen: viewer2D];
 	
     [horizontalSplit1 setDelegate: self];
@@ -3858,6 +3919,14 @@ static float deg2rad = M_PI / 180.0;
 		[toolbarItem setView: tbHighResolution];
 		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbHighResolution frame]), NSHeight([tbHighResolution frame]))];
     }
+    else if ([itemIdent isEqualToString: @"tbInterpolationMode"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Interpolation Mode",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"Interpolation Mode",nil)];
+		
+		[toolbarItem setView: tbInterpolationMode];
+		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbInterpolationMode frame]), NSHeight([tbInterpolationMode frame]))];
+    }
 //	else if ([itemIdent isEqualToString: @"tbMovie"])
 //	{
 //		[toolbarItem setLabel: NSLocalizedString(@"4D Player",nil)];
@@ -3958,7 +4027,7 @@ static float deg2rad = M_PI / 180.0;
             NSToolbarFlexibleSpaceItemIdentifier,
             NSToolbarSpaceItemIdentifier,
             NSToolbarSeparatorItemIdentifier,
-            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbPathAssistant", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", @"Reset.pdf", @"Export.icns", @"curvedPath.icns", @"BestRendering.pdf", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbPathAssistant", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", @"Reset.pdf", @"Export.icns", @"curvedPath.icns", @"BestRendering.pdf", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"tbInterpolationMode", nil];
     
     for (id key in [PluginManager plugins])
     {

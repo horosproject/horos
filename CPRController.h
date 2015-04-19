@@ -15,6 +15,7 @@
 #import <Cocoa/Cocoa.h>
 #import "OSIWindowController.h"
 #import "CPRMPRDCMView.h"
+#import "CPRVolumeData.h"
 #import "VRController.h"
 #import "VRView.h"
 #import "FlyAssistant.h"
@@ -70,7 +71,7 @@ typedef NSInteger CPRExportRotationSpan;
 	IBOutlet NSObjectController *ob;
 	
 	// To be able to use Cocoa bindings with toolbar...
-	IBOutlet NSView *tbLOD, *tbThickSlab, *tbWLWW, *tbTools, *tbShading, *tbMovie, *tbBlending, *tbSyncZoomLevel, *tbHighResolution;
+	IBOutlet NSView *tbLOD, *tbThickSlab, *tbWLWW, *tbTools, *tbShading, *tbMovie, *tbBlending, *tbSyncZoomLevel, *tbHighResolution, *tbInterpolationMode;
 	
     IBOutlet NSView *tbPathAssistant;
     IBOutlet NSView *testView;
@@ -182,8 +183,13 @@ typedef NSInteger CPRExportRotationSpan;
 	
 	NSMutableArray *_delegateCurveViewDebugging;
 	NSMutableArray *_delegateDisplayInfoDebugging;
+    
+    CPRInterpolationMode selectedInterpolationMode;
 }
 
+@property (atomic) CPRInterpolationMode selectedInterpolationMode;
+- (void) setInterpolationMode:(NSNumber*)value;
+- (NSNumber*) interpolationMode;
 @property (nonatomic) float clippingRangeThickness, dcmIntervalMin, dcmIntervalMax, blendingPercentage;
 @property (nonatomic) int clippingRangeMode, mouseViewID;
 @property (nonatomic) int curMovieIndex, maxMovieIndex, blendingMode;

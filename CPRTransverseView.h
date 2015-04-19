@@ -115,4 +115,6 @@ typedef NSInteger CPRTransverseViewSection;
 
 - (float) pixelsPerMm;
 
+- (void)_setNeedsNewRequest;
+
 @end

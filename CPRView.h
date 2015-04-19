@@ -78,5 +78,6 @@ typedef NSInteger CPRViewReformationType;
 
 @property (nonatomic, readwrite, assign) float rotation, scaleValue;
 
+- (void) _setNeedsNewRequest;
 
 @end
