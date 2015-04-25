@@ -689,6 +689,19 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		points = [coder decodeObject];
 		rect = NSRectFromString( [coder decodeObject]);
 		type = [[coder decodeObject] floatValue];
+        
+        
+/////////////////////////////////// OsiriX 6.0 or later ////////////////////////////////
+        //tBall,                      //  30
+        //tOvalAngle                  //  31
+        if (type == 31 || type == 30)
+        {
+            [self release];
+            return nil;
+        }
+////////////////////////////////////////////////////////////////////////////////////////
+        
+        
 		needQuartz = [[coder decodeObject] floatValue];
 		thickness = [[coder decodeObject] floatValue];
 		fill = [[coder decodeObject] floatValue];
@@ -831,7 +844,28 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			_isSpline = NO;
 			_hasIsSpline = NO;
 		}
+        
+        
+/////////////////////////////////// OsiriX 6.0 or later ////////////////////////////////
+        if( fileVersion >= 12)
+        {
+            /*savedStudyInstanceUID =*/ [[coder decodeObject] copy];
+        }
+        
+        if( fileVersion >= 13 && type == 31/*tOvalAngle*/)
+        {
+            /*ovalAngle1 =*/ [[coder decodeObject] doubleValue];
+            /*ovalAngle2 =*/ [[coder decodeObject] doubleValue];
+        }
+        
+        if( fileVersion >= 14)
+            /*roiRotation =*/ [[coder decodeObject] doubleValue];
+        
+        if( fileVersion >= 15)
+            /*zLocation =*/ [[coder decodeObject] doubleValue];
+////////////////////////////////////////////////////////////////////////////////////////
 		
+        
 		[points retain];
 		[name retain];
 		[comments retain];
