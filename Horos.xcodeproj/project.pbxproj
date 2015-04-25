@@ -12085,9 +12085,9 @@
 			productReference = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		9966A18E1AE099A400F2D81A /* OsiriX API (Deprecated) */ = {
+		9966A18E1AE099A400F2D81A /* OsiriX API (Legacy) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9966A1971AE099A400F2D81A /* Build configuration list for PBXNativeTarget "OsiriX API (Deprecated)" */;
+			buildConfigurationList = 9966A1971AE099A400F2D81A /* Build configuration list for PBXNativeTarget "OsiriX API (Legacy)" */;
 			buildPhases = (
 				9966A18F1AE099A400F2D81A /* Headers */,
 				9966A1921AE099A400F2D81A /* Sources */,
@@ -12099,14 +12099,14 @@
 			);
 			dependencies = (
 			);
-			name = "OsiriX API (Deprecated)";
+			name = "OsiriX API (Legacy)";
 			productName = "OsiriXHeaders Framework";
 			productReference = 9966A19A1AE099A400F2D81A /* OsiriXAPI.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		9966A1B91AE0B7E000F2D81A /* OsiriX DCM Framework (Deprecated) */ = {
+		9966A1B91AE0B7E000F2D81A /* OsiriX DCM Framework (Legacy) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9966A2DE1AE0B7E000F2D81A /* Build configuration list for PBXNativeTarget "OsiriX DCM Framework (Deprecated)" */;
+			buildConfigurationList = 9966A2DE1AE0B7E000F2D81A /* Build configuration list for PBXNativeTarget "OsiriX DCM Framework (Legacy)" */;
 			buildPhases = (
 				9966A1BA1AE0B7E000F2D81A /* Headers */,
 				9966A1FB1AE0B7E000F2D81A /* Resources */,
@@ -12117,7 +12117,7 @@
 			);
 			dependencies = (
 			);
-			name = "OsiriX DCM Framework (Deprecated)";
+			name = "OsiriX DCM Framework (Legacy)";
 			productName = DCM;
 			productReference = 9966A2E11AE0B7E000F2D81A /* OsiriX.framework */;
 			productType = "com.apple.product-type.framework";
@@ -12279,8 +12279,8 @@
 				4A2F58D8078D118700C514A2 /* Build All Prerequisites */,
 				BF7486A50CC6AA5C00198387 /* Documentation */,
 				A98795C116DB9FD100926023 /* Unit Tests */,
-				9966A18E1AE099A400F2D81A /* OsiriX API (Deprecated) */,
-				9966A1B91AE0B7E000F2D81A /* OsiriX DCM Framework (Deprecated) */,
+				9966A18E1AE099A400F2D81A /* OsiriX API (Legacy) */,
+				9966A1B91AE0B7E000F2D81A /* OsiriX DCM Framework (Legacy) */,
 			);
 		};
 /* End PBXProject section */
@@ -15836,12 +15836,12 @@
 		};
 		9966A19D1AE09AFC00F2D81A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 9966A18E1AE099A400F2D81A /* OsiriX API (Deprecated) */;
+			target = 9966A18E1AE099A400F2D81A /* OsiriX API (Legacy) */;
 			targetProxy = 9966A19C1AE09AFC00F2D81A /* PBXContainerItemProxy */;
 		};
 		9966A2E41AE0B8AF00F2D81A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 9966A1B91AE0B7E000F2D81A /* OsiriX DCM Framework (Deprecated) */;
+			target = 9966A1B91AE0B7E000F2D81A /* OsiriX DCM Framework (Legacy) */;
 			targetProxy = 9966A2E31AE0B8AF00F2D81A /* PBXContainerItemProxy */;
 		};
 		AB0F3A421046BFB9004129DD /* PBXTargetDependency */ = {
@@ -17555,7 +17555,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
 		};
-		9966A1971AE099A400F2D81A /* Build configuration list for PBXNativeTarget "OsiriX API (Deprecated)" */ = {
+		9966A1971AE099A400F2D81A /* Build configuration list for PBXNativeTarget "OsiriX API (Legacy)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9966A1981AE099A400F2D81A /* Development */,
@@ -17564,7 +17564,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;
 		};
-		9966A2DE1AE0B7E000F2D81A /* Build configuration list for PBXNativeTarget "OsiriX DCM Framework (Deprecated)" */ = {
+		9966A2DE1AE0B7E000F2D81A /* Build configuration list for PBXNativeTarget "OsiriX DCM Framework (Legacy)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9966A2DF1AE0B7E000F2D81A /* Development */,
