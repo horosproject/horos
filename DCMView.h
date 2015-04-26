@@ -86,6 +86,9 @@ typedef NS_ENUM(short, ToolMode)
 	tDynAngle,					//	27
 	tCurvedROI,					//	28
     tTAGT                       //  29
+    ////////////////////////////////
+    //tBall,                      //  30
+    //tOvalAngle                  //  31
 };
 
 
