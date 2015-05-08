@@ -183,7 +183,7 @@ static NSArray *languagesToMoveWhenQuitting = nil;
 
 - (IBAction) resetPreferences: (id) sender
 {
-	NSInteger result = NSRunInformationalAlertPanel( NSLocalizedString(@"Reset Preferences", nil), NSLocalizedString(@"Are you sure you want to reset ALL preferences of OsiriX? All the preferences will be reseted to their default values.", nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"OK",nil),  nil);
+	NSInteger result = NSRunInformationalAlertPanel( NSLocalizedString(@"Reset Preferences", nil), NSLocalizedString(@"Are you sure you want to reset ALL preferences of Horos? All the preferences will be reseted to their default values.", nil), NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"OK",nil),  nil);
 	
 	if( result == NSAlertAlternateReturn)
 	{
@@ -201,7 +201,7 @@ static NSArray *languagesToMoveWhenQuitting = nil;
     NSSavePanel *save = [NSSavePanel savePanel];
     
     [save setAllowedFileTypes: [NSArray arrayWithObject: @"plist"]];
-    [save setNameFieldStringValue: @"OsiriX-Preferences.plist"];
+    [save setNameFieldStringValue: @"Horos-Preferences.plist"];
     
     if( [save runModal] == NSFileHandlingPanelOKButton)
 	{

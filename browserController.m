@@ -13587,7 +13587,7 @@ static NSArray*	openSubSeriesArray = nil;
         
         if( [DCMPix isRunOsiriXInProtectedModeActivated])
         {
-            NSRunCriticalAlertPanel(NSLocalizedString(@"Protected Mode", nil), NSLocalizedString(@"OsiriX is now running in Protected Mode (shift + option keys at startup): no images are displayed, allowing you to delete crashing or corrupted images/studies.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+            NSRunCriticalAlertPanel(NSLocalizedString(@"Protected Mode", nil), NSLocalizedString(@"Horos is now running in Protected Mode (shift + option keys at startup): no images are displayed, allowing you to delete crashing or corrupted images/studies.", nil), NSLocalizedString(@"OK", nil), nil, nil);
         }
         
         _distantAlbumNoOfStudiesCache = [[NSMutableDictionary alloc] init];
