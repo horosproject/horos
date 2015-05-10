@@ -65,31 +65,9 @@ extern NSRecursiveLock* PapyrusLock;
 {
 	NSBitmapImageRep* imageRep = [NSBitmapImageRep imageRepWithData:self.TIFFRepresentation];
 	NSData* result = NULL;
-	
-	if ([imageRep bitsPerPixel] == 8)
-	{
-		[PapyrusLock lock];
-		
-		@try
-		{
-			int size;
-            unsigned char* p = nil;
-			if (p)
-				result = [NSData dataWithBytesNoCopy: p length: size freeWhenDone: YES];
-		}
-		@catch (NSException * e)
-		{
-            N2LogExceptionWithStackTrace(e);
-		}
-		
-		[PapyrusLock unlock];
-	}
-	else
-	{
-		NSDictionary* imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:quality] forKey:NSImageCompressionFactor];
-		result = [imageRep representationUsingType:NSJPEGFileType properties:imageProps];
-		//NSJPEGFileType	NSJPEG2000FileType <- MAJOR memory leak with NSJPEG2000FileType when reading !!! Kakadu library...
-	}
+	NSDictionary* imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:quality]
+                                                               forKey:NSImageCompressionFactor];
+	result = [imageRep representationUsingType:NSJPEGFileType properties:imageProps];
 	
 	return result;	
 }

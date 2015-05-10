@@ -432,7 +432,7 @@
                             
                             thumbnail = [dcmPix generateThumbnailImageWithWW: [image.series.windowWidth floatValue] WL: [image.series.windowLevel floatValue]];
                             
-                            if (!dcmPix.notAbleToLoadImage)
+                            if (!(dcmPix.notAbleToLoadImage))
                                 thumbnailData = [[thumbnail JPEGRepresentationWithQuality:0.3] retain]; // autoreleased when returning
                             
                             [dcmPix release];
