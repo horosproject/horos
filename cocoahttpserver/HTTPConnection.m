@@ -691,6 +691,7 @@ static NSMutableArray *recentNonces;
 	}
 	
 	// Respond properly to HTTP 'GET' and 'HEAD' commands
+    //NSLog(@"%@",[uri relativeString]);
 	httpResponse = [[self httpResponseForMethod:method URI:[uri relativeString]] retain];
 	
 	if(httpResponse == nil)
