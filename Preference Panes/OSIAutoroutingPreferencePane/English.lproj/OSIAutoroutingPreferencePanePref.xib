@@ -274,11 +274,15 @@ Press Delete key to delete a route</string>
                             <rect key="frame" x="2" y="2" width="569" height="98"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cgo-5W-eDP">
-                                    <rect key="frame" x="17" y="13" width="111" height="76"/>
+                                <matrix verticalHuggingPriority="750" misplaced="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cgo-5W-eDP">
+                                    <rect key="frame" x="17" y="14" width="111" height="75"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="74" id="WrG-oM-zTK"/>
+                                        <constraint firstAttribute="width" constant="111" id="zRg-8d-BFH"/>
+                                    </constraints>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="111" height="24"/>
-                                    <size key="intercellSpacing" width="4" height="2"/>
+                                    <size key="cellSize" width="111" height="19"/>
+                                    <size key="intercellSpacing" width="4" height="10"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="rv3-AX-uHl">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -339,7 +343,7 @@ Press Delete key to delete a route</string>
                                         <datePickerElements key="datePickerElements" hour="YES" minute="YES"/>
                                     </datePickerCell>
                                 </datePicker>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qPp-Ci-P4x">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qPp-Ci-P4x">
                                     <rect key="frame" x="201" y="15" width="17" height="17"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="to" id="q2s-tw-CXS">
                                         <font key="font" metaFont="system"/>
@@ -347,7 +351,7 @@ Press Delete key to delete a route</string>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vUG-2c-cTZ">
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vUG-2c-cTZ">
                                     <rect key="frame" x="201" y="43" width="46" height="17"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="hour(s)" id="fIv-C3-1Ee">
                                         <font key="font" metaFont="system"/>
@@ -365,6 +369,13 @@ Press Delete key to delete a route</string>
                                 </textField>
                             </subviews>
                         </view>
+                        <constraints>
+                            <constraint firstItem="cgo-5W-eDP" firstAttribute="top" secondItem="nRV-yD-9aa" secondAttribute="top" constant="30" id="2ou-VD-I2B"/>
+                            <constraint firstItem="cgo-5W-eDP" firstAttribute="bottom" secondItem="qPp-Ci-P4x" secondAttribute="bottom" id="JGE-4N-PH1"/>
+                            <constraint firstItem="vUG-2c-cTZ" firstAttribute="leading" secondItem="cgo-5W-eDP" secondAttribute="trailing" constant="75" id="Nv8-m7-Wfd"/>
+                            <constraint firstAttribute="bottom" secondItem="cgo-5W-eDP" secondAttribute="bottom" constant="13" id="RAA-R4-3Xf"/>
+                            <constraint firstItem="cgo-5W-eDP" firstAttribute="leading" secondItem="nRV-yD-9aa" secondAttribute="leading" constant="16" id="kw5-qI-cCQ"/>
+                        </constraints>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system" size="16"/>
@@ -520,7 +531,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                                 </textField>
                                 <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wvn-Xk-Sq2">
                                     <rect key="frame" x="135" y="12" width="394" height="18"/>
-                                    <buttonCell key="cell" type="check" title="Delete files after successful transference" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="L3N-bu-fpm">
+                                    <buttonCell key="cell" type="check" title="Delete files after successful transference" bezelStyle="regularSquare" imagePosition="left" alignment="left" enabled="NO" inset="2" id="L3N-bu-fpm">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
@@ -556,11 +567,15 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                             <rect key="frame" x="2" y="2" width="568" height="86"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="357">
+                                <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="357">
                                     <rect key="frame" x="17" y="13" width="534" height="64"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="64" id="NDi-u8-WPn"/>
+                                        <constraint firstAttribute="width" constant="534" id="hGC-3A-A2H"/>
+                                    </constraints>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="534" height="20"/>
-                                    <size key="intercellSpacing" width="4" height="2"/>
+                                    <size key="cellSize" width="534" height="18"/>
+                                    <size key="intercellSpacing" width="4" height="5"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="360">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -587,6 +602,11 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                                 </matrix>
                             </subviews>
                         </view>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="357" secondAttribute="bottom" constant="11" id="5Vm-Ea-V7A"/>
+                            <constraint firstItem="357" firstAttribute="leading" secondItem="uDZ-jM-cUc" secondAttribute="leading" constant="16" id="XTm-mb-cLQ"/>
+                            <constraint firstItem="357" firstAttribute="top" secondItem="uDZ-jM-cUc" secondAttribute="top" constant="30" id="wXl-55-S6o"/>
+                        </constraints>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system" size="16"/>
