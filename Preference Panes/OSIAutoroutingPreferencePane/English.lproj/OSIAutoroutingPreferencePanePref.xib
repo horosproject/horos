@@ -10,6 +10,8 @@
                 <outlet property="_window" destination="12" id="26"/>
                 <outlet property="addressAndPort" destination="256" id="283"/>
                 <outlet property="cfindTest" destination="354" id="356"/>
+                <outlet property="delayTime" destination="LTW-zN-hcy" id="q8T-za-4n8"/>
+                <outlet property="endTime" destination="9yh-Nz-Vxv" id="NIq-3T-krg"/>
                 <outlet property="failurePopup" destination="341" id="350"/>
                 <outlet property="mainWindow" destination="12" id="378"/>
                 <outlet property="newDescription" destination="249" id="273"/>
@@ -21,6 +23,7 @@
                 <outlet property="previousPopup" destination="325" id="336"/>
                 <outlet property="routesTable" destination="124" id="268"/>
                 <outlet property="serverPopup" destination="243" id="271"/>
+                <outlet property="startTime" destination="TkK-vl-zGB" id="0D4-yR-lH6"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
@@ -389,15 +392,15 @@ Press Delete key to delete a route</string>
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="r1J-pa-vP9">
-                                    <rect key="frame" x="21" y="204" width="102" height="17"/>
+                                    <rect key="frame" x="21" y="205" width="102" height="17"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Database Filter:" id="Dof-zb-xan">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="251">
-                                    <rect key="frame" x="135" y="168" width="330" height="52"/>
+                                <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="251">
+                                    <rect key="frame" x="135" y="163" width="330" height="58"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="330" id="Ngz-R0-WLK"/>
                                     </constraints>
@@ -435,7 +438,7 @@ Press Delete key to delete a route</string>
                                     </connections>
                                 </button>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="286">
-                                    <rect key="frame" x="33" y="191" width="88" height="11"/>
+                                    <rect key="frame" x="33" y="192" width="88" height="11"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="(Image Table Level)" id="308">
                                         <font key="font" metaFont="miniSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -443,7 +446,7 @@ Press Delete key to delete a route</string>
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="287">
-                                    <rect key="frame" x="25" y="154" width="98" height="33"/>
+                                    <rect key="frame" x="25" y="155" width="98" height="33"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" id="309">
                                         <font key="font" metaFont="miniSystem"/>
                                         <string key="title" base64-UTF8="YES">
@@ -595,7 +598,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="339">
-                                    <rect key="frame" x="57" y="42" width="51" height="17"/>
+                                    <rect key="frame" x="15" y="42" width="49" height="17"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Failure:" id="340">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -603,15 +606,15 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="352">
-                                    <rect key="frame" x="57" y="13" width="51" height="17"/>
-                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Check :" id="353">
+                                    <rect key="frame" x="15" y="13" width="48" height="17"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Check:" id="353">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
                                 <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="341">
-                                    <rect key="frame" x="117" y="37" width="213" height="26"/>
+                                    <rect key="frame" x="75" y="37" width="213" height="26"/>
                                     <popUpButtonCell key="cell" type="push" title="Try 5 times each 30 secs" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="5" imageScaling="proportionallyDown" inset="2" selectedItem="344" id="342">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="menu"/>
@@ -628,7 +631,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                                     </popUpButtonCell>
                                 </popUpButton>
                                 <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="354">
-                                    <rect key="frame" x="117" y="12" width="394" height="18"/>
+                                    <rect key="frame" x="75" y="12" width="394" height="18"/>
                                     <buttonCell key="cell" type="check" title="Send C-FIND to check if the study exists on the destination" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="355">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>

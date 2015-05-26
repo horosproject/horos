@@ -81,7 +81,9 @@
     //Schedule attributes
     
     int scheduleType;
-    
+    IBOutlet NSDatePicker* delayTime;
+    IBOutlet NSDatePicker* startTime;
+    IBOutlet NSDatePicker* endTime;
 }
 
 @property int filterType;
