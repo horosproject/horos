@@ -272,9 +272,9 @@ Press Delete key to delete a route</string>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cgo-5W-eDP">
-                                    <rect key="frame" x="17" y="13" width="110" height="76"/>
+                                    <rect key="frame" x="17" y="13" width="111" height="76"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="110" height="24"/>
+                                    <size key="cellSize" width="111" height="24"/>
                                     <size key="intercellSpacing" width="4" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="rv3-AX-uHl">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -282,11 +282,11 @@ Press Delete key to delete a route</string>
                                     </buttonCell>
                                     <cells>
                                         <column>
-                                            <buttonCell type="radio" title="No schedule" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" baseWritingDirection="leftToRight" inset="2" id="zYx-0d-kKz">
+                                            <buttonCell type="radio" title="No schedule " imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" baseWritingDirection="leftToRight" inset="2" id="zYx-0d-kKz">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
-                                            <buttonCell type="radio" title="Execute every " imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" baseWritingDirection="leftToRight" tag="1" inset="2" id="e1O-0z-4BU">
+                                            <buttonCell type="radio" title="Execute after " imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" baseWritingDirection="leftToRight" tag="1" inset="2" id="e1O-0z-4BU">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -301,7 +301,7 @@ Press Delete key to delete a route</string>
                                     </connections>
                                 </matrix>
                                 <datePicker verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LTW-zN-hcy">
-                                    <rect key="frame" x="131" y="41" width="72" height="22"/>
+                                    <rect key="frame" x="125" y="41" width="72" height="22"/>
                                     <datePickerCell key="cell" controlSize="small" borderStyle="bezel" alignment="left" id="39G-qc-wLU">
                                         <font key="font" metaFont="smallSystem"/>
                                         <date key="date" timeIntervalSinceReferenceDate="-978307200">
@@ -313,7 +313,7 @@ Press Delete key to delete a route</string>
                                     </datePickerCell>
                                 </datePicker>
                                 <datePicker verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TkK-vl-zGB">
-                                    <rect key="frame" x="131" y="13" width="72" height="22"/>
+                                    <rect key="frame" x="125" y="13" width="72" height="22"/>
                                     <datePickerCell key="cell" controlSize="small" borderStyle="bezel" alignment="left" id="t9Y-Fb-Xbr">
                                         <font key="font" metaFont="smallSystem"/>
                                         <date key="date" timeIntervalSinceReferenceDate="-978307200">
@@ -325,7 +325,7 @@ Press Delete key to delete a route</string>
                                     </datePickerCell>
                                 </datePicker>
                                 <datePicker verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9yh-Nz-Vxv">
-                                    <rect key="frame" x="231" y="13" width="72" height="22"/>
+                                    <rect key="frame" x="225" y="13" width="72" height="22"/>
                                     <datePickerCell key="cell" controlSize="small" borderStyle="bezel" alignment="left" id="O3X-Vf-dcu">
                                         <font key="font" metaFont="smallSystem"/>
                                         <date key="date" timeIntervalSinceReferenceDate="-978307200">
@@ -337,7 +337,7 @@ Press Delete key to delete a route</string>
                                     </datePickerCell>
                                 </datePicker>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qPp-Ci-P4x">
-                                    <rect key="frame" x="207" y="15" width="17" height="17"/>
+                                    <rect key="frame" x="201" y="15" width="17" height="17"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="to" id="q2s-tw-CXS">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -345,9 +345,17 @@ Press Delete key to delete a route</string>
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vUG-2c-cTZ">
-                                    <rect key="frame" x="207" y="43" width="46" height="17"/>
+                                    <rect key="frame" x="201" y="43" width="46" height="17"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="hour(s)" id="fIv-C3-1Ee">
                                         <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="A1s-iz-Pta">
+                                    <rect key="frame" x="119" y="69" width="108" height="14"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="(Executed instantly)" id="vgl-j1-4iF">
+                                        <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -365,7 +373,7 @@ Press Delete key to delete a route</string>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="320">
-                                    <rect key="frame" x="15" y="91" width="110" height="17"/>
+                                    <rect key="frame" x="15" y="93" width="110" height="17"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Previous Studies:" id="321">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -381,7 +389,7 @@ Press Delete key to delete a route</string>
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="r1J-pa-vP9">
-                                    <rect key="frame" x="21" y="203" width="102" height="17"/>
+                                    <rect key="frame" x="21" y="204" width="102" height="17"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Database Filter:" id="Dof-zb-xan">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -427,7 +435,7 @@ Press Delete key to delete a route</string>
                                     </connections>
                                 </button>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="286">
-                                    <rect key="frame" x="33" y="189" width="88" height="11"/>
+                                    <rect key="frame" x="33" y="191" width="88" height="11"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="(Image Table Level)" id="308">
                                         <font key="font" metaFont="miniSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -435,7 +443,7 @@ Press Delete key to delete a route</string>
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="287">
-                                    <rect key="frame" x="26" y="152" width="98" height="33"/>
+                                    <rect key="frame" x="25" y="154" width="98" height="33"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" id="309">
                                         <font key="font" metaFont="miniSystem"/>
                                         <string key="title" base64-UTF8="YES">
@@ -463,7 +471,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                                     </connections>
                                 </button>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="323">
-                                    <rect key="frame" x="27" y="52" width="98" height="36"/>
+                                    <rect key="frame" x="27" y="55" width="98" height="36"/>
                                     <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" alignment="right" title="For each study, also send, if available in the Database:" id="334">
                                         <font key="font" metaFont="miniSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
