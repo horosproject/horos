@@ -297,7 +297,7 @@ Press Delete key to delete a route</string>
                                         </column>
                                     </cells>
                                     <connections>
-                                        <binding destination="-2" name="selectedTag" keyPath="filterType" id="fHI-gR-nmP"/>
+                                        <binding destination="-2" name="selectedTag" keyPath="scheduleType" id="f3I-5C-EH0"/>
                                     </connections>
                                 </matrix>
                                 <datePicker verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LTW-zN-hcy">
@@ -321,19 +321,19 @@ Press Delete key to delete a route</string>
                                         </date>
                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                        <datePickerElements key="datePickerElements"/>
+                                        <datePickerElements key="datePickerElements" hour="YES" minute="YES"/>
                                     </datePickerCell>
                                 </datePicker>
                                 <datePicker verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9yh-Nz-Vxv">
                                     <rect key="frame" x="225" y="13" width="72" height="22"/>
                                     <datePickerCell key="cell" controlSize="small" borderStyle="bezel" alignment="left" id="O3X-Vf-dcu">
                                         <font key="font" metaFont="smallSystem"/>
-                                        <date key="date" timeIntervalSinceReferenceDate="-978307200">
-                                            <!--1970-01-01 00:00:00 +0000-->
+                                        <date key="date" timeIntervalSinceReferenceDate="-978361200">
+                                            <!--1969-12-31 09:00:00 +0000-->
                                         </date>
                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                        <datePickerElements key="datePickerElements"/>
+                                        <datePickerElements key="datePickerElements" hour="YES" minute="YES"/>
                                     </datePickerCell>
                                 </datePicker>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qPp-Ci-P4x">
@@ -353,7 +353,7 @@ Press Delete key to delete a route</string>
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="A1s-iz-Pta">
-                                    <rect key="frame" x="119" y="69" width="108" height="14"/>
+                                    <rect key="frame" x="119" y="70" width="108" height="14"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="(Executed instantly)" id="vgl-j1-4iF">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -517,10 +517,13 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                                 </textField>
                                 <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wvn-Xk-Sq2">
                                     <rect key="frame" x="135" y="12" width="394" height="18"/>
-                                    <buttonCell key="cell" type="check" title="Delete files after successfull transference" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="L3N-bu-fpm">
+                                    <buttonCell key="cell" type="check" title="Delete files after successful transference" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="L3N-bu-fpm">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
+                                    <connections>
+                                        <binding destination="-2" name="value" keyPath="deleteAfterTransference" id="LiH-cg-v1a"/>
+                                    </connections>
                                 </button>
                             </subviews>
                         </view>

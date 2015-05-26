@@ -61,6 +61,8 @@
 @implementation OSIAutoroutingPreferencePanePref
 
 @synthesize filterType, imagesOnly;
+@synthesize deleteAfterTransference;
+@synthesize scheduleType;
 
 - (id) initWithBundle:(NSBundle *)bundle
 {
