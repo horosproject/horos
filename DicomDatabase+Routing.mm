@@ -338,18 +338,20 @@
 	}
 }
 
--(void)applyRoutingRules:(NSArray*)autoroutingRules toImages:(NSArray*)newImagesOriginal {
+
+-(void) __applyRoutingRules:(NSArray*)autoroutingRules toImages:(NSArray*)newImagesOriginal
+{
 #ifndef OSIRIX_LIGHT
-	if (!autoroutingRules)
-		autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey:@"AUTOROUTINGDICTIONARY"];
-	
-	for (NSDictionary* routingRule in autoroutingRules)
-		if (![routingRule valueForKey:@"activated"] || [[routingRule valueForKey:@"activated"] boolValue])
+    if (!autoroutingRules)
+        autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey:@"AUTOROUTINGDICTIONARY"];
+    
+    for (NSDictionary* routingRule in autoroutingRules)
+        if (![routingRule valueForKey:@"activated"] || [[routingRule valueForKey:@"activated"] boolValue])
         {
             NSPredicate	*predicate = nil;
-			NSArray *newImages = nil;
+            NSArray *newImages = nil;
             
-			@try {
+            @try {
                 
                 NSString *filter = [routingRule objectForKey: @"filter"];
                 
@@ -374,10 +376,10 @@
                         predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: [NSPredicate predicateWithFormat:@"importedFile == YES"], predicate, nil]];
                         break;
                 }
-				
-				if( predicate)
-					newImages = [newImagesOriginal filteredArrayUsingPredicate:predicate];
-				else
+                
+                if( predicate)
+                    newImages = [newImagesOriginal filteredArrayUsingPredicate:predicate];
+                else
                     newImages = newImagesOriginal;
                 
                 if( imagesOnly)
@@ -387,179 +389,247 @@
                     for( DicomImage *i in newImages)
                     {
                         if( i.isImageStorage.boolValue)
-                           [imagesOnlyArray addObject: i];
+                            [imagesOnlyArray addObject: i];
                     }
                     
                     newImages = imagesOnlyArray;
                 }
                 
-				if (newImages.count)
+                if (newImages.count)
                 {
-					if ([[routingRule valueForKey:@"previousStudies"] intValue] > 0)
-					{
-						NSMutableDictionary *patients = [NSMutableDictionary dictionary];
-						
-						// for each study
-						for( id im in newImages)
-						{
-							if( [patients objectForKey: [im valueForKeyPath:@"series.study.patientUID"]] == nil)
-								[patients setObject: [im valueForKeyPath:@"series.study"] forKey: [im valueForKeyPath:@"series.study.patientUID"]];
-						}
-						
-						for( NSString *patientUID in [patients allKeys])
-						{
-							id study = [patients objectForKey: patientUID];
-							
+                    if ([[routingRule valueForKey:@"previousStudies"] intValue] > 0)
+                    {
+                        NSMutableDictionary *patients = [NSMutableDictionary dictionary];
+                        
+                        // for each study
+                        for( id im in newImages)
+                        {
+                            if( [patients objectForKey: [im valueForKeyPath:@"series.study.patientUID"]] == nil)
+                                [patients setObject: [im valueForKeyPath:@"series.study"] forKey: [im valueForKeyPath:@"series.study.patientUID"]];
+                        }
+                        
+                        for( NSString *patientUID in [patients allKeys])
+                        {
+                            id study = [patients objectForKey: patientUID];
+                            
                             // Pourquoi n'y a-t-il pas de lock? Oui il en faut bien mais pas pendant TOUT le routage... seulement ici:
                             NSArray *studiesArray = [self objectsForEntity:self.studyEntity predicate:[NSPredicate predicateWithFormat:  @"(patientUID BEGINSWITH[cd] %@)", patientUID]];
-							
-							if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound)
-							{
-								NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
-								NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
-								[sort release];
-								NSMutableArray* s = [[[studiesArray sortedArrayUsingDescriptors: sortDescriptors] mutableCopy] autorelease];
-								// remove original study from array
-								[s removeObject: study];
-								
-								studiesArray = [NSArray arrayWithArray: s];
-								
-								// did we already send these studies ? If no, send them !
-								
-								//								if (autoroutingPreviousStudies == nil) autoroutingPreviousStudies = [[NSMutableDictionary dictionary] retain];
-								
-								int previousNumber = [[routingRule valueForKey:@"previousStudies"] intValue];
-								
-								for( id s in studiesArray)
-								{
-									//NSString *key = [NSString stringWithFormat:@"%@ -> %@", [s valueForKey: @"studyInstanceUID"], [routingRule objectForKey:@"server"]];
-									//									NSDate *when = [autoroutingPreviousStudies objectForKey: key];
-									
-									BOOL found = YES;
-									
-									if( [[routingRule valueForKey: @"previousModality"] boolValue])
-									{
-										if( [s valueForKey:@"modality"] && [study valueForKey:@"modality"])
-										{
-											if( [[study valueForKey:@"modality"] rangeOfString: [s valueForKey:@"modality"]].location == NSNotFound) found = NO;
-										}
-										else found = NO;
-									}
-									
-									if( [[routingRule valueForKey: @"previousDescription"] boolValue])
-									{
-										if( [s valueForKey:@"studyName"] && [study valueForKey:@"studyName"])
-										{
-											if( [[study valueForKey:@"studyName"] rangeOfString: [s valueForKey:@"studyName"]].location == NSNotFound) found = NO;
-										}
-										else found = NO;
-									}
-									
-									if( found && previousNumber > 0)
-									{
-										previousNumber--;
-										
-										// If we sent it more than 3 hours ago, re-send it
-										//if( when == nil || [when timeIntervalSinceNow] < -60*60*3*/)
-										{
-											//											[autoroutingPreviousStudies setObject: [NSDate date] forKey: key];
-											
-											//for( NSManagedObject *series in [[s valueForKey:@"series"] allObjects])
-											//	newImages = [newImages arrayByAddingObjectsFromArray: [[series valueForKey:@"images"] allObjects]];
-										}
-									}
-								}
-							}
-						}
-					}
-					
-					if( [[routingRule valueForKey:@"cfindTest"] boolValue])
-					{
-						NSMutableDictionary *studies = [NSMutableDictionary dictionary];
-						
-						for( id im in newImages)
-						{
-							if( [studies objectForKey: [im valueForKeyPath:@"series.study.studyInstanceUID"]] == nil)
-								[studies setObject: [im valueForKeyPath:@"series.study"] forKey: [im valueForKeyPath:@"series.study.studyInstanceUID"]];
-						}
-						
-						for( NSString *studyUID in [studies allKeys])
-						{
-							NSArray *serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
-							
-							NSString		*serverName = [routingRule objectForKey:@"server"];
-							NSDictionary	*server = nil;
-							
-							for( NSDictionary *aServer in serversArray)
-							{
-								if( [[aServer objectForKey:@"Activated"] boolValue] && [[aServer objectForKey:@"Description"] isEqualToString: serverName])
-								{
-									server = aServer;
-									break;
-								}
-							}
-							
-							if( server)
-							{
-								NSArray *s = [QueryController queryStudyInstanceUID: studyUID server: server showErrors: NO];
-								
-								if( [s count])
-								{
-									if( [s count] > 1)
-										NSLog( @"Uh? multiple studies with same StudyInstanceUID on the distal node....");
-									
-									DCMTKStudyQueryNode* studyNode = [s lastObject];
-									
-									if( [[studyNode valueForKey:@"numberImages"] intValue] >= [[[studies objectForKey: studyUID] valueForKey: @"noFiles"] intValue])
-									{
-										// remove them, there are already there ! *probably*
-										
-										NSLog( @"Already available on the distant node : we will not send it.");
-										
-										NSMutableArray *r = [NSMutableArray arrayWithArray: newImages];
-										
-										for( int i = 0 ; i < [r count] ; i++)
-										{
-											if( [[[r objectAtIndex: i] valueForKeyPath: @"series.study.studyInstanceUID"] isEqualToString: studyUID])
-											{
-												[r removeObjectAtIndex: i];
-												i--;
-											}
-										}
-										
-										newImages = r;
-									}
-								}
-							}
-						}
-					}
-				}
-			} @catch (NSException* e) {
-				N2LogExceptionWithStackTrace(e);
-				newImages = nil;
-			}
-			
-			if ([newImages count])
-				[self addImages:newImages toSendQueueForRoutingRule:routingRule];
-		}
-	
-	// Do some cleaning
-	
-	/*	if( autoroutingPreviousStudies)
-	 {
-	 for( NSString *key in [autoroutingPreviousStudies allKeys])
-	 {
-	 if( [[autoroutingPreviousStudies objectForKey: key] timeIntervalSinceNow] < -60*60*3)
-	 {
-	 [autoroutingPreviousStudies removeObjectForKey: key];
-	 }
-	 }
-	 }
-	 
-	 [splash close];
-	 [splash autorelease];*/
-#endif	
-	
+                            
+                            if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound)
+                            {
+                                NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
+                                NSArray * sortDescriptors = [NSArray arrayWithObject: sort];
+                                [sort release];
+                                NSMutableArray* s = [[[studiesArray sortedArrayUsingDescriptors: sortDescriptors] mutableCopy] autorelease];
+                                // remove original study from array
+                                [s removeObject: study];
+                                
+                                studiesArray = [NSArray arrayWithArray: s];
+                                
+                                // did we already send these studies ? If no, send them !
+                                
+                                //								if (autoroutingPreviousStudies == nil) autoroutingPreviousStudies = [[NSMutableDictionary dictionary] retain];
+                                
+                                int previousNumber = [[routingRule valueForKey:@"previousStudies"] intValue];
+                                
+                                for( id s in studiesArray)
+                                {
+                                    //NSString *key = [NSString stringWithFormat:@"%@ -> %@", [s valueForKey: @"studyInstanceUID"], [routingRule objectForKey:@"server"]];
+                                    //									NSDate *when = [autoroutingPreviousStudies objectForKey: key];
+                                    
+                                    BOOL found = YES;
+                                    
+                                    if( [[routingRule valueForKey: @"previousModality"] boolValue])
+                                    {
+                                        if( [s valueForKey:@"modality"] && [study valueForKey:@"modality"])
+                                        {
+                                            if( [[study valueForKey:@"modality"] rangeOfString: [s valueForKey:@"modality"]].location == NSNotFound) found = NO;
+                                        }
+                                        else found = NO;
+                                    }
+                                    
+                                    if( [[routingRule valueForKey: @"previousDescription"] boolValue])
+                                    {
+                                        if( [s valueForKey:@"studyName"] && [study valueForKey:@"studyName"])
+                                        {
+                                            if( [[study valueForKey:@"studyName"] rangeOfString: [s valueForKey:@"studyName"]].location == NSNotFound) found = NO;
+                                        }
+                                        else found = NO;
+                                    }
+                                    
+                                    if( found && previousNumber > 0)
+                                    {
+                                        previousNumber--;
+                                        
+                                        // If we sent it more than 3 hours ago, re-send it
+                                        //if( when == nil || [when timeIntervalSinceNow] < -60*60*3*/)
+                                        {
+                                            //											[autoroutingPreviousStudies setObject: [NSDate date] forKey: key];
+                                            
+                                            //for( NSManagedObject *series in [[s valueForKey:@"series"] allObjects])
+                                            //	newImages = [newImages arrayByAddingObjectsFromArray: [[series valueForKey:@"images"] allObjects]];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    if( [[routingRule valueForKey:@"cfindTest"] boolValue])
+                    {
+                        NSMutableDictionary *studies = [NSMutableDictionary dictionary];
+                        
+                        for( id im in newImages)
+                        {
+                            if( [studies objectForKey: [im valueForKeyPath:@"series.study.studyInstanceUID"]] == nil)
+                                [studies setObject: [im valueForKeyPath:@"series.study"] forKey: [im valueForKeyPath:@"series.study.studyInstanceUID"]];
+                        }
+                        
+                        for( NSString *studyUID in [studies allKeys])
+                        {
+                            NSArray *serversArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"];
+                            
+                            NSString		*serverName = [routingRule objectForKey:@"server"];
+                            NSDictionary	*server = nil;
+                            
+                            for( NSDictionary *aServer in serversArray)
+                            {
+                                if( [[aServer objectForKey:@"Activated"] boolValue] && [[aServer objectForKey:@"Description"] isEqualToString: serverName])
+                                {
+                                    server = aServer;
+                                    break;
+                                }
+                            }
+                            
+                            if( server)
+                            {
+                                NSArray *s = [QueryController queryStudyInstanceUID: studyUID server: server showErrors: NO];
+                                
+                                if( [s count])
+                                {
+                                    if( [s count] > 1)
+                                        NSLog( @"Uh? multiple studies with same StudyInstanceUID on the distal node....");
+                                    
+                                    DCMTKStudyQueryNode* studyNode = [s lastObject];
+                                    
+                                    if( [[studyNode valueForKey:@"numberImages"] intValue] >= [[[studies objectForKey: studyUID] valueForKey: @"noFiles"] intValue])
+                                    {
+                                        // remove them, there are already there ! *probably*
+                                        
+                                        NSLog( @"Already available on the distant node : we will not send it.");
+                                        
+                                        NSMutableArray *r = [NSMutableArray arrayWithArray: newImages];
+                                        
+                                        for( int i = 0 ; i < [r count] ; i++)
+                                        {
+                                            if( [[[r objectAtIndex: i] valueForKeyPath: @"series.study.studyInstanceUID"] isEqualToString: studyUID])
+                                            {
+                                                [r removeObjectAtIndex: i];
+                                                i--;
+                                            }
+                                        }
+                                        
+                                        newImages = r;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } @catch (NSException* e) {
+                N2LogExceptionWithStackTrace(e);
+                newImages = nil;
+            }
+            
+            if ([newImages count])
+                [self addImages:newImages toSendQueueForRoutingRule:routingRule];
+        }
+    
+    // Do some cleaning
+    
+    /*	if( autoroutingPreviousStudies)
+     {
+     for( NSString *key in [autoroutingPreviousStudies allKeys])
+     {
+     if( [[autoroutingPreviousStudies objectForKey: key] timeIntervalSinceNow] < -60*60*3)
+     {
+     [autoroutingPreviousStudies removeObjectForKey: key];
+     }
+     }
+     }
+     
+     [splash close];
+     [splash autorelease];*/
+#endif
+}
+
+
+-(void)applyRoutingRules:(NSArray*)autoroutingRules toImages:(NSArray*)newImagesOriginal
+{
+    if (!autoroutingRules)
+    {
+        autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey:@"AUTOROUTINGDICTIONARY"];
+    }
+    
+    for (NSDictionary* routingRule in autoroutingRules)
+    {
+        if (![routingRule valueForKey:@"activated"] || [[routingRule valueForKey:@"activated"] boolValue])
+        {
+            if ([routingRule valueForKey:@"noschedule"] != nil)
+            {
+                [self __applyRoutingRules:autoroutingRules toImages:newImagesOriginal];
+            }
+            else
+            {
+                if ([routingRule valueForKey:@"executeafter"])
+                {
+                    int64_t delayInSeconds = 3600 * [[routingRule valueForKey:@"executeafter"] integerValue];
+                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                }
+                
+                if ([routingRule valueForKey:@"executefrom"] && [routingRule valueForKey:@"executeto"])
+                {
+                    NSInteger fromDaySeconds = [[routingRule valueForKey:@"executefrom"] integerValue];
+                    NSInteger toDaySeconds = [[routingRule valueForKey:@"executeto"] integerValue];
+                    
+                    NSCalendar *calendar = [NSCalendar currentCalendar];
+                    NSDateComponents *components = [calendar components:(NSHourCalendarUnit | NSMinuteCalendarUnit) fromDate:[NSDate date]];
+                    NSInteger currentHour = [components hour];
+                    NSInteger currentMinute = [components minute];
+                    
+                    NSInteger currentDaySeconds = (currentHour * 3600) + (currentMinute * 60);
+                    
+                    int64_t delayInSeconds = 0.f;
+                    
+                    if (fromDaySeconds == toDaySeconds)
+                    {
+                        delayInSeconds = (float) abs(currentDaySeconds - fromDaySeconds);
+                    }
+                    else if (fromDaySeconds < toDaySeconds)
+                    {
+                        if (currentDaySeconds >= fromDaySeconds && currentDaySeconds <= toDaySeconds)
+                        {
+                            delayInSeconds = 0.f;
+                        }
+                        else if (currentDaySeconds < fromDaySeconds)
+                        {
+                            delayInSeconds = (float) fromDaySeconds - currentDaySeconds;
+                        }
+                        else if (currentDaySeconds > toDaySeconds)
+                        {
+                            //delayInSeconds =
+                        }
+                    }
+                    else if (fromDaySeconds > toDaySeconds)
+                    {
+                
+                    }
+                    
+                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                }
+            }
+        }
+    }
 }
 
 @end

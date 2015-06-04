@@ -10,7 +10,6 @@
                 <outlet property="_window" destination="12" id="26"/>
                 <outlet property="addressAndPort" destination="256" id="283"/>
                 <outlet property="cfindTest" destination="354" id="356"/>
-                <outlet property="delayTime" destination="LTW-zN-hcy" id="q8T-za-4n8"/>
                 <outlet property="endTime" destination="9yh-Nz-Vxv" id="NIq-3T-krg"/>
                 <outlet property="failurePopup" destination="341" id="350"/>
                 <outlet property="mainWindow" destination="12" id="378"/>
@@ -281,7 +280,7 @@ Press Delete key to delete a route</string>
                                         <constraint firstAttribute="width" constant="111" id="zRg-8d-BFH"/>
                                     </constraints>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="111" height="19"/>
+                                    <size key="cellSize" width="116" height="18"/>
                                     <size key="intercellSpacing" width="4" height="10"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="rv3-AX-uHl">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -307,18 +306,6 @@ Press Delete key to delete a route</string>
                                         <binding destination="-2" name="selectedTag" keyPath="scheduleType" id="f3I-5C-EH0"/>
                                     </connections>
                                 </matrix>
-                                <datePicker verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LTW-zN-hcy">
-                                    <rect key="frame" x="125" y="41" width="72" height="22"/>
-                                    <datePickerCell key="cell" controlSize="small" borderStyle="bezel" alignment="left" id="39G-qc-wLU">
-                                        <font key="font" metaFont="smallSystem"/>
-                                        <date key="date" timeIntervalSinceReferenceDate="-978307200">
-                                            <!--1970-01-01 00:00:00 +0000-->
-                                        </date>
-                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                        <datePickerElements key="datePickerElements"/>
-                                    </datePickerCell>
-                                </datePicker>
                                 <datePicker verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TkK-vl-zGB">
                                     <rect key="frame" x="125" y="13" width="72" height="22"/>
                                     <datePickerCell key="cell" controlSize="small" borderStyle="bezel" alignment="left" id="t9Y-Fb-Xbr">
@@ -351,18 +338,33 @@ Press Delete key to delete a route</string>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vUG-2c-cTZ">
-                                    <rect key="frame" x="201" y="43" width="46" height="17"/>
-                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="hour(s)" id="fIv-C3-1Ee">
-                                        <font key="font" metaFont="system"/>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="A1s-iz-Pta">
+                                    <rect key="frame" x="119" y="73" width="108" height="14"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="(Executed instantly)" id="vgl-j1-4iF">
+                                        <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="A1s-iz-Pta">
-                                    <rect key="frame" x="119" y="70" width="108" height="14"/>
-                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="(Executed instantly)" id="vgl-j1-4iF">
+                                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VQw-qa-a5J">
+                                    <rect key="frame" x="125" y="42" width="31" height="19"/>
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="2" drawsBackground="YES" id="kWE-DJ-Pvw">
+                                        <numberFormatter key="formatter" formatterBehavior="default10_4" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" id="eRh-JS-yeJ">
+                                            <real key="minimum" value="1"/>
+                                            <real key="maximum" value="24"/>
+                                            <metadata>
+                                                <real key="inspectorSampleValue" value="2"/>
+                                            </metadata>
+                                        </numberFormatter>
                                         <font key="font" metaFont="smallSystem"/>
+                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vUG-2c-cTZ">
+                                    <rect key="frame" x="160" y="43" width="46" height="17"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="hour(s)" id="fIv-C3-1Ee">
+                                        <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
@@ -574,7 +576,7 @@ RW1wdHkgZmlsdGVyIHdpbGwgcm91dGUD4oCoQUxMIGltYWdlcwo
                                         <constraint firstAttribute="width" constant="534" id="hGC-3A-A2H"/>
                                     </constraints>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="534" height="18"/>
+                                    <size key="cellSize" width="535" height="18"/>
                                     <size key="intercellSpacing" width="4" height="5"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="360">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
