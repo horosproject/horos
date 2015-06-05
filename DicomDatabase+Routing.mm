@@ -585,47 +585,63 @@
                 {
                     int64_t delayInSeconds = 3600 * [[routingRule valueForKey:@"executeafter"] integerValue];
                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                    dispatch_after(popTime, dispatch_get_main_queue(),^{
+                        [self __applyRoutingRules:autoroutingRules toImages:newImagesOriginal];
+                    });
                 }
-                
-                if ([routingRule valueForKey:@"executefrom"] && [routingRule valueForKey:@"executeto"])
+                else if ([routingRule valueForKey:@"executefrom"] && [routingRule valueForKey:@"executeto"])
                 {
-                    NSInteger fromDaySeconds = [[routingRule valueForKey:@"executefrom"] integerValue];
-                    NSInteger toDaySeconds = [[routingRule valueForKey:@"executeto"] integerValue];
+                    NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+                    [dateFormatter setDateFormat:@"HH:mm"];
+                    
+                    NSString* fromTimeString = [routingRule valueForKey:@"executefrom"];
+                    NSDate* fromTime = [dateFormatter dateFromString:fromTimeString];
+                    
+                    NSString* toTimeString = [routingRule valueForKey:@"executeto"];
+                    NSDate* toTime = [dateFormatter dateFromString:toTimeString];
+                    
+                    [dateFormatter release];
                     
                     NSCalendar *calendar = [NSCalendar currentCalendar];
                     NSDateComponents *components = [calendar components:(NSHourCalendarUnit | NSMinuteCalendarUnit) fromDate:[NSDate date]];
                     NSInteger currentHour = [components hour];
                     NSInteger currentMinute = [components minute];
                     
-                    NSInteger currentDaySeconds = (currentHour * 3600) + (currentMinute * 60);
+                    NSDate* currentTime = [dateFormatter dateFromString:[NSString stringWithFormat:@"%2ld%2ld",currentHour,currentMinute]];
                     
-                    int64_t delayInSeconds = 0.f;
+                    int64_t delayInSeconds = 0;
+
+                    if ([toTime timeIntervalSinceDate:fromTime] < 0)
+                    {
+                        [toTime dateByAddingTimeInterval:60*60*24*1]; //Add 1 day to "toTime"
+                    }
                     
-                    if (fromDaySeconds == toDaySeconds)
+                    if ([currentTime timeIntervalSinceDate:fromTime] <= 0)
                     {
-                        delayInSeconds = (float) abs(currentDaySeconds - fromDaySeconds);
+                        delayInSeconds = (long long) fabs([currentTime timeIntervalSinceDate:currentTime]);
                     }
-                    else if (fromDaySeconds < toDaySeconds)
+                    
+                    else if ([currentTime timeIntervalSinceDate:fromTime] > 0)
                     {
-                        if (currentDaySeconds >= fromDaySeconds && currentDaySeconds <= toDaySeconds)
+                        if ([currentTime timeIntervalSinceDate:toTime] <= 0)
                         {
-                            delayInSeconds = 0.f;
+                            delayInSeconds = (long long) 0;
                         }
-                        else if (currentDaySeconds < fromDaySeconds)
+                        else if ([currentTime timeIntervalSinceDate:toTime] > 0)
                         {
-                            delayInSeconds = (float) fromDaySeconds - currentDaySeconds;
+                            [fromTime dateByAddingTimeInterval:60*60*24*1]; //Add 1 day to "fromTime"
+                            delayInSeconds = (long long) fabs([currentTime timeIntervalSinceDate:fromTime]);
                         }
-                        else if (currentDaySeconds > toDaySeconds)
-                        {
-                            //delayInSeconds =
-                        }
-                    }
-                    else if (fromDaySeconds > toDaySeconds)
-                    {
-                
                     }
                     
                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                    dispatch_after(popTime, dispatch_get_main_queue(),^{
+                        [self __applyRoutingRules:autoroutingRules toImages:newImagesOriginal];
+                    });
+                }
+                else
+                {
+                    [self __applyRoutingRules:autoroutingRules toImages:newImagesOriginal];
                 }
             }
         }

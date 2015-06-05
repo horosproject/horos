@@ -148,6 +148,8 @@
 {
     NSLog(@"dealloc OSIAutoroutingPreferencePanePref");
     
+    [delayTime release];
+    
     [routesArray release];
     [serversArray release];
     
@@ -165,7 +167,7 @@
     
     if( [sender tag] == 1)
     {
-        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://developer.apple.com/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html#//apple_ref/doc/uid/TP40001795"]];
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/Predicates/AdditionalChapters/Introduction.html#//apple_ref/doc/uid/TP40001798-SW1"]];
     }
 }
 

@@ -81,7 +81,7 @@
     //Schedule attributes
     
     int scheduleType;
-    IBOutlet NSDatePicker* delayTime;
+    IBOutlet NSTextField* delayTime;
     IBOutlet NSDatePicker* startTime;
     IBOutlet NSDatePicker* endTime;
 }

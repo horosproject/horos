@@ -10,6 +10,7 @@
                 <outlet property="_window" destination="12" id="26"/>
                 <outlet property="addressAndPort" destination="256" id="283"/>
                 <outlet property="cfindTest" destination="354" id="356"/>
+                <outlet property="delayTime" destination="VQw-qa-a5J" id="3oL-JD-peM"/>
                 <outlet property="endTime" destination="9yh-Nz-Vxv" id="NIq-3T-krg"/>
                 <outlet property="failurePopup" destination="341" id="350"/>
                 <outlet property="mainWindow" destination="12" id="378"/>
@@ -348,7 +349,7 @@ Press Delete key to delete a route</string>
                                 </textField>
                                 <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VQw-qa-a5J">
                                     <rect key="frame" x="125" y="42" width="31" height="19"/>
-                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="2" drawsBackground="YES" id="kWE-DJ-Pvw">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="2" placeholderString="hour delay" drawsBackground="YES" id="kWE-DJ-Pvw">
                                         <numberFormatter key="formatter" formatterBehavior="default10_4" usesGroupingSeparator="NO" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" id="eRh-JS-yeJ">
                                             <real key="minimum" value="1"/>
                                             <real key="maximum" value="24"/>
