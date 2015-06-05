@@ -103,6 +103,9 @@
         if( [newDict valueForKey:@"imagesOnly"] == nil)
             [newDict setValue: @NO forKey:@"imagesOnly"];
         
+        if( [newDict valueForKey:@"scheduleType"] == nil)
+            [newDict setValue:@"0" forKey:@"scheduleType"];
+        
         [routesArray replaceObjectAtIndex: i withObject:newDict];
     }
     
@@ -148,8 +151,6 @@
 {
     NSLog(@"dealloc OSIAutoroutingPreferencePanePref");
     
-    [delayTime release];
-    
     [routesArray release];
     [serversArray release];
     
@@ -177,7 +178,7 @@ static BOOL newRouteMode = NO;
 {
     if( [sender tag] == 1)
     {
-        [routesArray replaceObjectAtIndex: [routesTable selectedRow] withObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [newName stringValue], @"name", @YES, @"activated", [newDescription stringValue], @"description", [newFilter stringValue], @"filter", [[serversArray objectAtIndex: [serverPopup indexOfSelectedItem]] objectForKey:@"Description"], @"server", [NSNumber numberWithInt: [previousPopup selectedTag]], @"previousStudies", [NSNumber numberWithBool: [previousModality state]], @"previousModality", [NSNumber numberWithBool: [previousDescription state]], @"previousDescription", [NSNumber numberWithInt: [failurePopup selectedTag]], @"failureRetry",  [NSNumber numberWithBool: [cfindTest state]], @"cfindTest", [NSNumber numberWithInt: filterType], @"filterType", [NSNumber numberWithInt: imagesOnly], @"imagesOnly", @CURRENTVERSION, @"version", nil]];
+        [routesArray replaceObjectAtIndex: [routesTable selectedRow] withObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [newName stringValue], @"name", @YES, @"activated", [newDescription stringValue], @"description", [newFilter stringValue], @"filter", [[serversArray objectAtIndex: [serverPopup indexOfSelectedItem]] objectForKey:@"Description"], @"server", [NSNumber numberWithInt: [previousPopup selectedTag]], @"previousStudies", [NSNumber numberWithBool: [previousModality state]], @"previousModality", [NSNumber numberWithBool: [previousDescription state]], @"previousDescription", [NSNumber numberWithInt: [failurePopup selectedTag]], @"failureRetry",  [NSNumber numberWithBool: [cfindTest state]], @"cfindTest", [NSNumber numberWithInt: filterType], @"filterType", [NSNumber numberWithInt:scheduleType], @"scheduleType", [NSNumber numberWithInteger:[delayTime integerValue]], @"delayTime", [fromTimePicker stringValue], @"fromTime", [toTimePicker stringValue], @"toTime", [NSNumber numberWithInt: imagesOnly], @"imagesOnly", @CURRENTVERSION, @"version", nil]];
     }
     else
     {
@@ -251,6 +252,17 @@ static BOOL newRouteMode = NO;
             self.filterType = [[selectedRoute valueForKey: @"filterType"] intValue];
             self.imagesOnly = [[selectedRoute valueForKey: @"imagesOnly"] boolValue];
             
+            self.scheduleType = [[selectedRoute valueForKey: @"scheduleType"] intValue];
+            if (self.scheduleType == 1)
+            {
+                [delayTime setIntegerValue:[[selectedRoute valueForKey: @"delayTime"] integerValue] ];
+            }
+            else if (self.scheduleType == 2)
+            {
+                [fromTimePicker setStringValue:[selectedRoute valueForKey:@"fromTime"]];
+                [toTimePicker setStringValue:[selectedRoute valueForKey:@"toTime"]];
+            }
+            
             int count = 0;
             for( i = 0; i < [serversArray count]; i++)
             {
@@ -275,7 +287,8 @@ static BOOL newRouteMode = NO;
 
 - (IBAction) newRoute:(id) sender
 {
-    [routesArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: @"new route", @"name", @"", @"description", @"(series.study.modality contains[c] \"CT\")", @"filter", [[serversArray objectAtIndex: 0] objectForKey:@"Description"], @"server", @"20", @"failureRetry", @"0", @"filterType", @NO, @"imagesOnly", nil]];
+    [routesArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: @"new route", @"name", @"", @"description", @"(series.study.modality contains[c] \"CT\")", @"filter", [[serversArray objectAtIndex: 0] objectForKey:@"Description"], @"server", @"20", @"failureRetry", @"0", @"filterType", @NO, @"imagesOnly", @"0", @"scheduleType",
+                             @"2", @"delayTime", @"21:00", @"fromTime", @"06:00", @"toTime", nil]];
     
     [routesTable reloadData];
     

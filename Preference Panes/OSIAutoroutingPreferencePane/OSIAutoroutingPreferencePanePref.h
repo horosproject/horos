@@ -82,8 +82,8 @@
     
     int scheduleType;
     IBOutlet NSTextField* delayTime;
-    IBOutlet NSDatePicker* startTime;
-    IBOutlet NSDatePicker* endTime;
+    IBOutlet NSDatePicker* fromTimePicker;
+    IBOutlet NSDatePicker* toTimePicker;
 }
 
 @property int filterType;

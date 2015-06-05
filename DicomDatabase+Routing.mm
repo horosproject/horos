@@ -575,29 +575,31 @@
     {
         if (![routingRule valueForKey:@"activated"] || [[routingRule valueForKey:@"activated"] boolValue])
         {
-            if ([routingRule valueForKey:@"noschedule"] != nil)
+            if ([routingRule valueForKey:@"scheduleType"] == nil || [[routingRule valueForKey:@"scheduleType"] intValue] == 0)
             {
                 [self __applyRoutingRules:autoroutingRules toImages:newImagesOriginal];
             }
             else
             {
-                if ([routingRule valueForKey:@"executeafter"])
+                if ([[routingRule valueForKey:@"scheduleType"] intValue] == 1)
                 {
-                    int64_t delayInSeconds = 3600 * [[routingRule valueForKey:@"executeafter"] integerValue];
+                    int64_t delayInSeconds = 3600 * [[routingRule valueForKey:@"delayTime"] integerValue];
                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
                     dispatch_after(popTime, dispatch_get_main_queue(),^{
                         [self __applyRoutingRules:autoroutingRules toImages:newImagesOriginal];
                     });
                 }
-                else if ([routingRule valueForKey:@"executefrom"] && [routingRule valueForKey:@"executeto"])
+                else if ([[routingRule valueForKey:@"scheduleType"] intValue] == 2 &&
+                         [routingRule valueForKey:@"fromTime"] &&
+                         [routingRule valueForKey:@"toTime"])
                 {
                     NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
                     [dateFormatter setDateFormat:@"HH:mm"];
                     
-                    NSString* fromTimeString = [routingRule valueForKey:@"executefrom"];
+                    NSString* fromTimeString = [routingRule valueForKey:@"fromTime"];
                     NSDate* fromTime = [dateFormatter dateFromString:fromTimeString];
                     
-                    NSString* toTimeString = [routingRule valueForKey:@"executeto"];
+                    NSString* toTimeString = [routingRule valueForKey:@"toTime"];
                     NSDate* toTime = [dateFormatter dateFromString:toTimeString];
                     
                     [dateFormatter release];
