@@ -996,18 +996,13 @@ public:
     
     if( newEngine == 1)
     {
-        unsigned
-        long vramMB = [VTKView VRAMSizeForDisplayID: [[[[[self window] screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
+        unsigned long vramMB = [VTKView VRAMSizeForDisplayID: [[[[[self window] screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
         
         //vramMB /= 1024*1024;
         
         if( vramMB <= 512)
         {
-            NSRunCriticalAlertPanel(NSLocalizedString(@"GPU Rendering", nil),
-                                    [NSString stringWithFormat: NSLocalizedString( @"Your graphic board has only %d MB of VRAM. Performances will be very limited with large dataset.", nil), vramMB],
-                                    NSLocalizedString( @"OK", nil),
-                                    nil,
-                                    nil);
+            //NSRunCriticalAlertPanel(NSLocalizedString(@"GPU Rendering", nil),[NSString stringWithFormat: NSLocalizedString( @"Your graphic board has only %d MB of VRAM. Performances will be very limited with large dataset.", nil), vramMB],NSLocalizedString( @"OK", nil),nil,nil);
         }
     }
     

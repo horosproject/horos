@@ -86,13 +86,13 @@
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"MAPPERMODEVR"])
             {
     #ifndef OSIRIX_LIGHT
-                long vramMB = [VTKView VRAMSizeForDisplayID: [[[[mainWindow screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
+                unsigned long vramMB = [VTKView VRAMSizeForDisplayID: [[[[mainWindow screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
                 
                 //vram /= 1024*1024;
                 
                 if( vramMB <= 512)
                 {
-                    NSRunCriticalAlertPanel( NSLocalizedString(@"GPU Rendering", nil), NSLocalizedString( @"Your graphic board has only %d MB of VRAM. Performances will be very limited with large dataset.", nil), NSLocalizedString( @"OK", nil), nil, nil, vramMB);
+                    //NSRunCriticalAlertPanel( NSLocalizedString(@"GPU Rendering", nil), NSLocalizedString( @"Your graphic board has only %d MB of VRAM. Performances will be very limited with large dataset.", nil), NSLocalizedString( @"OK", nil), nil, nil, vramMB);
                 }
     #endif
             }
