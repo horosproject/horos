@@ -731,6 +731,10 @@
 		84E191FC1369966A008DCFC8 /* WADODownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E191FA1369966A008DCFC8 /* WADODownload.m */; };
 		84F453570FC3DF5400D29666 /* ILCrashReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		99CDC0F51ADF0D0900F34F19 /* libCharLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB451802149F464B006674BF /* libCharLS.a */; };
+		99E5B3BB1B2A6B0800C3F1D2 /* libdcmprintscu.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */; };
+		99E5B3BC1B2A6B0800C3F1D2 /* libxerces-c.27.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
+		99E5B3C31B2A6BF600C3F1D2 /* libdcmprintscu.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 99E5B3C11B2A6BF600C3F1D2 /* libdcmprintscu.dylib */; };
+		99E5B3C41B2A6BF600C3F1D2 /* libxerces-c.27.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 99E5B3C21B2A6BF600C3F1D2 /* libxerces-c.27.dylib */; };
 		A0344496143DE4AA003E1AFA /* DCMUSRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = A085E104141E53210072BF0D /* DCMUSRegion.m */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
 		A90202BF0B980CD60001A00B /* PluginManagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90202BB0B980CD60001A00B /* PluginManagerController.m */; };
@@ -4539,6 +4543,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				99E5B3C31B2A6BF600C3F1D2 /* libdcmprintscu.dylib in Copy Frameworks */,
+				99E5B3C41B2A6BF600C3F1D2 /* libxerces-c.27.dylib in Copy Frameworks */,
 				59F1A515104BA8AE009E3215 /* OsiriXAPI.framework in Copy Frameworks */,
 				CE04B81B15289AF400EF6E52 /* Growl.framework in Copy Frameworks */,
 				CE81E2A50FDA9F00000D3D96 /* OsiriX.framework in Copy Frameworks */,
@@ -5218,6 +5224,10 @@
 		84E191F91369966A008DCFC8 /* WADODownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WADODownload.h; sourceTree = "<group>"; };
 		84E191FA1369966A008DCFC8 /* WADODownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WADODownload.m; sourceTree = "<group>"; };
 		953DA3D517A1D194000C4BAC /* WebPortalDB 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 8.xcdatamodel"; sourceTree = "<group>"; };
+		99E5B3BD1B2A6B6E00C3F1D2 /* libdcmprintscu.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libdcmprintscu.dylib; path = AYDicomPrint/libdcmprintscu.dylib; sourceTree = "<group>"; };
+		99E5B3BE1B2A6B6E00C3F1D2 /* libxerces-c.27.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libxerces-c.27.dylib"; path = "AYDicomPrint/libxerces-c.27.dylib"; sourceTree = "<group>"; };
+		99E5B3C11B2A6BF600C3F1D2 /* libdcmprintscu.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libdcmprintscu.dylib; path = AYDicomPrint/libdcmprintscu.dylib; sourceTree = "<group>"; };
+		99E5B3C21B2A6BF600C3F1D2 /* libxerces-c.27.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libxerces-c.27.dylib"; path = "AYDicomPrint/libxerces-c.27.dylib"; sourceTree = "<group>"; };
 		A085E103141E53210072BF0D /* DCMUSRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMUSRegion.h; sourceTree = "<group>"; };
 		A085E104141E53210072BF0D /* DCMUSRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMUSRegion.m; sourceTree = "<group>"; };
 		A90202BA0B980CD60001A00B /* PluginManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManagerController.h; sourceTree = "<group>"; };
@@ -7132,6 +7142,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				99E5B3BB1B2A6B0800C3F1D2 /* libdcmprintscu.dylib in Frameworks */,
+				99E5B3BC1B2A6B0800C3F1D2 /* libxerces-c.27.dylib in Frameworks */,
 				436218411A2F375C006FA27A /* libvtkIOXMLParser-6.2.a in Frameworks */,
 				436217611A2F3730006FA27A /* libITKIOSpatialObjects-4.7.a in Frameworks */,
 				4362180D1A2F375C006FA27A /* libvtkFiltersImaging-6.2.a in Frameworks */,
@@ -7520,6 +7532,10 @@
 		29B97314FDCFA39411CA2CEA /* OsiriX */ = {
 			isa = PBXGroup;
 			children = (
+				99E5B3C11B2A6BF600C3F1D2 /* libdcmprintscu.dylib */,
+				99E5B3C21B2A6BF600C3F1D2 /* libxerces-c.27.dylib */,
+				99E5B3BD1B2A6B6E00C3F1D2 /* libdcmprintscu.dylib */,
+				99E5B3BE1B2A6B6E00C3F1D2 /* libxerces-c.27.dylib */,
 				434B461A1A19F4E4008CF8CF /* OpenJPEG */,
 				84704DBF181ACF440061B1BF /* Rules.plist */,
 				AB451801149F44DD006674BF /* JPEG-LS (CharLS) */,
@@ -16201,6 +16217,7 @@
 					"$(PROJECT_DIR)/Binaries/ITKLibs",
 					"$(PROJECT_DIR)/Binaries/VTKLibs",
 					"$(PROJECT_DIR)/Binaries/CharLS",
+					"$(PROJECT_DIR)/AYDicomPrint",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -16744,6 +16761,7 @@
 					"$(PROJECT_DIR)/Binaries/ITKLibs",
 					"$(PROJECT_DIR)/Binaries/VTKLibs",
 					"$(PROJECT_DIR)/Binaries/CharLS",
+					"$(PROJECT_DIR)/AYDicomPrint",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
