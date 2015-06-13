@@ -548,7 +548,10 @@ static float deg2rad = M_PI / 180.0;
 	
 	// Default Init
 	[self setClippingRangeMode: 1]; // MIP
-	self.clippingRangeThickness = 0.5;
+    
+    [ self setClippingRangeThicknessInMm:[originalPix sliceInterval] ];
+    
+	//self.clippingRangeThickness = 0.5;
 	
     int min = [self getClippingRangeThicknessInMm] * 100.;
     self.dcmIntervalMin = (float) min / 100.;

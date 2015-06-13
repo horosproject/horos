@@ -407,14 +407,10 @@ public:
         }
         
         [self willChangeValueForKey:@"clippingRangeThicknessInMm"];
-        [self didChangeValueForKey:@"clippingRangeThicknessInMm"];
     }
     
-    if( clipRangeActivated) {
-        // This will also affect the minimum value of the slab thickness edit box
-        // because there is a binding with the variable clippingRangeThicknessInMm
-        if (clippingRangeThickness<1.22)
-            clippingRangeThickness = 1.22;
+    if( clipRangeActivated)
+    {
         aCamera->SetClippingRange( 0, clippingRangeThickness);
     }
     else
@@ -422,6 +418,12 @@ public:
         aCamera->SetClippingRange( 0, 10000);
         aRenderer->ResetCameraClippingRange();
     }
+    
+    if (clipRangeActivated)
+    {
+        [self didChangeValueForKey:@"clippingRangeThicknessInMm"];
+    }
+    
     [self setNeedsDisplay: YES];
 }
 
@@ -8259,7 +8261,7 @@ public:
             ptInt[1] = (long) (tempPoint3D[1] + 0.5);
             ptInt[2] = (long) (tempPoint3D[2] + 0.5);
             
-            if(needToFlip) 
+            if(needToFlip)
             {
                 ptInt[2] = [curPixList count] - ptInt[2] -1;
             }
@@ -8376,7 +8378,7 @@ public:
         else
         {
             aRenderer->RemoveActor(actor);
-        }	
+        }
     }
     [self unselectAllActors];
     [self setNeedsDisplay:YES];
@@ -8514,7 +8516,7 @@ public:
 
 - (void) setAll3DPointsColor: (NSColor*) color
 {
-    unsigned int i = 0;	
+    unsigned int i = 0;
     for(i=0 ; i<[point3DColorsArray count] ; i++)
     {
         [self set3DPointAtIndex:i Color: color];
@@ -8537,7 +8539,7 @@ public:
 
 - (void) setAll3DPointsRadius: (float) radius
 {
-    unsigned int i = 0;	
+    unsigned int i = 0;
     for(i=0 ; i<[point3DRadiusArray count] ; i++)
     {
         [self set3DPointAtIndex:i Radius: radius];
@@ -8587,7 +8589,7 @@ public:
 }
 
 - (void) load3DPointsDefaultProperties
-{	
+{
     //color
     point3DDefaultColorRed = [[NSUserDefaults standardUserDefaults] floatForKey:@"points3DcolorRed"];
     point3DDefaultColorGreen = [[NSUserDefaults standardUserDefaults] floatForKey:@"points3DcolorGreen"];
@@ -8705,7 +8707,7 @@ public:
         c = [NSCursor crosshairCursor];
     else if (tool == tBonesRemoval)
         c = [NSCursor bonesRemovalCursor];
-    else	
+    else
         c = [NSCursor arrowCursor];
     
     if( c != cursor)
@@ -8725,9 +8727,9 @@ public:
         
         NSEvent *event = (NSEvent *)[theTimer userInfo];
         NSSize dragOffset = NSMakeSize(0.0, 0.0);
-        NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard]; 
+        NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard];
         NSMutableArray *pbTypes = [NSMutableArray array];
-        // The image we will drag 
+        // The image we will drag
         NSImage *image;
         if ([event modifierFlags] & NSShiftKeyMask)
             image = [self nsimage: YES];
@@ -8756,7 +8758,7 @@ public:
         if ([event modifierFlags] & NSAlternateKeyMask)
             [ pbTypes addObject: NSFilesPromisePboardType];
         else
-            [pbTypes addObject: NSTIFFPboardType];	
+            [pbTypes addObject: NSTIFFPboardType];
         
         
         [pboard declareTypes:pbTypes  owner:self];
@@ -8768,7 +8770,7 @@ public:
             local_point = [self convertPoint:event_location fromView:nil];
             imageLocation.origin =  local_point;
             imageLocation.size = NSMakeSize(32,32);
-            [pboard setData:nil forType:NSFilesPromisePboardType]; 
+            [pboard setData:nil forType:NSFilesPromisePboardType];
             
             if (destinationImage)
                 [destinationImage release];
@@ -8779,17 +8781,17 @@ public:
                                     source:self
                                  slideBack:YES
                                      event:event];
-        } 
+        }
         else
-        {		
+        {
             [pboard setData: [[NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSTIFFPboardType];
             
             [ self dragImage:thumbnail
                           at:local_point
                       offset:dragOffset
-                       event:event 
-                  pasteboard:pboard 
-                      source:self 
+                       event:event
+                  pasteboard:pboard
+                      source:self
                    slideBack:YES];
         }
         
@@ -8877,9 +8879,9 @@ public:
                     [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: wwwlMenuString userInfo: nil];
                     break;
                 case FullDynamicWWWLHotKeyAction:  // full dynamic WW/WL
-                    wwwlMenuString = NSLocalizedString(@"Full dynamic", nil);	
-                    [windowController applyWLWWForString:wwwlMenuString];	
-                    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: wwwlMenuString userInfo: nil];								
+                    wwwlMenuString = NSLocalizedString(@"Full dynamic", nil);
+                    [windowController applyWLWWForString:wwwlMenuString];
+                    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: wwwlMenuString userInfo: nil];
                     break;
                     
                 case Preset1WWWLHotKeyAction:																	// 1 - 9 will be presets WW/WL
@@ -8896,7 +8898,7 @@ public:
                         wwwlMenuString = [wwwlValues objectAtIndex:key-Preset1WWWLHotKeyAction];
                         [windowController applyWLWWForString:wwwlMenuString];
                         [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: wwwlMenuString userInfo: nil];
-                    }	
+                    }
                     break;
                     
                 case Preset1OpacityHotKeyAction:																	// 1 - 9 will be opacity presets
@@ -8927,7 +8929,7 @@ public:
                     // Flip  Don't flip Vertical or Horizontal in VR Do nothing
                     
                     // mouse functions
-                case WWWLToolHotKeyAction:	
+                case WWWLToolHotKeyAction:
                 case MoveHotKeyAction:
                 case ZoomHotKeyAction:
                 case RotateHotKeyAction:
@@ -8977,7 +8979,7 @@ public:
     
     
     if( [[NSArchiver archivedDataWithRootObject: clut] isEqualToData: appliedCurves] == NO || (appliedResolution == YES && lowRes == NO))
-    {	
+    {
         colorTransferFunction->RemoveAllPoints();
         opacityTransferFunction->RemoveAllPoints();
         
@@ -8999,7 +9001,7 @@ public:
                 float o = [[aCurve objectAtIndex:j] pointValue].y * [[aCurve objectAtIndex:j] pointValue].y / opacityAdapter;
                 
                 opacityTransferFunction->AddPoint( (OFFSET16 + [[aCurve objectAtIndex:j] pointValue].x) * valueFactor, o);
-            }			
+            }
         }
         
         [appliedCurves release];
@@ -9107,10 +9109,10 @@ public:
 }
 
 // This callback is called periodically when we're in the IMAVActive state.
-// We copy (actually, re-render) what's currently on the screen into the provided 
+// We copy (actually, re-render) what's currently on the screen into the provided
 // CVPixelBufferRef.
 //
-// Note that this will be called on a non-main thread. 
+// Note that this will be called on a non-main thread.
 - (BOOL) renderIntoPixelBuffer:(CVPixelBufferRef)buffer forTime:(CVTimeStamp*)timeStamp
 {
     //	NSLog(@"renderIntoPixelBuffer");
@@ -9128,16 +9130,16 @@ public:
     
     // Lock the pixel buffer's base address so that we can draw into it.
     if((err = CVPixelBufferLockBaseAddress(buffer, 0)) != kCVReturnSuccess) {
-        // This should not happen.  If it does, the safe thing to do is return 
+        // This should not happen.  If it does, the safe thing to do is return
         // 'NO'.
         NSLog(@"Warning, could not lock pixel buffer base address in %s - error %ld", __func__, (long)err);
         return NO;
     }
     @synchronized (self) {
-        // Create a CGBitmapContext with the CVPixelBuffer.  Parameters /must/ match 
+        // Create a CGBitmapContext with the CVPixelBuffer.  Parameters /must/ match
         // pixel format returned in getPixelBufferPixelFormat:, above, width and
         // height should be read from the provided CVPixelBuffer.
-        iChatWidth = CVPixelBufferGetWidth(buffer); 
+        iChatWidth = CVPixelBufferGetWidth(buffer);
         iChatHeight = CVPixelBufferGetHeight(buffer);
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
         CGContextRef cgContext = CGBitmapContextCreate(CVPixelBufferGetBaseAddress(buffer),
@@ -9150,7 +9152,7 @@ public:
         
         [self setIChatFrame:YES];
         
-        // Derive an NSGraphicsContext, make it current, and ask our SlideshowView 
+        // Derive an NSGraphicsContext, make it current, and ask our SlideshowView
         // to draw.
         NSGraphicsContext *context = [NSGraphicsContext graphicsContextWithGraphicsPort:cgContext flipped:NO];
         [NSGraphicsContext setCurrentContext:context];
@@ -9202,8 +9204,8 @@ public:
     //}
 }
 
-// The _hasChanged flag is set to 'NO' after any check (by a client of this 
-// class), and 'YES' after a frame is drawn that is not identical to the 
+// The _hasChanged flag is set to 'NO' after any check (by a client of this
+// class), and 'YES' after a frame is drawn that is not identical to the
 // previous one (in the drawInBounds: method).
 
 // Returns the current state of the flag, and sets it to the passed in value.
@@ -9339,7 +9341,7 @@ public:
 #pragma mark  3DConnexion SpaceNavigator
 
 - (void) closeEvent:(id) sender
-{	
+{
     VRView *vV = (VRView*) snVRView;
     if( volumeMapper)
         volumeMapper->SetMinimumImageSampleDistance( LOD);
@@ -9430,7 +9432,7 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
                             vV->snCloseEventTimer = nil;
                         }
                         
-                        // *** zoom ***					
+                        // *** zoom ***
                         if( vV->projectionMode != 2)
                         {
                             speed = 0.2; // zoom speed 0.2 is slow 1.0 is fast
@@ -9449,7 +9451,7 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
                             if(faster) dolly*=3.;
                             if( dolly < -0.9) dolly = -0.9;
                             
-                            [vV vtkCamera]->Dolly( 1.0 + dolly); 
+                            [vV vtkCamera]->Dolly( 1.0 + dolly);
                             [vV vtkCamera]->SetDistance( distance);
                             [vV vtkCamera]->ComputeViewPlaneNormal();
                             [vV vtkCamera]->OrthogonalizeViewUp();
@@ -9480,14 +9482,14 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
                         {
                             xPos = lastState.axis[4]-(float)ry/axis_max*50.0;
                             yPos = lastState.axis[3]-(float)rx/axis_max*50.0;
-                            [vV getInteractor]->SetEventInformation((int)xPos, (int)yPos, 0, 0);						
+                            [vV getInteractor]->SetEventInformation((int)xPos, (int)yPos, 0, 0);
                             if( vV->snStopped)
                             {
                                 [vV getInteractor]->InvokeEvent(vtkCommand::LeftButtonPressEvent,NULL);
                                 vV->snStopped = NO;
                             }
                             else
-                                [vV getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);						
+                                [vV getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);
                             state->axis[3] = yPos;
                             state->axis[4] = xPos;
                         }
