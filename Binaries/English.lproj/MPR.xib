@@ -1713,7 +1713,7 @@ Gw
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="733">
-                        <rect key="frame" x="87" y="2" width="81" height="33"/>
+                        <rect key="frame" x="87" y="2" width="81" height="36"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" id="736">
                             <font key="font" metaFont="miniSystem"/>

@@ -889,7 +889,7 @@ static NSHost *currentHost = nil;
         [defaultValues setObject:@"1.4" forKey:@"superSampling"];
     */
      
-    [defaultValues setObject:@"3.0" forKey:@"superSampling"];
+    [defaultValues setObject:@"3.5" forKey:@"superSampling"];
     float superSampling = [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"];
     if (superSampling < [[defaultValues objectForKey:@"superSampling"] floatValue])
     {
