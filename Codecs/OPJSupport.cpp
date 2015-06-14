@@ -761,19 +761,26 @@ OPJSupport::compressJPEG2K(  void *data,
     // Open the temp file and get the encoded data into 'to'
     // and the length into 'length'
     FILE *f = fopen(parameters.outfile, "rb");
-    fseek(f, 0, SEEK_END);
-    long length = ftell(f);
-    fseek(f, 0, SEEK_SET);
     
-    if (length % 2) {
-        length++; // ensure even length
-        fprintf(stdout,"Padded to %li\n", length);
+    long length = 0;
+    unsigned char *to = NULL;
+    
+    if (f != NULL)
+    {
+        fseek(f, 0, SEEK_END);
+        length = ftell(f);
+        fseek(f, 0, SEEK_SET);
+        
+        if (length % 2) {
+            length++; // ensure even length
+            fprintf(stdout,"Padded to %li\n", length);
+        }
+        
+        to = (unsigned char *)malloc(length);
+        fread(to, length, 1, f);
+        fclose(f);
     }
-    
-    unsigned char *to = (unsigned char *)malloc(length);
-    fread(to, length, 1, f);
-    fclose(f);
-    
+
     *compressedDataSize = length;
     
     if (parameters.outfile)

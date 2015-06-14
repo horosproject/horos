@@ -1554,9 +1554,9 @@ static inline int int_ceildivpow2(int a, int b) {
                                                       rate,
                                                       &compressedLength);
         
-        NSMutableData *jpeg2000Data = [NSMutableData dataWithBytesNoCopy: outBuffer
-                                                                  length: compressedLength
-                                                            freeWhenDone: YES];
+        NSMutableData *jpeg2000Data = ((outBuffer == NULL) ? nil : [NSMutableData dataWithBytesNoCopy: outBuffer
+                                                                                               length: compressedLength
+                                                                                         freeWhenDone: YES]);
         
         return jpeg2000Data;
     }
