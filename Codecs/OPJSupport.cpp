@@ -760,7 +760,9 @@ OPJSupport::compressJPEG2K(  void *data,
 #ifdef WITH_OPJ_FILE_STREAM
     // Open the temp file and get the encoded data into 'to'
     // and the length into 'length'
-    FILE *f = fopen(parameters.outfile, "rb");
+    FILE *f = NULL;
+    if (parameters.outfile)
+        f = fopen(parameters.outfile, "rb");
     
     long length = 0;
     unsigned char *to = NULL;
