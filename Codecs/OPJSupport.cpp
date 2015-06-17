@@ -136,8 +136,12 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     opj_set_default_decoder_parameters(&parameters);
     parameters.decod_format = buffer_format(jp2Data);
     
+    opj_buffer_info_t bufferInfo;
+    bufferInfo.cur = bufferInfo.buf = (OPJ_BYTE *)jp2Data;
+    bufferInfo.len = (OPJ_SIZE_T) jp2DataSize;
+        
     // Create the stream
-    decodeInfo.stream = opj_stream_create_buffer_stream((OPJ_BYTE *)jp2Data, (OPJ_SIZE_T)jp2DataSize, OPJ_STREAM_READ);
+    decodeInfo.stream = opj_stream_create_buffer_stream(&bufferInfo , OPJ_STREAM_READ);
     if (!decodeInfo.stream) {
         fprintf(stderr,"%s:%d:\n\tNO decodeInfo.stream\n",__FILE__,__LINE__);
         return NULL;
@@ -647,10 +651,6 @@ OPJSupport::compressJPEG2K(  void *data,
     strcpy(parameters.outfile,tmpnam(NULL));
 #endif
     
-    int image_width = columns;
-    int image_height = rows;
-    int sample_pixel = samplesPerPixel;
-    
     image = rawtoimage( (char*) data,
                        &parameters,
                        static_cast<int>( columns*rows*samplesPerPixel*bitsAllocated/8), // [data length], fragment_size
@@ -699,8 +699,11 @@ OPJSupport::compressJPEG2K(  void *data,
     
     // Create the stream
 #ifdef WITH_OPJ_BUFFER_STREAM
-    OPJ_SIZE_T jp2DataSize = rows * columns;
-    l_stream = opj_stream_create_buffer_stream((OPJ_BYTE *)data, jp2DataSize, OPJ_STREAM_WRITE);
+    opj_buffer_info_t bufferInfo;
+    bufferInfo.cur = bufferInfo.buf = (OPJ_BYTE *)data;
+    bufferInfo.len = (OPJ_SIZE_T) rows * columns;
+    
+    l_stream = opj_stream_create_buffer_stream(&buffer_info, OPJ_STREAM_WRITE);
 #endif
     
 #ifdef WITH_OPJ_FILE_STREAM

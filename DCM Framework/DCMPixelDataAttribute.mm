@@ -1150,6 +1150,8 @@ static inline int int_ceildivpow2(int a, int b) {
         
         int colorModel;
         
+        //[jpegData writeToFile:@"/tmp/debug.jpeg" atomically:YES];
+        
         OPJSupport opj;
         void *p = opj.decompressJPEG2K( (void*) [jpegData bytes],
                                        [jpegData length], &decompressedLength, &colorModel);
