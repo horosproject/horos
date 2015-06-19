@@ -14,6 +14,11 @@
 
 #import "DicomDatabase.h"
 
+@interface DicomDatabase()
+{
+    dispatch_queue_t scheduledRoutingQueue;
+}
+@end
 
 @interface DicomDatabase (Routing)
 
