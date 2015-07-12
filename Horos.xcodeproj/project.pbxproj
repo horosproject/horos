@@ -821,6 +821,10 @@
 		998B52E51AE0894D00D317CF /* Horos.icns in Resources */ = {isa = PBXBuildFile; fileRef = 998B52E31AE0893D00D317CF /* Horos.icns */; };
 		998B52E61AE0894E00D317CF /* Horos.icns in Resources */ = {isa = PBXBuildFile; fileRef = 998B52E31AE0893D00D317CF /* Horos.icns */; };
 		998B52E71AE0895700D317CF /* Horos.sdef in Resources */ = {isa = PBXBuildFile; fileRef = 998B52E11AE0890300D317CF /* Horos.sdef */; };
+		999901A01B52B18200921EA1 /* libdcmprintscu.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */; };
+		999901A11B52B18200921EA1 /* libxerces-c.27.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
+		999901A41B52B24200921EA1 /* libdcmprintscu.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 999901A21B52B24200921EA1 /* libdcmprintscu.dylib */; };
+		999901A51B52B24200921EA1 /* libxerces-c.27.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 999901A31B52B24200921EA1 /* libxerces-c.27.dylib */; };
 		99CDC0F51ADF0D0900F34F19 /* libCharLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB451802149F464B006674BF /* libCharLS.a */; };
 		A0344496143DE4AA003E1AFA /* DCMUSRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = A085E104141E53210072BF0D /* DCMUSRegion.m */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
@@ -4627,6 +4631,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				999901A41B52B24200921EA1 /* libdcmprintscu.dylib in Copy Frameworks */,
+				999901A51B52B24200921EA1 /* libxerces-c.27.dylib in Copy Frameworks */,
 				9966A1B51AE0B6EE00F2D81A /* HorosDCM.framework in Copy Frameworks */,
 				59F1A515104BA8AE009E3215 /* HorosAPI.framework in Copy Frameworks */,
 				9966A1B41AE0AC7400F2D81A /* OsiriXAPI.framework in Copy Frameworks */,
@@ -5320,6 +5326,8 @@
 		9966A2E51AE0B9A200F2D81A /* OsiriXDCMFrameworkHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXDCMFrameworkHeaders.mm; sourceTree = "<group>"; };
 		998B52E11AE0890300D317CF /* Horos.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Horos.sdef; sourceTree = "<group>"; };
 		998B52E31AE0893D00D317CF /* Horos.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Horos.icns; sourceTree = "<group>"; };
+		999901A21B52B24200921EA1 /* libdcmprintscu.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libdcmprintscu.dylib; path = AYDicomPrint/libdcmprintscu.dylib; sourceTree = "<group>"; };
+		999901A31B52B24200921EA1 /* libxerces-c.27.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libxerces-c.27.dylib"; path = "AYDicomPrint/libxerces-c.27.dylib"; sourceTree = "<group>"; };
 		A085E103141E53210072BF0D /* DCMUSRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMUSRegion.h; sourceTree = "<group>"; };
 		A085E104141E53210072BF0D /* DCMUSRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMUSRegion.m; sourceTree = "<group>"; };
 		A90202BA0B980CD60001A00B /* PluginManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManagerController.h; sourceTree = "<group>"; };
@@ -7240,6 +7248,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				999901A01B52B18200921EA1 /* libdcmprintscu.dylib in Frameworks */,
+				999901A11B52B18200921EA1 /* libxerces-c.27.dylib in Frameworks */,
 				9966A1AB1AE09D7C00F2D81A /* Quartz.framework in Frameworks */,
 				9966A1A91AE09D6800F2D81A /* InstantMessage.framework in Frameworks */,
 				9966A1A71AE09D5D00F2D81A /* DiskArbitration.framework in Frameworks */,
@@ -7632,6 +7642,8 @@
 		29B97314FDCFA39411CA2CEA /* OsiriX */ = {
 			isa = PBXGroup;
 			children = (
+				999901A21B52B24200921EA1 /* libdcmprintscu.dylib */,
+				999901A31B52B24200921EA1 /* libxerces-c.27.dylib */,
 				434B461A1A19F4E4008CF8CF /* OpenJPEG */,
 				84704DBF181ACF440061B1BF /* Rules.plist */,
 				AB451801149F44DD006674BF /* JPEG-LS (CharLS) */,
@@ -16503,6 +16515,7 @@
 					"$(PROJECT_DIR)/Binaries/ITKLibs",
 					"$(PROJECT_DIR)/Binaries/VTKLibs",
 					"$(PROJECT_DIR)/Binaries/CharLS",
+					"$(PROJECT_DIR)/AYDicomPrint",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -17048,6 +17061,7 @@
 					"$(PROJECT_DIR)/Binaries/ITKLibs",
 					"$(PROJECT_DIR)/Binaries/VTKLibs",
 					"$(PROJECT_DIR)/Binaries/CharLS",
+					"$(PROJECT_DIR)/AYDicomPrint",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
