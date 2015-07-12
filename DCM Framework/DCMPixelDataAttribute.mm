@@ -1150,6 +1150,8 @@ static inline int int_ceildivpow2(int a, int b) {
         
         int colorModel;
         
+        //[jpegData writeToFile:@"/tmp/debug.jpeg" atomically:YES];
+        
         OPJSupport opj;
         void *p = opj.decompressJPEG2K( (void*) [jpegData bytes],
                                        [jpegData length], &decompressedLength, &colorModel);
@@ -1554,9 +1556,9 @@ static inline int int_ceildivpow2(int a, int b) {
                                                       rate,
                                                       &compressedLength);
         
-        NSMutableData *jpeg2000Data = [NSMutableData dataWithBytesNoCopy: outBuffer
-                                                                  length: compressedLength
-                                                            freeWhenDone: YES];
+        NSMutableData *jpeg2000Data = ((outBuffer == NULL) ? nil : [NSMutableData dataWithBytesNoCopy: outBuffer
+                                                                                               length: compressedLength
+                                                                                         freeWhenDone: YES]);
         
         return jpeg2000Data;
     }

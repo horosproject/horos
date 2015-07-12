@@ -74,6 +74,16 @@
     BOOL imagesOnly;
 	
 	IBOutlet NSWindow *mainWindow;
+    
+    
+    BOOL deleteAfterTransference;
+    
+    //Schedule attributes
+    
+    int scheduleType;
+    IBOutlet NSTextField* delayTime;
+    IBOutlet NSDatePicker* fromTimePicker;
+    IBOutlet NSDatePicker* toTimePicker;
 }
 
 @property int filterType;
@@ -86,5 +96,9 @@
 - (void) deleteSelectedRow:(id)sender;
 - (IBAction) selectServer:(id) sender;
 - (IBAction) selectPrevious:(id) sender;
+
+@property BOOL deleteAfterTransference;
+
+@property int scheduleType;
 
 @end

@@ -882,10 +882,21 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"comment" forKey:@"commentFieldForAutoFill"];
     [defaultValues setObject:[NSString stringWithFormat:@"%d", syncroRatio] forKey:@"DefaultModeForNonVolumicSeries"];
 	[defaultValues setObject:@"2" forKey:@"drawerState"]; // NSDrawerOpenState
-	if( [[NSProcessInfo processInfo] processorCount] >= 4)
-		[defaultValues setObject:@"2.0" forKey:@"superSampling"];
-	else
-		[defaultValues setObject:@"1.4" forKey:@"superSampling"];
+    /*
+    if( [[NSProcessInfo processInfo] processorCount] >= 4)
+        [defaultValues setObject:@"2.0" forKey:@"superSampling"];
+    else
+        [defaultValues setObject:@"1.4" forKey:@"superSampling"];
+    */
+     
+    [defaultValues setObject:@"3.5" forKey:@"superSampling"];
+    float superSampling = [[NSUserDefaults standardUserDefaults] floatForKey: @"superSampling"];
+    if (superSampling < [[defaultValues objectForKey:@"superSampling"] floatValue])
+    {
+        superSampling = [[defaultValues objectForKey:@"superSampling"] floatValue];
+        [[NSUserDefaults standardUserDefaults] setFloat:superSampling forKey:@"superSampling"];
+    }
+    
 	
     [defaultValues setObject:@"200" forKey: @"FetchLimitForWebPortal"];
     
@@ -894,9 +905,10 @@ static NSHost *currentHost = nil;
     
     [defaultValues setObject:@"1" forKey:@"UseFloatingThumbnailsList"];
     [defaultValues setObject:@"0.2" forKey: @"MinimumTitledGantryTolerance"]; // in degrees
-//		
+    
+//
 	long	pVRAM;
-//		
+//
 	pVRAM = [self vramSize]  / (1024L * 1024L);
 //	NSLog(@"VRAM: %d MB", pVRAM);
 	
