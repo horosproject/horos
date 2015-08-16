@@ -8828,54 +8828,6 @@ static int avoidReentryRefreshDatabase = 0;
     [pool release];
 }
 
-+ (void) subLoadingThread: (NSDictionary*) dict
-{
-    @autoreleasepool
-    {
-        [NSThread currentThread].name = @"Load Image Data Sub Thread";
-        
-        NSThread *mainLoadingThread = [dict objectForKey: @"loadingThread"];
-        NSArray *p = [dict objectForKey: @"pixList"];
-        //        NSArray *f = [dict objectForKey: @"fileList"];
-        NSConditionLock *subLoadingThread = [dict objectForKey: @"subLoadingThread"];
-        int from = [[dict objectForKey: @"from"] intValue];
-        int to = [[dict objectForKey: @"to"] intValue];
-        int movieIndex = [[dict objectForKey: @"movieIndex"] intValue];
-        int maxMovieIndex = [[dict objectForKey: @"maxMovieIndex"] intValue];
-        
-        //        BOOL isLocal = [[[BrowserController currentBrowser] database] isLocal];
-        
-        for( int i = from; i < to; i++)
-        {
-            BOOL isCancelled;
-            
-            @synchronized( mainLoadingThread)
-            {
-                isCancelled = mainLoadingThread.isCancelled;
-            }
-            
-            if( isCancelled == NO)
-            {
-                [[p objectAtIndex: i] CheckLoad];
-            }
-            
-            if( from == 0)
-            {
-                float loadingPercentage = (float) ((movieIndex*(to-from)) + i) / (float) (maxMovieIndex * (to-from));
-                if( loadingPercentage >= 1)
-                    loadingPercentage = 0.99;
-                
-                @synchronized( mainLoadingThread)
-                {
-                    [mainLoadingThread.threadDictionary setObject: [NSNumber numberWithFloat: loadingPercentage] forKey: @"loadingPercentage"];
-                }
-            }
-        }
-        
-        [subLoadingThread lock];
-        [subLoadingThread unlockWithCondition: [subLoadingThread condition]-1];
-    }
-}
 
 + (BOOL) areLoadingViewers
 {
