@@ -510,7 +510,7 @@
 		59EBFDDD12BA5A1B00809C61 /* WebPortal+Email+Log.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */; };
 		59EBFEA412BB500C00809C61 /* browserController.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFEA212BB500C00809C61 /* browserController.h */; };
 		59F1A4C8104BA5BE009E3215 /* HorosHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F1A4C7104BA5BE009E3215 /* HorosHeaders.mm */; };
-		59F1A515104BA8AE009E3215 /* HorosAPI.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* HorosAPI.framework */; };
+		59F1A515104BA8AE009E3215 /* HorosAPI.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* HorosAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		59F5F3F911F476030047A90D /* N2ImageButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F3F711F476030047A90D /* N2ImageButtonCell.h */; };
 		59F5F3FA11F476030047A90D /* N2ImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F3F811F476030047A90D /* N2ImageButtonCell.mm */; };
 		59F5F4EC11F485CC0047A90D /* BrowserController+Activity.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F4EA11F485CC0047A90D /* BrowserController+Activity.h */; };
@@ -725,7 +725,7 @@
 		84DE8CD311AC227B0029396D /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A19105D4DE200CE6AAF /* WebKit.framework */; };
 		84E191FB1369966A008DCFC8 /* WADODownload.h in Headers */ = {isa = PBXBuildFile; fileRef = 84E191F91369966A008DCFC8 /* WADODownload.h */; };
 		84E191FC1369966A008DCFC8 /* WADODownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E191FA1369966A008DCFC8 /* WADODownload.m */; };
-		84F453570FC3DF5400D29666 /* ILCrashReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
+		84F453570FC3DF5400D29666 /* ILCrashReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		9966A1901AE099A400F2D81A /* ViewerController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE17661056D2659009C93B5 /* ViewerController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9966A1911AE099A400F2D81A /* options.h in Headers */ = {isa = PBXBuildFile; fileRef = 434B46151A19F2A3008CF8CF /* options.h */; };
 		9966A19F1AE09B6F00F2D81A /* OsiriXHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9966A19E1AE09B6F00F2D81A /* OsiriXHeaders.mm */; };
@@ -738,8 +738,8 @@
 		9966A1AC1AE09DB300F2D81A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A21AE09D4800F2D81A /* AVFoundation.framework */; };
 		9966A1AD1AE09DD000F2D81A /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A41AE09D5100F2D81A /* CoreMedia.framework */; };
 		9966A1AE1AE09DE200F2D81A /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1AA1AE09D7C00F2D81A /* Quartz.framework */; };
-		9966A1B41AE0AC7400F2D81A /* OsiriXAPI.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A19A1AE099A400F2D81A /* OsiriXAPI.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		9966A1B51AE0B6EE00F2D81A /* HorosDCM.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		9966A1B41AE0AC7400F2D81A /* OsiriXAPI.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A19A1AE099A400F2D81A /* OsiriXAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9966A1B51AE0B6EE00F2D81A /* HorosDCM.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9966A1BB1AE0B7E000F2D81A /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9966A1BC1AE0B7E000F2D81A /* DCMAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A14067526A600908593 /* DCMAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9966A1BD1AE0B7E000F2D81A /* DCMAttributeTag.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A16067526A600908593 /* DCMAttributeTag.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -821,8 +821,8 @@
 		998B52E51AE0894D00D317CF /* Horos.icns in Resources */ = {isa = PBXBuildFile; fileRef = 998B52E31AE0893D00D317CF /* Horos.icns */; };
 		998B52E61AE0894E00D317CF /* Horos.icns in Resources */ = {isa = PBXBuildFile; fileRef = 998B52E31AE0893D00D317CF /* Horos.icns */; };
 		998B52E71AE0895700D317CF /* Horos.sdef in Resources */ = {isa = PBXBuildFile; fileRef = 998B52E11AE0890300D317CF /* Horos.sdef */; };
-		999901A41B52B24200921EA1 /* libdcmprintscu.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 999901A21B52B24200921EA1 /* libdcmprintscu.dylib */; };
-		999901A51B52B24200921EA1 /* libxerces-c.27.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 999901A31B52B24200921EA1 /* libxerces-c.27.dylib */; };
+		999901A41B52B24200921EA1 /* libdcmprintscu.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 999901A21B52B24200921EA1 /* libdcmprintscu.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		999901A51B52B24200921EA1 /* libxerces-c.27.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 999901A31B52B24200921EA1 /* libxerces-c.27.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		99CDC0F51ADF0D0900F34F19 /* libCharLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB451802149F464B006674BF /* libCharLS.a */; };
 		A0344496143DE4AA003E1AFA /* DCMUSRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = A085E104141E53210072BF0D /* DCMUSRegion.m */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
@@ -2303,11 +2303,11 @@
 		A9FBD37216DBE3AA003A0E04 /* VR Muscles-Bones.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE1606620769EFE60036CAD3 /* VR Muscles-Bones.plist */; };
 		A9FBD37316DBE3AA003A0E04 /* VR Red Vessels.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBA8D9B065AB90200A1F89C /* VR Red Vessels.plist */; };
 		A9FBD38316DBE701003A0E04 /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BE05D1524344D00AE6156 /* Growl.framework */; settings = {ATTRIBUTES = (Required, ); }; };
-		A9FBD38416DBE782003A0E04 /* Growl.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = CE2BE05D1524344D00AE6156 /* Growl.framework */; };
-		A9FBD38616DBE821003A0E04 /* HorosAPI.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* HorosAPI.framework */; };
-		A9FBD38716DBE83E003A0E04 /* ILCrashReporter.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
-		A9FBD38816DBE84D003A0E04 /* libxerces-c.27.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
-		A9FBD38A16DBE855003A0E04 /* libdcmprintscu.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */; };
+		A9FBD38416DBE782003A0E04 /* Growl.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = CE2BE05D1524344D00AE6156 /* Growl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		A9FBD38616DBE821003A0E04 /* HorosAPI.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* HorosAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		A9FBD38716DBE83E003A0E04 /* ILCrashReporter.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		A9FBD38816DBE84D003A0E04 /* libxerces-c.27.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		A9FBD38A16DBE855003A0E04 /* libdcmprintscu.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		A9FE55F410DB7DCF000D0395 /* OpenGLScreenReader.h in Headers */ = {isa = PBXBuildFile; fileRef = A930149210DA63C200AF0051 /* OpenGLScreenReader.h */; };
 		A9FEC1400907EBA600B218BE /* orthogonalReslice.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9FEC13F0907EBA600B218BE /* orthogonalReslice.tif */; };
 		AB0128640635991400A74AA1 /* QuicktimeExport.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0128620635991400A74AA1 /* QuicktimeExport.h */; };
@@ -3937,7 +3937,7 @@
 		BFF97D710BDE8BE6008333CF /* ShadingArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF97D6B0BDE8BE6008333CF /* ShadingArrayController.h */; };
 		BFF97D720BDE8BE6008333CF /* ShadingArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFF97D6C0BDE8BE6008333CF /* ShadingArrayController.m */; };
 		CE03A3CC0EA2AE0300951EF4 /* iPhone.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE03A3CB0EA2AE0300951EF4 /* iPhone.tif */; };
-		CE04B81B15289AF400EF6E52 /* Growl.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BE05D1524344D00AE6156 /* Growl.framework */; };
+		CE04B81B15289AF400EF6E52 /* Growl.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BE05D1524344D00AE6156 /* Growl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CE06475210F12DA500551AD9 /* PlayTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = CE06475110F12DA500551AD9 /* PlayTemplate.png */; };
 		CE087B0C0DE9BD6E000E5593 /* GLString.m in Sources */ = {isa = PBXBuildFile; fileRef = CE087B0A0DE9BD6E000E5593 /* GLString.m */; };
 		CE087B0D0DE9BD6E000E5593 /* GLString.h in Headers */ = {isa = PBXBuildFile; fileRef = CE087B0B0DE9BD6E000E5593 /* GLString.h */; };
@@ -12236,8 +12236,8 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = NO;
-				LastTestingUpgradeCheck = 0510;
-				LastUpgradeCheck = 0500;
+				LastTestingUpgradeCheck = 0640;
+				LastUpgradeCheck = 0640;
 				ORGANIZATIONNAME = "The Horos Project";
 				TargetAttributes = {
 					59BDEC2C117C92B2007F1F2C = {
@@ -16422,22 +16422,23 @@
 		43E98D191A32BF6A001B9E51 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_RESOURCE_RULES_PATH = Rules.plist;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_FAST_OBJC_DISPATCH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
@@ -16453,7 +16454,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_CODE_SIGN_FLAGS = "";
-				SDKROOT = macosx10.8;
+				SDKROOT = macosx;
 			};
 			name = Deployment;
 		};
@@ -16541,7 +16542,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -16788,6 +16788,7 @@
 					Binaries/LibTiff,
 					AYDicomPrint,
 				);
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -16797,6 +16798,7 @@
 				PRODUCT_NAME = DICOMPrint;
 				SKIP_INSTALL = YES;
 				SYMROOT = build;
+				VALID_ARCHS = i386;
 			};
 			name = Deployment;
 		};
@@ -16804,7 +16806,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -16907,7 +16908,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -17119,21 +17119,22 @@
 		7E76BED9085757B70073649A /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_RESOURCE_RULES_PATH = Rules.plist;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_FAST_OBJC_DISPATCH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -17153,7 +17154,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_CODE_SIGN_FLAGS = "";
-				SDKROOT = macosx10.8;
+				SDKROOT = macosx;
 			};
 			name = Development;
 		};
@@ -17161,7 +17162,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -17192,7 +17192,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -17382,7 +17381,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -17487,6 +17485,7 @@
 					Binaries/LibTiff,
 					AYDicomPrint,
 				);
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -17496,6 +17495,7 @@
 				PRODUCT_NAME = DICOMPrint;
 				SKIP_INSTALL = YES;
 				SYMROOT = build;
+				VALID_ARCHS = i386;
 			};
 			name = Development;
 		};
