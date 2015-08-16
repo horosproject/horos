@@ -2270,6 +2270,27 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
     short newOrientationTool = [[sender selectedCell] tag];
     
+    BOOL volumicData = [self isDataVolumicIn4D: NO];
+    
+    if( volumicData == NO)
+    {
+        NSRunAlertPanel(NSLocalizedString(@"Data Error", nil), NSLocalizedString(@"This tool works only with 3D data series.", nil), nil, nil, nil);
+        return;
+    }
+    
+    BOOL executed = [self setOrientation:newOrientationTool];
+    if( executed == NO)
+        {
+            // TODO check/create localizedStrings for first two strings
+            if( NSRunCriticalAlertPanel(@"Error", @"Cannot execute this reslicing.\r\rPlease report this issue in Horos Project Issue Tracker.", NSLocalizedString(@"OK", nil), nil, nil) == NSAlertAlternateReturn)
+                [[AppController sharedAppController] osirix64bit: self];
+        }
+}
+
+- (BOOL) setOrientation: (int) newOrientationTool
+{
+    BOOL succeed = YES;
+    
     if( newOrientationTool != currentOrientationTool)
     {
         float previousZooming = [imageView scaleValue] / [[pixList[ curMovieIndex] objectAtIndex: 0] pixelSpacingX];
@@ -2292,7 +2313,10 @@ static volatile int numberOfThreadsForRelisce = 0;
         if( volumicData == NO)
         {
             NSRunAlertPanel(NSLocalizedString(@"Data Error", nil), NSLocalizedString(@"This tool works only with 3D data series.", nil), nil, nil, nil);
-            return;
+            
+            succeed = NO;
+            
+            return succeed;
         }
         
         //		if( [[pixList[ curMovieIndex] objectAtIndex: 0] isRGB])
@@ -2314,7 +2338,6 @@ static volatile int numberOfThreadsForRelisce = 0;
         if( blendingController)
             [self ActivateBlending: nil];
         
-        BOOL succeed = YES;
         
         NSLog( @"Orientation : current: %d new: %d", currentOrientationTool, newOrientationTool);
         
@@ -2447,6 +2470,7 @@ static volatile int numberOfThreadsForRelisce = 0;
         [imageView sendSyncMessage:0];
         [self adjustSlider];
     }
+    return succeed;
 }
 
 //- (void)setOrientationToolFrom2DMPR:(id)sender
