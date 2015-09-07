@@ -16796,6 +16796,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = DICOMPrint;
+				SDKROOT = macosx10.8;
 				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				VALID_ARCHS = i386;
@@ -17493,6 +17494,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = DICOMPrint;
+				SDKROOT = macosx10.8;
 				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				VALID_ARCHS = i386;
