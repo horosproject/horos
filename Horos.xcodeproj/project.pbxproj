@@ -16454,7 +16454,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_CODE_SIGN_FLAGS = "";
-				SDKROOT = macosx;
+				OTHER_LDFLAGS = "";
+				SDKROOT = macosx10.8;
 			};
 			name = Deployment;
 		};
@@ -17155,7 +17156,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_CODE_SIGN_FLAGS = "";
-				SDKROOT = macosx;
+				OTHER_LDFLAGS = "";
+				SDKROOT = macosx10.8;
 			};
 			name = Development;
 		};
