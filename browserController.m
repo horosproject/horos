@@ -15317,8 +15317,8 @@ static NSArray*	openSubSeriesArray = nil;
                 [alert setMessageText: NSLocalizedString(@"Delete ZIP file", nil)];
                 [alert setInformativeText: NSLocalizedString(@"The ZIP file was successfully decompressed and the images successfully incorporated in OsiriX database. Should I delete the ZIP file?", nil)];
                 [alert setShowsSuppressionButton: YES];
-                [alert addButtonWithTitle: NSLocalizedString( @"OK", nil)];
-                [alert addButtonWithTitle: NSLocalizedString( @"Cancel", nil)];
+                [alert addButtonWithTitle: NSLocalizedString( @"Yes", nil)];
+                [alert addButtonWithTitle: NSLocalizedString( @"No", nil)];
                 int result = [alert runModal];
                 
                 if( result == NSAlertFirstButtonReturn)
