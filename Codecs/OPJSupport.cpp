@@ -646,7 +646,7 @@ OPJSupport::compressJPEG2K(  void *data,
     parameters.tcp_numlayers = 1;
     parameters.cp_disto_alloc = 1;
     parameters.tcp_rates[0] = rate;
-    parameters.cod_format = JP2_CFMT;//J2K_CFMT; /* J2K format output */
+    parameters.cod_format = J2K_CFMT; //JP2_CFMT;//J2K_CFMT; /* J2K format output */
 #ifdef WITH_OPJ_FILE_STREAM
     strcpy(parameters.outfile,tmpnam(NULL));
 #endif
