@@ -36,8 +36,7 @@ static int buffer_format(void * buf)
 {
     int magic_format;
     
-    if (memcmp(buf, JP2_RFC3745_MAGIC, 12) == 0 ||
-        memcmp(buf, JP2_MAGIC, 4) == 0)
+    if (memcmp(buf, JP2_RFC3745_MAGIC, 12) == 0 || memcmp(buf, JP2_MAGIC, 4) == 0)
     {
         magic_format = JP2_CFMT;
     }
@@ -46,7 +45,9 @@ static int buffer_format(void * buf)
         magic_format = J2K_CFMT;
     }
     else
+    {
         return -1;
+    }
     
     return magic_format;
 }
@@ -85,29 +86,40 @@ OPJSupport::~OPJSupport() {}
 /* -------------------------------------------------------------------------- */
 // from "src/bin/jp2/opj_dump.c"
 
+
 /**
  sample error debug callback expecting no client object
  */
-static void error_callback(const char *msg, void *client_data) {
+static void error_callback(const char *msg, void *client_data)
+{
     (void)client_data;
     fprintf(stdout, "[OPJ ERROR] %s", msg);
 }
+
+
 #ifdef OPJ_VERBOSE
 /**
  sample warning debug callback expecting no client object
  */
-static void warning_callback(const char *msg, void *client_data) {
+static void warning_callback(const char *msg, void *client_data)
+{
     (void)client_data;
     fprintf(stdout, "[OPJ WARNING] %s", msg);
 }
+
+
 /**
  sample debug callback expecting no client object
  */
-static void info_callback(const char *msg, void *client_data) {
+static void info_callback(const char *msg, void *client_data)
+{
     (void)client_data;
     fprintf(stdout, "[OPJ INFO] %s", msg);
 }
 #endif
+
+/* -------------------------------------------------------------------------- */
+
 
 void* OPJSupport::decompressJPEG2K( void* jp2Data, long jp2DataSize, long *decompressedBufferSize, int *colorModel)
 {
@@ -130,6 +142,8 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     if (jp2DataSize<12)
         return 0;
     
+    /*-----------------------------------------------*/
+    
     decode_info_t decodeInfo;
     memset(&decodeInfo, 0, sizeof(decode_info_t));
     
@@ -139,15 +153,17 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     opj_buffer_info_t bufferInfo;
     bufferInfo.cur = bufferInfo.buf = (OPJ_BYTE *)jp2Data;
     bufferInfo.len = (OPJ_SIZE_T) jp2DataSize;
-        
     // Create the stream
     decodeInfo.stream = opj_stream_create_buffer_stream(&bufferInfo , OPJ_STREAM_READ);
+
+    
     if (!decodeInfo.stream) {
         fprintf(stderr,"%s:%d:\n\tNO decodeInfo.stream\n",__FILE__,__LINE__);
         return NULL;
     }
     
     /*-----------------------------------------------*/
+
     switch (parameters.decod_format) {
         case J2K_CFMT:                      /* JPEG-2000 codestream */
             codec_format = OPJ_CODEC_J2K;
@@ -167,6 +183,8 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
             fprintf(stderr,"%s:%d: decode format missing\n",__FILE__,__LINE__);
             return NULL;
     }
+    
+    /*-----------------------------------------------*/
     
     while(1)
     {
@@ -481,6 +499,9 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     return inputBuffer;
 }
 
+
+
+
 template<typename T>
 void rawtoimage_fill(T *inputbuffer, int w, int h, int numcomps, opj_image_t *image, int pc)
 {
@@ -511,7 +532,10 @@ void rawtoimage_fill(T *inputbuffer, int w, int h, int numcomps, opj_image_t *im
     }
 }
 
-static
+
+
+
+static 
 opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
                         int fragment_size, int image_width, int image_height, int sample_pixel,
                         int bitsallocated, int bitsstored, int sign, /*int quality,*/ int pc)
@@ -567,6 +591,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
     if(!image) {
         return NULL;
     }
+    
     /* set image offset and reference grid */
     image->x0 = parameters->image_offset_x0;
     image->y0 = parameters->image_offset_y0;
@@ -617,8 +642,10 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
     return image;
 }
 
+
+
 unsigned char *
-OPJSupport::compressJPEG2K(  void *data,
+OPJSupport::compressJPEG2K(void *data,
                            int samplesPerPixel,
                            int rows,
                            int columns,
@@ -643,10 +670,13 @@ OPJSupport::compressJPEG2K(  void *data,
     
     memset(&parameters, 0, sizeof(parameters));
     opj_set_default_encoder_parameters(&parameters);
+    parameters.outfile[0] = '\0';
     parameters.tcp_numlayers = 1;
     parameters.cp_disto_alloc = 1;
     parameters.tcp_rates[0] = rate;
-    parameters.cod_format = J2K_CFMT; //JP2_CFMT;//J2K_CFMT; /* J2K format output */
+    parameters.cod_format = JP2_CFMT; //JP2_CFMT; //J2K_CFMT;
+    OPJ_BOOL forceJ2K = (parameters.cod_format == J2K_CFMT ? OPJ_FALSE:(((OPJ_TRUE /*force here*/))));
+    
 #ifdef WITH_OPJ_FILE_STREAM
     strcpy(parameters.outfile,tmpnam(NULL));
 #endif
@@ -660,7 +690,8 @@ OPJSupport::compressJPEG2K(  void *data,
                        bitsstored, sign, /*quality,*/ 0);
     
     /*-----------------------------------------------*/
-    switch (parameters.cod_format) {
+    switch (parameters.cod_format)
+    {
         case J2K_CFMT:                      /* JPEG-2000 codestream */
             codec_format = OPJ_CODEC_J2K;
             break;
@@ -681,38 +712,48 @@ OPJSupport::compressJPEG2K(  void *data,
     
     /* see test_tile_encoder.c:232 and opj_compress.c:1746 */
     l_codec = opj_create_compress(codec_format);
-    if (!l_codec) {
+    if (!l_codec)
+    {
         fprintf(stderr,"%s:%d:\n\tNO codec\n",__FILE__,__LINE__);
         return NULL;
     }
+    
     
 #ifdef OPJ_VERBOSE
     opj_set_info_handler(l_codec, info_callback, this);
     opj_set_warning_handler(l_codec, warning_callback, this);
 #endif
+    
     opj_set_error_handler(l_codec, error_callback, this);
     
     if ( !opj_setup_encoder(l_codec, &parameters, image)) {
-        fprintf(stderr,"%s:%d:\n\topj_setup_decoder failed\n",__FILE__,__LINE__);
+        fprintf(stderr,"%s:%d:\n\topj_setup_encoder failed\n",__FILE__,__LINE__);
         return NULL;
     }
+    
     
     // Create the stream
 #ifdef WITH_OPJ_BUFFER_STREAM
     opj_buffer_info_t bufferInfo;
     bufferInfo.cur = bufferInfo.buf = (OPJ_BYTE *)data;
     bufferInfo.len = (OPJ_SIZE_T) rows * columns;
+    l_stream = opj_stream_create_buffer_stream(&bufferInfo, OPJ_STREAM_WRITE);
     
-    l_stream = opj_stream_create_buffer_stream(&buffer_info, OPJ_STREAM_WRITE);
+    //printf("%p\n",bufferInfo.buf);
+    //printf("%lu\n",bufferInfo.len);
 #endif
+    
     
 #ifdef WITH_OPJ_FILE_STREAM
     l_stream = opj_stream_create_default_file_stream(parameters.outfile, OPJ_STREAM_WRITE);
 #endif
+    
+    
     if (!l_stream){
         fprintf(stderr,"%s:%d:\n\tstream creation failed\n",__FILE__,__LINE__);
         return NULL;
     }
+    
     
     while(1)
     {
@@ -722,20 +763,23 @@ OPJSupport::compressJPEG2K(  void *data,
         
         /* encode the image */
         bSuccess = opj_start_compress(l_codec, image, l_stream);
-        if (!bSuccess) {
+        
+        if (!bSuccess)
+        {
             fprintf(stderr,"%s:%d:\n\topj_start_compress failed\n",__FILE__,__LINE__);
             break;
         }
         
-        if ( bSuccess && bUseTiles ) {
-            OPJ_BYTE *l_data;
+        if ( bSuccess && bUseTiles )
+        {
+            OPJ_BYTE *l_data = NULL;
             OPJ_UINT32 l_data_size = 512*512*3;
             l_data = (OPJ_BYTE*) malloc( l_data_size * sizeof(OPJ_BYTE));
             memset(l_data, 0, l_data_size );
             assert( l_data );
             for (int i=0;i<l_nb_tiles;++i) {
                 if (! opj_write_tile(l_codec,i,l_data,l_data_size,l_stream)) {
-                    fprintf(stderr, "ERROR -> test_tile_encoder: failed to write the tile %d!\n",i);
+                    fprintf(stderr, "\nERROR -> test_tile_encoder: failed to write the tile %d!\n",i);
                     opj_stream_destroy(l_stream);
                     opj_destroy_codec(l_codec);
                     opj_image_destroy(image);
@@ -744,51 +788,74 @@ OPJSupport::compressJPEG2K(  void *data,
             }
             free(l_data);
         }
-        else {
-            if (!opj_encode(l_codec, l_stream)) {
+        else
+        {
+            if (!opj_encode(l_codec, l_stream))
+            {
                 fprintf(stderr,"%s:%d:\n\topj_encode failed\n",__FILE__,__LINE__);
                 break;
             }
         }
         
-        if (!opj_end_compress(l_codec, l_stream)) {
+        if (!opj_end_compress(l_codec, l_stream))
+        {
             fprintf(stderr,"%s:%d:\n\topj_end_compress failed\n",__FILE__,__LINE__);
             break;
         }
         
         fails = OPJ_FALSE;
         break;
+        
     } // while
+    
+    unsigned char *to = NULL;
+    
+#ifdef WITH_OPJ_BUFFER_STREAM
+    //printf("%p\n",bufferInfo.buf);
+    //printf("%lu\n",bufferInfo.len);
+    //to=(unsigned char *) malloc(bufferInfo.len);
+    //memcpy(to,l_stream,bufferInfo.len);
+#endif
+    
     
 #ifdef WITH_OPJ_FILE_STREAM
     // Open the temp file and get the encoded data into 'to'
     // and the length into 'length'
     FILE *f = NULL;
-    if (parameters.outfile)
+    if (parameters.outfile[0] != '\0')
         f = fopen(parameters.outfile, "rb");
     
     long length = 0;
-    unsigned char *to = NULL;
     
     if (f != NULL)
     {
         fseek(f, 0, SEEK_END);
         length = ftell(f);
         fseek(f, 0, SEEK_SET);
+        if (forceJ2K)
+        {
+            length -= 85;
+            fseek(f, 85, SEEK_SET);
+        }
         
-        if (length % 2) {
+        if (length % 2)
+        {
             length++; // ensure even length
             fprintf(stdout,"Padded to %li\n", length);
         }
         
-        to = (unsigned char *)malloc(length);
+        to = (unsigned char *) malloc(length);
+        
         fread(to, length, 1, f);
+        
+        //printf("%s %lu\n",parameters.outfile,length);;
+        
         fclose(f);
     }
 
     *compressedDataSize = length;
     
-    if (parameters.outfile)
+    if (parameters.outfile[0] != '\0')
         remove(parameters.outfile);
 #endif
     
@@ -801,9 +868,14 @@ OPJSupport::compressJPEG2K(  void *data,
     /* free image data */
     opj_image_destroy(image);
     
-    if (fails) {
+    if (fails)
+    {
         fprintf(stderr, "failed to encode image\n");
-        remove(parameters.outfile);
+
+#ifdef WITH_OPJ_FILE_STREAM
+    if (parameters.outfile[0] != '\0')
+            remove(parameters.outfile);
+#endif
     }
     
     return to;
