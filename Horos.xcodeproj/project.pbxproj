@@ -4489,8 +4489,6 @@
 		CEDEF7D60D020E9100CADB15 /* TIFFSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDEF7D30D020E9100CADB15 /* TIFFSmall.tif */; };
 		CEDEF7D70D020E9100CADB15 /* MailSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDEF7D40D020E9100CADB15 /* MailSmall.tif */; };
 		CEDEF7D80D020E9100CADB15 /* JPEGSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDEF7D50D020E9100CADB15 /* JPEGSmall.tif */; };
-		CEDF64B717E1B751009BB3F3 /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */; };
-		CEDF64B817E1B77D009BB3F3 /* DCMCalendarDate.m in Sources */ = {isa = PBXBuildFile; fileRef = BF61E58D06A5BB9E001C0B29 /* DCMCalendarDate.m */; };
 		CEDF6DC60B46FE99008B45B8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
 		CEDF6DC90B46FE99008B45B8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		CEDF6DCB0B46FE99008B45B8 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6D320C05B3159D0002F793 /* IOKit.framework */; };
@@ -15810,8 +15808,6 @@
 				AB451869149F47F0006674BF /* djrparam.cc in Sources */,
 				71A28B8416383B2900489F2A /* DCMWaveform.m in Sources */,
 				8412AF9D1758C54400092D95 /* NSException+N2.mm in Sources */,
-				CEDF64B717E1B751009BB3F3 /* DCMAbstractSyntaxUID.m in Sources */,
-				CEDF64B817E1B77D009BB3F3 /* DCMCalendarDate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
