@@ -841,7 +841,7 @@ OPJSupport::compressJPEG2K(void *data,
         if (length % 2)
         {
             length++; // ensure even length
-            fprintf(stdout,"Padded to %li\n", length);
+            //fprintf(stdout,"Padded to %li\n", length);
         }
         
         to = (unsigned char *) malloc(length);
