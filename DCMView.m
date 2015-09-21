@@ -7679,13 +7679,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     
     if( inv)
     {
-        orientationX = -vector[ 0] < 0 ? NSLocalizedString( @"R", @"R: Right") : NSLocalizedString( @"L", @"L: Left");
+        orientationX = -vector[ 0] < 0 ? NSLocalizedString( @"L", @"L: Left") : NSLocalizedString( @"R", @"R: Right");
         orientationY = -vector[ 1] < 0 ? NSLocalizedString( @"A", @"A: Anterior") : NSLocalizedString( @"P", @"P: Posterior");
         orientationZ = -vector[ 2] < 0 ? NSLocalizedString( @"I", @"I: Inferior") : NSLocalizedString( @"S", @"S: Superior");
     }
     else
     {
-        orientationX = vector[ 0] < 0 ? NSLocalizedString( @"R", @"R: Right") : NSLocalizedString( @"L", @"L: Left");
+        orientationX = vector[ 0] < 0 ? NSLocalizedString( @"L", @"L: Left") : NSLocalizedString( @"R", @"R: Right");
         orientationY = vector[ 1] < 0 ? NSLocalizedString( @"A", @"A: Anterior") : NSLocalizedString( @"P", @"P: Posterior");
         orientationZ = vector[ 2] < 0 ? NSLocalizedString( @"I", @"I: Inferior") : NSLocalizedString( @"S", @"S: Superior");
     }

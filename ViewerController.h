@@ -895,6 +895,7 @@ enum
 - (void)setToolbarReportIconForItem:(NSToolbarItem *)item;
 - (void)updateReportToolbarIcon:(NSNotification *)note;
 - (IBAction) setOrientationTool:(id) sender;
+- (BOOL) setOrientation: (int) newOrientationTool;
 - (void) setWindowTitle:(id) sender;
 - (IBAction) printSlider:(id) sender;
 - (void) setConv:(float*) matrix :(short) size :(float) norm;
