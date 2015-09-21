@@ -2671,7 +2671,10 @@ public:
         double length = sqrt(xd*xd + yd*yd + zd*zd);
         
         if( isnan( length) || length < 0.00001 || length > 1000)
+        {
+            NSLog( @"isnan(%f) == %d",length, isnan(length));
             NSLog( @"****** vrView getResolution");
+        }
         
         return (length/factor);
     }

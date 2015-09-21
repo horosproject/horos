@@ -12,6 +12,7 @@ public:
 
 protected:
 	OsiriXFixedPointVolumeRayCastMapper();
+    void DisplayRenderedImage( vtkRenderer *ren, vtkVolume   *vol );
 
 private:
   OsiriXFixedPointVolumeRayCastMapper(const OsiriXFixedPointVolumeRayCastMapper&);  // Not implemented.

@@ -4,6 +4,7 @@
 #include "vtkRenderWindow.h"
 #include "vtkRenderer.h"
 #include "vtkTimerLog.h"
+#include "vtkRayCastImageDisplayHelper.h"
 
 #include <math.h>
 
@@ -15,6 +16,28 @@ OsiriXFixedPointVolumeRayCastMapper::OsiriXFixedPointVolumeRayCastMapper()
 {
 
 }
+
+void OsiriXFixedPointVolumeRayCastMapper::DisplayRenderedImage( vtkRenderer *ren, vtkVolume   *vol )
+{
+    float depth;
+    if ( this->IntermixIntersectingGeometry )
+    {
+        depth = this->MinimumViewDistance;
+    }
+    else
+    {
+        depth = -1;
+    }
+    
+    
+    if( this->FinalColorWindow != 1.0 || this->FinalColorLevel != 0.5 )
+    {
+        this->ApplyFinalColorWindowLevel();
+    }
+    
+    this->ImageDisplayHelper->RenderTexture( vol, ren, this->RayCastImage, depth );
+}
+
 
 void OsiriXFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume *vol )
 {

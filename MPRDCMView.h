@@ -102,6 +102,7 @@
 - (BOOL)is2DTool:(ToolMode)tool;
 - (void) setDCMPixList:(NSMutableArray*)pix filesList:(NSArray*)files roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;
 - (void) setVRView: (VRView*) v viewID:(int) i;
+- (void) updateViewMPROnLoading:(BOOL) isLoading;
 - (void) updateViewMPR;
 - (void) updateViewMPR:(BOOL) computeCrossReferenceLines;
 - (void) setCrossReferenceLines: (float[2][3]) a and: (float[2][3]) b;

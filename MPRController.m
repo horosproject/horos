@@ -143,7 +143,8 @@ static float deg2rad = M_PI/180.0;
 		fusedViewer2D = fusedViewer;
 		clippingRangeMode = 1;
 		LOD = 1;
-		if( LOD < 1) LOD = 1;
+		if(LOD < 1)
+            LOD = 1;
 		
 		if( fusedViewer2D)
 			self.blendingModeAvailable = YES;
@@ -366,8 +367,21 @@ static float deg2rad = M_PI/180.0;
     NSEnableScreenUpdates();
 }
 
+- (void) windowDidLoad
+{
+    NSLog(@"MPRController windowDidLoad");
+}
+
+- (void) windowDidBecomeKey:(NSNotification *)notification
+{
+    NSLog(@"MPRController windowDidBecomeKey");
+}
+
+
 - (void) showWindow:(id) sender
 {
+    self->isInitializing = YES;
+    
 	mprView1.dontUseAutoLOD = YES;
 	mprView2.dontUseAutoLOD = YES;
 	mprView3.dontUseAutoLOD = YES;
@@ -404,7 +418,7 @@ static float deg2rad = M_PI/180.0;
 	mprView2.angleMPR = 0;
 	mprView3.angleMPR = 0;
 
-	[mprView1 updateViewMPR];
+    [mprView1 updateViewMPROnLoading:isInitializing];
 	
 	mprView2.camera.viewUp = [Point3D pointWithX:0 y:-1 z:0];
 	
@@ -414,7 +428,7 @@ static float deg2rad = M_PI/180.0;
 	mprView3.angleMPR = 0;
 	mprView3.camera.parallelScale /= 1.5;
 	[mprView3 restoreCamera];
-	[mprView3 updateViewMPR];
+	[mprView3 updateViewMPROnLoading:isInitializing];
 	
 	[super showWindow: sender];
 	
@@ -430,6 +444,8 @@ static float deg2rad = M_PI/180.0;
 	[self setLOD: 1];
     
     [self applyViewsPosition];
+    
+    self->isInitializing = NO;
 }
 
 -(void)splitViewWillResizeSubviews:(NSNotification *)notification
@@ -848,7 +864,7 @@ static float deg2rad = M_PI/180.0;
 				[mprView1.vrView setWLWW: l : w];
 			}
 			
-			[mprView1 updateViewMPR];
+			[mprView1 updateViewMPROnLoading:isInitializing];
 		}
 		
 		if( sender != mprView2)
@@ -861,7 +877,7 @@ static float deg2rad = M_PI/180.0;
 				[mprView2.vrView setWLWW: l : w];
 			}
 			
-			[mprView2 updateViewMPR];
+			[mprView2 updateViewMPROnLoading:isInitializing];
 		}
 		
 		if( sender != mprView3)
@@ -874,7 +890,7 @@ static float deg2rad = M_PI/180.0;
 				[mprView3.vrView setWLWW: l : w];
 			}
 			
-			[mprView3 updateViewMPR];
+			[mprView3 updateViewMPROnLoading:isInitializing];
 		}
 		
 		if( sender == mprView1)
@@ -1290,15 +1306,15 @@ static float deg2rad = M_PI/180.0;
 	
 	[mprView1 restoreCamera];
 	mprView1.camera.forceUpdate = YES;
-	[mprView1 updateViewMPR];
+	[mprView1 updateViewMPROnLoading:isInitializing];
 	
 	[mprView2 restoreCamera];
 	mprView2.camera.forceUpdate = YES;
-	[mprView2 updateViewMPR];
+	[mprView2 updateViewMPROnLoading:isInitializing];
 	
 	[mprView3 restoreCamera];
 	mprView3.camera.forceUpdate = YES;
-	[mprView3 updateViewMPR];
+	[mprView3 updateViewMPROnLoading:isInitializing];
 }
 
 #pragma mark Window Level / Window width
@@ -1848,17 +1864,17 @@ static float deg2rad = M_PI/180.0;
 	[mprView1 restoreCamera];
 	mprView1.vrView.dontResetImage = YES;
 	[mprView1.vrView setClippingRangeThickness: f];
-	[mprView1 updateViewMPR];
+	[mprView1 updateViewMPROnLoading:isInitializing];
 	
 	[mprView2 restoreCamera];
 	mprView2.vrView.dontResetImage = YES;
 	[mprView2.vrView setClippingRangeThickness: f];
-	[mprView2 updateViewMPR];
+	[mprView2 updateViewMPROnLoading:isInitializing];
 	
 	[mprView3 restoreCamera];
 	mprView3.vrView.dontResetImage = YES;
 	[mprView3.vrView setClippingRangeThickness: f];
-	[mprView3 updateViewMPR];
+	[mprView3 updateViewMPROnLoading:isInitializing];
 	
 	[self willChangeValueForKey:@"clippingRangeThicknessInMm"];
 	[self didChangeValueForKey:@"clippingRangeThicknessInMm"];
@@ -1934,7 +1950,7 @@ static float deg2rad = M_PI/180.0;
 		[mprView1.vrView setWLWW: pWL :pWW];
 		[mprView1.vrView setBlendingWLWW: bpWL :bpWW];
 	}
-	[mprView1 updateViewMPR];
+	[mprView1 updateViewMPROnLoading:isInitializing];
 	
 	[mprView2 restoreCamera];
 	mprView2.camera.forceUpdate = YES;
@@ -1948,7 +1964,7 @@ static float deg2rad = M_PI/180.0;
 		[mprView2.vrView setWLWW: pWL :pWW];
 		[mprView2.vrView setBlendingWLWW: bpWL :bpWW];
 	}
-	[mprView2 updateViewMPR];
+	[mprView2 updateViewMPROnLoading:isInitializing];
 	
 	[mprView3 restoreCamera];
 	mprView3.camera.forceUpdate = YES;
@@ -1962,7 +1978,7 @@ static float deg2rad = M_PI/180.0;
 		[mprView3.vrView setWLWW: pWL :pWW];
 		[mprView3.vrView setBlendingWLWW: bpWL :bpWW];
 	}
-	[mprView3 updateViewMPR];
+	[mprView3 updateViewMPROnLoading:isInitializing];
 }
 
 #pragma mark Export	
