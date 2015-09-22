@@ -21470,6 +21470,11 @@ static float oldsetww, oldsetwl;
             [self place3DViewerWindow:viewer];
             [viewer showWindow:self];
             [[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
+            dispatch_async(dispatch_get_main_queue(), ^(){
+                [viewer showWindow:self];
+                [viewer showWindow:self];
+            });
+
         }
     }
 }
@@ -21530,10 +21535,16 @@ static float oldsetww, oldsetwl;
         }
         else
         {
+            id waitWindow = [self startWaitWindow:NSLocalizedString(@"Loading...",nil)];
             viewer = [self openCPRViewer];
             [self place3DViewerWindow:viewer];
             [viewer showWindow:self];
             [[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@", [[viewer window] title], [[self window] title]]];
+            dispatch_async(dispatch_get_main_queue(), ^(){
+                [viewer showWindow:self];
+                [viewer showWindow:self];
+                [self endWaitWindow:waitWindow];
+            });
         }
     }
 }

@@ -121,6 +121,8 @@ static float deg2rad = M_PI/180.0;
 {
 	@try
 	{
+        self->isInitializing = YES;
+        
 		if( [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
 			[[NSUserDefaults standardUserDefaults] setInteger: annotGraphics forKey: @"ANNOTATIONS"];
 		
@@ -380,8 +382,6 @@ static float deg2rad = M_PI/180.0;
 
 - (void) showWindow:(id) sender
 {
-    self->isInitializing = YES;
-    
 	mprView1.dontUseAutoLOD = YES;
 	mprView2.dontUseAutoLOD = YES;
 	mprView3.dontUseAutoLOD = YES;
@@ -444,6 +444,8 @@ static float deg2rad = M_PI/180.0;
 	[self setLOD: 1];
     
     [self applyViewsPosition];
+    
+    // Enable VTK Render
     
     self->isInitializing = NO;
     

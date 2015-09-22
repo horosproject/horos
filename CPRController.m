@@ -197,6 +197,8 @@ static float deg2rad = M_PI / 180.0;
 {
 	@try
 	{
+        self->isInitializing = YES;
+        
         self->selectedInterpolationMode = CPRInterpolationModeNearestNeighbor;
         
 		if( [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
@@ -541,8 +543,6 @@ static float deg2rad = M_PI / 180.0;
 
 - (void) showWindow:(id) sender
 {
-    isInitializing = YES;
-    
 	mprView1.dontUseAutoLOD = YES;
 	mprView2.dontUseAutoLOD = YES;
 	mprView3.dontUseAutoLOD = YES;
@@ -603,6 +603,10 @@ static float deg2rad = M_PI / 180.0;
 	mprView3.dontUseAutoLOD = NO;
 	
 	[self setLOD: 1];
+    
+    [self setViewsPosition:NormalPosition];
+    
+    //
 	
 	[self CPRViewWillEditCurvedPath: mprView1];
 	while( mprView1.curvedPath.nodes.count > 0)
@@ -622,9 +626,11 @@ static float deg2rad = M_PI / 180.0;
     if( path)
         [self loadBezierPathFromFile: path];
     
-    [[hiddenVRController window] orderOut: self];
+    // Enable VTK Render
     
-    isInitializing = NO;
+    self->isInitializing = NO;
+    
+    [[hiddenVRController window] orderOut: self];
 }
 
 
@@ -4546,15 +4552,15 @@ static float deg2rad = M_PI / 180.0;
     
     [mprView1 restoreCamera];
 	mprView1.camera.forceUpdate = YES;
-	[mprView1 updateViewMPR];
+	[mprView1 updateViewMPROnLoading:isInitializing];
 	
 	[mprView2 restoreCamera];
 	mprView2.camera.forceUpdate = YES;
-	[mprView2 updateViewMPR];
+	[mprView2 updateViewMPROnLoading:isInitializing];
 	
 	[mprView3 restoreCamera];
 	mprView3.camera.forceUpdate = YES;
-	[mprView3 updateViewMPR];
+	[mprView3 updateViewMPROnLoading:isInitializing];
     
     NSEnableScreenUpdates();
 }
