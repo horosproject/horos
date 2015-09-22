@@ -2672,8 +2672,11 @@ public:
         
         if( isnan( length) || length < 0.00001 || length > 1000)
         {
-            NSLog( @"isnan(%f) == %d",length, isnan(length));
-            NSLog( @"****** vrView getResolution");
+            NSLog( @"****** vrView getResolution: isnan(%f) == %d",length, isnan(length));
+        }
+        else
+        {
+            //NSLog( @"****** vrView getResolution: isnan(%f) == %d",length, isnan(length));
         }
         
         return (length/factor);
