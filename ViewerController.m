@@ -7656,6 +7656,12 @@ static ViewerController *draggedController = nil;
 
 -(void)awakeFromNib
 {
+    /*
+    NSButton* zoomButton = [[self window] standardWindowButton:NSWindowZoomButton];
+    [zoomButton setTarget:[self window]];
+    [zoomButton setAction:@selector(zoom:)];
+    */
+     
     DisplayUseInvertedPolarity = [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.CoreGraphics"] objectForKey: @"DisplayUseInvertedPolarity"] boolValue];
     
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] == NO)

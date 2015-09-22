@@ -12,6 +12,8 @@
  PURPOSE.
  =========================================================================*/
 
+#include <objc/runtime.h>
+
 #include "options.h"
 
 #import "ToolbarPanel.h"
@@ -13935,6 +13937,15 @@ static NSArray*	openSubSeriesArray = nil;
 {
     @try
     {
+        NSButton* zoomButton = [[self window] standardWindowButton:NSWindowZoomButton];
+        [zoomButton setTarget:[self window]];
+        [zoomButton setAction:@selector(zoom:)];
+        
+        Class swap = [NSWindow class];
+        Method a = class_getInstanceMethod(swap, @selector(toggleFullScreen:));
+        Method b = class_getInstanceMethod(swap, @selector(performZoom:));
+        method_exchangeImplementations(a, b);
+        
         //	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         //
         //	dispatch_apply(count, queue,
@@ -19079,8 +19090,63 @@ restart:
     return toolbarItem;
 }
 
+
+- (void)spaceEvenly:(NSSplitView *)splitView
+{
+    // get the subviews of the split view
+    NSArray *subviews = [splitView subviews];
+    unsigned int n = [subviews count];
+    
+    // compute the new height of each subview
+    float divider = [splitView dividerThickness];
+    float height = ([splitView bounds].size.height - (n - 1) * divider) / n;
+    
+    // adjust the frames of all subviews
+    float y = 0;
+    NSView *subview;
+    NSEnumerator *e = [subviews objectEnumerator];
+    while ((subview = [e nextObject]) != nil)
+    {
+        NSRect frame = [subview frame];
+        frame.origin.y = rintf(y);
+        frame.size.height = rintf(y + height) - frame.origin.y;
+        [subview setFrame:frame];
+        y += height + divider;
+    }
+    
+    // have the AppKit redraw the dividers
+    [splitView adjustSubviews];
+}
+
+
 - (void) restoreWindowState:(id) sender
 {
+    NSView* left = [[splitDrawer subviews] objectAtIndex:0];
+    [left setHidden:NO];
+    NSRect f = left.frame;
+    f.size.width  = 180;
+    [left setFrame:f];
+    
+    
+    [splitDrawer setHidden:NO];
+    [self spaceEvenly:splitDrawer];
+    
+    [splitAlbums setHidden:NO];
+    [self spaceEvenly:splitAlbums];
+    [splitViewHorz setHidden:NO];
+    [self spaceEvenly:splitViewHorz];
+    [splitComparative setHidden:NO];
+    [self spaceEvenly:splitComparative];
+    [splitViewHorz setHidden:NO];
+    [self spaceEvenly:splitViewVert];
+    
+    [splitDrawer saveDefault: @"SplitDrawer"];
+    [splitAlbums saveDefault: @"SplitAlbums"];
+    [splitViewHorz saveDefault: @"SplitHorz2"];
+    [splitComparative saveDefault: @"SplitComparative"];
+    [splitViewVert saveDefault: @"SplitVert2"];
+    
+    /*
     [splitDrawer restoreDefault: @"SplitDrawer"];
     [splitAlbums restoreDefault: @"SplitAlbums"];
     [splitViewHorz restoreDefault: @"SplitHorz2"];
@@ -19117,12 +19183,12 @@ restart:
         [splitViewVert resizeSubviewsWithOldSize:splitViewVert.bounds.size];
     }
     
-    [splitDrawer restoreDefault: @"SplitDrawer"];
-    [splitAlbums restoreDefault: @"SplitAlbums"];
-    [splitViewHorz restoreDefault: @"SplitHorz2"];
-    [splitComparative restoreDefault: @"SplitComparative"];
-    [splitViewVert restoreDefault: @"SplitVert2"];
-
+    [splitDrawer saveDefault: @"SplitDrawer"];
+    [splitAlbums saveDefault: @"SplitAlbums"];
+    [splitViewHorz saveDefault: @"SplitHorz2"];
+    [splitComparative saveDefault: @"SplitComparative"];
+    [splitViewVert saveDefault: @"SplitVert2"];
+     */
 }
 
 - (NSArray *)toolbarDefaultItemIdentifiers: (NSToolbar *)toolbar
