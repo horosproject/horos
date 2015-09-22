@@ -324,9 +324,305 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	[super dealloc];
 }
 
+- (void) updateViewMPROnLoading:(BOOL) isLoading :(BOOL) computeCrossReferenceLines
+{
+    if( [self frame].size.width <= 0)
+        return;
+    
+    if( [self frame].size.height <= 0)
+        return;
+    
+    long h, w;
+    float previousWW, previousWL;
+    BOOL isRGB;
+    BOOL previousOriginInPlane = NO;
+    
+    [self getWLWW: &previousWL :&previousWW];
+    
+    Camera *currentCamera = [vrView cameraWithThumbnail: NO];
+    
+    minimumStep = 1;
+    
+    if( [self hasCameraChanged: currentCamera] == YES)
+    {
+        // AutoLOD
+        if( dontUseAutoLOD == NO && lastRenderingWasMoveCenter == NO)
+        {
+            DCMPix *o = [windowController originalPix];
+            
+            float minimumResolution = [o pixelSpacingX];
+            
+            if( minimumResolution > [o pixelSpacingY])
+                minimumResolution = [o pixelSpacingY];
+            
+            if( minimumResolution > [o sliceInterval])
+                minimumResolution = [o sliceInterval];
+            
+            if( windowController.clippingRangeThickness <= 3)
+                minimumResolution *= 0.9;
+            else
+                minimumResolution *= 0.7;
+            
+            if( minimumResolution > previousPixelSpacing && previousPixelSpacing != 0)
+                LOD *= ( minimumResolution / previousPixelSpacing);
+            
+            if( previousResolution == 0)
+                previousResolution = [vrView getResolution];
+            
+            float currentResolution = [vrView getResolution];
+            
+            if( previousResolution < currentResolution)
+                LOD *= (previousResolution / currentResolution);
+            
+            if( LOD < windowController.LOD)
+                LOD = windowController.LOD;
+            
+            if( LOD > 4) LOD = 4;
+            
+            if( windowController.lowLOD)
+                [vrView setLOD: LOD * vrView.lowResLODFactor];
+            else
+                [vrView setLOD: LOD];
+        }
+        else
+            [vrView setLOD: LOD];
+        
+        if( [self frame].size.width > 0 && [self frame].size.height > 0)
+        {
+            if( windowController.maxMovieIndex > 1 && (windowController.clippingRangeMode == 1 || windowController.clippingRangeMode == 3 || windowController.clippingRangeMode == 2))	//To avoid the wrong pixel value bug...
+                [vrView prepareFullDepthCapture];
+            
+            if( moveCenter)
+            {
+                lastRenderingWasMoveCenter = YES;
+                [vrView setLOD: 100];	// We dont need to really compute the image - we just want image origin for the other views.
+            }
+            else lastRenderingWasMoveCenter = NO;
+            
+            if (isLoading == NO)
+                [vrView render];
+        }
+        
+        float *imagePtr = nil;
+        
+        if( moveCenter)
+        {
+            imagePtr = [pix fImage];
+            w = [pix pwidth];
+            h = [pix pheight];
+            isRGB = [pix isRGB];
+            
+            [vrView setLOD: LOD];
+        }
+        else
+            imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
+        
+        ////
+        float orientation[ 9];
+        [vrView getOrientation: orientation];
+        
+        float location[ 3] = {previousOrigin[ 0], previousOrigin[ 1], previousOrigin[ 2]}, orig[ 3] = {currentCamera.position.x, currentCamera.position.y, currentCamera.position.z}, locationTemp[ 3];
+        float distance = [DCMView pbase_Plane: location :orig :&(orientation[ 6]) :locationTemp];
+        if( distance < pix.sliceThickness / 2.)
+            previousOriginInPlane = YES;
+        else
+            previousOriginInPlane = NO;
+        
+        [self saveCamera];
+        
+        if( imagePtr)
+        {
+            BOOL cameraMoved = YES;
+            
+            if( [curRoiList count] > 0)
+            {
+                if( previousOriginInPlane == NO || arePlanesParallel( orientation+6, previousOrientation+6) == NO)
+                    cameraMoved = YES;
+                else
+                    cameraMoved = NO;
+                
+                if( cameraMoved == YES)
+                {
+                    for( int i = (long)[curRoiList count] -1 ; i >= 0; i--)
+                    {
+                        ROI *r = [curRoiList objectAtIndex: i];
+                        if( [r type] != t2DPoint)
+                            [curRoiList removeObjectAtIndex: i];
+                    }
+                }
+            }
+            
+            if( [pix pwidth] == w && [pix pheight] == h && isRGB == [pix isRGB])
+            {
+                if( imagePtr != [pix fImage])
+                {
+                    memcpy( [pix fImage], imagePtr, w*h*sizeof( float));
+                    free( imagePtr);
+                }
+            }
+            else
+            {
+                [pix setRGB: isRGB];
+                [pix setfImage: imagePtr];
+                [pix freefImageWhenDone: YES];
+                [pix setPwidth: w];
+                [pix setPheight: h];
+                
+                NSMutableArray *savedROIs = [[curRoiList copy] autorelease];
+                
+                [self setIndex: 0];
+                
+                [curRoiList addObjectsFromArray: savedROIs];
+            }
+            float porigin[ 3];
+            [vrView getOrigin: porigin windowCentered: YES sliceMiddle: YES];
+            [pix setOrigin: porigin];
+            
+            float resolution = 0;
+            if( !moveCenter)
+            {
+                resolution = [vrView getResolution] * [vrView imageSampleDistance];
+                [pix setPixelSpacingX: resolution];
+                [pix setPixelSpacingY: resolution];
+            }
+            
+            [self willChangeValueForKey:@"plane"];
+            [pix setOrientation: orientation];
+            [self didChangeValueForKey:@"plane"];
+            [pix setSliceThickness: [vrView getClippingRangeThicknessInMm]];
+            
+            [self setWLWW: previousWL :previousWW];
+            
+            if( !moveCenter)
+            {
+                [self setScaleValue: [vrView imageSampleDistance]];
+                
+                float rotationPlane = 0;
+                if( cameraMoved == NO && [curRoiList count] > 0)
+                {
+                    if( previousOrientation[ 0] != 0 || previousOrientation[ 1] != 0 || previousOrientation[ 2] != 0)
+                        rotationPlane = -[CPRController angleBetweenVector: orientation andPlane: previousOrientation];
+                    if( fabs( rotationPlane) < 0.01)
+                        rotationPlane = 0;
+                }
+                
+                NSPoint rotationCenter = NSMakePoint( [pix pwidth]/2., [pix pheight]/2.);
+                
+                for( ROI* r in curRoiList)
+                {
+                    if( rotationPlane)
+                    {
+                        [r setOriginAndSpacing: resolution : resolution : r.imageOrigin :NO];
+                        
+                        [r rotate: rotationPlane :rotationCenter];
+                        r.imageOrigin = [DCMPix originCorrectedAccordingToOrientation: pix];
+                        r.pixelSpacingX = [pix pixelSpacingX];
+                        r.pixelSpacingY = [pix pixelSpacingY];
+                    }
+                    else
+                        [r setOriginAndSpacing: resolution : resolution :[DCMPix originCorrectedAccordingToOrientation: pix] :NO];
+                }
+                
+                [pix orientation: previousOrientation];
+                previousOrigin[ 0] = currentCamera.position.x;
+                previousOrigin[ 1] = currentCamera.position.y;
+                previousOrigin[ 2] = currentCamera.position.z;
+                
+                [self detect2DPointInThisSlice];
+                
+                previousResolution = [vrView getResolution];
+                previousPixelSpacing = [pix pixelSpacingX];
+            }
+        }
+        
+        if( blendingView)
+        {
+            [blendingView getWLWW: &previousWL :&previousWW];
+            
+            [vrView renderBlendedVolume];
+            
+            float *blendedImagePtr = nil;
+            DCMPix *bPix = [blendingView curDCM];
+            
+            if( moveCenter)
+            {
+                blendedImagePtr = [bPix fImage];
+                w = [bPix pwidth];
+                h = [bPix pheight];
+                isRGB = [bPix isRGB];
+            }
+            else
+                blendedImagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB blendingView: YES];
+            
+            if( [bPix pwidth] == w && [bPix pheight] == h && isRGB == [bPix isRGB])
+            {
+                if( blendedImagePtr != [bPix fImage])
+                {
+                    memcpy( [bPix fImage], blendedImagePtr, w*h*sizeof( float));
+                    free( blendedImagePtr);
+                }
+            }
+            else
+            {
+                [bPix setRGB: isRGB];
+                [bPix setfImage: blendedImagePtr];
+                [bPix setPwidth: w];
+                [bPix setPheight: h];
+                
+                [blendingView setIndex: 0];
+            }
+            float porigin[ 3];
+            [vrView getOrigin: porigin windowCentered: YES sliceMiddle: YES blendedView: YES];
+            [bPix setOrigin: porigin];
+            
+            if( !moveCenter)
+            {
+                float resolution = [vrView getResolution] * [vrView blendingImageSampleDistance];
+                [bPix setPixelSpacingX: resolution];
+                [bPix setPixelSpacingY: resolution];
+            }
+            
+            float orientation[ 9];
+            [vrView getOrientation: orientation];
+            [bPix setOrientation: orientation];
+            [bPix setSliceThickness: [vrView getClippingRangeThicknessInMm]];
+            
+            [blendingView setWLWW: previousWL :previousWW];
+            
+            if( !moveCenter)
+                [blendingView setScaleValue: [vrView blendingImageSampleDistance]];
+        }
+    }
+    
+    if( dontReenterCrossReferenceLines == NO)
+    {
+        dontReenterCrossReferenceLines = YES;
+        
+        if( computeCrossReferenceLines)
+            [windowController computeCrossReferenceLines: self];
+        else
+            [windowController computeCrossReferenceLines: nil];
+        
+        dontReenterCrossReferenceLines = NO;
+    }
+    
+    [self setNeedsDisplay: YES];
+    
+}
+
+- (void) updateViewMPROnLoading:(BOOL) isLoading
+{
+    [self updateViewMPROnLoading:isLoading :YES];
+}
+
+- (void) updateViewMPR:(BOOL) computeCrossReferenceLines
+{
+    [self updateViewMPROnLoading:NO :computeCrossReferenceLines];
+}
+
 -(void) updateViewMPR
 {
-	[self updateViewMPR: YES];
+    [self updateViewMPR:YES];
 }
 
 - (void) setLOD: (float) l
@@ -341,290 +637,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     [self didChangeValueForKey:@"plane"];
     
     [super reshape];
-}
-
-- (void) updateViewMPR:(BOOL) computeCrossReferenceLines
-{
-	if( [self frame].size.width <= 0)
-		return;
-	
-	if( [self frame].size.height <= 0)
-		return;
-    
-	long h, w;
-	float previousWW, previousWL;
-	BOOL isRGB;
-	BOOL previousOriginInPlane = NO;
-	
-	[self getWLWW: &previousWL :&previousWW];
-	
-	Camera *currentCamera = [vrView cameraWithThumbnail: NO];
-	
-    minimumStep = 1;
-    
-	if( [self hasCameraChanged: currentCamera] == YES)
-	{
-		// AutoLOD
-		if( dontUseAutoLOD == NO && lastRenderingWasMoveCenter == NO)
-		{
-			DCMPix *o = [windowController originalPix];
-			
-			float minimumResolution = [o pixelSpacingX];
-			
-			if( minimumResolution > [o pixelSpacingY])
-				minimumResolution = [o pixelSpacingY];
-			
-			if( minimumResolution > [o sliceInterval])
-				minimumResolution = [o sliceInterval];
-			
-			if( windowController.clippingRangeThickness <= 3)
-				minimumResolution *= 0.9;
-			else
-				minimumResolution *= 0.7;
-			
-			if( minimumResolution > previousPixelSpacing && previousPixelSpacing != 0)
-				LOD *= ( minimumResolution / previousPixelSpacing);
-			
-			if( previousResolution == 0)
-				previousResolution = [vrView getResolution];
-			
-			float currentResolution = [vrView getResolution];
-			
-			if( previousResolution < currentResolution)
-				LOD *= (previousResolution / currentResolution);
-			
-			if( LOD < windowController.LOD)
-				LOD = windowController.LOD;
-			
-			if( LOD > 4) LOD = 4;
-			
-			if( windowController.lowLOD)
-				[vrView setLOD: LOD * vrView.lowResLODFactor];
-			else
-				[vrView setLOD: LOD];
-		}
-		else
-			[vrView setLOD: LOD];
-        
-		if( [self frame].size.width > 0 && [self frame].size.height > 0)
-		{
-			if( windowController.maxMovieIndex > 1 && (windowController.clippingRangeMode == 1 || windowController.clippingRangeMode == 3 || windowController.clippingRangeMode == 2))	//To avoid the wrong pixel value bug...
-				[vrView prepareFullDepthCapture];
-			
-			if( moveCenter)
-			{
-				lastRenderingWasMoveCenter = YES;
-				[vrView setLOD: 100];	// We dont need to really compute the image - we just want image origin for the other views.
-			}
-			else lastRenderingWasMoveCenter = NO;
-			
-			[vrView render];
-		}
-		
-		float *imagePtr = nil;
-		
-		if( moveCenter)
-		{
-			imagePtr = [pix fImage];
-			w = [pix pwidth];
-			h = [pix pheight];
-			isRGB = [pix isRGB];
-			
-			[vrView setLOD: LOD];
-		}
-		else
-			imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
-		
-		////
-		float orientation[ 9];
-		[vrView getOrientation: orientation];
-		
-		float location[ 3] = {previousOrigin[ 0], previousOrigin[ 1], previousOrigin[ 2]}, orig[ 3] = {currentCamera.position.x, currentCamera.position.y, currentCamera.position.z}, locationTemp[ 3];
-		float distance = [DCMView pbase_Plane: location :orig :&(orientation[ 6]) :locationTemp];
-		if( distance < pix.sliceThickness / 2.)
-			previousOriginInPlane = YES;
-		else
-			previousOriginInPlane = NO;
-		
-		[self saveCamera];
-		
-		if( imagePtr)
-		{
-			BOOL cameraMoved = YES;
-			
-			if( [curRoiList count] > 0)
-			{
-				if( previousOriginInPlane == NO || arePlanesParallel( orientation+6, previousOrientation+6) == NO)
-					cameraMoved = YES;
-				else
-					cameraMoved = NO;
-				
-				if( cameraMoved == YES)
-				{
-					for( int i = (long)[curRoiList count] -1 ; i >= 0; i--)
-					{
-						ROI *r = [curRoiList objectAtIndex: i];
-						if( [r type] != t2DPoint)
-							[curRoiList removeObjectAtIndex: i];
-					}
-				}
-			}
-			
-			if( [pix pwidth] == w && [pix pheight] == h && isRGB == [pix isRGB])
-			{
-				if( imagePtr != [pix fImage])
-				{
-					memcpy( [pix fImage], imagePtr, w*h*sizeof( float));
-					free( imagePtr);
-				}
-			}
-			else
-			{
-				[pix setRGB: isRGB];
-				[pix setfImage: imagePtr];
-				[pix freefImageWhenDone: YES];
-				[pix setPwidth: w];
-				[pix setPheight: h];
-				
-				NSMutableArray *savedROIs = [[curRoiList copy] autorelease];
-				
-				[self setIndex: 0];
-				
-				[curRoiList addObjectsFromArray: savedROIs];
-			}
-			float porigin[ 3];
-			[vrView getOrigin: porigin windowCentered: YES sliceMiddle: YES];
-			[pix setOrigin: porigin];
-			
-			float resolution = 0;
-			if( !moveCenter)
-			{
-				resolution = [vrView getResolution] * [vrView imageSampleDistance];
-				[pix setPixelSpacingX: resolution];
-				[pix setPixelSpacingY: resolution];
-			}
-			
-			[self willChangeValueForKey:@"plane"];
-			[pix setOrientation: orientation];
-			[self didChangeValueForKey:@"plane"];
-			[pix setSliceThickness: [vrView getClippingRangeThicknessInMm]];
-			
-			[self setWLWW: previousWL :previousWW];
-			
-			if( !moveCenter)
-			{
-				[self setScaleValue: [vrView imageSampleDistance]];
-				
-				float rotationPlane = 0;
-				if( cameraMoved == NO && [curRoiList count] > 0)
-				{
-					if( previousOrientation[ 0] != 0 || previousOrientation[ 1] != 0 || previousOrientation[ 2] != 0)
-						rotationPlane = -[CPRController angleBetweenVector: orientation andPlane: previousOrientation];
-					if( fabs( rotationPlane) < 0.01)
-						rotationPlane = 0;
-				}
-				
-				NSPoint rotationCenter = NSMakePoint( [pix pwidth]/2., [pix pheight]/2.);
-				
-				for( ROI* r in curRoiList)
-				{
-					if( rotationPlane)
-					{
-						[r setOriginAndSpacing: resolution : resolution : r.imageOrigin :NO];
-						
-						[r rotate: rotationPlane :rotationCenter];
-						r.imageOrigin = [DCMPix originCorrectedAccordingToOrientation: pix];
-						r.pixelSpacingX = [pix pixelSpacingX];
-						r.pixelSpacingY = [pix pixelSpacingY];
-					}
-					else
-						[r setOriginAndSpacing: resolution : resolution :[DCMPix originCorrectedAccordingToOrientation: pix] :NO];
-				}
-				
-				[pix orientation: previousOrientation];
-				previousOrigin[ 0] = currentCamera.position.x;
-				previousOrigin[ 1] = currentCamera.position.y;
-				previousOrigin[ 2] = currentCamera.position.z;
-				
-				[self detect2DPointInThisSlice];
-				
-				previousResolution = [vrView getResolution];
-				previousPixelSpacing = [pix pixelSpacingX];
-			}
-		}
-		
-		if( blendingView)
-		{
-			[blendingView getWLWW: &previousWL :&previousWW];
-			
-			[vrView renderBlendedVolume];
-			
-			float *blendedImagePtr = nil;
-			DCMPix *bPix = [blendingView curDCM];
-			
-			if( moveCenter)
-			{
-				blendedImagePtr = [bPix fImage];
-				w = [bPix pwidth];
-				h = [bPix pheight];
-				isRGB = [bPix isRGB];
-			}
-			else
-				blendedImagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB blendingView: YES];
-			
-			if( [bPix pwidth] == w && [bPix pheight] == h && isRGB == [bPix isRGB])
-			{
-				if( blendedImagePtr != [bPix fImage])
-				{
-					memcpy( [bPix fImage], blendedImagePtr, w*h*sizeof( float));
-					free( blendedImagePtr);
-				}
-			}
-			else
-			{
-				[bPix setRGB: isRGB];
-				[bPix setfImage: blendedImagePtr];
-				[bPix setPwidth: w];
-				[bPix setPheight: h];
-				
-				[blendingView setIndex: 0];
-			}
-			float porigin[ 3];
-			[vrView getOrigin: porigin windowCentered: YES sliceMiddle: YES blendedView: YES];
-			[bPix setOrigin: porigin];
-			
-			if( !moveCenter)
-			{
-				float resolution = [vrView getResolution] * [vrView blendingImageSampleDistance];
-				[bPix setPixelSpacingX: resolution];
-				[bPix setPixelSpacingY: resolution];
-			}
-			
-			float orientation[ 9];
-			[vrView getOrientation: orientation];
-			[bPix setOrientation: orientation];
-			[bPix setSliceThickness: [vrView getClippingRangeThicknessInMm]];
-			
-			[blendingView setWLWW: previousWL :previousWW];
-			
-			if( !moveCenter)
-				[blendingView setScaleValue: [vrView blendingImageSampleDistance]];
-		}
-	}
-	
-	if( dontReenterCrossReferenceLines == NO)
-	{
-		dontReenterCrossReferenceLines = YES;
-		
-		if( computeCrossReferenceLines)
-			[windowController computeCrossReferenceLines: self];
-		else
-			[windowController computeCrossReferenceLines: nil];
-		
-		dontReenterCrossReferenceLines = NO;
-	}
-	
-	[self setNeedsDisplay: YES];
 }
 
 - (void) colorForView:(int) v

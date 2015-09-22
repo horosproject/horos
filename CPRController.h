@@ -185,6 +185,8 @@ typedef NSInteger CPRExportRotationSpan;
 	NSMutableArray *_delegateDisplayInfoDebugging;
     
     CPRInterpolationMode selectedInterpolationMode;
+    
+    BOOL isInitializing;
 }
 
 @property (atomic) CPRInterpolationMode selectedInterpolationMode;
