@@ -370,7 +370,7 @@ static float deg2rad = M_PI / 180.0;
 		// To avoid the "invalid drawable" message
 		[[hiddenVRController window] setLevel: 0];
 		[[hiddenVRController window] orderBack: self];
-		[[hiddenVRController window] orderOut: self];
+		//[[hiddenVRController window] orderOut: self];
 		
 		[hiddenVRController load3DState];
 		
@@ -613,6 +613,8 @@ static float deg2rad = M_PI / 180.0;
 	
     if( path)
         [self loadBezierPathFromFile: path];
+    
+    [[hiddenVRController window] orderOut: self];
 }
 
 

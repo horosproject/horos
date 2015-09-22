@@ -219,7 +219,7 @@ static float deg2rad = M_PI/180.0;
 		// To avoid the "invalid drawable" message
 		[[hiddenVRController window] setLevel: 0];
 		[[hiddenVRController window] orderBack: self];
-		[[hiddenVRController window] orderOut: self];
+		//[[hiddenVRController window] orderOut: self];
 		
         hiddenVRController.view.engine = 0; // CPU Engine !
 		[hiddenVRController load3DState];
@@ -446,6 +446,8 @@ static float deg2rad = M_PI/180.0;
     [self applyViewsPosition];
     
     self->isInitializing = NO;
+    
+    [[hiddenVRController window] orderOut: self];
 }
 
 -(void)splitViewWillResizeSubviews:(NSNotification *)notification
