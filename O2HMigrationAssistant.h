@@ -8,7 +8,16 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class BrowserController;
+
 @interface O2HMigrationAssistant : NSWindowController
+{
+    BrowserController* _browserController;
+}
+
++ (void) performStartupO2HTasks:(BrowserController*) browserController;
+
+@property (assign) BrowserController* browserController;
 
 - (IBAction) doNotMigrateFromOsiriX:(id)sender;
 - (IBAction) askMeLaterToMigrateFromOsiriX:(id)sender;

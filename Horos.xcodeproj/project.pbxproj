@@ -829,6 +829,7 @@
 		999B0B641BB70F0800AF018A /* O2HMigrationAssistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 999B0B611BB70F0800AF018A /* O2HMigrationAssistant.m */; };
 		999B0B651BB70F0800AF018A /* O2HMigrationAssistant.xib in Resources */ = {isa = PBXBuildFile; fileRef = 999B0B621BB70F0800AF018A /* O2HMigrationAssistant.xib */; };
 		999B0B671BB711ED00AF018A /* CurvedArrowGrayLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = 999B0B661BB711ED00AF018A /* CurvedArrowGrayLeft.png */; };
+		999B0B681BB7309200AF018A /* Osirix.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9966A1AF1AE09FFE00F2D81A /* Osirix.icns */; };
 		99CDC0F51ADF0D0900F34F19 /* libCharLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB451802149F464B006674BF /* libCharLS.a */; };
 		A0344496143DE4AA003E1AFA /* DCMUSRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = A085E104141E53210072BF0D /* DCMUSRegion.m */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
@@ -12902,6 +12903,7 @@
 				AB3674BA0BE0CEB1003634E6 /* HUDSliderKnob.tif in Resources */,
 				AB3674BB0BE0CEB1003634E6 /* HUDSliderKnobRound.tif in Resources */,
 				AB3674BC0BE0CEB1003634E6 /* HUDSliderTrack.tif in Resources */,
+				999B0B681BB7309200AF018A /* Osirix.icns in Resources */,
 				AB3674BD0BE0CEB1003634E6 /* HUDSliderTrack5Tick.tif in Resources */,
 				AB3674BE0BE0CEB1003634E6 /* HUDSliderTrackFill.tif in Resources */,
 				AB3674BF0BE0CEB1003634E6 /* HUDSliderTrackLeft.tif in Resources */,

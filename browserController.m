@@ -112,6 +112,7 @@
 #import "WADOXML.h"
 #import "DicomDir.h"
 #import "CPRVolumeData.h"
+#import "O2HMigrationAssistant.h"
 
 #import "url.h"
 
@@ -14273,6 +14274,8 @@ static NSArray*	openSubSeriesArray = nil;
             [[self window] performZoom:self];
         });
     }
+    
+    [O2HMigrationAssistant performStartupO2HTasks:self];
 }
 
 - (IBAction) clickBanner:(id) sender
