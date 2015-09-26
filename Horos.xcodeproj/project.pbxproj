@@ -825,6 +825,10 @@
 		998B52E71AE0895700D317CF /* Horos.sdef in Resources */ = {isa = PBXBuildFile; fileRef = 998B52E11AE0890300D317CF /* Horos.sdef */; };
 		999901A41B52B24200921EA1 /* libdcmprintscu.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 999901A21B52B24200921EA1 /* libdcmprintscu.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		999901A51B52B24200921EA1 /* libxerces-c.27.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 999901A31B52B24200921EA1 /* libxerces-c.27.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		999B0B631BB70F0800AF018A /* O2HMigrationAssistant.h in Headers */ = {isa = PBXBuildFile; fileRef = 999B0B601BB70F0800AF018A /* O2HMigrationAssistant.h */; };
+		999B0B641BB70F0800AF018A /* O2HMigrationAssistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 999B0B611BB70F0800AF018A /* O2HMigrationAssistant.m */; };
+		999B0B651BB70F0800AF018A /* O2HMigrationAssistant.xib in Resources */ = {isa = PBXBuildFile; fileRef = 999B0B621BB70F0800AF018A /* O2HMigrationAssistant.xib */; };
+		999B0B671BB711ED00AF018A /* CurvedArrowGrayLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = 999B0B661BB711ED00AF018A /* CurvedArrowGrayLeft.png */; };
 		99CDC0F51ADF0D0900F34F19 /* libCharLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB451802149F464B006674BF /* libCharLS.a */; };
 		A0344496143DE4AA003E1AFA /* DCMUSRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = A085E104141E53210072BF0D /* DCMUSRegion.m */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
@@ -5328,6 +5332,10 @@
 		998B52E31AE0893D00D317CF /* Horos.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Horos.icns; sourceTree = "<group>"; };
 		999901A21B52B24200921EA1 /* libdcmprintscu.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libdcmprintscu.dylib; path = AYDicomPrint/libdcmprintscu.dylib; sourceTree = "<group>"; };
 		999901A31B52B24200921EA1 /* libxerces-c.27.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libxerces-c.27.dylib"; path = "AYDicomPrint/libxerces-c.27.dylib"; sourceTree = "<group>"; };
+		999B0B601BB70F0800AF018A /* O2HMigrationAssistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = O2HMigrationAssistant.h; path = Horos.xcodeproj/../O2HMigrationAssistant.h; sourceTree = "<group>"; };
+		999B0B611BB70F0800AF018A /* O2HMigrationAssistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = O2HMigrationAssistant.m; path = Horos.xcodeproj/../O2HMigrationAssistant.m; sourceTree = "<group>"; };
+		999B0B621BB70F0800AF018A /* O2HMigrationAssistant.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = O2HMigrationAssistant.xib; path = Horos.xcodeproj/../O2HMigrationAssistant.xib; sourceTree = "<group>"; };
+		999B0B661BB711ED00AF018A /* CurvedArrowGrayLeft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CurvedArrowGrayLeft.png; sourceTree = "<group>"; };
 		A085E103141E53210072BF0D /* DCMUSRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMUSRegion.h; sourceTree = "<group>"; };
 		A085E104141E53210072BF0D /* DCMUSRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMUSRegion.m; sourceTree = "<group>"; };
 		A90202BA0B980CD60001A00B /* PluginManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManagerController.h; sourceTree = "<group>"; };
@@ -7511,6 +7519,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				99B7AAD51BB70E2F00A0605C /* MigrationAssitant */,
 				5997894211B7B3C6002DB107 /* Anonymization */,
 				59BDF10B117EE68F007F1F2C /* Preferences */,
 				592681FB11CF5F5000CFA81F /* Activity */,
@@ -8368,6 +8377,16 @@
 			name = StereoVision;
 			sourceTree = "<group>";
 		};
+		99B7AAD51BB70E2F00A0605C /* MigrationAssitant */ = {
+			isa = PBXGroup;
+			children = (
+				999B0B601BB70F0800AF018A /* O2HMigrationAssistant.h */,
+				999B0B611BB70F0800AF018A /* O2HMigrationAssistant.m */,
+				999B0B621BB70F0800AF018A /* O2HMigrationAssistant.xib */,
+			);
+			name = MigrationAssitant;
+			sourceTree = "<group>";
+		};
 		A90C722016E4D8AE0060302F /* Data */ = {
 			isa = PBXGroup;
 			children = (
@@ -9083,6 +9102,7 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				999B0B661BB711ED00AF018A /* CurvedArrowGrayLeft.png */,
 				9966A1AF1AE09FFE00F2D81A /* Osirix.icns */,
 				718416061654022400180467 /* DownArrowGreyRev.pdf */,
 				ABBB647B063587B200D9531F /* 2DBlending.tif */,
@@ -11453,6 +11473,7 @@
 				BFBF409F09B6828D00545F5E /* jinclude8.h in Headers */,
 				BFBF40A009B6828D00545F5E /* jlossls8.h in Headers */,
 				BFBF40A109B6828D00545F5E /* jlossy8.h in Headers */,
+				999B0B631BB70F0800AF018A /* O2HMigrationAssistant.h in Headers */,
 				BFBF40A409B6828D00545F5E /* jmemsys8.h in Headers */,
 				BFBF40A509B6828D00545F5E /* jmorecfg8.h in Headers */,
 				BFBF40A609B6828D00545F5E /* jpegint8.h in Headers */,
@@ -12761,6 +12782,7 @@
 				CE1335EA06B02DC000B7FC03 /* iChat.icns in Resources */,
 				CE74824206C9701200FFA74C /* trash.icns in Resources */,
 				BFD4BFFC06F2A96900EC9A90 /* ContrastCursor.tif in Resources */,
+				999B0B671BB711ED00AF018A /* CurvedArrowGrayLeft.png in Resources */,
 				BFD4BFFD06F2A96900EC9A90 /* RotateCursor.tif in Resources */,
 				BFD4BFFE06F2A96900EC9A90 /* StackCursor.tif in Resources */,
 				BFD4BFFF06F2A96900EC9A90 /* ZoomCursor.tif in Resources */,
@@ -12774,6 +12796,7 @@
 				CE99E890073AB4C500725ABC /* iPhoto.icns in Resources */,
 				CE49E2CA0760B93500444203 /* Empty.tif in Resources */,
 				CE16066E0769EFE60036CAD3 /* VR Muscles-Bones.plist in Resources */,
+				999B0B651BB70F0800AF018A /* O2HMigrationAssistant.xib in Resources */,
 				CE52264F077C48D900EED851 /* Sync.pdf in Resources */,
 				CEE6717D077D5ECF00E4BB10 /* SyncLock.pdf in Resources */,
 				7E54309F07A05F7500500ABB /* burn_throb.tif in Resources */,
@@ -14921,6 +14944,7 @@
 				BFBF3E8609B6828D00545F5E /* dcdictbi.cc in Sources */,
 				BFBF3E8709B6828D00545F5E /* dcdirrec.cc in Sources */,
 				BFBF3E8909B6828D00545F5E /* dcelem.cc in Sources */,
+				999B0B641BB70F0800AF018A /* O2HMigrationAssistant.m in Sources */,
 				BFBF3E8B09B6828D00545F5E /* dcerror.cc in Sources */,
 				BFBF3E8D09B6828D00545F5E /* dcfilefo.cc in Sources */,
 				BFBF3E8F09B6828D00545F5E /* dchashdi.cc in Sources */,
