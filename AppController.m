@@ -705,6 +705,17 @@ void exceptionHandler(NSException *exception)
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
+
+#import "JRSwizzle.h"
+
+@implementation NSWindow (FFS)
+- (BOOL) HOROS_showsFullScreenButton {
+    return NO;
+}
+@end
+
+
+
 static NSDate *lastWarningDate = nil;
 
 
@@ -3942,6 +3953,15 @@ static BOOL initialized = NO;
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
     [AppController cleanOsiriXSubProcesses];
+    
+    
+    NSError *error = nil;
+    [NSWindow jr_swizzleMethod:@selector(showsFullScreenButton) withMethod:@selector(HOROS_showsFullScreenButton) error:&error];
+    
+    if (error) {
+        NSLog(@"Unable to swizzle showsFullScreenButton: %@", error);
+    }
+    
     
     if( [NSDate timeIntervalSinceReferenceDate] - [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastDate32bitPipelineCheck"] > 60L*60L*24L) // 1 days
 	{
