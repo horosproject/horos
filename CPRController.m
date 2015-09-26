@@ -678,16 +678,16 @@ static float deg2rad = M_PI / 180.0;
     {
         [self willChangeValueForKey:@"interpolationMode"];
         self->selectedInterpolationMode = [[NSUserDefaults standardUserDefaults] integerForKey:@"selectedCPRInterpolationMode"];
-        if (self->selectedInterpolationMode !=  CPRInterpolationModeNearestNeighbor &&
+        if (self->selectedInterpolationMode != CPRInterpolationModeNearestNeighbor &&
             self->selectedInterpolationMode != CPRInterpolationModeCubic)
         {
-            self->selectedInterpolationMode = CPRInterpolationModeNearestNeighbor;
+            self->selectedInterpolationMode = CPRInterpolationModeCubic;
         }
         [self didChangeValueForKey:@"interpolationMode"];
     }
     else
     {
-        self->selectedInterpolationMode = CPRInterpolationModeNearestNeighbor;
+        self->selectedInterpolationMode = CPRInterpolationModeCubic;
         [[NSUserDefaults standardUserDefaults] setInteger:self.selectedInterpolationMode
                                                    forKey:@"selectedCPRInterpolationMode"];
     }

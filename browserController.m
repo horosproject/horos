@@ -111,6 +111,7 @@
 #import "XMLControllerDCMTKCategory.h"
 #import "WADOXML.h"
 #import "DicomDir.h"
+#import "CPRVolumeData.h"
 
 #import "url.h"
 
@@ -13937,15 +13938,6 @@ static NSArray*	openSubSeriesArray = nil;
 {
     @try
     {
-        NSButton* zoomButton = [[self window] standardWindowButton:NSWindowZoomButton];
-        [zoomButton setTarget:[self window]];
-        [zoomButton setAction:@selector(zoom:)];
-        
-        Class swap = [NSWindow class];
-        Method a = class_getInstanceMethod(swap, @selector(toggleFullScreen:));
-        Method b = class_getInstanceMethod(swap, @selector(performZoom:));
-        method_exchangeImplementations(a, b);
-        
         //	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         //
         //	dispatch_apply(count, queue,
@@ -14265,6 +14257,21 @@ static NSArray*	openSubSeriesArray = nil;
     }
     @catch (NSException *e) {
         N2LogException( e);
+    }
+    
+    
+    BOOL firstTimeExecution = ([[NSUserDefaults standardUserDefaults] objectForKey:@"FIRSTTIMEEXECUTION"] == nil);
+    if (firstTimeExecution == YES)
+    {
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:NO] forKey:@"FIRSTTIMEEXECUTION"];
+        
+        [[NSUserDefaults standardUserDefaults] setInteger:CPRInterpolationModeCubic
+                                                   forKey:@"selectedCPRInterpolationMode"];
+        
+        dispatch_async(dispatch_get_main_queue(), ^() {
+            [self restoreWindowState:self];
+            [[self window] performZoom:self];
+        });
     }
 }
 
