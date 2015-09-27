@@ -266,6 +266,7 @@ static NSString*	ViewersToolbarItemIdentifier	= @"windows.tif";
 static NSString*	WebServerSingleNotification	= @"Safari.tif";
 static NSString*	AddStudiesToUserItemIdentifier	= @"NSUserAccounts";
 static NSString*    ResetSplitViewsItemIdentifier = @"Reset.pdf";
+static NSString*    HorosMigrationAssistantIdentifier = @"O2HMigrationAssistant.png";
 
 static NSTimeInterval gLastActivity = 0;
 static BOOL dontShowOpenSubSeries = NO;
@@ -19058,6 +19059,15 @@ restart:
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(restoreWindowState:)];
     }
+    else if ([itemIdent isEqualToString: HorosMigrationAssistantIdentifier])
+    {
+        [toolbarItem setLabel: NSLocalizedString(@"Migration Assistant",nil)];
+        [toolbarItem setPaletteLabel: NSLocalizedString(@"Migration Assistant",nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Open Horos Migration Assistant",nil)];
+        [toolbarItem setImage: [NSImage imageNamed: HorosMigrationAssistantIdentifier]];
+        [toolbarItem setTarget: self];
+        [toolbarItem setAction: @selector(openHorosMigrationAssistant:)];
+    }
     else
     {
         // Is it a plugin menu item?
@@ -19098,6 +19108,22 @@ restart:
     }
     
     return toolbarItem;
+}
+
+
+- (void) openHorosMigrationAssistant:(id) sender
+{
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"O2H_MIGRATION_USER_ACTION"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
+    if ([O2HMigrationAssistant isOsiriXInstalled] == NO)
+    {
+        //Alert
+        
+        return;
+    }
+    
+    [O2HMigrationAssistant performStartupO2HTasks:self];
 }
 
 
@@ -19259,6 +19285,7 @@ restart:
                              ReportToolbarItemIdentifier,
                              ToggleDrawerToolbarItemIdentifier,
                              ResetSplitViewsItemIdentifier,
+                             HorosMigrationAssistantIdentifier,
                              nil];
     
     NSArray*		allPlugins = [[PluginManager pluginsDict] allKeys];

@@ -27,14 +27,22 @@ enum
 
 @synthesize browserController = _browserController;
 
++ (BOOL) isOsiriXInstalled
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString* osirixPath = [NSString stringWithFormat:@"%@/OsiriX Data/DATABASE.noindex",[paths objectAtIndex:0]];
+    
+    BOOL isDirectory = NO;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:osirixPath isDirectory:&isDirectory] && isDirectory)
+    {
+        return YES;
+    }
+    
+    return NO;
+}
 
 + (void) performStartupO2HTasks:(BrowserController*) browserController
 {
-    //////////////////
-    //[[NSUserDefaults standardUserDefaults] removeObjectForKey:@"O2H_MIGRATION_USER_ACTION"];
-    //[[NSUserDefaults standardUserDefaults] synchronize];
-    //////////////////
-    
     //Check if user already said NO or YES before
     NSNumber* o2h_migration_user_action = [[NSUserDefaults standardUserDefaults] objectForKey:@"O2H_MIGRATION_USER_ACTION"];
 
@@ -44,12 +52,8 @@ enum
     if (o2h_migration_user_action != nil && [o2h_migration_user_action integerValue] == MIGRATION_ACCEPTED)
         return;
     
-    //Check if we have OsiriX
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString* osirixPath = [NSString stringWithFormat:@"%@/OsiriX Data/DATABASE.noindex",[paths objectAtIndex:0]];
-    
-    BOOL isDirectory = NO;
-    if ([[NSFileManager defaultManager] fileExistsAtPath:osirixPath isDirectory:&isDirectory] && isDirectory)
+    //Open Assistant if OsiriX is installed
+    if ([O2HMigrationAssistant isOsiriXInstalled])
     {
         //Launch the assistant
         O2HMigrationAssistant* migrationAssistant = [[O2HMigrationAssistant alloc] initWithWindowNibName:@"O2HMigrationAssistant"];
