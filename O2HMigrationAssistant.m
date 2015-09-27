@@ -30,8 +30,10 @@ enum
 
 + (void) performStartupO2HTasks:(BrowserController*) browserController
 {
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"O2H_MIGRATION_USER_ACTION"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    //////////////////
+    //[[NSUserDefaults standardUserDefaults] removeObjectForKey:@"O2H_MIGRATION_USER_ACTION"];
+    //[[NSUserDefaults standardUserDefaults] synchronize];
+    //////////////////
     
     //Check if user already said NO or YES before
     NSNumber* o2h_migration_user_action = [[NSUserDefaults standardUserDefaults] objectForKey:@"O2H_MIGRATION_USER_ACTION"];
@@ -132,11 +134,13 @@ enum
             
             [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"COPYDATABASE"];
             [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:always] forKey:@"COPYDATABASEMODE"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
 
             [self.browserController subSelectFilesAndFoldersToAdd:[NSArray arrayWithObjects:osirixPath, nil]];
             
             [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:COPYDATABASE] forKey:@"COPYDATABASE"];
             [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:COPYDATABASEMODE] forKey:@"COPYDATABASEMODE"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
         }
         
         [[self window] close];
