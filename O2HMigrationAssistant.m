@@ -49,18 +49,14 @@ enum
     BOOL isDirectory = NO;
     if ([[NSFileManager defaultManager] fileExistsAtPath:osirixPath isDirectory:&isDirectory] && isDirectory)
     {
-        NSWindow* browserControllerWindow = [browserController window];
-        
         //Launch the assistant
         O2HMigrationAssistant* migrationAssistant = [[O2HMigrationAssistant alloc] initWithWindowNibName:@"O2HMigrationAssistant"];
         migrationAssistant.browserController = browserController;
         
-        CGFloat xPos = NSWidth ([[browserControllerWindow screen] frame])/2 - NSWidth ([browserControllerWindow frame])/2;
-        CGFloat yPos = NSHeight([[browserControllerWindow screen] frame])/2 - NSHeight([browserControllerWindow frame])/2;
-        [[migrationAssistant window] makeKeyAndOrderFront:self];
-        [[migrationAssistant window] setFrame:NSMakeRect(xPos, yPos,
-                                                         NSWidth([[migrationAssistant window] frame]),
-                                                         NSHeight([[migrationAssistant window] frame])) display:YES];
+        if ([NSApp isHidden])
+            [[migrationAssistant window] makeKeyAndOrderFront:self];
+        else
+            [NSApp runModalForWindow:[migrationAssistant window]];
     }
 }
 
@@ -69,6 +65,17 @@ enum
     [super windowDidLoad];
     
     // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
+}
+
+- (void) awakeFromNib {
+
+    NSWindow* browserControllerWindow = [self.browserController window];
+
+    CGFloat xPos = browserControllerWindow.frame.origin.x + browserControllerWindow.frame.size.width/2 - self.window.frame.size.width/2;
+    CGFloat yPos = browserControllerWindow.frame.origin.y + browserControllerWindow.frame.size.height/2 - self.window.frame.size.height/2;;
+    [[self window] makeKeyAndOrderFront:self];
+    [[self window] setFrame:NSMakeRect(xPos, yPos, NSWidth([[self window] frame]),
+                                                   NSHeight([[self window] frame])) display:YES];
 }
 
 - (void)windowWillClose:(NSNotification *)notification
@@ -81,6 +88,11 @@ enum
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     
+    if ([NSApp isHidden])
+        [[self window] orderOut:self];
+    else
+        [NSApp stopModal];
+    
     [self autorelease];
 }
 
@@ -89,6 +101,7 @@ enum
 {
     [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:MIGRATION_DENIED] forKey:@"O2H_MIGRATION_USER_ACTION"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+
     [[self window] close];
 }
 
@@ -97,6 +110,7 @@ enum
 {
     [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:MIGRATION_POSTPONED] forKey:@"O2H_MIGRATION_USER_ACTION"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    
     [[self window] close];
 }
 
@@ -124,9 +138,9 @@ enum
             [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:COPYDATABASE] forKey:@"COPYDATABASE"];
             [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:COPYDATABASEMODE] forKey:@"COPYDATABASEMODE"];
         }
+        
+        [[self window] close];
     });
-    
-    [[self window] close];
 }
 
 @end
