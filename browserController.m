@@ -19118,8 +19118,9 @@ restart:
 
     if ([O2HMigrationAssistant isOsiriXInstalled] == NO)
     {
-        //Alert
-        
+        NSRunInformationalAlertPanel(NSLocalizedString(@"Horos Migration Assistant", nil),
+                                     NSLocalizedString(@"It seems you don't have OsiriX installed.", nil),
+                                     NSLocalizedString(@"Return",nil), nil, nil);
         return;
     }
     
