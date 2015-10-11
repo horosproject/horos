@@ -5623,6 +5623,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     if( [[dcmObject attributeValueWithName:@"RescaleType"] isEqualToString: @"US"] == NO)
     {
         self.rescaleType = [dcmObject attributeValueWithName:@"RescaleType"];
+        if (self.rescaleType == nil)
+            self.rescaleType = @"";
         
         if( [self.rescaleType.lowercaseString isEqualToString: @"houndsfield unit"])
             self.rescaleType = @"HU";
