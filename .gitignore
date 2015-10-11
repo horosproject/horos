@@ -29,6 +29,8 @@ Binaries/PAGES/
 Binaries/ReportsToPDF/odt2pdf/build/odt2pdf
 Binaries/VTKHeaders/
 Binaries/VTKLibs/
+Binaries/GDCMHeaders/
+Binaries/GDCMLibs/
 Binaries/weasis/
 Binaries/._OsiriX Report.template
 options.h
@@ -39,5 +41,7 @@ xcuserdata/
 
 DerivedData/
 
-
 *.xcworkspacedata
+
+Binaries/GDCMLibs/libGDCM.a
+Binaries/GDCMHeaders/libGDCM.h

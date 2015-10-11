@@ -727,6 +727,8 @@
 		84E191FC1369966A008DCFC8 /* WADODownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E191FA1369966A008DCFC8 /* WADODownload.m */; };
 		84F453570FC3DF5400D29666 /* ILCrashReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		991B8B5C1BB8B279006AF439 /* O2HMigrationAssistant.png in Resources */ = {isa = PBXBuildFile; fileRef = 991B8B5B1BB8B279006AF439 /* O2HMigrationAssistant.png */; };
+		996303181BCACD70009CE3E5 /* libGDCM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 996303171BCACD70009CE3E5 /* libGDCM.a */; };
+		9963031B1BCACF26009CE3E5 /* libGDCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 9963031A1BCACF26009CE3E5 /* libGDCM.h */; };
 		9966A1901AE099A400F2D81A /* ViewerController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE17661056D2659009C93B5 /* ViewerController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9966A1911AE099A400F2D81A /* options.h in Headers */ = {isa = PBXBuildFile; fileRef = 434B46151A19F2A3008CF8CF /* options.h */; };
 		9966A19F1AE09B6F00F2D81A /* OsiriXHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9966A19E1AE09B6F00F2D81A /* OsiriXHeaders.mm */; };
@@ -5314,6 +5316,8 @@
 		84E191FA1369966A008DCFC8 /* WADODownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WADODownload.m; sourceTree = "<group>"; };
 		953DA3D517A1D194000C4BAC /* WebPortalDB 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 8.xcdatamodel"; sourceTree = "<group>"; };
 		991B8B5B1BB8B279006AF439 /* O2HMigrationAssistant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = O2HMigrationAssistant.png; sourceTree = "<group>"; };
+		996303171BCACD70009CE3E5 /* libGDCM.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGDCM.a; sourceTree = "<group>"; };
+		9963031A1BCACF26009CE3E5 /* libGDCM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libGDCM.h; path = Binaries/GDCMHeaders/libGDCM.h; sourceTree = "<group>"; };
 		9966A19A1AE099A400F2D81A /* OsiriXAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriXAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9966A19E1AE09B6F00F2D81A /* OsiriXHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXHeaders.mm; sourceTree = "<group>"; };
 		9966A1A01AE09D3F00F2D81A /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
@@ -7447,6 +7451,7 @@
 				4362184D1A2F375C006FA27A /* libvtkRenderingContextOpenGL-6.2.a in Frameworks */,
 				4362184F1A2F375C006FA27A /* libvtkRenderingFreeType-6.2.a in Frameworks */,
 				436217811A2F3730006FA27A /* libitkvnl_algo-4.7.a in Frameworks */,
+				996303181BCACD70009CE3E5 /* libGDCM.a in Frameworks */,
 				436218321A2F375C006FA27A /* libvtkIOGeometry-6.2.a in Frameworks */,
 				4362182D1A2F375C006FA27A /* libvtkIOAMR-6.2.a in Frameworks */,
 				436218381A2F375C006FA27A /* libvtkIOMINC-6.2.a in Frameworks */,
@@ -7809,6 +7814,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				996303191BCACEF9009CE3E5 /* GDCM */,
 				999901A21B52B24200921EA1 /* libdcmprintscu.dylib */,
 				999901A31B52B24200921EA1 /* libxerces-c.27.dylib */,
 				436217891A2F3741006FA27A /* libjpeg.a */,
@@ -8378,6 +8384,24 @@
 				84ADF471115B622D00FE18B2 /* Window3DController+StereoVision.m */,
 			);
 			name = StereoVision;
+			sourceTree = "<group>";
+		};
+		996303161BCACD70009CE3E5 /* GDCMLibs */ = {
+			isa = PBXGroup;
+			children = (
+				996303171BCACD70009CE3E5 /* libGDCM.a */,
+			);
+			name = GDCMLibs;
+			path = Binaries/GDCMLibs;
+			sourceTree = "<group>";
+		};
+		996303191BCACEF9009CE3E5 /* GDCM */ = {
+			isa = PBXGroup;
+			children = (
+				9963031A1BCACF26009CE3E5 /* libGDCM.h */,
+				996303161BCACD70009CE3E5 /* GDCMLibs */,
+			);
+			name = GDCM;
 			sourceTree = "<group>";
 		};
 		99B7AAD51BB70E2F00A0605C /* MigrationAssitant */ = {
@@ -11310,6 +11334,7 @@
 				CEE73FD408F44749002A395F /* stringNumericCompare.h in Headers */,
 				CE97630108FABDA600E6F8B0 /* ROIManagerController.h in Headers */,
 				CE97630208FABDA600E6F8B0 /* PaletteController.h in Headers */,
+				9963031B1BCACF26009CE3E5 /* libGDCM.h in Headers */,
 				A9F6E4B808FEAF280060285A /* OrthogonalReslice.h in Headers */,
 				A9F6E4C208FEAF610060285A /* OrthogonalMPRView.h in Headers */,
 				A9F6E4CC08FEAF8E0060285A /* OrthogonalMPRController.h in Headers */,
@@ -16548,6 +16573,7 @@
 					"$(PROJECT_DIR)/Binaries/VTKLibs",
 					"$(PROJECT_DIR)/Binaries/CharLS",
 					"$(PROJECT_DIR)/AYDicomPrint",
+					"$(PROJECT_DIR)/Binaries/GDCMLibs",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -16568,7 +16594,7 @@
 				);
 				PRODUCT_NAME = Horos;
 				STRIP_STYLE = debugging;
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/ITKHeaders $(SRCROOT)/Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/GDCMHeaders $(SRCROOT)/Binaries/ITKHeaders $(SRCROOT)/Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
 				WARNING_CFLAGS = "-no-pedantic";
 			};
 			name = Deployment;
@@ -16798,7 +16824,7 @@
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
 				SYMROOT = build;
-				USER_HEADER_SEARCH_PATHS = "Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
+				USER_HEADER_SEARCH_PATHS = "Binaries/GDCMHeaders Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
 			};
 			name = Deployment;
 		};
@@ -17094,6 +17120,7 @@
 					"$(PROJECT_DIR)/Binaries/VTKLibs",
 					"$(PROJECT_DIR)/Binaries/CharLS",
 					"$(PROJECT_DIR)/AYDicomPrint",
+					"$(PROJECT_DIR)/Binaries/GDCMLibs",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -17113,7 +17140,7 @@
 					"Deployment-Info.plist",
 				);
 				PRODUCT_NAME = Horos;
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/ITKHeaders $(SRCROOT)/Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/GDCMHeaders $(SRCROOT)/Binaries/ITKHeaders $(SRCROOT)/Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
 				WARNING_CFLAGS = "-no-pedantic";
 			};
 			name = Development;
@@ -17485,7 +17512,7 @@
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
 				SYMROOT = build;
-				USER_HEADER_SEARCH_PATHS = "Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
+				USER_HEADER_SEARCH_PATHS = "Binaries/GDCMHeaders Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
 			};
 			name = Development;
 		};
