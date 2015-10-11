@@ -727,7 +727,33 @@
 		84E191FC1369966A008DCFC8 /* WADODownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E191FA1369966A008DCFC8 /* WADODownload.m */; };
 		84F453570FC3DF5400D29666 /* ILCrashReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		991B8B5C1BB8B279006AF439 /* O2HMigrationAssistant.png in Resources */ = {isa = PBXBuildFile; fileRef = 991B8B5B1BB8B279006AF439 /* O2HMigrationAssistant.png */; };
-		996303181BCACD70009CE3E5 /* libGDCM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 996303171BCACD70009CE3E5 /* libGDCM.a */; };
+		992DD75D1BCB095700369C09 /* libgdcmcharls.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7501BCB095700369C09 /* libgdcmcharls.a */; };
+		992DD75E1BCB095700369C09 /* libgdcmcharls.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7501BCB095700369C09 /* libgdcmcharls.a */; };
+		992DD75F1BCB095700369C09 /* libgdcmCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7511BCB095700369C09 /* libgdcmCommon.a */; };
+		992DD7601BCB095700369C09 /* libgdcmCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7511BCB095700369C09 /* libgdcmCommon.a */; };
+		992DD7611BCB095700369C09 /* libgdcmDICT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7521BCB095700369C09 /* libgdcmDICT.a */; };
+		992DD7621BCB095700369C09 /* libgdcmDICT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7521BCB095700369C09 /* libgdcmDICT.a */; };
+		992DD7631BCB095700369C09 /* libgdcmDSED.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7531BCB095700369C09 /* libgdcmDSED.a */; };
+		992DD7641BCB095700369C09 /* libgdcmDSED.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7531BCB095700369C09 /* libgdcmDSED.a */; };
+		992DD7651BCB095700369C09 /* libgdcmexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7541BCB095700369C09 /* libgdcmexpat.a */; };
+		992DD7661BCB095700369C09 /* libgdcmexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7541BCB095700369C09 /* libgdcmexpat.a */; };
+		992DD7671BCB095700369C09 /* libgdcmIOD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7551BCB095700369C09 /* libgdcmIOD.a */; };
+		992DD7681BCB095700369C09 /* libgdcmIOD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7551BCB095700369C09 /* libgdcmIOD.a */; };
+		992DD7691BCB095700369C09 /* libgdcmjpeg8.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7561BCB095700369C09 /* libgdcmjpeg8.a */; };
+		992DD76A1BCB095700369C09 /* libgdcmjpeg8.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7561BCB095700369C09 /* libgdcmjpeg8.a */; };
+		992DD76B1BCB095700369C09 /* libgdcmjpeg12.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7571BCB095700369C09 /* libgdcmjpeg12.a */; };
+		992DD76C1BCB095700369C09 /* libgdcmjpeg12.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7571BCB095700369C09 /* libgdcmjpeg12.a */; };
+		992DD76D1BCB095700369C09 /* libgdcmjpeg16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7581BCB095700369C09 /* libgdcmjpeg16.a */; };
+		992DD76E1BCB095700369C09 /* libgdcmjpeg16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7581BCB095700369C09 /* libgdcmjpeg16.a */; };
+		992DD76F1BCB095700369C09 /* libgdcmMEXD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7591BCB095700369C09 /* libgdcmMEXD.a */; };
+		992DD7701BCB095700369C09 /* libgdcmMEXD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7591BCB095700369C09 /* libgdcmMEXD.a */; };
+		992DD7711BCB095700369C09 /* libgdcmMSFF.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75A1BCB095700369C09 /* libgdcmMSFF.a */; };
+		992DD7721BCB095700369C09 /* libgdcmMSFF.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75A1BCB095700369C09 /* libgdcmMSFF.a */; };
+		992DD7731BCB095700369C09 /* libgdcmopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75B1BCB095700369C09 /* libgdcmopenjpeg.a */; };
+		992DD7741BCB095700369C09 /* libgdcmopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75B1BCB095700369C09 /* libgdcmopenjpeg.a */; };
+		992DD7751BCB095700369C09 /* libgdcmuuid.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75C1BCB095700369C09 /* libgdcmuuid.a */; };
+		992DD7761BCB095700369C09 /* libgdcmuuid.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75C1BCB095700369C09 /* libgdcmuuid.a */; };
+		9939F7A91BCB0BF8009FEB69 /* FVTiff.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FC808F44724002A395F /* FVTiff.m */; };
 		9963031B1BCACF26009CE3E5 /* libGDCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 9963031A1BCACF26009CE3E5 /* libGDCM.h */; };
 		9966A1901AE099A400F2D81A /* ViewerController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE17661056D2659009C93B5 /* ViewerController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9966A1911AE099A400F2D81A /* options.h in Headers */ = {isa = PBXBuildFile; fileRef = 434B46151A19F2A3008CF8CF /* options.h */; };
@@ -4510,7 +4536,6 @@
 		CEE619EF0912C73000C31D78 /* OrientationWidget.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEE619EE0912C73000C31D78 /* OrientationWidget.tif */; };
 		CEE6717D077D5ECF00E4BB10 /* SyncLock.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CEE67176077D5ECE00E4BB10 /* SyncLock.pdf */; };
 		CEE73FC908F44724002A395F /* FVTiff.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE73FC708F44724002A395F /* FVTiff.h */; };
-		CEE73FCA08F44724002A395F /* FVTiff.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FC808F44724002A395F /* FVTiff.m */; };
 		CEE73FD308F44749002A395F /* stringNumericCompare.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FD108F44749002A395F /* stringNumericCompare.m */; };
 		CEE73FD408F44749002A395F /* stringNumericCompare.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE73FD208F44749002A395F /* stringNumericCompare.h */; };
 		CEE75F701470698F00A83306 /* DefaultBanner.png in Resources */ = {isa = PBXBuildFile; fileRef = CEE75F6F1470698F00A83306 /* DefaultBanner.png */; };
@@ -5316,7 +5341,19 @@
 		84E191FA1369966A008DCFC8 /* WADODownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WADODownload.m; sourceTree = "<group>"; };
 		953DA3D517A1D194000C4BAC /* WebPortalDB 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 8.xcdatamodel"; sourceTree = "<group>"; };
 		991B8B5B1BB8B279006AF439 /* O2HMigrationAssistant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = O2HMigrationAssistant.png; sourceTree = "<group>"; };
-		996303171BCACD70009CE3E5 /* libGDCM.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGDCM.a; sourceTree = "<group>"; };
+		992DD7501BCB095700369C09 /* libgdcmcharls.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmcharls.a; sourceTree = "<group>"; };
+		992DD7511BCB095700369C09 /* libgdcmCommon.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmCommon.a; sourceTree = "<group>"; };
+		992DD7521BCB095700369C09 /* libgdcmDICT.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmDICT.a; sourceTree = "<group>"; };
+		992DD7531BCB095700369C09 /* libgdcmDSED.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmDSED.a; sourceTree = "<group>"; };
+		992DD7541BCB095700369C09 /* libgdcmexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmexpat.a; sourceTree = "<group>"; };
+		992DD7551BCB095700369C09 /* libgdcmIOD.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmIOD.a; sourceTree = "<group>"; };
+		992DD7561BCB095700369C09 /* libgdcmjpeg8.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmjpeg8.a; sourceTree = "<group>"; };
+		992DD7571BCB095700369C09 /* libgdcmjpeg12.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmjpeg12.a; sourceTree = "<group>"; };
+		992DD7581BCB095700369C09 /* libgdcmjpeg16.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmjpeg16.a; sourceTree = "<group>"; };
+		992DD7591BCB095700369C09 /* libgdcmMEXD.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmMEXD.a; sourceTree = "<group>"; };
+		992DD75A1BCB095700369C09 /* libgdcmMSFF.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmMSFF.a; sourceTree = "<group>"; };
+		992DD75B1BCB095700369C09 /* libgdcmopenjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmopenjpeg.a; sourceTree = "<group>"; };
+		992DD75C1BCB095700369C09 /* libgdcmuuid.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmuuid.a; sourceTree = "<group>"; };
 		9963031A1BCACF26009CE3E5 /* libGDCM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libGDCM.h; path = Binaries/GDCMHeaders/libGDCM.h; sourceTree = "<group>"; };
 		9966A19A1AE099A400F2D81A /* OsiriXAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriXAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9966A19E1AE09B6F00F2D81A /* OsiriXHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXHeaders.mm; sourceTree = "<group>"; };
@@ -7269,6 +7306,7 @@
 				9966A1A51AE09D5100F2D81A /* CoreMedia.framework in Frameworks */,
 				9966A1A31AE09D4800F2D81A /* AVFoundation.framework in Frameworks */,
 				9966A1A11AE09D3F00F2D81A /* AddressBook.framework in Frameworks */,
+				992DD76D1BCB095700369C09 /* libgdcmjpeg16.a in Frameworks */,
 				436218411A2F375C006FA27A /* libvtkIOXMLParser-6.2.a in Frameworks */,
 				436217611A2F3730006FA27A /* libITKIOSpatialObjects-4.7.a in Frameworks */,
 				4362180D1A2F375C006FA27A /* libvtkFiltersImaging-6.2.a in Frameworks */,
@@ -7298,6 +7336,7 @@
 				AB28B48C05B7998B00A9906C /* Foundation.framework in Frameworks */,
 				436217781A2F3730006FA27A /* libITKSpatialObjects-4.7.a in Frameworks */,
 				4362176A1A2F3730006FA27A /* libITKKLMRegionGrowing-4.7.a in Frameworks */,
+				992DD76F1BCB095700369C09 /* libgdcmMEXD.a in Frameworks */,
 				AB28B93305B79D5B00A9906C /* Cocoa.framework in Frameworks */,
 				4362182A1A2F375C006FA27A /* libvtkInteractionImage-6.2.a in Frameworks */,
 				436218061A2F375C006FA27A /* libvtkFiltersExtraction-6.2.a in Frameworks */,
@@ -7321,9 +7360,11 @@
 				436217581A2F3730006FA27A /* libITKIOJPEG-4.7.a in Frameworks */,
 				AB28B93705B79D5E00A9906C /* Accelerate.framework in Frameworks */,
 				436218441A2F375C006FA27A /* libvtkmetaio-6.2.a in Frameworks */,
+				992DD7611BCB095700369C09 /* libgdcmDICT.a in Frameworks */,
 				436218281A2F375C006FA27A /* libvtkInfovisCore-6.2.a in Frameworks */,
 				4362183B1A2F375C006FA27A /* libvtkIOParallel-6.2.a in Frameworks */,
 				436217801A2F3730006FA27A /* libITKVideoIO-4.7.a in Frameworks */,
+				992DD75F1BCB095700369C09 /* libgdcmCommon.a in Frameworks */,
 				CEF0E6DC06AEF5CB001FF9E5 /* Carbon.framework in Frameworks */,
 				436218561A2F375D006FA27A /* libvtkRenderingOpenGL-6.2.a in Frameworks */,
 				4362176D1A2F3730006FA27A /* libITKMetaIO-4.7.a in Frameworks */,
@@ -7353,6 +7394,7 @@
 				436217F51A2F375C006FA27A /* libvtkalglib-6.2.a in Frameworks */,
 				436218521A2F375D006FA27A /* libvtkRenderingImage-6.2.a in Frameworks */,
 				4362173E1A2F3730006FA27A /* libITKCommon-4.7.a in Frameworks */,
+				992DD7691BCB095700369C09 /* libgdcmjpeg8.a in Frameworks */,
 				4362181D1A2F375C006FA27A /* libvtkhdf5.a in Frameworks */,
 				4362184E1A2F375C006FA27A /* libvtkRenderingCore-6.2.a in Frameworks */,
 				436217691A2F3730006FA27A /* libITKIOXML-4.7.a in Frameworks */,
@@ -7366,6 +7408,7 @@
 				436218151A2F375C006FA27A /* libvtkFiltersStatistics-6.2.a in Frameworks */,
 				BFBF3AA309B681F500545F5E /* libxml2.dylib in Frameworks */,
 				436217821A2F3730006FA27A /* libitkvnl-4.7.a in Frameworks */,
+				992DD7751BCB095700369C09 /* libgdcmuuid.a in Frameworks */,
 				4362175B1A2F3730006FA27A /* libITKIOMeta-4.7.a in Frameworks */,
 				436218021A2F375C006FA27A /* libvtkexoIIc-6.2.a in Frameworks */,
 				436218491A2F375C006FA27A /* libvtkpng-6.2.a in Frameworks */,
@@ -7386,12 +7429,14 @@
 				ABE881450FC1444D009F5C80 /* ILCrashReporter.framework in Frameworks */,
 				436217451A2F3730006FA27A /* libitkgdcmDSED-4.7.a in Frameworks */,
 				436217F71A2F375C006FA27A /* libvtkCommonColor-6.2.a in Frameworks */,
+				992DD75D1BCB095700369C09 /* libgdcmcharls.a in Frameworks */,
 				CE790A1B105D4DE200CE6AAF /* Security.framework in Frameworks */,
 				CE790A1C105D4DE200CE6AAF /* WebKit.framework in Frameworks */,
 				436218311A2F375C006FA27A /* libvtkIOExport-6.2.a in Frameworks */,
 				436218211A2F375C006FA27A /* libvtkImagingGeneral-6.2.a in Frameworks */,
 				436217FC1A2F375C006FA27A /* libvtkCommonMath-6.2.a in Frameworks */,
 				436218371A2F375C006FA27A /* libvtkIOLSDyna-6.2.a in Frameworks */,
+				992DD7631BCB095700369C09 /* libgdcmDSED.a in Frameworks */,
 				8406956310B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */,
 				436218141A2F375C006FA27A /* libvtkFiltersSources-6.2.a in Frameworks */,
 				436218111A2F375C006FA27A /* libvtkFiltersProgrammable-6.2.a in Frameworks */,
@@ -7424,6 +7469,7 @@
 				4362174D1A2F3730006FA27A /* libitkhdf5_cpp-4.7.a in Frameworks */,
 				436217FD1A2F375C006FA27A /* libvtkCommonMisc-6.2.a in Frameworks */,
 				436217661A2F3730006FA27A /* libITKIOTransformInsightLegacy-4.7.a in Frameworks */,
+				992DD7711BCB095700369C09 /* libgdcmMSFF.a in Frameworks */,
 				436218401A2F375C006FA27A /* libvtkIOXML-6.2.a in Frameworks */,
 				436217561A2F3730006FA27A /* libITKIOImageBase-4.7.a in Frameworks */,
 				436218471A2F375C006FA27A /* libvtkoggtheora-6.2.a in Frameworks */,
@@ -7451,22 +7497,25 @@
 				4362184D1A2F375C006FA27A /* libvtkRenderingContextOpenGL-6.2.a in Frameworks */,
 				4362184F1A2F375C006FA27A /* libvtkRenderingFreeType-6.2.a in Frameworks */,
 				436217811A2F3730006FA27A /* libitkvnl_algo-4.7.a in Frameworks */,
-				996303181BCACD70009CE3E5 /* libGDCM.a in Frameworks */,
 				436218321A2F375C006FA27A /* libvtkIOGeometry-6.2.a in Frameworks */,
 				4362182D1A2F375C006FA27A /* libvtkIOAMR-6.2.a in Frameworks */,
+				992DD7651BCB095700369C09 /* libgdcmexpat.a in Frameworks */,
 				436218381A2F375C006FA27A /* libvtkIOMINC-6.2.a in Frameworks */,
 				436218201A2F375C006FA27A /* libvtkImagingFourier-6.2.a in Frameworks */,
 				436217881A2F3731006FA27A /* libITKznz-4.7.a in Frameworks */,
 				4362185A1A2F375D006FA27A /* libvtksys-6.2.a in Frameworks */,
 				436218271A2F375C006FA27A /* libvtkImagingStencil-6.2.a in Frameworks */,
 				436218101A2F375C006FA27A /* libvtkFiltersParallelImaging-6.2.a in Frameworks */,
+				992DD7671BCB095700369C09 /* libgdcmIOD.a in Frameworks */,
 				4362177A1A2F3730006FA27A /* libitksys-4.7.a in Frameworks */,
 				4362176C1A2F3730006FA27A /* libITKMesh-4.7.a in Frameworks */,
+				992DD76B1BCB095700369C09 /* libgdcmjpeg12.a in Frameworks */,
 				4362184B1A2F375C006FA27A /* libvtkRenderingAnnotation-6.2.a in Frameworks */,
 				4362181F1A2F375C006FA27A /* libvtkImagingCore-6.2.a in Frameworks */,
 				4362174E1A2F3730006FA27A /* libitkhdf5-4.7.a in Frameworks */,
 				436218511A2F375D006FA27A /* libvtkRenderingGL2PS-6.2.a in Frameworks */,
 				436218161A2F375C006FA27A /* libvtkFiltersTexture-6.2.a in Frameworks */,
+				992DD7731BCB095700369C09 /* libgdcmopenjpeg.a in Frameworks */,
 				436218591A2F375D006FA27A /* libvtksqlite-6.2.a in Frameworks */,
 				436218001A2F375C006FA27A /* libvtkDICOMParser-6.2.a in Frameworks */,
 				436218221A2F375C006FA27A /* libvtkImagingHybrid-6.2.a in Frameworks */,
@@ -7489,18 +7538,31 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				992DD7701BCB095700369C09 /* libgdcmMEXD.a in Frameworks */,
 				9966A1AE1AE09DE200F2D81A /* Quartz.framework in Frameworks */,
 				9966A1AD1AE09DD000F2D81A /* CoreMedia.framework in Frameworks */,
+				992DD76A1BCB095700369C09 /* libgdcmjpeg8.a in Frameworks */,
+				992DD7761BCB095700369C09 /* libgdcmuuid.a in Frameworks */,
+				992DD7641BCB095700369C09 /* libgdcmDSED.a in Frameworks */,
 				9966A1AC1AE09DB300F2D81A /* AVFoundation.framework in Frameworks */,
 				434B47AF1A1A1AD4008CF8CF /* libopenjp2.a in Frameworks */,
 				AB724FEC0ADE6ECB00A212A0 /* Foundation.framework in Frameworks */,
+				992DD7601BCB095700369C09 /* libgdcmCommon.a in Frameworks */,
+				992DD7681BCB095700369C09 /* libgdcmIOD.a in Frameworks */,
+				992DD76C1BCB095700369C09 /* libgdcmjpeg12.a in Frameworks */,
 				AB724FEF0ADE6ECB00A212A0 /* Cocoa.framework in Frameworks */,
+				992DD7661BCB095700369C09 /* libgdcmexpat.a in Frameworks */,
 				AB724FF10ADE6ECB00A212A0 /* IOKit.framework in Frameworks */,
 				AB724FF20ADE6ECB00A212A0 /* libz.dylib in Frameworks */,
+				992DD7721BCB095700369C09 /* libgdcmMSFF.a in Frameworks */,
+				992DD76E1BCB095700369C09 /* libgdcmjpeg16.a in Frameworks */,
+				992DD75E1BCB095700369C09 /* libgdcmcharls.a in Frameworks */,
 				CE8D062C0FD8733C00165DDE /* Accelerate.framework in Frameworks */,
 				84DE8CD311AC227B0029396D /* WebKit.framework in Frameworks */,
 				59FB64391230EE4100EBA136 /* libfreetypeOsiriX.a in Frameworks */,
 				59FB643A1230EE4100EBA136 /* libgifOsiriX.a in Frameworks */,
+				992DD7741BCB095700369C09 /* libgdcmopenjpeg.a in Frameworks */,
+				992DD7621BCB095700369C09 /* libgdcmDICT.a in Frameworks */,
 				59FB643B1230EE4100EBA136 /* libmingOsiriX.a in Frameworks */,
 				59FB643C1230EE4100EBA136 /* libpng12OsiriX.a in Frameworks */,
 				AB451871149F4B2C006674BF /* libCharLS.a in Frameworks */,
@@ -8389,7 +8451,19 @@
 		996303161BCACD70009CE3E5 /* GDCMLibs */ = {
 			isa = PBXGroup;
 			children = (
-				996303171BCACD70009CE3E5 /* libGDCM.a */,
+				992DD7501BCB095700369C09 /* libgdcmcharls.a */,
+				992DD7511BCB095700369C09 /* libgdcmCommon.a */,
+				992DD7521BCB095700369C09 /* libgdcmDICT.a */,
+				992DD7531BCB095700369C09 /* libgdcmDSED.a */,
+				992DD7541BCB095700369C09 /* libgdcmexpat.a */,
+				992DD7551BCB095700369C09 /* libgdcmIOD.a */,
+				992DD7561BCB095700369C09 /* libgdcmjpeg8.a */,
+				992DD7571BCB095700369C09 /* libgdcmjpeg12.a */,
+				992DD7581BCB095700369C09 /* libgdcmjpeg16.a */,
+				992DD7591BCB095700369C09 /* libgdcmMEXD.a */,
+				992DD75A1BCB095700369C09 /* libgdcmMSFF.a */,
+				992DD75B1BCB095700369C09 /* libgdcmopenjpeg.a */,
+				992DD75C1BCB095700369C09 /* libgdcmuuid.a */,
 			);
 			name = GDCMLibs;
 			path = Binaries/GDCMLibs;
@@ -14649,7 +14723,6 @@
 				7EE416FC08B2615B00D4C9CC /* QueryLogController.m in Sources */,
 				BF1745D508E0C7E200822756 /* LogWindowController.m in Sources */,
 				BFAFEE9508F2220B002AD789 /* PluginFileFormatDecoder.m in Sources */,
-				CEE73FCA08F44724002A395F /* FVTiff.m in Sources */,
 				CEE73FD308F44749002A395F /* stringNumericCompare.m in Sources */,
 				CE97630008FABDA600E6F8B0 /* ROIManagerController.m in Sources */,
 				CE97630308FABDA600E6F8B0 /* PaletteController.m in Sources */,
@@ -14862,6 +14935,7 @@
 				EC9BD81D11EDF349007421B2 /* FlyAssistant.mm in Sources */,
 				59F5F3FA11F476030047A90D /* N2ImageButtonCell.mm in Sources */,
 				59F5F4ED11F485CC0047A90D /* BrowserController+Activity.mm in Sources */,
+				9939F7A91BCB0BF8009FEB69 /* FVTiff.m in Sources */,
 				592CFF091212F84F00176E39 /* N2Connection.mm in Sources */,
 				592CFF0B1212F84F00176E39 /* N2ConnectionListener.mm in Sources */,
 				592CFF0D1212F84F00176E39 /* N2WebServiceClient.mm in Sources */,
@@ -16813,6 +16887,7 @@
 					"\"$(SRCROOT)/Binaries/CharLS\"",
 					"\"$(SRCROOT)/Binaries/VTKLibs\"",
 					"$(PROJECT_DIR)/Binaries/openjpeg",
+					"$(PROJECT_DIR)/Binaries/GDCMLibs",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -17501,6 +17576,7 @@
 					"\"$(SRCROOT)/Binaries/CharLS\"",
 					"\"$(SRCROOT)/Binaries/VTKLibs\"",
 					"$(PROJECT_DIR)/Binaries/openjpeg",
+					"$(PROJECT_DIR)/Binaries/GDCMLibs",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",

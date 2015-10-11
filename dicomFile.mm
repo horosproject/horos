@@ -79,6 +79,8 @@
 #endif
 #endif
 
+#include "libGDCM.h"
+
 extern NSString * convertDICOM( NSString *inputfile);
 extern NSRecursiveLock *PapyrusLock;
 
@@ -209,29 +211,31 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 -(long) getWidth {return width;}
 -(long) getHeight {return height;}
 
-+ (NSString*) NSreplaceBadCharacter: (NSString*) str
++ (NSString*) NSreplaceBadCharacter:(NSString*) str
 {
     if( str == nil) return nil;
     
-    NSMutableString	*mutable = [NSMutableString stringWithString: str];
+    NSMutableString	*mutableStr = [NSMutableString stringWithString: str];
     
-    [mutable replaceOccurrencesOfString:@"," withString:@" " options:0 range:mutable.range];
-    [mutable replaceOccurrencesOfString:@"^" withString:@" " options:0 range:mutable.range];
-    [mutable replaceOccurrencesOfString:@"/" withString:@"-" options:0 range:mutable.range];
-    [mutable replaceOccurrencesOfString:@"\r" withString:@"" options:0 range:mutable.range];
-    [mutable replaceOccurrencesOfString:@"\n" withString:@"" options:0 range:mutable.range];
-    [mutable replaceOccurrencesOfString:@"\"" withString:@"'" options:0 range:mutable.range];
-    [mutable replaceOccurrencesOfString:@"   " withString:@" " options:0 range:mutable.range]; //tripple space -> single space
-    [mutable replaceOccurrencesOfString:@"  " withString:@" " options:0 range:mutable.range]; //double space -> single space
+    [mutableStr replaceOccurrencesOfString:@","   withString:@" " options:0 range:mutableStr.range];
+    [mutableStr replaceOccurrencesOfString:@"^"   withString:@" " options:0 range:mutableStr.range];
+    [mutableStr replaceOccurrencesOfString:@"/"   withString:@"-" options:0 range:mutableStr.range];
+    [mutableStr replaceOccurrencesOfString:@"\r"  withString:@""  options:0 range:mutableStr.range];
+    [mutableStr replaceOccurrencesOfString:@"\n"  withString:@""  options:0 range:mutableStr.range];
+    [mutableStr replaceOccurrencesOfString:@"\""  withString:@"'" options:0 range:mutableStr.range];
+    [mutableStr replaceOccurrencesOfString:@"   " withString:@" " options:0 range:mutableStr.range]; //tripple space -> single space
+    [mutableStr replaceOccurrencesOfString:@"  "  withString:@" " options:0 range:mutableStr.range]; //double space -> single space
     
-    int i = [mutable length];
+    unsigned long i = [mutableStr length];
     while( --i > 0)
     {
-        if( [mutable characterAtIndex: i]==' ') [mutable deleteCharactersInRange: NSMakeRange( i, 1)];
-        else i = 0;
+        if( [mutableStr characterAtIndex:i]==' ')
+            [mutableStr deleteCharactersInRange:NSMakeRange(i, 1)];
+        else
+            i = 1;
     }
     
-    return mutable;
+    return mutableStr;
 }
 
 + (NSString *) stringWithBytes:(char *) str encodings: (NSStringEncoding*) encoding
@@ -704,26 +708,83 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 }
 #endif
 
-+ (BOOL) isDICOMFile:(NSString *) file compressed:(BOOL*) compressed image:(BOOL*) image
+
++ (BOOL) isDICOMFile:(NSString *) filePath compressed:(BOOL*) compressed image:(BOOL*) image
 {
-    if ( compressed)
+    if (compressed)
         *compressed = NO; // Assume it's not compressed
     
-    if ( image)
-        *image = YES;
+    if (image)
+        *image = NO; // Assume it has pixel data
     
-    BOOL readable = YES;  // TODO
+    //////////////////////////////////////////////////////////
     
-    @try
+    try
     {
-        if (image) {
-            // TODO: check that it has pixel data
-            // See also Decompress
-            //*image = [DCMAbstractSyntaxUID isImageStorage: SOPClassUID];
+        gdcm::Scanner theScanner;
+        
+        gdcm::Directory::FilenamesType filenames;
+        filenames.push_back( std::string([filePath UTF8String]) );
+        
+        theScanner.AddTag(gdcm::Tag(0x0020, 0x000e));//Series UID
+        if( !theScanner.Scan( filenames ) )
+        {
+            return NO;
         }
         
-        if (compressed) {
-            NSString *transferSyntax = [DicomFile getDicomField: @"TransferSyntaxUID" forFile: file];
+        if( !theScanner.IsKey( filenames[0].c_str() ) )
+        {
+            return NO;
+        }
+    }
+    catch (...)
+    {
+        return NO;
+    }
+    
+    //////////////////////////////////////////////////////////
+    
+    if (image)
+    {
+        @try
+        {
+            try
+            {
+                gdcm::Scanner theScanner;
+                
+                gdcm::Directory::FilenamesType filenames;
+                filenames.push_back( std::string([filePath UTF8String]) );
+                
+                theScanner.AddTag(gdcm::Tag(0x7FE0, 0x0010));//Series UID
+                if( !theScanner.Scan( filenames ) )
+                {
+                    return NO;
+                }
+                
+                if( !theScanner.IsKey( filenames[0].c_str() ) )
+                {
+                    return NO;
+                }
+            }
+            catch (...)
+            {
+                *image = NO;
+            }
+        }
+        @catch (NSException * e)
+        {
+            N2LogExceptionWithStackTrace(e);
+            *image = NO;
+        }
+    }
+    
+    //////////////////////////////////////////////////////////
+    
+    if (compressed)
+    {
+        @try
+        {
+            NSString *transferSyntax = [DicomFile getDicomField: @"TransferSyntaxUID" forFile: filePath];
             if ([transferSyntax isEqualToString: DCM_JPEGLossless] ||
                 [transferSyntax isEqualToString: DCM_JPEGBaseline] ||
                 [transferSyntax isEqualToString: DCM_JPEG2000Lossy] ||
@@ -738,15 +799,16 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                 *compressed = NO;
             }
         }
-    }
-    @catch (NSException * e)
-    {
-        N2LogExceptionWithStackTrace(e);
-        //readable = NO;
+        @catch (NSException * e)
+        {
+            N2LogExceptionWithStackTrace(e);
+            *compressed = NO;
+        }
     }
     
-    return readable;
+    //////////////////////////////////////////////////////////
 
+    return YES;
 }
 
 + (BOOL) isDICOMFile:(NSString *) file compressed:(BOOL*) compressed
@@ -1402,7 +1464,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 -(short) getLSM
 {
     NSData		*file;
-    const char		*ptr;
+    const char	*ptr;
     long		i;
     
     NSString	*extension = [[filePath pathExtension] lowercaseString];
@@ -1414,7 +1476,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
         {
             fileType = [@"LSM" retain];
             
-            ptr = [file bytes];
+            ptr = (const char*)[file bytes];
             
             if( ptr[ 2] == 42)
                 NSLog(@"LSM File");
