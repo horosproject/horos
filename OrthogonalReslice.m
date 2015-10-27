@@ -497,6 +497,7 @@
 				curPix = [[DCMPix alloc] initWithData: nil :bits :newX :newY :1 :1 :0 :0 :0 :NO];
 				[curPix copySUVfrom: firstPix];
 				curPix.frameofReferenceUID = firstPix.frameofReferenceUID;
+                curPix.modalityString = firstPix.modalityString;
 				[newPixListX addObject: curPix];
 				[curPix release];
 			}
@@ -509,6 +510,7 @@
 				curPix = [[DCMPix alloc] initWithData: nil :bits :newX :newY :1 :1 :0 :0 :0 :NO];
 				[curPix copySUVfrom: firstPix];
 				curPix.frameofReferenceUID = firstPix.frameofReferenceUID;
+                curPix.modalityString = firstPix.modalityString;
 				[newPixListY addObject: curPix];
 				[curPix release];
 			}

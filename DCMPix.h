@@ -321,7 +321,7 @@ extern "C"
 @property(readonly) float philipsFactor;
 @property float patientsWeight, halflife, radionuclideTotalDose, radionuclideTotalDoseCorrected;
 @property(retain) NSCalendarDate *acquisitionTime;
-@property(retain) NSString *acquisitionDate, *rescaleType;
+@property(copy) NSString *acquisitionDate, *rescaleType;
 @property(retain) NSCalendarDate *radiopharmaceuticalStartTime;
 @property BOOL SUVConverted, needToCompute8bitRepresentation;
 

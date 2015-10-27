@@ -373,8 +373,8 @@ unsigned int dcmGuessModalityBytes(const char *sopClassUID);
 
 #define UID_EnhancedXAImageStorage                                 "1.2.840.10008.5.1.4.1.1.12.1.1"
 #define UID_EnhancedXRFImageStorage                                "1.2.840.10008.5.1.4.1.1.12.2.1"
-#define XRay3DAngiographicImageStorage                             "1.2.840.10008.5.1.4.1.1.13.1.1"
-#define XRay3DCraniofacialImageStorage                             "1.2.840.10008.5.1.4.1.1.13.1.2"
+#define UID_XRay3DAngiographicImageStorage                         "1.2.840.10008.5.1.4.1.1.13.1.1"
+#define UID_XRay3DCraniofacialImageStorage                         "1.2.840.10008.5.1.4.1.1.13.1.2"
 #define UID_BreastTomosynthesisImageStorage                        "1.2.840.10008.5.1.4.1.1.13.1.3"
 
 #define UID_ColorSoftcopyPresentationStateStorage                  "1.2.840.10008.5.1.4.1.1.11.2"

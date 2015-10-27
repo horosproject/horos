@@ -123,10 +123,17 @@ typedef struct // this is from the FV docs, but I think the docs are not quite r
 
 }	FV_MM_HEAD;										// Total Size (bytes):					1456
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int FV_Read_MM_HEAD(const char* data, FV_MM_HEAD* head);
 int FV_Read_DIM_INFO(const char* data, FV_MM_DIM_INFO* info);
 NSXMLDocument* XML_from_FVTiff(NSString* srcFile);
-
 void FV_EMPTY_TIFFWarning(const char *module, const char *fmt, ...);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
