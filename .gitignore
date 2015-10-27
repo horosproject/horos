@@ -45,5 +45,3 @@ DerivedData/
 
 *.xcworkspacedata
 
-Binaries/GDCMLibs/libGDCM.a
-Binaries/GDCMHeaders/libGDCM.h
