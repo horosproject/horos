@@ -138,6 +138,13 @@
     
     if (string.length) {
         NSArray *timeComponents = [string componentsSeparatedByString:@"."];
+        if (timeComponents.count == 1) {
+            NSRange r = [string rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"+-"]];
+            if (r.location != NSNotFound) {
+                timeComponents = @[ [string substringToIndex:r.location], [string substringFromIndex:r.location] ];
+            }
+        }
+        
         NSString *format = nil;
         int length = [string length];
         
