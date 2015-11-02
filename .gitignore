@@ -16,6 +16,8 @@ Binaries/DB_Previous_Models/
 Binaries/DCMTK/
 Binaries/dciodvfy
 Binaries/Growl.framework/
+Binaries/GDCMHeaders/
+Binaries/GDCMLibs/
 Binaries/ILCrashReporter.framework/
 Binaries/ITKHeaders/
 Binaries/ITKLibs/
@@ -43,5 +45,3 @@ DerivedData/
 
 *.xcworkspacedata
 
-Binaries/GDCMLibs/libGDCM.a
-Binaries/GDCMHeaders/libGDCM.h
