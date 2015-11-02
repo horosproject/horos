@@ -138,13 +138,6 @@
     
     if (string.length) {
         NSArray *timeComponents = [string componentsSeparatedByString:@"."];
-        if (timeComponents.count == 1) {
-            NSRange r = [string rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"+-"]];
-            if (r.location != NSNotFound) {
-                timeComponents = @[ [string substringToIndex:r.location], [string substringFromIndex:r.location] ];
-            }
-        }
-        
         NSString *format = nil;
         int length = [string length];
         
@@ -152,6 +145,8 @@
             NSLog( @"****** DICOM DateTime invalid format: %@", string);
         
         switch ([(NSString *)[timeComponents objectAtIndex:0] length]) {
+            case 19:format = @"%Y%m%d%H%M%S%z";
+                break;
             case 14:format = @"%Y%m%d%H%M%S";
                 break;
             case 12:format = @"%Y%m%d%H%M";
