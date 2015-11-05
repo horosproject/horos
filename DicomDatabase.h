@@ -168,7 +168,3 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 -(void)alertToApplyRoutingRules:(NSArray*)routingRules toImages:(NSArray*)images;
 
 @end
-
-#import "DicomDatabase+Routing.h"
-#import "DicomDatabase+Clean.h"
-

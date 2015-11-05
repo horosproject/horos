@@ -15,7 +15,7 @@
 #import "DicomDatabase.h"
 
 @interface DicomDatabase()
-{
+{ // warning: the compiler only supports category class variables in 64-bit mode, so 32-bits plugins won't be able to use this header!
     dispatch_queue_t scheduledRoutingQueue;
 }
 @end
