@@ -257,6 +257,9 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 }
 
 -(void)invalidate {
+    if (![NSThread isMainThread])
+        return [self performSelectorOnMainThread:@selector(invalidate) withObject:nil waitUntilDone:NO];
+    
 	DLog(@"[ThreadModalForWindowController invalidate]");
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:_thread];
     
