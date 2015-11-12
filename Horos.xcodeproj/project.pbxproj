@@ -845,6 +845,10 @@
 		9966A2E61AE0B9A200F2D81A /* OsiriXDCMFrameworkHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9966A2E51AE0B9A200F2D81A /* OsiriXDCMFrameworkHeaders.mm */; };
 		9966A2E71AE0C55600F2D81A /* HorosDCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */; };
 		9966A2E81AE0C56900F2D81A /* HorosDCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */; };
+		99676F211BF43C22007C7531 /* format_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 99676F1D1BF43C22007C7531 /* format_defs.h */; };
+		99676F221BF43C22007C7531 /* openjpeg.h in Headers */ = {isa = PBXBuildFile; fileRef = 99676F1E1BF43C22007C7531 /* openjpeg.h */; };
+		99676F231BF43C22007C7531 /* opj_config.h in Headers */ = {isa = PBXBuildFile; fileRef = 99676F1F1BF43C22007C7531 /* opj_config.h */; };
+		99676F241BF43C22007C7531 /* opj_stdint.h in Headers */ = {isa = PBXBuildFile; fileRef = 99676F201BF43C22007C7531 /* opj_stdint.h */; };
 		998309111BB62D4100CAB197 /* JRSwizzle.h in Headers */ = {isa = PBXBuildFile; fileRef = 9983090F1BB62D4100CAB197 /* JRSwizzle.h */; };
 		998309121BB62D4100CAB197 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 998309101BB62D4100CAB197 /* JRSwizzle.m */; };
 		998B52E21AE0890300D317CF /* Horos.sdef in Resources */ = {isa = PBXBuildFile; fileRef = 998B52E11AE0890300D317CF /* Horos.sdef */; };
@@ -5370,6 +5374,10 @@
 		9966A1B61AE0B7A000F2D81A /* DCMAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DCMAPI.framework; path = build/Development/DCMAPI.framework; sourceTree = "<group>"; };
 		9966A2E11AE0B7E000F2D81A /* OsiriX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9966A2E51AE0B9A200F2D81A /* OsiriXDCMFrameworkHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXDCMFrameworkHeaders.mm; sourceTree = "<group>"; };
+		99676F1D1BF43C22007C7531 /* format_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = format_defs.h; path = Binaries/openjpeg/format_defs.h; sourceTree = "<group>"; };
+		99676F1E1BF43C22007C7531 /* openjpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = openjpeg.h; path = Binaries/openjpeg/openjpeg.h; sourceTree = "<group>"; };
+		99676F1F1BF43C22007C7531 /* opj_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = opj_config.h; path = Binaries/openjpeg/opj_config.h; sourceTree = "<group>"; };
+		99676F201BF43C22007C7531 /* opj_stdint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = opj_stdint.h; path = Binaries/openjpeg/opj_stdint.h; sourceTree = "<group>"; };
 		9983090F1BB62D4100CAB197 /* JRSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRSwizzle.h; sourceTree = "<group>"; };
 		998309101BB62D4100CAB197 /* JRSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRSwizzle.m; sourceTree = "<group>"; };
 		998B52E11AE0890300D317CF /* Horos.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Horos.sdef; sourceTree = "<group>"; };
@@ -7903,6 +7911,10 @@
 		434B461A1A19F4E4008CF8CF /* OpenJPEG */ = {
 			isa = PBXGroup;
 			children = (
+				99676F1D1BF43C22007C7531 /* format_defs.h */,
+				99676F1E1BF43C22007C7531 /* openjpeg.h */,
+				99676F1F1BF43C22007C7531 /* opj_config.h */,
+				99676F201BF43C22007C7531 /* opj_stdint.h */,
 				434B47AB1A1A1AD4008CF8CF /* libopenjp2.a */,
 				434B461B1A19F631008CF8CF /* OPJSupport.cpp */,
 				434B461C1A19F631008CF8CF /* OPJSupport.h */,
@@ -11340,6 +11352,7 @@
 				AB28B90405B79D3B00A9906C /* DCMView.h in Headers */,
 				AB0CA46105BE159500F52729 /* ColorTransferView.h in Headers */,
 				ABB218B905CF1E9300D8B619 /* WaitRendering.h in Headers */,
+				99676F231BF43C22007C7531 /* opj_config.h in Headers */,
 				AB7D0BB50615F94D00890872 /* ROI.h in Headers */,
 				AB1CB35C0618A37E00CD966B /* MyPoint.h in Headers */,
 				ABD1A8700619E68B00C5B670 /* ROIWindow.h in Headers */,
@@ -11375,6 +11388,7 @@
 				CE6E2CB606CAE45A00BC7907 /* PlotView.h in Headers */,
 				CE6E2CB706CAE45A00BC7907 /* PlotWindow.h in Headers */,
 				CE74456906DBA4CB0034D05E /* ITK.h in Headers */,
+				99676F211BF43C22007C7531 /* format_defs.h in Headers */,
 				CE4A922E06DBF255006DAAF7 /* ITKSegmentation3D.h in Headers */,
 				BF00C95C06F3F43900715191 /* DCMCursor.h in Headers */,
 				7ECB4B41072EF9F800C2CFC4 /* DCMCalendarScript.h in Headers */,
@@ -11591,6 +11605,7 @@
 				BFBF40B909B6828D00545F5E /* dccfprmp.h in Headers */,
 				BFBF40BB09B6828D00545F5E /* dccfrsmp.h in Headers */,
 				BFBF40BD09B6828D00545F5E /* dccftsmp.h in Headers */,
+				99676F241BF43C22007C7531 /* opj_stdint.h in Headers */,
 				BFBF40BF09B6828D00545F5E /* dccfuidh.h in Headers */,
 				BFBF40C109B6828D00545F5E /* dcmlayer.h in Headers */,
 				BFBF40C209B6828D00545F5E /* dcmsmap.h in Headers */,
@@ -11956,6 +11971,7 @@
 				59BDF112117EE6A1007F1F2C /* PreferencesWindowController.h in Headers */,
 				59BDF11E117EE72C007F1F2C /* PreferencesWindowController+DCMTK.h in Headers */,
 				59BDF127117EFA41007F1F2C /* PreferencesView.h in Headers */,
+				99676F221BF43C22007C7531 /* openjpeg.h in Headers */,
 				59C512C01189C0E40074ECBC /* SFAuthorizationView+OsiriX.h in Headers */,
 				596EB3061189D9A600880192 /* NSPreferencePane+OsiriX.h in Headers */,
 				596EB3F6118ABBB000880192 /* NSWindow+N2.h in Headers */,

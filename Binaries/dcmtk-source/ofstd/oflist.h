@@ -223,7 +223,7 @@ public:
      */
     T& operator*() const
     {
-        assert(!node->dummy);
+        //assert(!node->dummy);
         return (OFstatic_cast(OFListLink<T> *,node))->info;
     }
 

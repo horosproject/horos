@@ -5,15 +5,19 @@
 //  Created by Aaron Boxer on 21 Jan 2014
 //  Updated by Alex Bettarini on 17 Feb 2015
 
-#import <assert.h>
-#import <stdlib.h>
 #include "OPJSupport.h"
-#include "../Binaries/openjpeg/openjpeg.h"
+
+#include "openjpeg.h"
 #include "format_defs.h"
+
+#include <assert.h>
+#include <stdlib.h>
+#include <iostream>
 
 //#define WITH_OPJ_BUFFER_STREAM
 #define WITH_OPJ_FILE_STREAM
 //#define OPJ_VERBOSE
+
 
 typedef struct decode_info
 {
@@ -155,7 +159,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     bufferInfo.len = (OPJ_SIZE_T) jp2DataSize;
     // Create the stream
     decodeInfo.stream = opj_stream_create_buffer_stream(&bufferInfo , OPJ_STREAM_READ);
-
+    
     
     if (!decodeInfo.stream) {
         fprintf(stderr,"%s:%d:\n\tNO decodeInfo.stream\n",__FILE__,__LINE__);
@@ -163,7 +167,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     }
     
     /*-----------------------------------------------*/
-
+    
     switch (parameters.decod_format) {
         case J2K_CFMT:                      /* JPEG-2000 codestream */
             codec_format = OPJ_CODEC_J2K;
@@ -193,7 +197,8 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
         fails = OPJ_TRUE;
         
         decodeInfo.codec = opj_create_decompress(codec_format);
-        if (decodeInfo.codec == NULL) {
+        if (decodeInfo.codec == NULL)
+        {
             fprintf(stderr,"%s:%d:\n\tNO codec\n",__FILE__,__LINE__);
             break;
         }
@@ -205,7 +210,8 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
         opj_set_error_handler(decodeInfo.codec, error_callback, this);
         
         // Setup the decoder decoding parameters
-        if ( !opj_setup_decoder(decodeInfo.codec, &parameters)) {
+        if ( !opj_setup_decoder(decodeInfo.codec, &parameters))
+        {
             fprintf(stderr,"%s:%d:\n\topj_setup_decoder failed\n",__FILE__,__LINE__);
             break;
         }
@@ -221,7 +227,8 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
          * For OPJ_CODEC_JP2 it will call 'opj_jp2_read_header()' in jp2.c:2276
          * then call 'opj_j2k_read_header()'
          */
-        if( !opj_read_header(decodeInfo.stream, decodeInfo.codec, &(decodeInfo.image))) {
+        if( !opj_read_header(decodeInfo.stream, decodeInfo.codec, &(decodeInfo.image)))
+        {
             fprintf(stderr,"%s:%d:\n\topj_read_header failed\n",__FILE__,__LINE__);
             break;
         }
@@ -326,7 +333,8 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     if (decompressedBufferSize)
         *decompressedBufferSize = decompressSize;;
     
-    if (!inputBuffer ) {
+    if (!inputBuffer )
+    {
         inputBuffer =  malloc(decompressSize);
     }
     
@@ -535,7 +543,7 @@ void rawtoimage_fill(T *inputbuffer, int w, int h, int numcomps, opj_image_t *im
 
 
 
-static 
+static
 opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
                         int fragment_size, int image_width, int image_height, int sample_pixel,
                         int bitsallocated, int bitsstored, int sign, /*int quality,*/ int pc)
@@ -576,7 +584,9 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
     /* initialize image components */
     memset(&cmptparm[0], 0, 3 * sizeof(opj_image_cmptparm_t));
     //assert( bitsallocated == 8 );
-    for(int i = 0; i < numcomps; i++) {
+    
+    for(int i = 0; i < numcomps; i++)
+    {
         cmptparm[i].prec = bitsstored;
         cmptparm[i].bpp = bitsallocated;
         cmptparm[i].sgnd = sign;
@@ -588,7 +598,8 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
     
     /* create the image */
     image = opj_image_create(numcomps, &cmptparm[0], color_space);
-    if(!image) {
+    if (!image)
+    {
         return NULL;
     }
     
@@ -678,7 +689,7 @@ OPJSupport::compressJPEG2K(void *data,
     OPJ_BOOL forceJ2K = (parameters.cod_format == J2K_CFMT ? OPJ_FALSE:(((OPJ_TRUE /*force here*/))));
     
 #ifdef WITH_OPJ_FILE_STREAM
-    strcpy(parameters.outfile,tmpnam(NULL));
+    tmpnam(parameters.outfile);
 #endif
     
     image = rawtoimage( (char*) data,
@@ -687,9 +698,27 @@ OPJSupport::compressJPEG2K(void *data,
                        columns, rows,
                        samplesPerPixel,
                        bitsAllocated,
-                       bitsstored, sign, /*quality,*/ 0);
+                       bitsstored,
+                       sign,
+                       /*quality,*/ 0);
+    
+    if (image == NULL)
+    {
+        /* close and free the byte stream */
+        if (l_stream) opj_stream_destroy(l_stream);
+        
+        /* free remaining compression structures */
+        if (l_codec) opj_destroy_codec(l_codec);
+        
+        /* free image data */
+        if (image) opj_image_destroy(image);
+        
+        *compressedDataSize = 0;
+        return NULL;
+    }
     
     /*-----------------------------------------------*/
+    
     switch (parameters.cod_format)
     {
         case J2K_CFMT:                      /* JPEG-2000 codestream */
@@ -707,6 +736,17 @@ OPJSupport::compressJPEG2K(void *data,
         case -1:
         default:
             fprintf(stderr,"%s:%d: encode format missing\n",__FILE__,__LINE__);
+            
+            /* close and free the byte stream */
+            if (l_stream) opj_stream_destroy(l_stream);
+            
+            /* free remaining compression structures */
+            if (l_codec) opj_destroy_codec(l_codec);
+            
+            /* free image data */
+            if (image) opj_image_destroy(image);
+            
+            *compressedDataSize = 0;
             return NULL;
     }
     
@@ -715,6 +755,17 @@ OPJSupport::compressJPEG2K(void *data,
     if (!l_codec)
     {
         fprintf(stderr,"%s:%d:\n\tNO codec\n",__FILE__,__LINE__);
+        
+        /* close and free the byte stream */
+        if (l_stream) opj_stream_destroy(l_stream);
+        
+        /* free remaining compression structures */
+        if (l_codec) opj_destroy_codec(l_codec);
+        
+        /* free image data */
+        if (image) opj_image_destroy(image);
+        
+        *compressedDataSize = 0;
         return NULL;
     }
     
@@ -726,8 +777,20 @@ OPJSupport::compressJPEG2K(void *data,
     
     opj_set_error_handler(l_codec, error_callback, this);
     
-    if ( !opj_setup_encoder(l_codec, &parameters, image)) {
+    if ( !opj_setup_encoder(l_codec, &parameters, image))
+    {
         fprintf(stderr,"%s:%d:\n\topj_setup_encoder failed\n",__FILE__,__LINE__);
+        
+        /* close and free the byte stream */
+        if (l_stream) opj_stream_destroy(l_stream);
+        
+        /* free remaining compression structures */
+        if (l_codec) opj_destroy_codec(l_codec);
+        
+        /* free image data */
+        if (image) opj_image_destroy(image);
+        
+        *compressedDataSize = 0;
         return NULL;
     }
     
@@ -749,8 +812,20 @@ OPJSupport::compressJPEG2K(void *data,
 #endif
     
     
-    if (!l_stream){
+    if (!l_stream)
+    {
         fprintf(stderr,"%s:%d:\n\tstream creation failed\n",__FILE__,__LINE__);
+        
+        /* close and free the byte stream */
+        if (l_stream) opj_stream_destroy(l_stream);
+        
+        /* free remaining compression structures */
+        if (l_codec) opj_destroy_codec(l_codec);
+        
+        /* free image data */
+        if (image) opj_image_destroy(image);
+        
+        *compressedDataSize = 0;
         return NULL;
     }
     
@@ -773,19 +848,47 @@ OPJSupport::compressJPEG2K(void *data,
         if ( bSuccess && bUseTiles )
         {
             OPJ_BYTE *l_data = NULL;
-            OPJ_UINT32 l_data_size = 512*512*3;
-            l_data = (OPJ_BYTE*) malloc( l_data_size * sizeof(OPJ_BYTE));
-            memset(l_data, 0, l_data_size );
-            assert( l_data );
-            for (int i=0;i<l_nb_tiles;++i) {
-                if (! opj_write_tile(l_codec,i,l_data,l_data_size,l_stream)) {
+            OPJ_UINT32 l_data_size = 512*512*3; //FIXME
+            l_data = (OPJ_BYTE*) malloc(l_data_size * sizeof(OPJ_BYTE));
+            memset(l_data, 0, l_data_size * sizeof(OPJ_BYTE));
+            
+            //assert( l_data );
+            if (!l_data)
+            {
+                /* close and free the byte stream */
+                if (l_stream) opj_stream_destroy(l_stream);
+                
+                /* free remaining compression structures */
+                if (l_codec) opj_destroy_codec(l_codec);
+                
+                /* free image data */
+                if (image) opj_image_destroy(image);
+                
+                *compressedDataSize = 0;
+                return NULL;
+            }
+            
+            for (int i=0;i<l_nb_tiles;++i)
+            {
+                if (! opj_write_tile(l_codec,i,l_data,l_data_size,l_stream))
+                {
                     fprintf(stderr, "\nERROR -> test_tile_encoder: failed to write the tile %d!\n",i);
-                    opj_stream_destroy(l_stream);
-                    opj_destroy_codec(l_codec);
-                    opj_image_destroy(image);
+                    /* close and free the byte stream */
+                    if (l_stream) opj_stream_destroy(l_stream);
+                    
+                    /* free remaining compression structures */
+                    if (l_codec) opj_destroy_codec(l_codec);
+                    
+                    /* free image data */
+                    if (image) opj_image_destroy(image);
+                    
+                    free(l_data);
+                    
+                    *compressedDataSize = 0;
                     return NULL;
                 }
             }
+            
             free(l_data);
         }
         else
@@ -808,73 +911,77 @@ OPJSupport::compressJPEG2K(void *data,
         
     } // while
     
+    *compressedDataSize = 0;
     unsigned char *to = NULL;
     
-#ifdef WITH_OPJ_BUFFER_STREAM
-    //printf("%p\n",bufferInfo.buf);
-    //printf("%lu\n",bufferInfo.len);
-    //to=(unsigned char *) malloc(bufferInfo.len);
-    //memcpy(to,l_stream,bufferInfo.len);
-#endif
-    
-    
-#ifdef WITH_OPJ_FILE_STREAM
-    // Open the temp file and get the encoded data into 'to'
-    // and the length into 'length'
-    FILE *f = NULL;
-    if (parameters.outfile[0] != '\0')
-        f = fopen(parameters.outfile, "rb");
-    
-    long length = 0;
-    
-    if (f != NULL)
-    {
-        fseek(f, 0, SEEK_END);
-        length = ftell(f);
-        fseek(f, 0, SEEK_SET);
-        if (forceJ2K)
-        {
-            length -= 85;
-            fseek(f, 85, SEEK_SET);
-        }
-        
-        if (length % 2)
-        {
-            length++; // ensure even length
-            //fprintf(stdout,"Padded to %li\n", length);
-        }
-        
-        to = (unsigned char *) malloc(length);
-        
-        fread(to, length, 1, f);
-        
-        //printf("%s %lu\n",parameters.outfile,length);;
-        
-        fclose(f);
-    }
-
-    *compressedDataSize = length;
-    
-    if (parameters.outfile[0] != '\0')
-        remove(parameters.outfile);
-#endif
-    
     /* close and free the byte stream */
-    opj_stream_destroy(l_stream);
+    if (l_stream) opj_stream_destroy(l_stream);
     
     /* free remaining compression structures */
-    opj_destroy_codec(l_codec);
+    if (l_codec) opj_destroy_codec(l_codec);
     
     /* free image data */
-    opj_image_destroy(image);
+    if (image) opj_image_destroy(image);
     
     if (fails)
     {
-        fprintf(stderr, "failed to encode image\n");
-
 #ifdef WITH_OPJ_FILE_STREAM
-    if (parameters.outfile[0] != '\0')
+        if (parameters.outfile[0] != '\0')
             remove(parameters.outfile);
+#endif
+    }
+    else
+    {
+#ifdef WITH_OPJ_BUFFER_STREAM
+        //printf("%p\n",bufferInfo.buf);
+        //printf("%lu\n",bufferInfo.len);
+        //to=(unsigned char *) malloc(bufferInfo.len);
+        //memcpy(to,l_stream,bufferInfo.len);
+#endif
+        
+#ifdef WITH_OPJ_FILE_STREAM
+        // Open the temp file and get the encoded data into 'to'
+        // and the length into 'length'
+        FILE *f = NULL;
+        if (parameters.outfile[0] != '\0')
+        {
+            f = fopen(parameters.outfile, "rb");
+        }
+        
+        long length = 0;
+        
+        if (f != NULL)
+        {
+            fseek(f, 0, SEEK_END);
+            length = ftell(f);
+            fseek(f, 0, SEEK_SET);
+            if (forceJ2K)
+            {
+                length -= 85;
+                fseek(f, 85, SEEK_SET);
+            }
+            
+            if (length % 2)
+            {
+                length++; // ensure even length
+                //fprintf(stdout,"Padded to %li\n", length);
+            }
+            
+            to = (unsigned char *) malloc(length);
+            
+            fread(to, length, 1, f);
+            
+            //printf("%s %lu\n",parameters.outfile,length);;
+            
+            fclose(f);
+        }
+        
+        *compressedDataSize = length;
+        
+        if (parameters.outfile[0] != '\0')
+        {
+            remove(parameters.outfile);
+        }
 #endif
     }
     

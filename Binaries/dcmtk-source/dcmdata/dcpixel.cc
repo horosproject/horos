@@ -1023,10 +1023,20 @@ OFCondition DcmPixelData::writeSignatureFormat(
 
 OFCondition DcmPixelData::loadAllDataIntoMemory(void)
 {
+    if (*current == NULL)
+    {
+        return EC_InvalidVR;
+    }
+    
     if (current == repListEnd)
         return DcmElement::loadAllDataIntoMemory();
     else
+    {
+        if ((*current)->pixSeq == NULL)
+            return EC_InvalidVR;
+        
         return (*current)->pixSeq->loadAllDataIntoMemory();
+    }
 }
 
 void DcmPixelData::setNonEncapsulationFlag(OFBool flag)
