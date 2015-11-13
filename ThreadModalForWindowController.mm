@@ -258,33 +258,37 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 
 -(void)invalidate {
     if (![NSThread isMainThread])
-        return [self performSelectorOnMainThread:@selector(invalidate) withObject:nil waitUntilDone:NO];
-    
-	DLog(@"[ThreadModalForWindowController invalidate]");
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:_thread];
-    
-    [self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
-    [self.progressIndicator setIndeterminate: self.thread.progress < 0];
-    if (self.thread.progress < 0) [self.progressIndicator startAnimation:self];
-    [self.progressIndicator displayIfNeeded];
-    lastGUIUpdate = [NSDate timeIntervalSinceReferenceDate];
-    
-    @synchronized( self.thread)
     {
-        [self.thread.threadDictionary removeObjectForKey:NSThreadModalForWindowControllerKey];
+        return [self performSelectorOnMainThread:@selector(invalidate) withObject:nil waitUntilDone:NO];
     }
-    
-    _isValid = NO;
-    
-	if ([NSThread isMainThread]) 
-		[NSApp endSheet:self.window];
-	else [NSApp performSelectorOnMainThread:@selector(endSheet:) withObject:self.window waitUntilDone:NO];
-//    if (![self.window isSheet]) {
-//        if ([NSThread isMainThread]) 
-//            [self.window orderOut:self];
-//        else [self.window performSelectorOnMainThread:@selector(orderOut:) withObject:self waitUntilDone:NO];
-//    }
-    
+    else
+    {
+        
+        DLog(@"[ThreadModalForWindowController invalidate]");
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:_thread];
+        
+        [self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
+        [self.progressIndicator setIndeterminate: self.thread.progress < 0];
+        if (self.thread.progress < 0) [self.progressIndicator startAnimation:self];
+        [self.progressIndicator displayIfNeeded];
+        lastGUIUpdate = [NSDate timeIntervalSinceReferenceDate];
+        
+        @synchronized( self.thread)
+        {
+            [self.thread.threadDictionary removeObjectForKey:NSThreadModalForWindowControllerKey];
+        }
+        
+        _isValid = NO;
+        
+        if ([NSThread isMainThread])
+            [NSApp endSheet:self.window];
+        else [NSApp performSelectorOnMainThread:@selector(endSheet:) withObject:self.window waitUntilDone:NO];
+        //    if (![self.window isSheet]) {
+        //        if ([NSThread isMainThread])
+        //            [self.window orderOut:self];
+        //        else [self.window performSelectorOnMainThread:@selector(orderOut:) withObject:self waitUntilDone:NO];
+        //    }
+    }
 }
 
 -(void)threadWillExitNotification:(NSNotification*)notification {
