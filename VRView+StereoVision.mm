@@ -98,7 +98,7 @@ extern "C"
 //#define BONEVALUE 250
 #define BONEOPACITY 1.1
 
-extern int dontRenderVolumeRenderingOsiriX;	// See OsiriXFixedPointVolumeRayCastMapper.cxx
+extern int dontRenderVolumeRenderingOsiriX;	// See vtkHorosFixedPointVolumeRayCastMapper.cxx
 
 static NSRecursiveLock *drawLock = nil;
 static unsigned short *linearOpacity = nil;
@@ -2081,7 +2081,7 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 
 - (float*) imageInFullDepthWidth: (long*) w height:(long*) h isRGB:(BOOL*) rgb blendingView:(BOOL) blendingView
 {
-    OsiriXFixedPointVolumeRayCastMapper *mapper = nil;
+    vtkHorosFixedPointVolumeRayCastMapper *mapper = nil;
     DCMPix *firstObj = nil;
     
     if( blendingView)

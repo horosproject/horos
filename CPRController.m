@@ -47,12 +47,8 @@
 
 static NSString *MPRPlaneObservationContext = @"MPRPlaneObservationContext";
 
-#ifdef OSIRIX_VIEWER
-void setvtkMeanIPMode( int m){}
-#else
-extern void setvtkMeanIPMode( int m);
-#endif
 
+extern void setvtkMeanIPMode( int m);
 extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float *u, float *iP);
 static float deg2rad = M_PI / 180.0; 
 
@@ -2337,8 +2333,8 @@ static float deg2rad = M_PI / 180.0;
 		[mprView3.vrView setWLWW: pWL :pWW];
 		[mprView3.vrView setBlendingWLWW: bpWL :bpWW];
 	}
-	[mprView3 updateViewMPROnLoading:isInitializing];
     
+	[mprView3 updateViewMPROnLoading:isInitializing];
     [cprView setClippingRangeMode:clippingRangeMode];
 }
 

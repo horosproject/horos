@@ -36,7 +36,7 @@
 
 #import "VRView.h"
 
-#import "OsiriXFixedPointVolumeRayCastMapper.h"
+#import "vtkHorosFixedPointVolumeRayCastMapper.h"
 
 #import "DCMCursor.h"
 #import "AppController.h"
@@ -123,7 +123,7 @@ extern "C"
 //#define BONEVALUE 250
 #define BONEOPACITY 1.1
 
-extern int dontRenderVolumeRenderingOsiriX;	// See OsiriXFixedPointVolumeRayCastMapper.cxx
+extern int dontRenderVolumeRenderingOsiriX;	// See vtkHorosFixedPointVolumeRayCastMapper.cxx
 extern unsigned int minimumStep;
 
 static NSRecursiveLock *drawLock = nil;
@@ -812,7 +812,7 @@ public:
     
     switch( modeID)
     {
-        case 0:
+        case 0: //Volume
             if( volumeMapper)
                 volumeMapper->SetBlendModeToComposite();
             
@@ -820,7 +820,7 @@ public:
                 textureMapper->SetBlendModeToComposite();
             break;
             
-        case 1:
+        case 1: //Max
             if( volumeMapper)
                 volumeMapper->SetBlendModeToMaximumIntensity();
             
@@ -828,8 +828,16 @@ public:
                 textureMapper->SetBlendModeToMaximumIntensity();
             break;
             
-        case 2:
-        case 3: // Mean
+        case 2: //Min
+            if( volumeMapper)
+                volumeMapper->SetBlendModeToMinimumIntensity();
+            
+            if( textureMapper)
+                textureMapper->SetBlendModeToMinimumIntensity();
+            break;
+            
+            
+        case 3: // Mean - Effect of Mean is triggered externally by setvtkMeanIPMode
             if( volumeMapper)
                 volumeMapper->SetBlendModeToMinimumIntensity();
             
@@ -911,7 +919,7 @@ public:
 {
     if( volumeMapper == nil)
     {
-        volumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
+        volumeMapper = vtkHorosFixedPointVolumeRayCastMapper::New();
         volumeMapper->SetInputConnection(reader->GetOutputPort());
     }
     
@@ -1054,7 +1062,7 @@ public:
         case 0:		// RAY CAST
             if( blendingVolumeMapper == nil)
             {
-                blendingVolumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
+                blendingVolumeMapper = vtkHorosFixedPointVolumeRayCastMapper::New();
                 blendingVolumeMapper->SetInputConnection(blendingReader->GetOutputPort());
                 
             }
@@ -6272,7 +6280,7 @@ public:
         
         // Force min/max recomputing
         if( blendingVolumeMapper) blendingVolumeMapper->Delete();
-        blendingVolumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
+        blendingVolumeMapper = vtkHorosFixedPointVolumeRayCastMapper::New();
         blendingVolumeMapper->SetInputConnection(blendingReader->GetOutputPort());
         blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
         blendingVolumeMapper->Update();
@@ -7069,7 +7077,7 @@ public:
     @try
     {
         
-        OsiriXFixedPointVolumeRayCastMapper *mapper = nil;
+        vtkHorosFixedPointVolumeRayCastMapper *mapper = nil;
         DCMPix *firstObj = nil;
         
         if( blendingView)
@@ -9062,7 +9070,7 @@ public:
 {
     if( volumeMapper == nil)
     {
-        volumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
+        volumeMapper = vtkHorosFixedPointVolumeRayCastMapper::New();
         volumeMapper->SetInputConnection(reader->GetOutputPort());
     }
     
@@ -9077,7 +9085,7 @@ public:
         if( volumeMapper)
             volumeMapper->Delete();
         
-        volumeMapper = (OsiriXFixedPointVolumeRayCastMapper*) mapper;
+        volumeMapper = (vtkHorosFixedPointVolumeRayCastMapper*) mapper;
         volume->SetMapper( volumeMapper);
     }
 }

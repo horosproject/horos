@@ -1,23 +1,24 @@
-#include "OsiriXFixedPointVolumeRayCastMapper.h"
+#include "vtkHorosFixedPointVolumeRayCastMapper.h"
 
 #include "vtkObjectFactory.h"
 #include "vtkRenderWindow.h"
 #include "vtkRenderer.h"
 #include "vtkTimerLog.h"
 #include "vtkRayCastImageDisplayHelper.h"
+#include "vtkHorosFixedPointVolumeRayCastMIPHelper.h"
 
 #include <math.h>
 
 int dontRenderVolumeRenderingOsiriX = 0;
 
-vtkStandardNewMacro(OsiriXFixedPointVolumeRayCastMapper);
+vtkStandardNewMacro(vtkHorosFixedPointVolumeRayCastMapper);
 
-OsiriXFixedPointVolumeRayCastMapper::OsiriXFixedPointVolumeRayCastMapper()
+vtkHorosFixedPointVolumeRayCastMapper::vtkHorosFixedPointVolumeRayCastMapper()
 {
-
+    this->MIPHelper = vtkHorosFixedPointVolumeRayCastMIPHelper::New();
 }
 
-void OsiriXFixedPointVolumeRayCastMapper::DisplayRenderedImage( vtkRenderer *ren, vtkVolume   *vol )
+void vtkHorosFixedPointVolumeRayCastMapper::DisplayRenderedImage( vtkRenderer *ren, vtkVolume   *vol )
 {
     float depth;
     if ( this->IntermixIntersectingGeometry )
@@ -39,7 +40,7 @@ void OsiriXFixedPointVolumeRayCastMapper::DisplayRenderedImage( vtkRenderer *ren
 }
 
 
-void OsiriXFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume *vol )
+void vtkHorosFixedPointVolumeRayCastMapper::Render( vtkRenderer *ren, vtkVolume *vol )
 {
   this->Timer->StartTimer();
 

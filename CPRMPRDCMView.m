@@ -415,7 +415,10 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
             [vrView setLOD: LOD];
         }
         else
-            imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
+        {
+            if (isLoading == NO)
+                imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
+        }
         
         ////
         float orientation[ 9];
