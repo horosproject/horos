@@ -116,10 +116,13 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
     }
     
     i = strlen( str);
-    while( --i > 0)
+    if (i > 0)
     {
-        if( str[i] ==' ') str[i] = 0;
-        else i = 0;
+        while( --i > 0)
+        {
+            if( str[i] ==' ') str[i] = 0;
+            else i = 0;
+        }
     }
     
     return str;
