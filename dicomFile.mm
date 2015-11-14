@@ -227,12 +227,16 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
     [mutableStr replaceOccurrencesOfString:@"  "  withString:@" " options:0 range:mutableStr.range]; //double space -> single space
     
     unsigned long i = [mutableStr length];
-    while( --i > 0)
+    
+    if (i > 0)
     {
-        if( [mutableStr characterAtIndex:i]==' ')
-            [mutableStr deleteCharactersInRange:NSMakeRange(i, 1)];
-        else
-            i = 1;
+        while( --i > 0)
+        {
+            if( [mutableStr characterAtIndex:i]==' ')
+                [mutableStr deleteCharactersInRange:NSMakeRange(i, 1)];
+            else
+                i = 1;
+        }
     }
     
     return mutableStr;
