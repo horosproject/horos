@@ -4008,6 +4008,7 @@ static BOOL initialized = NO;
 		
 	}
 	
+    /*
 	#ifndef OSIRIX_LIGHT
 	#ifndef MACAPPSTORE
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
@@ -4018,7 +4019,9 @@ static BOOL initialized = NO;
             
             NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
             
-            if( [d valueForKey: @"crashReporterSMTPServer"]) {
+            
+            if( [d valueForKey: @"crashReporterSMTPServer"])
+            {
                 reporter.SMTPServer = [d valueForKey: @"crashReporterSMTPServer"];
                 int port = [d integerForKey: @"crashReporterSMTPPort"];
                 reporter.SMTPPort = port? port : 25;
@@ -4028,15 +4031,27 @@ static BOOL initialized = NO;
             }
             
             if( [d valueForKey: @"crashReporterFromAddress"])
+            {
                 reporter.fromAddress = [d valueForKey: @"crashReporterFromAddress"];
+            }
             
-            NSString *reportAddr = @"crash@osirix-viewer.com";
+            NSString *reportAddr = @"horoscrashreport@gmail.com";
+            
             if( [d valueForKey: @"crashReporterToAddress"])
+            {
                 reportAddr = [d valueForKey: @"crashReporterToAddress"];
+            }
             
             reporter.automaticReport = [d boolForKey: @"crashReporterAutomaticReport"];
             
-            [reporter launchReporterForCompany: @"Horos Developers" reportAddr: reportAddr];
+            
+            NSLog(@"%@",reporter.SMTPServer);
+            NSLog(@"%@",reporter.SMTPUsername);
+            NSLog(@"%@",reporter.SMTPPassword);
+            NSLog(@"%@",reporter.fromAddress);
+            
+            
+            [reporter launchReporterForCompany:@"Horos Developers" reportAddr: reportAddr];
         }
         @catch (NSException *e)
         {
@@ -4045,7 +4060,8 @@ static BOOL initialized = NO;
     }
 	#endif
 	#endif
-	
+	*/
+     
 	[PluginManager setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
     
 	appController = self;

@@ -192,13 +192,13 @@ SecPolicySearchCreate:
 	[mStr appendFormat:@"%@\n", @"prompt              = no"];
 	[mStr appendFormat:@"%@\n", @""];
 	[mStr appendFormat:@"%@\n", @"[ req_distinguished_name ]"];
-	[mStr appendFormat:@"%@\n", @"C                   = CH"];
-	[mStr appendFormat:@"%@\n", @"ST                  = Geneva"];
-	[mStr appendFormat:@"%@\n", @"L                   = Geneva"];
-	[mStr appendFormat:@"%@\n", @"O                   = OsiriX Team"];
+	[mStr appendFormat:@"%@\n", @"C                   = BR"];
+	[mStr appendFormat:@"%@\n", @"ST                  = SC"];
+	[mStr appendFormat:@"%@\n", @"L                   = Florianopolis"];
+	[mStr appendFormat:@"%@\n", @"O                   = Horos Team"];
 	[mStr appendFormat:@"%@\n", @"OU                  = Open Source"];
-	[mStr appendFormat:@"%@\n", @"CN                  = OsiriX HTTP Server"];
-	[mStr appendFormat:@"%@\n", @"emailAddress        = osirix@osirix-viewer.com"];
+	[mStr appendFormat:@"%@\n", @"CN                  = Horos HTTP Server"];
+	[mStr appendFormat:@"%@\n", @"emailAddress        = horos@horosproject.org"];
 	
 	[mStr writeToFile:reqConfPath atomically:NO encoding:NSUTF8StringEncoding error:nil];
 	
