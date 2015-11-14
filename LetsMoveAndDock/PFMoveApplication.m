@@ -408,7 +408,7 @@ static BOOL CopyBundle(NSString *srcPath, NSString *dstPath) {
 
 static void Relaunch(NSString *destinationPath)
 {
-    [[ILCrashReporter defaultReporter] terminate];
+    //[[ILCrashReporter defaultReporter] terminate];
     
     if( [NSApp applicationExistsInDock: destinationPath] == NO)
         [NSApp addApplicationToDock: destinationPath];
