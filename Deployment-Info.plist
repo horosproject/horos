@@ -189,7 +189,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1.2</string>
+	<string>1.1.3</string>
 	<key>CFBundleSignature</key>
 	<string>OsiX</string>
 	<key>CFBundleURLTypes</key>
@@ -208,7 +208,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>20151104</string>
+	<string>20151114</string>
 	<key>GitHash</key>
 	<string></string>
 	<key>GitState</key>
