@@ -18,7 +18,7 @@
 //#import "NSException+N2.h"
 
 @interface N2BlockThread : NSThread {
-    void (^_block) ();
+    void (^_block)();
 }
 
 -(id)initWithBlock:(void(^)())block;
@@ -28,9 +28,9 @@
 @implementation NSThread (N2)
 
 +(NSThread*)performBlockInBackground:(void(^)())block {
-    N2BlockThread* bt = [[N2BlockThread alloc] initWithBlock:block];
+    N2BlockThread* bt = [[[N2BlockThread alloc] initWithBlock:block] autorelease];
     [bt start];
-    return [bt autorelease];
+    return bt;
 }
 
 -(NSComparisonResult)compare:(id)obj {
@@ -407,18 +407,18 @@ NSString* const NSThreadProgressDetailsKey = @"progressDetails";
 }
 
 -(void)main {
-    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-    @try {
-        _block();
-    } @catch (NSException* e) {
-        N2LogExceptionWithStackTrace(e);
-    } @finally {
-        [pool release];
+    @autoreleasepool {
+        @try {
+            _block();
+            [_block release]; _block = nil;
+        } @catch (NSException* e) {
+            N2LogExceptionWithStackTrace(e);
+        }
     }
 }
 
 -(void)dealloc {
-    [_block release];
+    [_block release]; _block = nil;
     [super dealloc];
 }
 
