@@ -1410,7 +1410,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
     
 	[NSThread sleepForTimeInterval: 10];
 	
-	url = [NSURL URLWithString:URL_HOROS_VIEWER@"/osirix_plugins/plugins.plist"];
+	url = [NSURL URLWithString:@"http://www.osirix-viewer.com/osirix_plugins/plugins.plist"];
 	
 	if(url)
 	{
