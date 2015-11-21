@@ -1249,7 +1249,7 @@ static NSDate *lastWarningDate = nil;
 
 -(IBAction)userManual:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.horosproject.org/mantisbt/"]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/horosproject/horos/issues"]];
 }
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 #pragma mark-
