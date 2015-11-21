@@ -47,6 +47,8 @@
 #import "Wait.h"
 #import "WaitRendering.h"
 #import "SRAnnotation.h"
+#import "DicomDatabase+Clean.h"
+#import "DicomDatabase+Routing.h"
 #include <copyfile.h>
 
 NSString* const CurrentDatabaseVersion = @"2.5";
@@ -2838,7 +2840,7 @@ static BOOL protectionAgainstReentry = NO;
 }
 
 -(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI
-           listenerCompressionSettings: (BOOL) listenerCompressionSettings
+           listenerCompressionSettings: (int) listenerCompressionSettings
 {
     NSMutableArray* compressedPathArray = [NSMutableArray array];
     NSThread* thread = [NSThread currentThread];

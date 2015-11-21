@@ -722,7 +722,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
         *compressed = NO; // Assume it's not compressed
     
     if (image)
-        *image = NO; // Assume it has pixel data
+        *image = YES; // Assume it has pixel data
     
     //////////////////////////////////////////////////////////
     

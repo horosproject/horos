@@ -136,7 +136,7 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 -(BOOL) hasFilesToImport;
 -(NSInteger)importFilesFromIncomingDir;
 -(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI;
--(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI listenerCompressionSettings: (BOOL) listenerCompressionSettings;
+-(NSInteger)importFilesFromIncomingDir: (NSNumber*) showGUI listenerCompressionSettings: (int) listenerCompressionSettings;
 -(BOOL)waitForCompressThread;
 -(void)initiateImportFilesFromIncomingDirUnlessAlreadyImporting;
 -(void)importFilesFromIncomingDirThread;
