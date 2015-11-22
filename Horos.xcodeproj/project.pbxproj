@@ -725,7 +725,6 @@
 		84DE8CD311AC227B0029396D /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A19105D4DE200CE6AAF /* WebKit.framework */; };
 		84E191FB1369966A008DCFC8 /* WADODownload.h in Headers */ = {isa = PBXBuildFile; fileRef = 84E191F91369966A008DCFC8 /* WADODownload.h */; };
 		84E191FC1369966A008DCFC8 /* WADODownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E191FA1369966A008DCFC8 /* WADODownload.m */; };
-		84F453570FC3DF5400D29666 /* ILCrashReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		991B8B5C1BB8B279006AF439 /* O2HMigrationAssistant.png in Resources */ = {isa = PBXBuildFile; fileRef = 991B8B5B1BB8B279006AF439 /* O2HMigrationAssistant.png */; };
 		992DD75D1BCB095700369C09 /* libgdcmcharls.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7501BCB095700369C09 /* libgdcmcharls.a */; };
 		992DD75E1BCB095700369C09 /* libgdcmcharls.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7501BCB095700369C09 /* libgdcmcharls.a */; };
@@ -754,6 +753,11 @@
 		992DD7751BCB095700369C09 /* libgdcmuuid.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75C1BCB095700369C09 /* libgdcmuuid.a */; };
 		992DD7761BCB095700369C09 /* libgdcmuuid.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75C1BCB095700369C09 /* libgdcmuuid.a */; };
 		9939F7A91BCB0BF8009FEB69 /* FVTiff.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FC808F44724002A395F /* FVTiff.m */; };
+		993DB4A01C0243D50084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
+		993DB4A11C0244430084218A /* FeedbackReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		993DB4A21C024F7C0084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
+		993DB4A31C024FB40084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
+		993DB4A41C024FB60084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
 		9953FE521BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 9953FE4E1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx */; };
 		9953FE531BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 9953FE4F1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h */; };
 		9963031B1BCACF26009CE3E5 /* libGDCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 9963031A1BCACF26009CE3E5 /* libGDCM.h */; };
@@ -1415,7 +1419,6 @@
 		A96F795E16DBC740000E877A /* SecurityInterface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A997B15610E0C412004C5BB1 /* SecurityInterface.framework */; };
 		A96F795F16DBC740000E877A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8406956210B6800E00C37AD0 /* SystemConfiguration.framework */; };
 		A96F796016DBC740000E877A /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A19105D4DE200CE6AAF /* WebKit.framework */; };
-		A96F796816DBC753000E877A /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		A96F796A16DBCAFA000E877A /* N2SOAPWebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFF071212F84F00176E39 /* N2SOAPWebServiceClient.mm */; };
 		A96F796B16DBCAFA000E877A /* N2WSDL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFF041212F84F00176E39 /* N2WSDL.mm */; };
 		A96F796C16DBCAFA000E877A /* N2XMLRPCConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFF011212F84F00176E39 /* N2XMLRPCConnection.mm */; };
@@ -1907,7 +1910,6 @@
 		A99B7ECD0885A621004328C0 /* BonjourBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = A99B7E5508858D4F004328C0 /* BonjourBrowser.m */; };
 		A99B7ECE0885A621004328C0 /* BonjourBrowser.h in Headers */ = {isa = PBXBuildFile; fileRef = A99B7E5408858D4F004328C0 /* BonjourBrowser.h */; };
 		A99F039A16E492AA008A3657 /* Growl.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BE05D1524344D00AE6156 /* Growl.framework */; };
-		A99F039D16E4934F008A3657 /* ILCrashReporter.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		A99F039E16E49359008A3657 /* libxerces-c.27.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
 		A99F039F16E4935C008A3657 /* libdcmprintscu.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */; };
 		A9A80E3811F73E22009F54B9 /* Activity_Stop.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9A80E3611F73E22009F54B9 /* Activity_Stop.tif */; };
@@ -2347,7 +2349,6 @@
 		A9FBD38316DBE701003A0E04 /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BE05D1524344D00AE6156 /* Growl.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		A9FBD38416DBE782003A0E04 /* Growl.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = CE2BE05D1524344D00AE6156 /* Growl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		A9FBD38616DBE821003A0E04 /* HorosAPI.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* HorosAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		A9FBD38716DBE83E003A0E04 /* ILCrashReporter.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		A9FBD38816DBE84D003A0E04 /* libxerces-c.27.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		A9FBD38A16DBE855003A0E04 /* libdcmprintscu.dylib in Copy Files */ = {isa = PBXBuildFile; fileRef = CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		A9FE55F410DB7DCF000D0395 /* OpenGLScreenReader.h in Headers */ = {isa = PBXBuildFile; fileRef = A930149210DA63C200AF0051 /* OpenGLScreenReader.h */; };
@@ -3244,7 +3245,6 @@
 		ABE471150A76412700327466 /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CFA09B6828500545F5E /* jquant2.c */; };
 		ABE471160A76412700327466 /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CFB09B6828500545F5E /* jutils.c */; };
 		ABE59B850F494CA1004EBF28 /* DefaultsOsiriX.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */; };
-		ABE881450FC1444D009F5C80 /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		ABEF7E7809A21070006CEC3E /* Reports.h in Headers */ = {isa = PBXBuildFile; fileRef = ABEF7E7609A21070006CEC3E /* Reports.h */; };
 		ABEF7E7909A21070006CEC3E /* Reports.m in Sources */ = {isa = PBXBuildFile; fileRef = ABEF7E7709A21070006CEC3E /* Reports.m */; };
 		ABEF846A09A23EF5006CEC3E /* ReportTemplate.doc in Resources */ = {isa = PBXBuildFile; fileRef = ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */; };
@@ -4643,7 +4643,6 @@
 				A99F039E16E49359008A3657 /* libxerces-c.27.dylib in CopyFiles */,
 				A99F039A16E492AA008A3657 /* Growl.framework in CopyFiles */,
 				A99F039F16E4935C008A3657 /* libdcmprintscu.dylib in CopyFiles */,
-				A99F039D16E4934F008A3657 /* ILCrashReporter.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4656,7 +4655,6 @@
 				A9FBD38616DBE821003A0E04 /* HorosAPI.framework in Copy Files */,
 				A9FBD38416DBE782003A0E04 /* Growl.framework in Copy Files */,
 				A9FBD38816DBE84D003A0E04 /* libxerces-c.27.dylib in Copy Files */,
-				A9FBD38716DBE83E003A0E04 /* ILCrashReporter.framework in Copy Files */,
 				A9FBD38A16DBE855003A0E04 /* libdcmprintscu.dylib in Copy Files */,
 			);
 			name = "Copy Files";
@@ -4668,13 +4666,13 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				993DB4A11C0244430084218A /* FeedbackReporter.framework in Copy Frameworks */,
 				999901A41B52B24200921EA1 /* libdcmprintscu.dylib in Copy Frameworks */,
 				999901A51B52B24200921EA1 /* libxerces-c.27.dylib in Copy Frameworks */,
 				9966A1B51AE0B6EE00F2D81A /* HorosDCM.framework in Copy Frameworks */,
 				59F1A515104BA8AE009E3215 /* HorosAPI.framework in Copy Frameworks */,
 				9966A1B41AE0AC7400F2D81A /* OsiriXAPI.framework in Copy Frameworks */,
 				CE04B81B15289AF400EF6E52 /* Growl.framework in Copy Frameworks */,
-				84F453570FC3DF5400D29666 /* ILCrashReporter.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5360,6 +5358,7 @@
 		992DD75A1BCB095700369C09 /* libgdcmMSFF.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmMSFF.a; sourceTree = "<group>"; };
 		992DD75B1BCB095700369C09 /* libgdcmopenjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmopenjpeg.a; sourceTree = "<group>"; };
 		992DD75C1BCB095700369C09 /* libgdcmuuid.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmuuid.a; sourceTree = "<group>"; };
+		993DB49F1C0243D50084218A /* FeedbackReporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FeedbackReporter.framework; path = Binaries/FeedbackReporter.framework; sourceTree = "<group>"; };
 		9953FE4E1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vtkHorosFixedPointVolumeRayCastMIPHelper.cxx; sourceTree = "<group>"; };
 		9953FE4F1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkHorosFixedPointVolumeRayCastMIPHelper.h; sourceTree = "<group>"; };
 		9963031A1BCACF26009CE3E5 /* libGDCM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libGDCM.h; path = Binaries/GDCMHeaders/libGDCM.h; sourceTree = "<group>"; };
@@ -5937,7 +5936,6 @@
 		ABE1E8AE0649F4150028E2E0 /* iPod.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = iPod.icns; sourceTree = "<group>"; };
 		ABE33369063D624400C8E087 /* QueryFilter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = QueryFilter.h; sourceTree = "<group>"; };
 		ABE3336A063D624400C8E087 /* QueryFilter.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = QueryFilter.m; sourceTree = "<group>"; };
-		ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ILCrashReporter.framework; path = Binaries/ILCrashReporter.framework; sourceTree = "<group>"; };
 		ABEF7E7609A21070006CEC3E /* Reports.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Reports.h; sourceTree = "<group>"; };
 		ABEF7E7709A21070006CEC3E /* Reports.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reports.m; sourceTree = "<group>"; };
 		ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */ = {isa = PBXFileReference; lastKnownFileType = file; name = ReportTemplate.doc; path = Binaries/ReportTemplate.doc; sourceTree = "<group>"; };
@@ -7231,6 +7229,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				993DB4A21C024F7C0084218A /* FeedbackReporter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7288,7 +7287,6 @@
 				A96F793916DBC59D000E877A /* libxml2.dylib in Frameworks */,
 				A96F793A16DBC59D000E877A /* libz.dylib in Frameworks */,
 				A96F793B16DBC59D000E877A /* libdcmprintscu.dylib in Frameworks */,
-				A96F796816DBC753000E877A /* ILCrashReporter.framework in Frameworks */,
 				A96F795D16DBC740000E877A /* Security.framework in Frameworks */,
 				A96F796016DBC740000E877A /* WebKit.framework in Frameworks */,
 				A96F795F16DBC740000E877A /* SystemConfiguration.framework in Frameworks */,
@@ -7305,6 +7303,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				993DB4A41C024FB60084218A /* FeedbackReporter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7334,6 +7333,7 @@
 				436217FB1A2F375C006FA27A /* libvtkCommonExecutionModel-6.2.a in Frameworks */,
 				436218071A2F375C006FA27A /* libvtkFiltersFlowPaths-6.2.a in Frameworks */,
 				436217491A2F3730006FA27A /* libitkgdcmjpeg16-4.7.a in Frameworks */,
+				993DB4A01C0243D50084218A /* FeedbackReporter.framework in Frameworks */,
 				4362180C1A2F375C006FA27A /* libvtkFiltersHyperTree-6.2.a in Frameworks */,
 				4362181E1A2F375C006FA27A /* libvtkImagingColor-6.2.a in Frameworks */,
 				436218301A2F375C006FA27A /* libvtkIOExodus-6.2.a in Frameworks */,
@@ -7438,7 +7438,6 @@
 				4362183C1A2F375C006FA27A /* libvtkIOParallelXML-6.2.a in Frameworks */,
 				436217F91A2F375C006FA27A /* libvtkCommonCore-6.2.a in Frameworks */,
 				4362180A1A2F375C006FA27A /* libvtkFiltersGeometry-6.2.a in Frameworks */,
-				ABE881450FC1444D009F5C80 /* ILCrashReporter.framework in Frameworks */,
 				436217451A2F3730006FA27A /* libitkgdcmDSED-4.7.a in Frameworks */,
 				436217F71A2F375C006FA27A /* libvtkCommonColor-6.2.a in Frameworks */,
 				992DD75D1BCB095700369C09 /* libgdcmcharls.a in Frameworks */,
@@ -7550,6 +7549,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				993DB4A31C024FB40084218A /* FeedbackReporter.framework in Frameworks */,
 				992DD7701BCB095700369C09 /* libgdcmMEXD.a in Frameworks */,
 				9966A1AE1AE09DE200F2D81A /* Quartz.framework in Frameworks */,
 				9966A1AD1AE09DD000F2D81A /* CoreMedia.framework in Frameworks */,
@@ -7671,10 +7671,10 @@
 		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				9966A1B61AE0B7A000F2D81A /* DCMAPI.framework */,
+				993DB49F1C0243D50084218A /* FeedbackReporter.framework */,
 				439B8C131A19CCC300F396D7 /* 3DconnexionClient.framework */,
-				ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */,
 				CE2BE05D1524344D00AE6156 /* Growl.framework */,
+				9966A1B61AE0B7A000F2D81A /* DCMAPI.framework */,
 				CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */,
 				CE6693C60AF551210073D923 /* libxerces-c.27.dylib */,
 			);
@@ -13301,7 +13301,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo GDCMLibs.zip\nunzip -uo GDCMHeaders.zip\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo ITKLibs.zip\nunzip -uo VTKLibs.zip\nunzip -uo ITKHeaders.zip\nunzip -uo VTKHeaders.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo libPapyrusToolkit.a.zip\nunzip -uo Ming.zip\nunzip -uo weasis-portable.zip\nchmod -R 755 weasis\ncd \"$SRCROOT/Binaries/weasis\"\nif [ -d \"weasis-portable\" ]; then\n    cd \"weasis-portable\"\n    for f in *; do\n        rm -Rf \"../$f\"\n        mv \"$f\" ..\n    done\n    cd ..\n    rm -Rf weasis-portable\nfi\nfind . -name __MACOSX | xargs rm -Rf\n\ncd \"$SRCROOT/Binaries/ReportsToPDF/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\n# Don't overwrite customized files\ncd \"$SRCROOT\"\nif [ ! -f \"options.h\" ] ; then\n    unzip -uo options.h.zip\nfi\nif [ ! -f \"url.h\" ] ; then\n    unzip -uo url.h.zip\nfi\n\nexit 0\n";
+			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo GDCMLibs.zip\nunzip -uo GDCMHeaders.zip\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo ITKLibs.zip\nunzip -uo VTKLibs.zip\nunzip -uo ITKHeaders.zip\nunzip -uo VTKHeaders.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo FeedbackReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo libPapyrusToolkit.a.zip\nunzip -uo Ming.zip\nunzip -uo weasis-portable.zip\nchmod -R 755 weasis\ncd \"$SRCROOT/Binaries/weasis\"\nif [ -d \"weasis-portable\" ]; then\n    cd \"weasis-portable\"\n    for f in *; do\n        rm -Rf \"../$f\"\n        mv \"$f\" ..\n    done\n    cd ..\n    rm -Rf weasis-portable\nfi\nfind . -name __MACOSX | xargs rm -Rf\n\ncd \"$SRCROOT/Binaries/ReportsToPDF/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\n# Don't overwrite customized files\ncd \"$SRCROOT\"\nif [ ! -f \"options.h\" ] ; then\n    unzip -uo options.h.zip\nfi\nif [ ! -f \"url.h\" ] ; then\n    unzip -uo url.h.zip\nfi\n\nexit 0\n";
 		};
 		59BDEDC8117CAB86007F1F2C /* Zip Horos Lite into Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -16632,6 +16632,7 @@
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/build/Development\"",
 					"$(PROJECT_DIR)/build/Development",
+					"$(PROJECT_DIR)/Binaries",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_FAST_MATH = YES;
@@ -16704,6 +16705,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Binaries",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -16891,6 +16896,7 @@
 					"$(FRAMEWORK_SEARCH_PATHS)",
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)/build/Development",
+					"$(PROJECT_DIR)/Binaries",
 				);
 				GCC_FAST_MATH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -16972,7 +16978,10 @@
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Binaries",
+				);
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -17072,6 +17081,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Binaries",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -17182,6 +17195,7 @@
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/build/Development\"",
 					"$(PROJECT_DIR)/build/Development",
+					"$(PROJECT_DIR)/Binaries",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -17550,7 +17564,10 @@
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Binaries",
+				);
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -17583,6 +17600,7 @@
 					"$(FRAMEWORK_SEARCH_PATHS)",
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)/build/Development",
+					"$(PROJECT_DIR)/Binaries",
 				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;

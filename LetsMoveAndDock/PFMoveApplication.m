@@ -11,7 +11,7 @@
 #import <Security/Security.h>
 #import <dlfcn.h>
 #import "NSApplication-Dock.h"
-#import <ILCrashReporter/ILCrashReporter.h>
+//#import <ILCrashReporter/ILCrashReporter.h>
 
 
 // Needs to be defined for compiling under 10.4 SDK

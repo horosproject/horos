@@ -90,7 +90,7 @@
 #import "BonjourPublisher.h"
 #ifndef MACAPPSTORE
 #import "Reports.h"
-#import <ILCrashReporter/ILCrashReporter.h>
+//#import <ILCrashReporter/ILCrashReporter.h>
 #import "VRView.h"
 #endif
 #endif
@@ -3950,10 +3950,37 @@ static BOOL initialized = NO;
 	}
 }
 
+
+- (void) crashSimulator:(NSTimer*) aTimer
+{
+    NSLog(@"crash");
+    char *c = 0;
+    *c = 0;
+}
+
+
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
-    [AppController cleanOsiriXSubProcesses];
+    NSLog(@"applicationDidFinishLaunching - unicode test: مرحبا - 你好 - שלום");
     
+    [[FRFeedbackReporter sharedReporter] setDelegate:self];
+
+    NSLog(@"checking for crash");
+    
+    [[FRFeedbackReporter sharedReporter] reportIfCrash];
+    /*
+    
+    [NSTimer scheduledTimerWithTimeInterval:10
+                                     target:self
+                                   selector:@selector(crashSimulator:)
+                                   userInfo:nil
+                                    repeats:YES];*/
+    
+    
+    /////////////////////
+    
+    
+    [AppController cleanOsiriXSubProcesses];
     
     NSError *error = nil;
     [NSWindow jr_swizzleMethod:@selector(showsFullScreenButton) withMethod:@selector(HOROS_showsFullScreenButton) error:&error];
@@ -5822,5 +5849,33 @@ static NSMutableDictionary* _receivingDict = nil;
 - (void)sound:(NSSound*)sound didFinishPlaying:(BOOL)finishedPlaying {
     [sound release];
 }
+
+
+#pragma mark -
+#pragma FeedbackReporter
+
+- (NSDictionary *) customParametersForFeedbackReport
+{
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    
+    return dict;
+}
+
+- (NSString *) feedbackDisplayName
+{
+    return @"Horos";
+}
+
+
+ - (NSString *)targetUrlForFeedbackReport
+{
+    NSString *targetUrlFormat = @"http://horosproject.org/crashreporter.php?project=%@&version=%@";
+    NSString *project = [[[NSBundle mainBundle] infoDictionary] valueForKey: @"CFBundleExecutable"];
+    NSString *version = [[[NSBundle mainBundle] infoDictionary] valueForKey: @"CFBundleVersion"];
+    
+    return [NSString stringWithFormat:targetUrlFormat, project, version];
+}
+
+
 
 @end
