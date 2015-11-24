@@ -1,34 +1,35 @@
-//
-//  FlyAssistant.h
-
 /*=========================================================================
- Author: Chunliang Wang (chunliang.wang@liu.se)
+ This file is part of the Horos Project (www.horosproject.org)
  
+ Horos is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation,  version 3 of the License.
  
- Program:  FLy Through Assistant And Centerline tracking for CT endoscopy
+ Portions of the Horos Project were originally licensed under the GNU GPL license.
+ However, all authors of that software have agreed to modify the license to the
+ GNU LGPL.
  
- This file is part of FLy Through Assistant And Centerline tracking for CT endoscopy.
+ Horos is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY EXPRESS OR IMPLIED, INCLUDING ANY WARRANTY OF
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE OR USE.  See the
+ GNU Lesser General Public License for more details.
  
- Copyright (c) 2010,
- Center for Medical Image Science and Visualization (CMIV),
- Linköping University, Sweden, http://www.cmiv.liu.se/
+ You should have received a copy of the GNU Lesser General Public License
+ along with Horos.  If not, see http://www.gnu.org/licenses/lgpl.html
  
- FLy Through Assistant And Centerline tracking for CT endoscopy is free software;
- you can redistribute it and/or modify it under the terms of the
- GNU General Public License as published by the Free Software 
- Foundation, either version 3 of the License, or (at your option)
- any later version.
- 
- FLy Through Assistant And Centerline tracking for CT endoscopy  is distributed in
- the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- for more details.
- 
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
- =========================================================================*/
+ Prior versions of this file were published by the OsiriX team pursuant to
+ the below notice and licensing protocol.
+ ============================================================================
+ Program:   OsiriX
+  Copyright (c) OsiriX Team
+  All rights reserved.
+  Distributed under GNU - LGPL
+  
+  See http://www.osirix-viewer.com/copyright.html for details.
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.
+ ============================================================================*/
  
 
 #import <Foundation/Foundation.h>
