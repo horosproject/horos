@@ -3732,9 +3732,11 @@ static BOOL initialized = NO;
     }
 #endif
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[FRFeedbackReporter sharedReporter] orderFront];
-    });
+    //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [[FRFeedbackReporter sharedReporter] orderFront];
+        });
+    //});
 }
 
 - (void) checkForOsirixMimeType
@@ -3961,17 +3963,11 @@ static BOOL initialized = NO;
 }
 
 
-- (void) crash:(NSTimer*) aTimer
-{
-    NSLog(@"crash");
-    char *c = 0;
-    *c = 0;
-}
-
-
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
-    BOOL foundCrash = [self setupCrashReporter];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self setupCrashReporter];
+    });
     
     ////////////////////////////
     
@@ -4269,15 +4265,7 @@ static BOOL initialized = NO;
 
 	if( [AppController isKDUEngineAvailable])
 		NSLog( @"/*\\ /*\\ KDU Engine AVAILABLE /*\\ /*\\");
-    
-    
-    if (foundCrash)
-    {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(4.f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [[FRFeedbackReporter sharedReporter] orderFront];
-        });
     }
-}
 
 - (IBAction) updateViews:(id) sender
 {
