@@ -719,6 +719,12 @@ void exceptionHandler(NSException *exception)
 static NSDate *lastWarningDate = nil;
 
 
+@interface AppController ()
+
+- (BOOL) setupCrashReporter;
+
+@end
+
 @implementation AppController
 
 @synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, recentStudiesMenu, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
@@ -3725,6 +3731,10 @@ static BOOL initialized = NO;
         [[QueryController currentQueryController] showWindow: self];
     }
 #endif
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[FRFeedbackReporter sharedReporter] orderFront];
+    });
 }
 
 - (void) checkForOsirixMimeType
@@ -3951,7 +3961,7 @@ static BOOL initialized = NO;
 }
 
 
-- (void) crashSimulator:(NSTimer*) aTimer
+- (void) crash:(NSTimer*) aTimer
 {
     NSLog(@"crash");
     char *c = 0;
@@ -3961,24 +3971,9 @@ static BOOL initialized = NO;
 
 - (void) applicationWillFinishLaunching: (NSNotification *) aNotification
 {
-    NSLog(@"applicationDidFinishLaunching - unicode test: مرحبا - 你好 - שלום");
+    BOOL foundCrash = [self setupCrashReporter];
     
-    [[FRFeedbackReporter sharedReporter] setDelegate:self];
-
-    NSLog(@"checking for crash");
-    
-    [[FRFeedbackReporter sharedReporter] reportIfCrash];
-    /*
-    
-    [NSTimer scheduledTimerWithTimeInterval:10
-                                     target:self
-                                   selector:@selector(crashSimulator:)
-                                   userInfo:nil
-                                    repeats:YES];*/
-    
-    
-    /////////////////////
-    
+    ////////////////////////////
     
     [AppController cleanOsiriXSubProcesses];
     
@@ -4274,6 +4269,14 @@ static BOOL initialized = NO;
 
 	if( [AppController isKDUEngineAvailable])
 		NSLog( @"/*\\ /*\\ KDU Engine AVAILABLE /*\\ /*\\");
+    
+    
+    if (foundCrash)
+    {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(4.f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [[FRFeedbackReporter sharedReporter] orderFront];
+        });
+    }
 }
 
 - (IBAction) updateViews:(id) sender
@@ -5851,8 +5854,45 @@ static NSMutableDictionary* _receivingDict = nil;
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 #pragma mark -
 #pragma FeedbackReporter
+
+
+- (void) crash
+{
+    NSLog(@"crash");
+    char *c = 0;
+    *c = 0;
+}
+
+
+- (BOOL) setupCrashReporter
+{
+    NSLog(@"Unicode test: مرحبا - 你好 - שלום");
+    
+    [[FRFeedbackReporter sharedReporter] setDelegate:self];
+    
+    //[[FRFeedbackReporter sharedReporter] reportFeedback];
+    //return;
+    
+    if ([[FRFeedbackReporter sharedReporter] reportIfCrash] == YES)
+    {
+        NSLog(@"Crash found.");
+        return YES;
+    }
+    
+    //[self crash];
+    
+    return NO;
+}
+
+- (NSString *) feedbackDisplayName
+{
+    return @"Horos";
+}
 
 - (NSDictionary *) customParametersForFeedbackReport
 {
@@ -5861,21 +5901,55 @@ static NSMutableDictionary* _receivingDict = nil;
     return dict;
 }
 
-- (NSString *) feedbackDisplayName
+- (NSMutableDictionary*) anonymizePreferencesForFeedbackReport:(NSMutableDictionary *)preferences
+{
+    return preferences;
+}
+
+- (NSString*) smtpServerForFeedbackReport
+{
+    return @"smtp.gmail.com";
+}
+
+- (unsigned int) smtpPortForFeedbackRerport
+{
+    return 465;
+}
+
+- (NSString*) smtpUsername
+{
+    return @"horoscrashreport@gmail.com";
+}
+
+- (NSString*) smtpPassword
+{
+    return @"wmN-7eh-47N-AxJ";
+}
+
+- (NSString*) mailSenderTitle
 {
     return @"Horos";
 }
 
+- (NSString*) mailSubject
+{
+    return @"Horos Crash Report";
+}
 
+- (NSString*) mailTextBody
+{
+    return @"See attached XML file";
+}
+
+/*
  - (NSString *)targetUrlForFeedbackReport
 {
-    NSString *targetUrlFormat = @"http://horosproject.org/crashreporter.php?project=%@&version=%@";
+    NSString *targetUrlFormat = @"http://horosproject.org/crashreport.php?project=%@&version=%@";
     NSString *project = [[[NSBundle mainBundle] infoDictionary] valueForKey: @"CFBundleExecutable"];
     NSString *version = [[[NSBundle mainBundle] infoDictionary] valueForKey: @"CFBundleVersion"];
     
     return [NSString stringWithFormat:targetUrlFormat, project, version];
 }
-
-
+*/
 
 @end
