@@ -6273,7 +6273,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             DCMObject *detectorInformation = [detectorInformationSequence.sequence objectAtIndex:0];
             
             NSArray *ipp = [detectorInformation attributeArrayWithName:@"ImagePositionPatient"];
-            if( ipp)
+            if( ipp && [ipp count] >= 3)
             {
                 originX = [[ipp objectAtIndex:0] doubleValue];
                 originY = [[ipp objectAtIndex:1] doubleValue];
