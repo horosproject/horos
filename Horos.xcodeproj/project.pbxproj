@@ -757,7 +757,6 @@
 		993DB4A11C0244430084218A /* FeedbackReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		993DB4A21C024F7C0084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
 		993DB4A31C024FB40084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
-		993DB4A41C024FB60084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
 		9953FE521BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 9953FE4E1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx */; };
 		9953FE531BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 9953FE4F1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h */; };
 		9963031B1BCACF26009CE3E5 /* libGDCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 9963031A1BCACF26009CE3E5 /* libGDCM.h */; };
@@ -7303,7 +7302,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				993DB4A41C024FB60084218A /* FeedbackReporter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
