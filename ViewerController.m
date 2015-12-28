@@ -7218,7 +7218,7 @@ static ViewerController *draggedController = nil;
         {
             if( loadingThread)
             {
-                if( loadingThread.isFinished == NO)
+                if( (!loadingThread.isExecuting) == NO)
                     return NO;
             }
         }
@@ -8875,82 +8875,93 @@ static int avoidReentryRefreshDatabase = 0;
 {
     @synchronized( loadingThread)
     {
+        if ([loadingThread isExecuting] == NO || [loadingThread isCancelled])
+            return;
+        
+        if( [[dict objectForKey: @"pixListArray"] objectAtIndex: 0] != pixList[ 0])
+        {
+            [loadingThread cancel];
+            [loadingThread autorelease];
+            loadingThread = nil;
+            
+            return;
+        }
+        
+        NSArray *pixListArray = [dict objectForKey: @"pixListArray"];
+        DCMPix *firstPix = [[pixListArray objectAtIndex: 0] objectAtIndex: 0];
+        
+#pragma mark modality dependant code, once images are already displayed in 2D viewer
+        
+        for( NSArray *pList in pixListArray)
+        {
+            for( DCMPix *p in pList)
+            {
+                [p setMaxValueOfSeries: 0];
+                [p setMinValueOfSeries: 0];
+            }
+        }
+        
+#pragma mark XA
+        enableSubtraction = FALSE;
+        subCtrlMinMaxComputed = NO;
+        if([[firstPix modalityString] isEqualToString:@"XA"])
+        {
+            if([[pixListArray objectAtIndex: 0] count] > 1)
+            {
+                long moviePixWidth = [firstPix pwidth];
+                long moviePixHeight = [firstPix pheight];
+                
+                enableSubtraction = TRUE;
+                //if (moviePixWidth == moviePixHeight) enableSubtraction = TRUE;
+                
+                for( DCMPix *pix in [pixListArray objectAtIndex: 0])
+                {
+                    if ( moviePixWidth != [pix pwidth]) enableSubtraction = FALSE;
+                    if ( moviePixHeight != [pix pheight]) enableSubtraction = FALSE;
+                }
+            }
+        }
+        
+        [self enableSubtraction];
+        
+#pragma mark PET
+        
+        BOOL isPET = NO;
+        
+        if( [[firstPix modalityString] isEqualToString: @"PT"])
+            isPET = YES;
+        
+        if( isPET || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[firstPix modalityString] isEqualToString:@"NM"]))
+        {
+            if( [[NSUserDefaults standardUserDefaults] integerForKey:@"DEFAULTPETWLWW"] != 0)
+                [imageView updatePresentationStateFromSeries];
+        }
+        
+        if( isPET)
+        {
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"])
+            {
+                [self convertPETtoSUV];
+                [imageView setStartWLWW];
+            }
+        }
+        
+        if( firstPix.shutterEnabled)
+            [self setShutterOnOffButton: [NSNumber numberWithBool: YES]];
+        
+        [self setWindowTitle:self];
+        
+        originalOrientation = -1;
+        [self computeIntervalAsync];
+        
+        [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:OsirixViewerControllerDidLoadImagesNotification object:self]];
+        
+        ///////
+        
         [loadingThread cancel];
         [loadingThread autorelease];
         loadingThread = nil;
     }
-    
-    if( [[dict objectForKey: @"pixListArray"] objectAtIndex: 0] != pixList[ 0])
-        return;
-    
-    NSArray *pixListArray = [dict objectForKey: @"pixListArray"];
-    DCMPix *firstPix = [[pixListArray objectAtIndex: 0] objectAtIndex: 0];
-    
-#pragma mark modality dependant code, once images are already displayed in 2D viewer
-    
-    for( NSArray *pList in pixListArray)
-    {
-        for( DCMPix *p in pList)
-        {
-            [p setMaxValueOfSeries: 0];
-            [p setMinValueOfSeries: 0];
-        }
-    }
-    
-#pragma mark XA
-    enableSubtraction = FALSE;
-    subCtrlMinMaxComputed = NO;
-    if([[firstPix modalityString] isEqualToString:@"XA"])
-    {
-        if([[pixListArray objectAtIndex: 0] count] > 1)
-        {
-            long moviePixWidth = [firstPix pwidth];
-            long moviePixHeight = [firstPix pheight];
-            
-            enableSubtraction = TRUE;
-            //if (moviePixWidth == moviePixHeight) enableSubtraction = TRUE;
-            
-            for( DCMPix *pix in [pixListArray objectAtIndex: 0])
-            {
-                if ( moviePixWidth != [pix pwidth]) enableSubtraction = FALSE;
-                if ( moviePixHeight != [pix pheight]) enableSubtraction = FALSE;
-            }
-        }
-    }
-    
-    [self enableSubtraction];
-    
-#pragma mark PET
-    
-    BOOL isPET = NO;
-    
-    if( [[firstPix modalityString] isEqualToString: @"PT"])
-        isPET = YES;
-    
-    if( isPET || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[firstPix modalityString] isEqualToString:@"NM"]))
-    {
-        if( [[NSUserDefaults standardUserDefaults] integerForKey:@"DEFAULTPETWLWW"] != 0)
-            [imageView updatePresentationStateFromSeries];
-    }
-    
-    if( isPET)
-    {
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"])
-        {
-            [self convertPETtoSUV];
-            [imageView setStartWLWW];
-        }
-    }
-    
-    if( firstPix.shutterEnabled)
-        [self setShutterOnOffButton: [NSNumber numberWithBool: YES]];
-    
-    [self setWindowTitle:self];
-    
-    originalOrientation = -1;
-    [self computeIntervalAsync];
-    
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:OsirixViewerControllerDidLoadImagesNotification object:self]];
 }
 
 
@@ -9049,7 +9060,6 @@ static int avoidReentryRefreshDatabase = 0;
         
         [NSThread currentThread].name = @"Load Image Data";
         
-        
         @try {
             DCMPix *firstPix = [[pixListArray objectAtIndex: 0] objectAtIndex: 0];
             
@@ -9083,12 +9093,20 @@ static int avoidReentryRefreshDatabase = 0;
                     
                     if( [NSDate timeIntervalSinceReferenceDate] - lastSet > 0.3)
                     {
-                        @synchronized( [NSThread currentThread])
+                        BOOL isExecuting = YES;
+                        @synchronized( viewer->loadingThread)
                         {
-                            [[NSThread currentThread].threadDictionary setObject: [NSNumber numberWithFloat: percentage] forKey: @"loadingPercentage"];
+                            isExecuting = [viewer->loadingThread isExecuting];
                         }
                         
-                        if( [[NSThread currentThread] isCancelled])
+                        if (isExecuting)
+                        {
+                            @synchronized( [NSThread currentThread])
+                            {
+                                [[NSThread currentThread].threadDictionary setObject: [NSNumber numberWithFloat: percentage] forKey: @"loadingPercentage"];
+                            }
+                        }
+                        else
                         {
                             [NSThread currentThread].progress = -1;
                             [NSThread currentThread].status = NSLocalizedString( @"Cancelling...", nil);
@@ -9118,57 +9136,100 @@ static int avoidReentryRefreshDatabase = 0;
             
             queue.maxConcurrentOperationCount = mpprocessors;
             
-            while( viewer.window.isVisible == NO && [[NSThread currentThread] isCancelled] == NO)
+            BOOL isExecuting = YES;
+            @synchronized( viewer->loadingThread)
+            {
+                isExecuting = [viewer->loadingThread isExecuting];
+            }
+            
+            while(isExecuting && viewer.window.isVisible == NO)
+            {
                 [NSThread sleepForTimeInterval: 0.01];
+                @synchronized( viewer->loadingThread)
+                {
+                    isExecuting = [viewer->loadingThread isExecuting];
+                }
+            }
             
             for( NSArray *a in pixListArray)
             {
                 for( DCMPix *p in a)
-                    [queue addOperationWithBlock: ^ {[p CheckLoad];}];
+                {
+                    @synchronized( viewer->loadingThread)
+                    {
+                        isExecuting = ([viewer->loadingThread isExecuting] && [viewer->loadingThread isCancelled] == NO);
+                    }
+                    
+                    if (isExecuting)
+                    {
+                        [queue addOperationWithBlock: ^ {[p CheckLoadFromThread:viewer->loadingThread];}];
+                    }
+                }
             }
             
-            while (queue.operationCount)
+            @synchronized( viewer->loadingThread)
             {
-                if( [[NSThread currentThread] isCancelled])
+                isExecuting = [viewer->loadingThread isExecuting];
+            }
+            
+            while (queue.operationCount && isExecuting)
+            {
+                @synchronized( viewer->loadingThread)
+                {
+                    isExecuting = [viewer->loadingThread isExecuting];
+                }
+                
+                if(!isExecuting)
                 {
                     [NSThread currentThread].progress = -1;
                     [NSThread currentThread].status = NSLocalizedString( @"Cancelling...", nil);
                     [queue cancelAllOperations];
                     break;
                 }
-                
-                float percentage = (float) queue.operationCount / (float) maxPix;
-                
-                @synchronized( [NSThread currentThread])
+                else
                 {
-                    [[NSThread currentThread].threadDictionary setObject: [NSNumber numberWithFloat: 1.0 - percentage] forKey: @"loadingPercentage"];
+                    float percentage = (float) queue.operationCount / (float) maxPix;
+                    @synchronized( [NSThread currentThread])
+                    {
+                        [[NSThread currentThread].threadDictionary setObject: [NSNumber numberWithFloat: 1.0 - percentage] forKey: @"loadingPercentage"];
+                    }
+                    [NSThread sleepForTimeInterval:0.1];
                 }
-                
-                [NSThread sleepForTimeInterval:0.1];
             }
             
             [queue waitUntilAllOperationsAreFinished];
         }
         
-        if( [[NSThread currentThread] isCancelled] == YES)
+        BOOL isExecuting = YES;
+        @synchronized( viewer->loadingThread)
+        {
+            isExecuting = [viewer->loadingThread isExecuting];
+        }
+        
+        if(!isExecuting)
         {
             [NSThread sleepForTimeInterval: 0.2];
             NSLog( @"Load Image Thread cancelled");
         }
         
-        if( [[NSThread currentThread] isCancelled] == YES)
-            return;
-        
-        @synchronized( [NSThread currentThread])
+        @synchronized( viewer->loadingThread)
         {
-            [[NSThread currentThread].threadDictionary setObject: [NSNumber numberWithFloat: 1.0] forKey: @"loadingPercentage"];
+            isExecuting = [viewer->loadingThread isExecuting];
         }
         
-        if( [[NSThread currentThread] isCancelled] == NO)
+        if (isExecuting)
         {
-            [viewer computeOriginalOrientation];
+            @synchronized( [NSThread currentThread])
+            {
+                [[NSThread currentThread].threadDictionary setObject: [NSNumber numberWithFloat: 1.0] forKey: @"loadingPercentage"];
+            }
             
+            [viewer computeOriginalOrientation];
             [viewer performSelectorOnMainThread: @selector(finishLoadImageData:) withObject: dict waitUntilDone: NO];
+        }
+        else
+        {
+            return;
         }
     }
     
@@ -21668,7 +21729,7 @@ static float oldsetww, oldsetwl;
         @synchronized( loadingThread)
         {
             if( loadingThread)
-                return loadingThread.isFinished;
+                return !loadingThread.isExecuting;
         }
     }
     
@@ -21685,7 +21746,7 @@ static float oldsetww, oldsetwl;
     @synchronized( loadingThread)
     {
         if( loadingThread)
-            isExecuting = !(loadingThread.isFinished);
+            isExecuting = loadingThread.isExecuting;
         else
             isExecuting = NO;
     }
@@ -21711,7 +21772,7 @@ static float oldsetww, oldsetwl;
                     percentage = [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] * 100.;
                 }
                 
-                if( percentage != lastPercentage)
+                if(isExecuting && percentage != lastPercentage)
                 {
                     [self setWindowTitle: self];
                     [[self window] display];

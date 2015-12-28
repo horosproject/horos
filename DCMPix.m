@@ -8040,6 +8040,38 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 }
 #pragma GCC diagnostic warning "-Wdeprecated-declarations"
 
+-(void) CheckLoadFromThread:(NSThread*) loadingThread
+{
+    @autoreleasepool
+    {
+        @synchronized(loadingThread)
+        {
+            if ([loadingThread isExecuting] == NO || [loadingThread isCancelled] || [loadingThread isFinished])
+                return;
+        }
+        
+        // uses DCMPix class variable NSString *sourceFile to load (CheckLoadIn method), for the first time or again, an fImage or oImage....
+        
+        [checking lock];
+        
+        @try
+        {
+            [self CheckLoadIn];
+        }
+        @catch (NSException *ne)
+        {
+            NSLog( @"CheckLoad Exception");
+            NSLog( @"Exception : %@", [ne description]);
+            NSLog( @"Exception for this file: %@", srcFile);
+        }
+        @finally {
+            [checking unlock];
+        }
+    }
+}
+
+
+
 -(void) CheckLoad
 {
     @autoreleasepool
