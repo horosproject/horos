@@ -1293,7 +1293,8 @@ PixelRepresentation
 }
 
 - (DCMAttribute *)attributeForTag:(DCMAttributeTag *)tag{
-	return [attributes objectForKey: tag.stringValue];
+    DCMAttribute* result = [attributes objectForKey: tag.stringValue];
+    return result;
 }
 
 - (DCMAttribute *)attributeWithName:(NSString *)name{
@@ -1301,7 +1302,8 @@ PixelRepresentation
 }
 
 - (id)attributeValueWithName:(NSString *)name{
-	return [[self attributeForTag:[DCMAttributeTag tagWithName:name]] value];
+    id value = [[self attributeForTag:[DCMAttributeTag tagWithName:name]] value];
+    return value;
 }
 
 - (id)attributeValueForKey:(NSString *)key{

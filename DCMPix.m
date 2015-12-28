@@ -6148,16 +6148,33 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         {
             @try
             {
-                oRows = [[dcmObject attributeValueWithName: @"OverlayRows"] intValue];
-                oColumns = [[dcmObject attributeValueWithName: @"OverlayColumns"] intValue];
-                oType = [[dcmObject attributeValueWithName: @"OverlayType"] characterAtIndex: 0];
+                if ([dcmObject attributeValueWithName: @"OverlayRows"])
+                    if ([[dcmObject attributeValueWithName: @"OverlayRows"] isKindOfClass:[NSNumber class]])
+                        oRows = [[dcmObject attributeValueWithName: @"OverlayRows"] intValue];
                 
-                oOrigin[ 0] = [[[dcmObject attributeArrayWithName: @"OverlayOrigin"] objectAtIndex: 0] intValue] -1;
-                oOrigin[ 1] = [[[dcmObject attributeArrayWithName: @"OverlayOrigin"] objectAtIndex: 1] intValue] -1;
+                if ([dcmObject attributeValueWithName: @"OverlayColumns"])
+                    if ([[dcmObject attributeValueWithName: @"OverlayColumns"] isKindOfClass:[NSNumber class]])
+                        oColumns = [[dcmObject attributeValueWithName: @"OverlayColumns"] intValue];
                 
-                oBits = [[dcmObject attributeValueWithName: @"OverlayBitsAllocated"] intValue];
+                if ([dcmObject attributeValueWithName: @"OverlayType"])
+                    if ([[dcmObject attributeValueWithName: @"OverlayType"] isKindOfClass:[NSString class]])
+                        oType = [[dcmObject attributeValueWithName: @"OverlayType"] characterAtIndex: 0];
                 
-                oBitPosition = [[dcmObject attributeValueWithName: @"OverlayBitPosition"] intValue];
+                if ([dcmObject attributeArrayWithName: @"OverlayOrigin"] &&
+                    [[dcmObject attributeArrayWithName: @"OverlayOrigin"] isKindOfClass:[NSArray class]] &&
+                    [[dcmObject attributeArrayWithName: @"OverlayOrigin"] count] >= 2)
+                {
+                    oOrigin[ 0] = [[[dcmObject attributeArrayWithName: @"OverlayOrigin"] objectAtIndex: 0] intValue] -1;
+                    oOrigin[ 1] = [[[dcmObject attributeArrayWithName: @"OverlayOrigin"] objectAtIndex: 1] intValue] -1;
+                }
+                
+                if ([dcmObject attributeValueWithName: @"OverlayBitsAllocated"])
+                    if ([[dcmObject attributeValueWithName: @"OverlayBitsAllocated"] isKindOfClass:[NSNumber class]])
+                        oBits = [[dcmObject attributeValueWithName: @"OverlayBitsAllocated"] intValue];
+                
+                if ([dcmObject attributeValueWithName: @"OverlayBitPosition"])
+                    if ([[dcmObject attributeValueWithName: @"OverlayBitPosition"] isKindOfClass:[NSNumber class]])
+                        oBitPosition = [[dcmObject attributeValueWithName: @"OverlayBitPosition"] intValue];
                 
                 NSData	*data = [dcmObject attributeValueWithName: @"OverlayData"];
                 
