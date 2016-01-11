@@ -196,7 +196,8 @@ static const NSInteger labelHeight = 38, labelSeparator = 3;
 }
 
 -(void)buttonAction:(NSButton*)sender {
-	[[self buttonActionTarget] performSelector:[self buttonActionSelector] withObject:[[sender cell] representedObject]];
+    if ([[self buttonActionTarget] respondsToSelector:[self buttonActionSelector]])
+        [[self buttonActionTarget] performSelector:[self buttonActionSelector] withObject:[[sender cell] representedObject]];
 }
 
 -(NSUInteger)itemsCount {
