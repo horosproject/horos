@@ -1,34 +1,35 @@
 /*=========================================================================
- Program:   OsiriX
- 
- Copyright (c) OsiriX Team
- All rights reserved.
- Distributed under GNU - LGPL
- 
- See http://www.osirix-viewer.com/copyright.html for details.
- 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.
- ---------------------------------------------------------------------------
- 
- This file is part of the Horos Project.
- 
- Current contributors to the project include Alex Bettarini and Danny Weissman.
+ This file is part of the Horos Project (www.horosproject.org)
  
  Horos is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation,  version 3 of the License.
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation, Êversion 3 of the License.
  
- Horos is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+ Portions of the Horos Project were originally licensed under the GNU GPL license.
+ However, all authors of that software have agreed to modify the license to the
+ GNU LGPL.
  
- You should have received a copy of the GNU General Public License
- along with Horos.  If not, see <http://www.gnu.org/licenses/>.
+ Horos is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY EXPRESS OR IMPLIED, INCLUDING ANY WARRANTY OF
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE OR USE. ÊSee the
+ GNU Lesser General Public License for more details.
  
- =========================================================================*/
+ You should have received a copy of the GNU Lesser General Public License
+ along with Horos. ÊIf not, see http://www.gnu.org/licenses/lgpl.html
+ 
+ Prior versions of this file were published by the OsiriX team pursuant to
+ the below notice and licensing protocol.
+ ============================================================================
+ Program: Ê OsiriX
+ ÊCopyright (c) OsiriX Team
+ ÊAll rights reserved.
+ ÊDistributed under GNU - LGPL
+ Ê
+ ÊSee http://www.osirix-viewer.com/copyright.html for details.
+ Ê Ê This software is distributed WITHOUT ANY WARRANTY; without even
+ Ê Ê the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ Ê Ê PURPOSE.
+ ============================================================================*/
 
 #import "DCMPix.h"
 #import "DicomImage.h"
@@ -6147,16 +6148,33 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         {
             @try
             {
-                oRows = [[dcmObject attributeValueWithName: @"OverlayRows"] intValue];
-                oColumns = [[dcmObject attributeValueWithName: @"OverlayColumns"] intValue];
-                oType = [[dcmObject attributeValueWithName: @"OverlayType"] characterAtIndex: 0];
+                if ([dcmObject attributeValueWithName: @"OverlayRows"])
+                    if ([[dcmObject attributeValueWithName: @"OverlayRows"] isKindOfClass:[NSNumber class]])
+                        oRows = [[dcmObject attributeValueWithName: @"OverlayRows"] intValue];
                 
-                oOrigin[ 0] = [[[dcmObject attributeArrayWithName: @"OverlayOrigin"] objectAtIndex: 0] intValue] -1;
-                oOrigin[ 1] = [[[dcmObject attributeArrayWithName: @"OverlayOrigin"] objectAtIndex: 1] intValue] -1;
+                if ([dcmObject attributeValueWithName: @"OverlayColumns"])
+                    if ([[dcmObject attributeValueWithName: @"OverlayColumns"] isKindOfClass:[NSNumber class]])
+                        oColumns = [[dcmObject attributeValueWithName: @"OverlayColumns"] intValue];
                 
-                oBits = [[dcmObject attributeValueWithName: @"OverlayBitsAllocated"] intValue];
+                if ([dcmObject attributeValueWithName: @"OverlayType"])
+                    if ([[dcmObject attributeValueWithName: @"OverlayType"] isKindOfClass:[NSString class]])
+                        oType = [[dcmObject attributeValueWithName: @"OverlayType"] characterAtIndex: 0];
                 
-                oBitPosition = [[dcmObject attributeValueWithName: @"OverlayBitPosition"] intValue];
+                if ([dcmObject attributeArrayWithName: @"OverlayOrigin"] &&
+                    [[dcmObject attributeArrayWithName: @"OverlayOrigin"] isKindOfClass:[NSArray class]] &&
+                    [[dcmObject attributeArrayWithName: @"OverlayOrigin"] count] >= 2)
+                {
+                    oOrigin[ 0] = [[[dcmObject attributeArrayWithName: @"OverlayOrigin"] objectAtIndex: 0] intValue] -1;
+                    oOrigin[ 1] = [[[dcmObject attributeArrayWithName: @"OverlayOrigin"] objectAtIndex: 1] intValue] -1;
+                }
+                
+                if ([dcmObject attributeValueWithName: @"OverlayBitsAllocated"])
+                    if ([[dcmObject attributeValueWithName: @"OverlayBitsAllocated"] isKindOfClass:[NSNumber class]])
+                        oBits = [[dcmObject attributeValueWithName: @"OverlayBitsAllocated"] intValue];
+                
+                if ([dcmObject attributeValueWithName: @"OverlayBitPosition"])
+                    if ([[dcmObject attributeValueWithName: @"OverlayBitPosition"] isKindOfClass:[NSNumber class]])
+                        oBitPosition = [[dcmObject attributeValueWithName: @"OverlayBitPosition"] intValue];
                 
                 NSData	*data = [dcmObject attributeValueWithName: @"OverlayData"];
                 
@@ -6272,7 +6290,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             DCMObject *detectorInformation = [detectorInformationSequence.sequence objectAtIndex:0];
             
             NSArray *ipp = [detectorInformation attributeArrayWithName:@"ImagePositionPatient"];
-            if( ipp)
+            if( ipp && [ipp count] >= 3)
             {
                 originX = [[ipp objectAtIndex:0] doubleValue];
                 originY = [[ipp objectAtIndex:1] doubleValue];
@@ -8021,6 +8039,38 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     }
 }
 #pragma GCC diagnostic warning "-Wdeprecated-declarations"
+
+-(void) CheckLoadFromThread:(NSThread*) loadingThread
+{
+    @autoreleasepool
+    {
+        @synchronized(loadingThread)
+        {
+            if ([loadingThread isExecuting] == NO || [loadingThread isCancelled] || [loadingThread isFinished])
+                return;
+        }
+        
+        // uses DCMPix class variable NSString *sourceFile to load (CheckLoadIn method), for the first time or again, an fImage or oImage....
+        
+        [checking lock];
+        
+        @try
+        {
+            [self CheckLoadIn];
+        }
+        @catch (NSException *ne)
+        {
+            NSLog( @"CheckLoad Exception");
+            NSLog( @"Exception : %@", [ne description]);
+            NSLog( @"Exception for this file: %@", srcFile);
+        }
+        @finally {
+            [checking unlock];
+        }
+    }
+}
+
+
 
 -(void) CheckLoad
 {

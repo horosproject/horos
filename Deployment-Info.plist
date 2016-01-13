@@ -177,7 +177,7 @@
 	<key>CFBundleExecutable</key>
 	<string>Horos</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Horos v1.1.3</string>
+	<string>Horos v1.1.5</string>
 	<key>CFBundleIconFile</key>
 	<string>Horos.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -189,7 +189,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1.3</string>
+	<string>1.1.5</string>
 	<key>CFBundleSignature</key>
 	<string>OsiX</string>
 	<key>CFBundleURLTypes</key>
@@ -208,7 +208,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>20151114</string>
+	<string>20160112</string>
 	<key>GitHash</key>
 	<string></string>
 	<key>GitState</key>
@@ -224,9 +224,9 @@
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Your account will be used for the built-in iChat sharing service. If you don&apos;t allow access, you cannot use the iChat functions.</string>
+	<string>Your account will be used for the built-in iChat sharing service. If you don't allow access, you cannot use the iChat functions.</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright 2015, The Horos Project</string>
+	<string>Copyright 2016, The Horos Project</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

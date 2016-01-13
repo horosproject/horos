@@ -35,6 +35,7 @@ Binaries/GDCMHeaders/
 Binaries/GDCMLibs/
 Binaries/weasis/
 Binaries/._OsiriX Report.template
+Binaries/FeedbackReporter.framework/
 options.h
 url.h
 
@@ -44,4 +45,6 @@ xcuserdata/
 DerivedData/
 
 *.xcworkspacedata
+
+
 
