@@ -3160,6 +3160,8 @@ static volatile int numberOfThreadsForRelisce = 0;
         [loadingThread cancel];
     }
     
+    requestLoadingCancel = YES;
+    
     BOOL isExecuting = NO;
     do {
         @synchronized( loadingThread) {
@@ -8875,7 +8877,7 @@ static int avoidReentryRefreshDatabase = 0;
 {
     @synchronized( loadingThread)
     {
-        if ([loadingThread isExecuting] == NO || [loadingThread isCancelled])
+        if ([loadingThread isExecuting] == NO || [loadingThread isCancelled] || requestLoadingCancel)
             return;
         
         if( [[dict objectForKey: @"pixListArray"] objectAtIndex: 0] != pixList[ 0])
@@ -9096,7 +9098,7 @@ static int avoidReentryRefreshDatabase = 0;
                         BOOL isExecuting = YES;
                         @synchronized( viewer->loadingThread)
                         {
-                            isExecuting = [viewer->loadingThread isExecuting];
+                            isExecuting = ([viewer->loadingThread isExecuting] && viewer->requestLoadingCancel == NO);
                         }
                         
                         if (isExecuting)
@@ -9139,7 +9141,7 @@ static int avoidReentryRefreshDatabase = 0;
             BOOL isExecuting = YES;
             @synchronized( viewer->loadingThread)
             {
-                isExecuting = [viewer->loadingThread isExecuting];
+                isExecuting = ([viewer->loadingThread isExecuting] && viewer->requestLoadingCancel);
             }
             
             while(isExecuting && viewer.window.isVisible == NO)
@@ -9203,7 +9205,7 @@ static int avoidReentryRefreshDatabase = 0;
         BOOL isExecuting = YES;
         @synchronized( viewer->loadingThread)
         {
-            isExecuting = [viewer->loadingThread isExecuting];
+            isExecuting = ([viewer->loadingThread isExecuting] && viewer->requestLoadingCancel);
         }
         
         if(!isExecuting)

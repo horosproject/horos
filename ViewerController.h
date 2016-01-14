@@ -299,6 +299,7 @@ enum
 	DICOMExport				*exportDCM;
 	
 	BOOL					windowWillClose;
+    BOOL                    requestLoadingCancel;
 	BOOL					postprocessed;
 	
 	NSRect					standardRect;
