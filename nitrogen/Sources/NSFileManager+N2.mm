@@ -99,14 +99,30 @@
     
 	BOOL isDir, create = NO;
 	NSError* error = NULL;
-	
+    
+    //NSLog(@"==> %@",dirPath);
+    
 	if (![self fileExistsAtPath:dirPath isDirectory:&isDir])
 		create = YES;
-	else if (!isDir) {
-		[self removeItemAtPath:dirPath error:&error];
-		if (error) [NSException raise:NSGenericException format:@"Couldn't unlink file: %@", [error localizedDescription]];
-		create = YES;
-	}
+	else
+    {
+        if (!isDir)
+        {
+            if ([dirPath isEqualToString:@"/tmp"] == NO)
+            {
+                [self removeItemAtPath:dirPath error:&error];
+                
+                if (error)
+                    [NSException raise:NSGenericException format:@"Couldn't unlink file: %@ - %@", dirPath, [error localizedDescription]];
+                
+                create = YES;
+            }
+            else
+            {
+                NSLog(@"/tmp issue workaround");
+            }
+        }
+    }
 	
 	if (create) {
 		[self createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:NULL error:&error];
