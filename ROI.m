@@ -2072,8 +2072,8 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 //					else
 					{
 						bitmap = [[NSBitmapImageRep alloc] initWithData:[layerImage TIFFRepresentation]];
-						width = [layerImage size].width;
-						height = [layerImage size].height;
+                        width = bitmap.pixelsWide;
+                        height = bitmap.pixelsHigh;
 					}
 					
 					// base vectors of the layer image coordinate system
