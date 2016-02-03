@@ -7200,58 +7200,13 @@ NSInteger sortPointArrayAlongX(id point1, id point2, void *context)
 
 - (BOOL)isPoint:(NSPoint)point inRectDefinedByPointA:(NSPoint)pointA pointB:(NSPoint)pointB pointC:(NSPoint)pointC pointD:(NSPoint)pointD;
 {
-	// sorting points along axis x
-	NSPoint p1, p2, p3, p4, tempPoint;
-	NSArray *pointsList = [NSArray arrayWithObjects:[NSValue valueWithPoint:pointA], [NSValue valueWithPoint:pointB], [NSValue valueWithPoint:pointC], [NSValue valueWithPoint:pointD], nil];
-	NSArray *sortedPoints = [pointsList sortedArrayUsingFunction:sortPointArrayAlongX context:NULL];
-	p1 = [[sortedPoints objectAtIndex:0] pointValue];
-	p2 = [[sortedPoints objectAtIndex:1] pointValue];
-	p3 = [[sortedPoints objectAtIndex:2] pointValue];
-	p4 = [[sortedPoints objectAtIndex:3] pointValue];
-
-	if(p2.y > p3.y)
-	{
-		tempPoint = p2;
-		p2 = p3;
-		p3 = tempPoint;
-	}
-	
-	if(p1.x==p2.x || p1.x==p3.x) // no rotation...
-	{
-		float minX = p1.x;
-		float maxX = p4.x;
-
-		float minY = p1.y;
-		if(p2.y<minY) minY = p2.y;
-		if(p4.y<minY) minY = p4.y;
-
-		float maxY = p1.y;
-		if(p2.y>maxY) maxY = p2.y;
-		if(p4.y>maxY) maxY = p4.y;
-
-		return (point.x>=minX && point.x<=maxX && point.y<=maxY && point.y>=minY);
-	}
-	
-	float a, b; // y = ax+b
-	
-	// line between p1 and p2
-	a = (p2.y-p1.y) / (p2.x-p1.x);
-	b = p1.y - a * p1.x;
-	float y1 = a * point.x + b;
-	// line between p1 and p3
-	a = (p3.y-p1.y) / (p3.x-p1.x);
-	b = p1.y - a * p1.x;
-	float y2 = a * point.x + b;
-	// line between p4 and p2
-	a = (p2.y-p4.y) / (p2.x-p4.x);
-	b = p4.y - a * p4.x;
-	float y3 = a * point.x + b;
-	// line between p4 and p3
-	a = (p3.y-p4.y) / (p3.x-p4.x);
-	b = p4.y - a * p4.x;
-	float y4 = a * point.x + b;
-	
-	return (point.y>=y1 && point.y<=y2 && point.y>=y3 && point.y<=y4);
+    NSBezierPath* path = [NSBezierPath bezierPath];
+    [path moveToPoint:pointA];
+    [path lineToPoint:pointB];
+    [path lineToPoint:pointC];
+    [path lineToPoint:pointD];
+    [path closePath];
+    return [path containsPoint:point];
 }
 
 - (NSPoint)rotatePoint:(NSPoint)point withAngle:(float)alpha aroundCenter:(NSPoint)center;
