@@ -3161,6 +3161,8 @@ static volatile int numberOfThreadsForRelisce = 0;
     }
     
     requestLoadingCancel = YES;
+    if (blendingController)
+        self.blendingController->requestLoadingCancel = YES;
     
     BOOL isExecuting = NO;
     do {
@@ -8877,7 +8879,7 @@ static int avoidReentryRefreshDatabase = 0;
 {
     @synchronized( loadingThread)
     {
-        if ([loadingThread isExecuting] == NO || [loadingThread isCancelled] || requestLoadingCancel)
+        if (requestLoadingCancel)
             return;
         
         if( [[dict objectForKey: @"pixListArray"] objectAtIndex: 0] != pixList[ 0])
@@ -9141,7 +9143,7 @@ static int avoidReentryRefreshDatabase = 0;
             BOOL isExecuting = YES;
             @synchronized( viewer->loadingThread)
             {
-                isExecuting = ([viewer->loadingThread isExecuting] && viewer->requestLoadingCancel);
+                isExecuting = ([viewer->loadingThread isExecuting] && viewer->requestLoadingCancel == NO);
             }
             
             while(isExecuting && viewer.window.isVisible == NO)
@@ -9205,13 +9207,13 @@ static int avoidReentryRefreshDatabase = 0;
         BOOL isExecuting = YES;
         @synchronized( viewer->loadingThread)
         {
-            isExecuting = ([viewer->loadingThread isExecuting] && viewer->requestLoadingCancel);
+            isExecuting = ([viewer->loadingThread isExecuting] && viewer->requestLoadingCancel == NO);
         }
         
         if(!isExecuting)
         {
             [NSThread sleepForTimeInterval: 0.2];
-            NSLog( @"Load Image Thread cancelled");
+            NSLog( @"Load Image Thread exiting");
         }
         
         @synchronized( viewer->loadingThread)
@@ -21748,7 +21750,7 @@ static float oldsetww, oldsetwl;
     @synchronized( loadingThread)
     {
         if( loadingThread)
-            isExecuting = loadingThread.isExecuting;
+            isExecuting = loadingThread.isExecuting && requestLoadingCancel == NO;
         else
             isExecuting = NO;
     }
@@ -21770,7 +21772,7 @@ static float oldsetww, oldsetwl;
                 
                 @synchronized( loadingThread)
                 {
-                    isExecuting = loadingThread.isExecuting;
+                    isExecuting = loadingThread.isExecuting && requestLoadingCancel == NO;
                     percentage = [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] * 100.;
                 }
                 
@@ -21793,11 +21795,12 @@ static float oldsetww, oldsetwl;
         
         checkEverythingLoaded = NO;
         
-        if( blendingController)
+        if (blendingController && blendingController->requestLoadingCancel == NO)
             [blendingController checkEverythingLoaded];
     }
     
-    [self computeInterval];
+    if (windowWillClose == NO && requestLoadingCancel == NO)
+        [self computeInterval];
 }
 
 -(void) executeRevert
