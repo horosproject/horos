@@ -8877,8 +8877,9 @@ static int avoidReentryRefreshDatabase = 0;
 {
     @synchronized( loadingThread)
     {
-        if ([loadingThread isExecuting] == NO || [loadingThread isCancelled] || requestLoadingCancel)
-            return;
+        // warning: disabled following 2 lines because they break the whole OSIROI system by never dispatching the OsirixViewerControllerDidLoadImagesNotification (and by not doing everything this method does...)
+//        if ([loadingThread isExecuting] == NO || [loadingThread isCancelled] || requestLoadingCancel)
+//            return;
         
         if( [[dict objectForKey: @"pixListArray"] objectAtIndex: 0] != pixList[ 0])
         {
