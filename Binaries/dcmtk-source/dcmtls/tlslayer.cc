@@ -192,13 +192,13 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(int networkRole, const char *randFile
    switch (networkRole)
    {
      case DICOM_APPLICATION_ACCEPTOR: 
-       method = TLSv1_server_method();
+       method = (SSL_METHOD *)TLSv1_server_method();
        break;
      case DICOM_APPLICATION_REQUESTOR:
-       method = TLSv1_client_method();
+       method = (SSL_METHOD *)TLSv1_client_method();
        break;
      default:
-       method = TLSv1_method();
+       method = (SSL_METHOD *)TLSv1_method();
        break;
    }
    transportLayerContext = SSL_CTX_new(method);
