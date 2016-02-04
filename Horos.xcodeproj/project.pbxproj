@@ -16611,7 +16611,7 @@
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_LDFLAGS = "";
-				SDKROOT = macosx;
+				SDKROOT = macosx10.8;
 			};
 			name = Deployment;
 		};
@@ -17332,7 +17332,7 @@
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_LDFLAGS = "";
-				SDKROOT = macosx;
+				SDKROOT = macosx10.8;
 			};
 			name = Development;
 		};
