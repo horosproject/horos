@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6254"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="BurnerWindowController">
@@ -36,7 +36,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="10">
+                    <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="10">
                         <rect key="frame" x="116" y="366" width="362" height="22"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="362" id="CNw-EO-wCw"/>
@@ -71,7 +71,7 @@ DQ
                     <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="25">
                         <rect key="frame" x="114" y="231" width="228" height="58"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="234" height="18"/>
+                        <size key="cellSize" width="227" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="72">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -104,7 +104,7 @@ DQ
                     <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="159">
                         <rect key="frame" x="114" y="165" width="126" height="58"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="128" height="18"/>
+                        <size key="cellSize" width="125" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Save as DMG file" imagePosition="left" alignment="left" tag="2" inset="2" id="169">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -138,7 +138,7 @@ DQ
                             <binding destination="38" name="selectedTag" keyPath="values.burnDestination" id="165"/>
                         </connections>
                     </matrix>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="29">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="29">
                         <rect key="frame" x="21" y="272" width="90" height="17"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Compression:" id="62">
                             <font key="font" metaFont="system"/>
@@ -162,7 +162,7 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="34">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="34">
                         <rect key="frame" x="122" y="331" width="350" height="14"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="346" id="qpO-Sa-MCX"/>

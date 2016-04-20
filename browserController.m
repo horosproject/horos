@@ -9337,13 +9337,24 @@ static BOOL withReset = NO;
             {
                 NSInteger rows, cols; [oMatrix getNumberOfRows:&rows columns:&cols]; if( cols < 1) cols = 1;
                 NSButtonCell* cell = [oMatrix cellAtRow:i/cols column:i%cols];
-                [cell setTransparent:NO];
-                [cell setEnabled:YES];
+                
                 [cell setLineBreakMode: NSLineBreakByCharWrapping];
                 [cell setFont:[NSFont systemFontOfSize: [self fontSize: @"dbMatrixFont"]]];
-                [cell setImagePosition: NSImageBelow];
-                [cell setAction: @selector(matrixPressed:)];
+                
                 [cell setRepresentedObject: [curFile objectID]];
+
+                [cell setImagePosition: NSImageBelow];
+                [cell setTransparent:NO];
+                [cell setEnabled:YES];
+
+                [cell setButtonType:NSPushOnPushOffButton];
+                [cell setBezelStyle:NSShadowlessSquareBezelStyle];
+                [cell setShowsStateBy:NSPushInCellMask];
+                [cell setHighlightsBy:NSContentsCellMask];
+                [cell setImageScaling:NSImageScaleProportionallyDown];
+                [cell setBordered:YES];
+                
+                [cell setAction: @selector(matrixPressed:)];
                 
                 if ( [modality isEqualToString: @"RTSTRUCT"])
                 {
@@ -9435,9 +9446,18 @@ static BOOL withReset = NO;
                 
                 switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"dbFontSize"])
                 {
-                    case -1: [cell setImage: [img imageByScalingProportionallyUsingNSImage: 0.6]]; break;
-                    case 0: [cell setImage: img]; break;
-                    case 1: [cell setImage: [img imageByScalingProportionallyUsingNSImage: 1.3]]; break;
+                    case -1:
+                        [cell setImage: [img imageByScalingProportionallyUsingNSImage: 0.6]];
+                        [cell setAlternateImage: [img imageByScalingProportionallyUsingNSImage: 0.6]];
+                        break;
+                    case 0:
+                        [cell setImage: img];
+                        [cell setAlternateImage:img];
+                        break;
+                    case 1:
+                        [cell setImage: [img imageByScalingProportionallyUsingNSImage: 1.3]];
+                        [cell setAlternateImage:[img imageByScalingProportionallyUsingNSImage: 1.3]];
+                        break;
                 }
                 
                 if( setDCMDone == NO)
@@ -9461,17 +9481,27 @@ static BOOL withReset = NO;
             {  // Show Error Button
                 NSInteger rows, cols; [oMatrix getNumberOfRows:&rows columns:&cols];  if( cols < 1) cols = 1;
                 NSButtonCell* cell = [oMatrix cellAtRow:i/cols column:i%cols];
-                [cell setImage: nil];
-                [oMatrix setToolTip: NSLocalizedString(@"File not readable", nil) forCell:cell];
-                [cell setTitle: NSLocalizedString(@"File not readable", nil)];
+                
+                [cell setLineBreakMode: NSLineBreakByCharWrapping];
                 [cell setFont:[NSFont systemFontOfSize: [self fontSize: @"dbMatrixFont"]]];
+                
+                [cell setRepresentedObject: nil];
+                
                 [cell setImagePosition: NSImageBelow];
                 [cell setTransparent:NO];
                 [cell setEnabled:NO];
+                
                 [cell setButtonType:NSPushOnPushOffButton];
                 [cell setBezelStyle:NSShadowlessSquareBezelStyle];
+                [cell setShowsStateBy:NSPushInCellMask];
+                [cell setHighlightsBy:NSContentsCellMask];
+                [cell setImageScaling:NSImageScaleProportionallyDown];
+                [cell setBordered:YES];
+                
+                [oMatrix setToolTip: NSLocalizedString(@"File not readable", nil) forCell:cell];
+                [cell setTitle: NSLocalizedString(@"File not readable", nil)];
+                [cell setImage:nil];
                 [cell setTag:i];
-                [cell setRepresentedObject: nil];
             }
         }
         @catch( NSException *ne)

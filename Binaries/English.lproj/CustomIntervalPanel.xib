@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C32" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1070" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="CustomIntervalPanel">
@@ -16,38 +16,22 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="CustomIntervalWindow" animationBehavior="default" id="228" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" utility="YES"/>
             <rect key="contentRect" x="1041" y="633" width="296" height="497"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
             <view key="contentView" id="229">
                 <rect key="frame" x="0.0" y="0.0" width="296" height="497"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="230">
                         <rect key="frame" x="6" y="253" width="277" height="148"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <datePickerCell key="cell" borderStyle="bezel" alignment="left" datePickerStyle="clockAndCalendar" id="258">
                             <font key="font" metaFont="system"/>
                             <calendarDate key="date" timeIntervalSinceReferenceDate="155260800" calendarFormat="%Y-%m-%d %H:%M:%S %z">
                                 <!--2005-12-03 01:00:00 +0100-->
-                                <timeZone key="timeZone" name="Europe/Zurich">
-                                    <data key="data">
-VFppZgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAABAAAAAAAAAB2AAAABAAAAAnKF2oAyuJxAMv3TADMwlMA
-FSPrkBYT3JAXA82QF/O+kBjjr5AZ06CQGsORkBu8vRAcrK4QHZyfEB6MkBAffIEQIGxyECFcYxAiTFQQ
-IzxFECQsNhAlHCcQJgwYECcFQ5An9TSQKOUlkCnVFpAqxQeQK7T4kCyk6ZAtlNqQLoTLkC90vJAwZK2Q
-MV3ZEDJytBAzPbsQNFKWEDUdnRA2MngQNv1/EDgblJA43WEQOft2kDq9QxA721iQPKZfkD27OpA+hkGQ
-P5sckEBmI5BBhDkQQkYFkENkGxBEJeeQRUP9EEYFyZBHI98QR+7mEEkDwRBJzsgQSuOjEEuuqhBMzL+Q
-TY6MEE6soZBPbm4QUIyDkFFXipBSbGWQUzdskFRMR5BVF06QViwpkFb3MJBYFUYQWNcSkFn1KBBatvSQ
-W9UKEFygERBdtOwQXn/zEF+UzhBgX9UQYX3qkGI/txBjXcyQZB+ZEGU9rpBmCLWQZx2QkGfol5Bo/XKQ
-ach5kGrdVJBrqFuQbMZxEG2IPZBuplMQb2gfkHCGNRBxUTwQcmYXEHMxHhB0RfkQdREAEHYvFZB28OIQ
-eA73kHjQxBB57tmQerCmEHvOu5B8mcKQfa6dkH55pJB/jn+QAAEAAQIDAgMCAwIDAgMCAwIDAgMCAwID
-AgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwID
-AgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwAAHCABAAAADhAABQAAHCABAAAADhAABUNF
-U1QAQ0VUAAAAAQEAAAEBA
-</data>
-                                </timeZone>
+                                <timeZone key="timeZone" name="Europe/Zurich"/>
                             </calendarDate>
                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -57,47 +41,30 @@ U1QAQ0VUAAAAAQEAAAEBA
                             <binding destination="-2" name="value" keyPath="self.fromDate" id="948"/>
                         </connections>
                     </datePicker>
-                    <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="231">
+                    <datePicker verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="231">
                         <rect key="frame" x="6" y="42" width="277" height="148"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <datePickerCell key="cell" borderStyle="bezel" alignment="left" datePickerStyle="clockAndCalendar" id="257">
                             <font key="font" metaFont="system"/>
                             <calendarDate key="date" timeIntervalSinceReferenceDate="155260800" calendarFormat="%Y-%m-%d %H:%M:%S %z">
                                 <!--2005-12-03 01:00:00 +0100-->
-                                <timeZone key="timeZone" name="Europe/Zurich">
-                                    <data key="data">
-VFppZgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAABAAAAAAAAAB2AAAABAAAAAnKF2oAyuJxAMv3TADMwlMA
-FSPrkBYT3JAXA82QF/O+kBjjr5AZ06CQGsORkBu8vRAcrK4QHZyfEB6MkBAffIEQIGxyECFcYxAiTFQQ
-IzxFECQsNhAlHCcQJgwYECcFQ5An9TSQKOUlkCnVFpAqxQeQK7T4kCyk6ZAtlNqQLoTLkC90vJAwZK2Q
-MV3ZEDJytBAzPbsQNFKWEDUdnRA2MngQNv1/EDgblJA43WEQOft2kDq9QxA721iQPKZfkD27OpA+hkGQ
-P5sckEBmI5BBhDkQQkYFkENkGxBEJeeQRUP9EEYFyZBHI98QR+7mEEkDwRBJzsgQSuOjEEuuqhBMzL+Q
-TY6MEE6soZBPbm4QUIyDkFFXipBSbGWQUzdskFRMR5BVF06QViwpkFb3MJBYFUYQWNcSkFn1KBBatvSQ
-W9UKEFygERBdtOwQXn/zEF+UzhBgX9UQYX3qkGI/txBjXcyQZB+ZEGU9rpBmCLWQZx2QkGfol5Bo/XKQ
-ach5kGrdVJBrqFuQbMZxEG2IPZBuplMQb2gfkHCGNRBxUTwQcmYXEHMxHhB0RfkQdREAEHYvFZB28OIQ
-eA73kHjQxBB57tmQerCmEHvOu5B8mcKQfa6dkH55pJB/jn+QAAEAAQIDAgMCAwIDAgMCAwIDAgMCAwID
-AgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwID
-AgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwAAHCABAAAADhAABQAAHCABAAAADhAABUNF
-U1QAQ0VUAAAAAQEAAAEBA
-</data>
-                                </timeZone>
+                                <timeZone key="timeZone" name="Europe/Zurich"/>
                             </calendarDate>
                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <datePickerElements key="datePickerElements" year="YES" month="YES" day="YES" hour="YES" minute="YES"/>
                         </datePickerCell>
                         <connections>
+                            <binding destination="-2" name="value" keyPath="self.toDate" id="943"/>
+                            <binding destination="944" name="enabled" keyPath="values.betweenDatesMode" id="1250"/>
                             <binding destination="944" name="hidden" keyPath="values.betweenDatesMode" previousBinding="1250" id="o9z-2c-OaU">
                                 <dictionary key="options">
                                     <string key="NSValueTransformerName">NSNegateBoolean</string>
                                 </dictionary>
                             </binding>
-                            <binding destination="-2" name="value" keyPath="self.toDate" id="943"/>
-                            <binding destination="944" name="enabled" keyPath="values.betweenDatesMode" id="1250"/>
                         </connections>
                     </datePicker>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="233">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" preferredMaxLayoutWidth="20" translatesAutoresizingMaskIntoConstraints="NO" id="233">
                         <rect key="frame" x="4" y="199" width="24" height="17"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="To:" id="254">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -111,26 +78,24 @@ U1QAQ0VUAAAAAQEAAAEBA
                             </binding>
                         </connections>
                     </textField>
-                    <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="237">
+                    <button verticalHuggingPriority="750" misplaced="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="237">
                         <rect key="frame" x="29" y="191" width="50" height="28"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Now" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" tag="1" inset="2" id="248">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
                         <connections>
                             <action selector="nowTo:" target="-2" id="1155"/>
+                            <binding destination="944" name="enabled" keyPath="values.betweenDatesMode" id="1252"/>
                             <binding destination="944" name="hidden" keyPath="values.betweenDatesMode" previousBinding="1252" id="XRC-Ua-aPp">
                                 <dictionary key="options">
                                     <string key="NSValueTransformerName">NSNegateBoolean</string>
                                 </dictionary>
                             </binding>
-                            <binding destination="944" name="enabled" keyPath="values.betweenDatesMode" id="1252"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="238">
                         <rect key="frame" x="1" y="403" width="50" height="28"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Now" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="246">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -139,29 +104,13 @@ U1QAQ0VUAAAAAQEAAAEBA
                             <action selector="nowFrom:" target="-2" id="1154"/>
                         </connections>
                     </button>
-                    <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="239">
+                    <datePicker verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="239">
                         <rect key="frame" x="6" y="223" width="140" height="27"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="244">
                             <font key="font" metaFont="system"/>
                             <calendarDate key="date" timeIntervalSinceReferenceDate="155260800" calendarFormat="%Y-%m-%d %H:%M:%S %z">
                                 <!--2005-12-03 01:00:00 +0100-->
-                                <timeZone key="timeZone" name="Europe/Zurich">
-                                    <data key="data">
-VFppZgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAABAAAAAAAAAB2AAAABAAAAAnKF2oAyuJxAMv3TADMwlMA
-FSPrkBYT3JAXA82QF/O+kBjjr5AZ06CQGsORkBu8vRAcrK4QHZyfEB6MkBAffIEQIGxyECFcYxAiTFQQ
-IzxFECQsNhAlHCcQJgwYECcFQ5An9TSQKOUlkCnVFpAqxQeQK7T4kCyk6ZAtlNqQLoTLkC90vJAwZK2Q
-MV3ZEDJytBAzPbsQNFKWEDUdnRA2MngQNv1/EDgblJA43WEQOft2kDq9QxA721iQPKZfkD27OpA+hkGQ
-P5sckEBmI5BBhDkQQkYFkENkGxBEJeeQRUP9EEYFyZBHI98QR+7mEEkDwRBJzsgQSuOjEEuuqhBMzL+Q
-TY6MEE6soZBPbm4QUIyDkFFXipBSbGWQUzdskFRMR5BVF06QViwpkFb3MJBYFUYQWNcSkFn1KBBatvSQ
-W9UKEFygERBdtOwQXn/zEF+UzhBgX9UQYX3qkGI/txBjXcyQZB+ZEGU9rpBmCLWQZx2QkGfol5Bo/XKQ
-ach5kGrdVJBrqFuQbMZxEG2IPZBuplMQb2gfkHCGNRBxUTwQcmYXEHMxHhB0RfkQdREAEHYvFZB28OIQ
-eA73kHjQxBB57tmQerCmEHvOu5B8mcKQfa6dkH55pJB/jn+QAAEAAQIDAgMCAwIDAgMCAwIDAgMCAwID
-AgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwID
-AgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwAAHCABAAAADhAABQAAHCABAAAADhAABUNF
-U1QAQ0VUAAAAAQEAAAEBA
-</data>
-                                </timeZone>
+                                <timeZone key="timeZone" name="Europe/Zurich"/>
                             </calendarDate>
                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -171,49 +120,32 @@ U1QAQ0VUAAAAAQEAAAEBA
                             <binding destination="-2" name="value" keyPath="self.fromDate" id="949"/>
                         </connections>
                     </datePicker>
-                    <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="240">
+                    <datePicker verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="240">
                         <rect key="frame" x="6" y="12" width="140" height="27"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="242">
                             <font key="font" metaFont="system"/>
                             <calendarDate key="date" timeIntervalSinceReferenceDate="155260800" calendarFormat="%Y-%m-%d %H:%M:%S %z">
                                 <!--2005-12-03 01:00:00 +0100-->
-                                <timeZone key="timeZone" name="Europe/Zurich">
-                                    <data key="data">
-VFppZgAAAAAAAAAAAAAAAAAAAAAAAAAEAAAABAAAAAAAAAB2AAAABAAAAAnKF2oAyuJxAMv3TADMwlMA
-FSPrkBYT3JAXA82QF/O+kBjjr5AZ06CQGsORkBu8vRAcrK4QHZyfEB6MkBAffIEQIGxyECFcYxAiTFQQ
-IzxFECQsNhAlHCcQJgwYECcFQ5An9TSQKOUlkCnVFpAqxQeQK7T4kCyk6ZAtlNqQLoTLkC90vJAwZK2Q
-MV3ZEDJytBAzPbsQNFKWEDUdnRA2MngQNv1/EDgblJA43WEQOft2kDq9QxA721iQPKZfkD27OpA+hkGQ
-P5sckEBmI5BBhDkQQkYFkENkGxBEJeeQRUP9EEYFyZBHI98QR+7mEEkDwRBJzsgQSuOjEEuuqhBMzL+Q
-TY6MEE6soZBPbm4QUIyDkFFXipBSbGWQUzdskFRMR5BVF06QViwpkFb3MJBYFUYQWNcSkFn1KBBatvSQ
-W9UKEFygERBdtOwQXn/zEF+UzhBgX9UQYX3qkGI/txBjXcyQZB+ZEGU9rpBmCLWQZx2QkGfol5Bo/XKQ
-ach5kGrdVJBrqFuQbMZxEG2IPZBuplMQb2gfkHCGNRBxUTwQcmYXEHMxHhB0RfkQdREAEHYvFZB28OIQ
-eA73kHjQxBB57tmQerCmEHvOu5B8mcKQfa6dkH55pJB/jn+QAAEAAQIDAgMCAwIDAgMCAwIDAgMCAwID
-AgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwID
-AgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwAAHCABAAAADhAABQAAHCABAAAADhAABUNF
-U1QAQ0VUAAAAAQEAAAEBA
-</data>
-                                </timeZone>
+                                <timeZone key="timeZone" name="Europe/Zurich"/>
                             </calendarDate>
                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <datePickerElements key="datePickerElements" year="YES" month="YES" day="YES" hour="YES" minute="YES"/>
                         </datePickerCell>
                         <connections>
+                            <binding destination="-2" name="value" keyPath="self.toDate" id="947"/>
+                            <binding destination="944" name="enabled" keyPath="values.betweenDatesMode" id="1247"/>
                             <binding destination="944" name="hidden" keyPath="values.betweenDatesMode" previousBinding="1247" id="qw7-59-gp2">
                                 <dictionary key="options">
                                     <string key="NSValueTransformerName">NSNegateBoolean</string>
                                 </dictionary>
                             </binding>
-                            <binding destination="-2" name="value" keyPath="self.toDate" id="947"/>
-                            <binding destination="944" name="enabled" keyPath="values.betweenDatesMode" id="1247"/>
                         </connections>
                     </datePicker>
-                    <matrix horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="998" verticalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="873">
+                    <matrix horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="998" verticalCompressionResistancePriority="1000" misplaced="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="873">
                         <rect key="frame" x="6" y="455" width="121" height="38"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        <size key="cellSize" width="121" height="18"/>
+                        <size key="cellSize" width="122" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
                         <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="small" inset="2" id="874">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -237,7 +169,6 @@ U1QAQ0VUAAAAAQEAAAEBA
                     </matrix>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="914">
                         <rect key="frame" x="3" y="432" width="110" height="18"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Hours &amp; Minutes" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="915">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="smallSystem"/>

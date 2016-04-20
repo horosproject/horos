@@ -7922,7 +7922,7 @@ public:
             if( textX)
                 textX->GetTextProperty()->SetColor(0,0,0);
         }
-        [backgroundColor setColor: [NSColor colorWithDeviceRed:[color redComponent] green:[color greenComponent] blue:[ color blueComponent] alpha:1.0]];
+        [viewBackgroundColor setColor: [NSColor colorWithDeviceRed:[color redComponent] green:[color greenComponent] blue:[ color blueComponent] alpha:1.0]];
         
         [self setNeedsDisplay:YES];
     }
@@ -7930,13 +7930,13 @@ public:
 
 - (void)changeColor:(id)sender
 {
-    if( [backgroundColor isActive])
+    if( [viewBackgroundColor isActive])
         [self changeColorWith: [[(NSColorPanel*)sender color]  colorUsingColorSpaceName: NSCalibratedRGBColorSpace]];
 }
 
 - (NSColor*)backgroundColor;
 {
-    return [backgroundColor color];
+    return [viewBackgroundColor color];
 }
 
 - (void) convert3Dto2Dpoint:(double*) pt3D :(double*) pt2D

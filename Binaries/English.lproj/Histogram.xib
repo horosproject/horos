@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13B35" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1070" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="HistoWindow">
@@ -15,19 +15,18 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
-        <window title="Histogram" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="637" userLabel="Panel" customClass="NSPanel">
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="Histogram" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" visibleAtLaunch="NO" animationBehavior="default" id="637" userLabel="Panel" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES" nonactivatingPanel="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="531" height="321"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
             <value key="minSize" type="size" width="213" height="213"/>
             <view key="contentView" id="638">
                 <rect key="frame" x="0.0" y="0.0" width="531" height="321"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="733">
+                    <slider verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="733">
                         <rect key="frame" x="90" y="7" width="389" height="15"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                         <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="50" doubleValue="3" tickMarkPosition="above" allowsTickMarkValuesOnly="YES" sliderType="linear" id="756">
                             <font key="font" size="12" name="Helvetica"/>
                         </sliderCell>
@@ -35,9 +34,8 @@
                             <action selector="changeBin:" target="-2" id="737"/>
                         </connections>
                     </slider>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="734">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="734">
                         <rect key="frame" x="26" y="6" width="57" height="14"/>
-                        <autoresizingMask key="autoresizingMask"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Bin width:" id="757">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -46,11 +44,9 @@
                     </textField>
                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="745" customClass="HistoView">
                         <rect key="frame" x="32" y="23" width="489" height="291"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     </customView>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="747">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" preferredMaxLayoutWidth="40" translatesAutoresizingMaskIntoConstraints="NO" id="747">
                         <rect key="frame" x="475" y="8" width="44" height="14"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="40" id="xKo-5M-ddH"/>
                         </constraints>
@@ -65,7 +61,6 @@
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="748">
                         <rect key="frame" x="-26" y="303" width="57" height="11"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="11" id="TMB-XU-YBx"/>
                             <constraint firstAttribute="width" constant="53" id="z5m-ML-76z"/>
@@ -78,7 +73,6 @@
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="749">
                         <rect key="frame" x="-26" y="23" width="57" height="11"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="11" id="8Bn-n6-AgS"/>
                             <constraint firstAttribute="width" constant="53" id="wZc-hQ-Iv6"/>

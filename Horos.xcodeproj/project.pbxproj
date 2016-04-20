@@ -752,6 +752,10 @@
 		992DD7741BCB095700369C09 /* libgdcmopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75B1BCB095700369C09 /* libgdcmopenjpeg.a */; };
 		992DD7751BCB095700369C09 /* libgdcmuuid.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75C1BCB095700369C09 /* libgdcmuuid.a */; };
 		992DD7761BCB095700369C09 /* libgdcmuuid.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75C1BCB095700369C09 /* libgdcmuuid.a */; };
+		9932BC6D1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9932BC6B1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		9932BC6E1CC7C8EB0062BB0B /* libssl.0.9.8.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9932BC6C1CC7C8EB0062BB0B /* libssl.0.9.8.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		9932BC6F1CC7C9120062BB0B /* libcrypto.0.9.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9932BC6B1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib */; };
+		9932BC701CC7C9120062BB0B /* libssl.0.9.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9932BC6C1CC7C8EB0062BB0B /* libssl.0.9.8.dylib */; };
 		9939F7A91BCB0BF8009FEB69 /* FVTiff.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FC808F44724002A395F /* FVTiff.m */; };
 		993DB4A01C0243D50084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
 		993DB4A11C0244430084218A /* FeedbackReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -4665,6 +4669,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				9932BC6D1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib in Copy Frameworks */,
+				9932BC6E1CC7C8EB0062BB0B /* libssl.0.9.8.dylib in Copy Frameworks */,
 				993DB4A11C0244430084218A /* FeedbackReporter.framework in Copy Frameworks */,
 				999901A41B52B24200921EA1 /* libdcmprintscu.dylib in Copy Frameworks */,
 				999901A51B52B24200921EA1 /* libxerces-c.27.dylib in Copy Frameworks */,
@@ -5357,6 +5363,8 @@
 		992DD75A1BCB095700369C09 /* libgdcmMSFF.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmMSFF.a; sourceTree = "<group>"; };
 		992DD75B1BCB095700369C09 /* libgdcmopenjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmopenjpeg.a; sourceTree = "<group>"; };
 		992DD75C1BCB095700369C09 /* libgdcmuuid.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmuuid.a; sourceTree = "<group>"; };
+		9932BC6B1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.0.9.8.dylib; path = Binaries/openssl/libraries/libcrypto.0.9.8.dylib; sourceTree = "<group>"; };
+		9932BC6C1CC7C8EB0062BB0B /* libssl.0.9.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.0.9.8.dylib; path = Binaries/openssl/libraries/libssl.0.9.8.dylib; sourceTree = "<group>"; };
 		993DB49F1C0243D50084218A /* FeedbackReporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FeedbackReporter.framework; path = Binaries/FeedbackReporter.framework; sourceTree = "<group>"; };
 		9953FE4E1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vtkHorosFixedPointVolumeRayCastMIPHelper.cxx; sourceTree = "<group>"; };
 		9953FE4F1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkHorosFixedPointVolumeRayCastMIPHelper.h; sourceTree = "<group>"; };
@@ -7309,6 +7317,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9932BC6F1CC7C9120062BB0B /* libcrypto.0.9.8.dylib in Frameworks */,
+				9932BC701CC7C9120062BB0B /* libssl.0.9.8.dylib in Frameworks */,
 				9966A1AB1AE09D7C00F2D81A /* Quartz.framework in Frameworks */,
 				9966A1A91AE09D6800F2D81A /* InstantMessage.framework in Frameworks */,
 				9966A1A71AE09D5D00F2D81A /* DiskArbitration.framework in Frameworks */,
@@ -7896,6 +7906,8 @@
 				999901A31B52B24200921EA1 /* libxerces-c.27.dylib */,
 				436217891A2F3741006FA27A /* libjpeg.a */,
 				431BCC3F1A24AC94002B36FB /* libtiff.a */,
+				9932BC6B1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib */,
+				9932BC6C1CC7C8EB0062BB0B /* libssl.0.9.8.dylib */,
 				A98795C316DB9FD100926023 /* SenTestingKit.framework */,
 			);
 			name = Frameworks;
@@ -12386,7 +12398,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = NO;
-				LastTestingUpgradeCheck = 0640;
+				LastTestingUpgradeCheck = 0730;
 				LastUpgradeCheck = 0640;
 				ORGANIZATIONNAME = "The Horos Project";
 				TargetAttributes = {
@@ -13285,7 +13297,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Binaries\"\nrm -rf GDCMLibs\nrm -rf GDCMHeaders\nrm -rf ITKLibs\nrm -rf VTKLibs\nrm -rf ITKHeaders\nrm -rf VTKHeaders\nrm -rf openjpeg\n\n# Get them out of the way so that we can unzip the defaults\ncd \"$SRCROOT\"\nrm -Rf options.h\nrm -Rf url.h\n\nexit 0\n";
+			shellScript = "cd \"$SRCROOT/Binaries\"\nrm -rf GDCMLibs\nrm -rf GDCMHeaders\nrm -rf ITKLibs\nrm -rf VTKLibs\nrm -rf ITKHeaders\nrm -rf VTKHeaders\nrm -rf openjpeg\nrm -rf openssl\n\n# Get them out of the way so that we can unzip the defaults\ncd \"$SRCROOT\"\nrm -Rf options.h\nrm -Rf url.h\n\nexit 0\n";
 		};
 		4A2F5930078D148300C514A2 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -13299,7 +13311,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo GDCMLibs.zip\nunzip -uo GDCMHeaders.zip\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo ITKLibs.zip\nunzip -uo VTKLibs.zip\nunzip -uo ITKHeaders.zip\nunzip -uo VTKHeaders.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo FeedbackReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo libPapyrusToolkit.a.zip\nunzip -uo Ming.zip\nunzip -uo weasis-portable.zip\nchmod -R 755 weasis\ncd \"$SRCROOT/Binaries/weasis\"\nif [ -d \"weasis-portable\" ]; then\n    cd \"weasis-portable\"\n    for f in *; do\n        rm -Rf \"../$f\"\n        mv \"$f\" ..\n    done\n    cd ..\n    rm -Rf weasis-portable\nfi\nfind . -name __MACOSX | xargs rm -Rf\n\ncd \"$SRCROOT/Binaries/ReportsToPDF/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\n# Don't overwrite customized files\ncd \"$SRCROOT\"\nif [ ! -f \"options.h\" ] ; then\n    unzip -uo options.h.zip\nfi\nif [ ! -f \"url.h\" ] ; then\n    unzip -uo url.h.zip\nfi\n\nexit 0\n";
+			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo openssl.zip\nunzip -uo GDCMLibs.zip\nunzip -uo GDCMHeaders.zip\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo ITKLibs.zip\nunzip -uo VTKLibs.zip\nunzip -uo ITKHeaders.zip\nunzip -uo VTKHeaders.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo FeedbackReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo libPapyrusToolkit.a.zip\nunzip -uo Ming.zip\nunzip -uo weasis-portable.zip\nchmod -R 755 weasis\ncd \"$SRCROOT/Binaries/weasis\"\nif [ -d \"weasis-portable\" ]; then\n    cd \"weasis-portable\"\n    for f in *; do\n        rm -Rf \"../$f\"\n        mv \"$f\" ..\n    done\n    cd ..\n    rm -Rf weasis-portable\nfi\nfind . -name __MACOSX | xargs rm -Rf\n\ncd \"$SRCROOT/Binaries/ReportsToPDF/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\n# Don't overwrite customized files\ncd \"$SRCROOT\"\nif [ ! -f \"options.h\" ] ; then\n    unzip -uo options.h.zip\nfi\nif [ ! -f \"url.h\" ] ; then\n    unzip -uo url.h.zip\nfi\n\nexit 0\n";
 		};
 		59BDEDC8117CAB86007F1F2C /* Zip Horos Lite into Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -16565,6 +16577,7 @@
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = "Cleanup Binaries";
+				SDKROOT = macosx10.11;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -16611,7 +16624,7 @@
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_LDFLAGS = "";
-				SDKROOT = macosx10.8;
+				SDKROOT = macosx10.11;
 			};
 			name = Deployment;
 		};
@@ -16672,6 +16685,7 @@
 					"$(PROJECT_DIR)/Binaries/CharLS",
 					"$(PROJECT_DIR)/AYDicomPrint",
 					"$(PROJECT_DIR)/Binaries/GDCMLibs",
+					"$(PROJECT_DIR)/Binaries/openssl/libraries",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -16691,8 +16705,9 @@
 					"Deployment-Info.plist",
 				);
 				PRODUCT_NAME = Horos;
+				SDKROOT = macosx10.11;
 				STRIP_STYLE = debugging;
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/GDCMHeaders $(SRCROOT)/Binaries/ITKHeaders $(SRCROOT)/Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/GDCMHeaders $(SRCROOT)/Binaries/ITKHeaders $(SRCROOT)/Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff $(SRCROOT)/Binaries/openssl/include";
 				WARNING_CFLAGS = "-no-pedantic";
 			};
 			name = Deployment;
@@ -16721,6 +16736,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = "Horos Launcher";
+				SDKROOT = macosx10.11;
 				SKIP_INSTALL = YES;
 			};
 			name = Deployment;
@@ -16763,6 +16779,7 @@
 				);
 				PRODUCT_NAME = HorosDCM;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
+				SDKROOT = macosx10.11;
 				SECTORDER_FLAGS = "";
 				SKIP_INSTALL = YES;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/openjpeg/**";
@@ -16794,6 +16811,7 @@
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = "Unzip Binaries";
+				SDKROOT = macosx10.11;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -16828,6 +16846,7 @@
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = "Cleanup Binaries";
+				SDKROOT = macosx10.11;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -16862,6 +16881,7 @@
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = "Build All Prerequisites";
+				SDKROOT = macosx10.11;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -16880,6 +16900,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				PRODUCT_NAME = Documentation;
+				SDKROOT = macosx10.11;
 			};
 			name = Deployment;
 		};
@@ -16925,6 +16946,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = Decompress;
+				SDKROOT = macosx10.11;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
 				SYMROOT = build;
@@ -16961,7 +16983,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = DICOMPrint;
-				SDKROOT = macosx10.8;
+				SDKROOT = macosx10.11;
 				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				VALID_ARCHS = i386;
@@ -16997,6 +17019,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = HorosAPI;
+				SDKROOT = macosx10.11;
 				SKIP_INSTALL = YES;
 			};
 			name = Deployment;
@@ -17068,6 +17091,7 @@
 					"Deployment-Info.plist",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx10.11;
 				USER_HEADER_SEARCH_PATHS = "ITK180/Modules/Core/Common/include ITK180/Modules/ThirdParty/VNL/src/vxl/core ITK180/Modules/ThirdParty/VNL/src/vxl/vcl ITK180/Modules/Core/Common ITK180/Modules/Core/Mesh/include ITK180/Modules/Segmentation/RegionGrowing/include ITK180/Modules/Filtering/CurvatureFlow/include ITK180/Modules/Core/ImageFunction/include ITK180/Modules/Core/FiniteDifference/include ITK180/Modules/Filtering/ImageFilterBase/include ITK180/Modules/Segmentation/LevelSets/include ITK180/Modules/Filtering/FastMarching/include ITK180/Modules/Filtering/ImageIntensity/include ITK180/Modules/Bridge/VTK/include ITK180/Modules/Filtering/MathematicalMorphology/include ITK180/Modules/Core/Transform/include ITK180/Modules/Filtering/ImageGrid/include ITK180/Modules/Filtering/BinaryMathematicalMorphology/include ITK180/Modules/ThirdParty/NrrdIO/src/NrrdIO";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -17097,6 +17121,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = "Horos Launcher";
+				SDKROOT = macosx10.11;
 				SKIP_INSTALL = YES;
 			};
 			name = Development;
@@ -17138,6 +17163,7 @@
 				);
 				PRODUCT_NAME = HorosDCM;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
+				SDKROOT = macosx10.11;
 				SECTORDER_FLAGS = "";
 				SKIP_INSTALL = YES;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/openjpeg/**";
@@ -17169,6 +17195,7 @@
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = "Build All Prerequisites";
+				SDKROOT = macosx10.11;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -17233,6 +17260,7 @@
 					"$(PROJECT_DIR)/Binaries/CharLS",
 					"$(PROJECT_DIR)/AYDicomPrint",
 					"$(PROJECT_DIR)/Binaries/GDCMLibs",
+					"$(PROJECT_DIR)/Binaries/openssl/libraries",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -17252,7 +17280,8 @@
 					"Deployment-Info.plist",
 				);
 				PRODUCT_NAME = Horos;
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/GDCMHeaders $(SRCROOT)/Binaries/ITKHeaders $(SRCROOT)/Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
+				SDKROOT = macosx10.11;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/GDCMHeaders $(SRCROOT)/Binaries/ITKHeaders $(SRCROOT)/Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff $(SRCROOT)/Binaries/openssl/include";
 				WARNING_CFLAGS = "-no-pedantic";
 			};
 			name = Development;
@@ -17282,6 +17311,7 @@
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = "Unzip Binaries";
+				SDKROOT = macosx10.11;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -17331,7 +17361,7 @@
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_LDFLAGS = "";
-				SDKROOT = macosx10.8;
+				SDKROOT = macosx10.11;
 			};
 			name = Development;
 		};
@@ -17361,6 +17391,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = OsiriXAPI;
+				SDKROOT = macosx10.11;
 				SKIP_INSTALL = YES;
 			};
 			name = Development;
@@ -17391,6 +17422,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = OsiriXAPI;
+				SDKROOT = macosx10.11;
 				SKIP_INSTALL = YES;
 			};
 			name = Deployment;
@@ -17432,6 +17464,7 @@
 				);
 				PRODUCT_NAME = OsiriX;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
+				SDKROOT = macosx10.11;
 				SECTORDER_FLAGS = "";
 				SKIP_INSTALL = YES;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/openjpeg/**";
@@ -17476,6 +17509,7 @@
 				);
 				PRODUCT_NAME = OsiriX;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
+				SDKROOT = macosx10.11;
 				SECTORDER_FLAGS = "";
 				SKIP_INSTALL = YES;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/openjpeg/**";
@@ -17549,6 +17583,7 @@
 					"Deployment-Info.plist",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx10.11;
 				USER_HEADER_SEARCH_PATHS = "ITK180/Modules/Core/Common/include ITK180/Modules/ThirdParty/VNL/src/vxl/core ITK180/Modules/ThirdParty/VNL/src/vxl/vcl ITK180/Modules/Core/Common ITK180/Modules/Core/Mesh/include ITK180/Modules/Segmentation/RegionGrowing/include ITK180/Modules/Filtering/CurvatureFlow/include ITK180/Modules/Core/ImageFunction/include ITK180/Modules/Core/FiniteDifference/include ITK180/Modules/Filtering/ImageFilterBase/include ITK180/Modules/Segmentation/LevelSets/include ITK180/Modules/Filtering/FastMarching/include ITK180/Modules/Filtering/ImageIntensity/include ITK180/Modules/Bridge/VTK/include ITK180/Modules/Filtering/MathematicalMorphology/include ITK180/Modules/Core/Transform/include ITK180/Modules/Filtering/ImageGrid/include ITK180/Modules/Filtering/BinaryMathematicalMorphology/include ITK180/Modules/ThirdParty/NrrdIO/src/NrrdIO";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -17583,6 +17618,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = HorosAPI;
+				SDKROOT = macosx10.11;
 				SKIP_INSTALL = YES;
 			};
 			name = Development;
@@ -17627,6 +17663,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = Decompress;
+				SDKROOT = macosx10.11;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
 				SYMROOT = build;
@@ -17643,6 +17680,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				PRODUCT_NAME = Documentation;
+				SDKROOT = macosx10.11;
 			};
 			name = Development;
 		};
@@ -17675,7 +17713,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = DICOMPrint;
-				SDKROOT = macosx10.8;
+				SDKROOT = macosx10.11;
 				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				VALID_ARCHS = i386;
