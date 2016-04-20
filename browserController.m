@@ -6675,7 +6675,8 @@ static NSConditionLock *threadLock = nil;
     {
         if ([[item valueForKey:@"type"] isEqualToString: @"Study"])
         {
-            if( [[tableColumn identifier] isEqualToString:@"lockedStudy"]) [cell setTransparent: NO];
+            if( [[tableColumn identifier] isEqualToString:@"lockedStudy"])
+                [cell setTransparent: NO];
             
             if( [item isDistant])
             {
@@ -6761,7 +6762,8 @@ static NSConditionLock *threadLock = nil;
         }
         else
         {
-            if( [[tableColumn identifier] isEqualToString:@"lockedStudy"]) [cell setTransparent: YES];
+            if( [[tableColumn identifier] isEqualToString:@"lockedStudy"])
+                [cell setTransparent: YES];
             
             [cell setFont: [NSFont boldSystemFontOfSize: [self fontSize: @"dbSeriesFont"]]];
         }
@@ -8780,6 +8782,23 @@ static BOOL withReset = NO;
             cell = [oMatrix selectedCell];
         }
         
+        
+        [cell setLineBreakMode: NSLineBreakByCharWrapping];
+        [cell setFont:[NSFont systemFontOfSize: [self fontSize: @"dbMatrixFont"]]];
+        
+        [cell setImagePosition: NSImageBelow];
+        [cell setTransparent:NO];
+        [cell setEnabled:YES];
+        
+        [cell setButtonType:NSPushOnPushOffButton];
+        [cell setBezelStyle:NSShadowlessSquareBezelStyle];
+        //[cell setShowsStateBy:NSPushInCellMask];
+        [cell setHighlightsBy:NSContentsCellMask];
+        [cell setImageScaling:NSImageScaleProportionallyDown];
+        [cell setBordered:YES];
+        
+        
+        
         NSManagedObject   *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
         if ([[aFile valueForKey:@"type"] isEqualToString:@"Series"] &&
             [[[aFile valueForKey:@"images"] allObjects] count] == 1 &&
@@ -9199,6 +9218,26 @@ static BOOL withReset = NO;
     {
         NSManagedObject *dcmFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
         
+        if (dcmFile)
+        {
+            [theCell setLineBreakMode: NSLineBreakByCharWrapping];
+            [theCell setFont:[NSFont systemFontOfSize: [self fontSize: @"dbMatrixFont"]]];
+            
+            [theCell setRepresentedObject: [dcmFile objectID]];
+            
+            [theCell setImagePosition: NSImageBelow];
+            [theCell setTransparent:NO];
+            [theCell setEnabled:YES];
+            
+            [theCell setButtonType:NSPushOnPushOffButton];
+            [theCell setBezelStyle:NSShadowlessSquareBezelStyle];
+            //[theCell setShowsStateBy:NSPushInCellMask];
+            [theCell setHighlightsBy:NSContentsCellMask];
+            [theCell setImageScaling:NSImageScaleProportionallyDown];
+            [theCell setBordered:YES];
+        }
+        
+        
         if( [[dcmFile valueForKey:@"type"] isEqualToString: @"Series"] && [[[dcmFile valueForKey:@"images"] allObjects] count] > 1)
         {
             [animationSlider setIntValue: [theCell tag]];
@@ -9219,6 +9258,25 @@ static BOOL withReset = NO;
     if( [theCell tag] >= 0)
     {
         NSManagedObject *dcmFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+        
+        if (dcmFile)
+        {
+            [theCell setLineBreakMode: NSLineBreakByCharWrapping];
+            [theCell setFont:[NSFont systemFontOfSize: [self fontSize: @"dbMatrixFont"]]];
+            
+            [theCell setRepresentedObject: [dcmFile objectID]];
+            
+            [theCell setImagePosition: NSImageBelow];
+            [theCell setTransparent:NO];
+            [theCell setEnabled:YES];
+            
+            [theCell setButtonType:NSPushOnPushOffButton];
+            [theCell setBezelStyle:NSShadowlessSquareBezelStyle];
+            //[theCell setShowsStateBy:NSPushInCellMask];
+            [theCell setHighlightsBy:NSContentsCellMask];
+            [theCell setImageScaling:NSImageScaleProportionallyDown];
+            [theCell setBordered:YES];
+        }
         
         if( [[dcmFile valueForKey:@"type"] isEqualToString: @"Study"] == NO)
         {
@@ -9349,7 +9407,7 @@ static BOOL withReset = NO;
 
                 [cell setButtonType:NSPushOnPushOffButton];
                 [cell setBezelStyle:NSShadowlessSquareBezelStyle];
-                [cell setShowsStateBy:NSPushInCellMask];
+                //[cell setShowsStateBy:NSPushInCellMask];
                 [cell setHighlightsBy:NSContentsCellMask];
                 [cell setImageScaling:NSImageScaleProportionallyDown];
                 [cell setBordered:YES];
@@ -9493,7 +9551,7 @@ static BOOL withReset = NO;
                 
                 [cell setButtonType:NSPushOnPushOffButton];
                 [cell setBezelStyle:NSShadowlessSquareBezelStyle];
-                [cell setShowsStateBy:NSPushInCellMask];
+                //[cell setShowsStateBy:NSPushInCellMask];
                 [cell setHighlightsBy:NSContentsCellMask];
                 [cell setImageScaling:NSImageScaleProportionallyDown];
                 [cell setBordered:YES];
@@ -12721,6 +12779,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
                             [cell setImagePosition: NSImageBelow];
                             [cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"%d/%d Images", nil), i+1, [[splittedSeries objectAtIndex:i] count]]];
                             [cell setImage: img];
+                            [cell setAlternateImage:img];
                             [dcmPix release];
                         }
                     }
@@ -12744,6 +12803,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
                                 [cell setImagePosition: NSImageBelow];
                                 [cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"%d/%d Images", nil), i+1, [splittedSeries count]]];
                                 [cell setImage: img];
+                                [cell setAlternateImage:img];
                                 [dcmPix release];
                             }
                         }
