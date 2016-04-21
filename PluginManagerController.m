@@ -368,7 +368,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 			{	
 				NSString *name = [[[plugin valueForKey:@"download_url"] lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 				name = [name stringByDeletingPathExtension]; // removes the .zip extension
-				name = [name stringByDeletingPathExtension]; // removes the .osirixplugin extension
+				name = [name stringByDeletingPathExtension]; // removes the .horosplugin extension
 				sameName = [name isEqualToString:[installedPlugin valueForKey:@"name"]];
 				sameVersion = [[plugin valueForKey:@"version"] isEqualToString:[installedPlugin valueForKey:@"version"]];
 
@@ -486,7 +486,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
     {
         [self installDownloadedPluginAtPath: [paths lastObject]];
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:OsirixPluginDownloadInstallDidFinishNotification object:self userInfo:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:HorosPluginDownloadInstallDidFinishNotification object:self userInfo:nil];
         
         @synchronized( downloadingPlugins)
         {

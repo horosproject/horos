@@ -93,9 +93,9 @@ typedef NS_ENUM(short, ToolMode)
 };
 
 
-extern NSString *pasteBoardOsiriX;
-extern NSString *pasteBoardOsiriXPlugin;
-extern NSString *OsirixPluginPboardUTI;
+extern NSString *pasteBoardHoros;
+extern NSString *pasteBoardHorosPlugin;
+extern NSString *HorosPluginPboardUTI;
 extern int CLUTBARS, ANNOTATIONS, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES;
 
 enum { annotNone = 0, annotGraphics, annotBase, annotFull };

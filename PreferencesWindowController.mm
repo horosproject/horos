@@ -192,7 +192,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 +(void) addPluginPaneWithResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle withTitle:(NSString*)title image:(NSImage*)image
 {
 	if (!image)
-		image = [NSImage imageNamed:@"osirixplugin"];
+		image = [NSImage imageNamed:@"horosplugin"];
 	[pluginPanes addObject:[NSArray arrayWithObjects:resourceName, parentBundle, title, image, NULL]];
 }
 

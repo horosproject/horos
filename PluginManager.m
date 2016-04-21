@@ -453,7 +453,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 		
 		[PluginManager discoverPlugins];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadNext:) name:OsirixPluginDownloadInstallDidFinishNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadNext:) name:HorosPluginDownloadInstallDidFinishNotification object:nil];
 	}
 	return self;
 }
@@ -572,13 +572,13 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
     
     path = [path stringByDeletingLastPathComponent];
     
-    if (([[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"osirixplugin"]))
+    if (([[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"horosplugin"]))
     {
         if( [pluginsNames valueForKey: [[name lastPathComponent] stringByDeletingPathExtension]])
         {
             NSLog( @"***** Multiple plugins: %@", [name lastPathComponent]);
             
-            if( [name.lastPathComponent isEqualToString: @"UserManual.osirixplugin"] == NO)
+            if( [name.lastPathComponent isEqualToString: @"UserManual.horosplugin"] == NO)
             {
                 NSString *message = NSLocalizedString(@"Warning! Multiple instances of the same plugin have been found. Only one instance will be loaded. Check the Plugin Manager (Plugins menu) for multiple identical plugins.", nil);
                 
@@ -801,7 +801,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                 
                 NSString* name;
                 while (name = [e nextObject])
-                    if (/*[[name pathExtension] isEqualToString:@"osirixplugin"] &&*/ [donotloadnames containsObject:[name stringByDeletingPathExtension]] == NO)
+                    if (/*[[name pathExtension] isEqualToString:@"horosplugin"] &&*/ [donotloadnames containsObject:[name stringByDeletingPathExtension]] == NO)
                         [pathsOfPluginsToLoad addObject:[NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[path stringByAppendingPathComponent: name]]];
             } @catch (NSException* e) {
                 N2LogExceptionWithStackTrace(e);
@@ -1323,7 +1323,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 		NSString *name;
 		while(name = [e nextObject])
 		{
-			if([[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"osirixplugin"])
+			if([[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"horosplugin"])
 			{
 //				NSBundle *plugin = [NSBundle bundleWithPath:[PluginManager pathResolved:[path stringByAppendingPathComponent:name]]];
 //				if (filterClass = [plugin principalClass])	
@@ -1408,7 +1408,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 			{
 				NSString *name = [[[plugin valueForKey:@"download_url"] lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 				name = [name stringByDeletingPathExtension]; // removes the .zip extension
-				name = [name stringByDeletingPathExtension]; // removes the .osirixplugin extension
+				name = [name stringByDeletingPathExtension]; // removes the .horosplugin extension
 				
 				if([pluginName isEqualToString:name])
 				{
