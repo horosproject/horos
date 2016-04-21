@@ -5721,7 +5721,7 @@ Gw
             <rect key="frame" x="0.0" y="0.0" width="34" height="33"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <button misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1981">
+                <button translatesAutoresizingMaskIntoConstraints="NO" id="1981">
                     <rect key="frame" x="2" y="2" width="30" height="32"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="30" id="nBW-i3-HXH"/>
