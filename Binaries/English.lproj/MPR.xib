@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <deployment identifier="macosx"/>
+        <deployment version="101100" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
         <capability name="box content view" minToolsVersion="7.0"/>
     </dependencies>
@@ -990,7 +990,7 @@ Gw
                     <button id="527">
                         <rect key="frame" x="265" y="4" width="60" height="23"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="bevel" title="edit" bezelStyle="regularSquare" image="9A86FF9F-7F52-4EF1-8615-5DBEB7F6E68D" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" id="574">
+                        <buttonCell key="cell" type="bevel" title="edit" bezelStyle="regularSquare" image="E7220BD1-38AD-4EC4-B22A-83B1892AC15D" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" id="574">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -2141,7 +2141,7 @@ Gw
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <splitView id="MJ2-6l-46Q">
-                                        <rect key="frame" x="0.0" y="0.0" width="357" height="544"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="360" height="544"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <customView id="u7X-hW-sCM" customClass="MPRDCMView">
@@ -2159,7 +2159,7 @@ Gw
                                         </holdingPriorities>
                                     </splitView>
                                     <customView id="km0-wp-2Qp" customClass="MPRDCMView">
-                                        <rect key="frame" x="366" y="0.0" width="488" height="544"/>
+                                        <rect key="frame" x="361" y="0.0" width="493" height="544"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     </customView>
                                 </subviews>
@@ -2183,7 +2183,7 @@ Gw
         <image name="2DMPRnormalPosition" width="20" height="20"/>
         <image name="2DMPRverticalPosition" width="20" height="20"/>
         <image name="3DRotateCamera" width="98" height="101"/>
-        <image name="9A86FF9F-7F52-4EF1-8615-5DBEB7F6E68D" width="1" height="1">
+        <image name="E7220BD1-38AD-4EC4-B22A-83B1892AC15D" width="1" height="1">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPT5YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQrLjE3OlUkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw
