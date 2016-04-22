@@ -1969,7 +1969,7 @@ CA
                 <outlet property="windowsTilingMenuRows" destination="14015" id="14036"/>
             </connections>
         </customObject>
-        <window title="Local DICOM Database" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="885" userLabel="Database Window" customClass="N2OpenGLViewWithSplitsWindow">
+        <window title="Local DICOM Database" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" frameAutosaveName="" animationBehavior="default" id="885" userLabel="Database Window" customClass="N2OpenGLViewWithSplitsWindow">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="1043" height="674"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
@@ -2669,7 +2669,7 @@ CA
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="13467">
-                                                            <rect key="frame" x="415" y="23" width="16" height="630"/>
+                                                            <rect key="frame" x="416" y="23" width="15" height="630"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
                                                         <tableHeaderView key="headerView" id="13469">

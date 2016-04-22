@@ -175,6 +175,7 @@ static NSString *smartAlbumDistantArraySync = @"smartAlbumDistantArraySync";
 
 extern int delayedTileWindows;
 extern BOOL NEEDTOREBUILD;//, COMPLETEREBUILD;
+static BOOL startingUP = YES;
 
 
 #pragma deprecated(asciiString)
@@ -10174,68 +10175,73 @@ constrainSplitPosition:(CGFloat)proposedPosition
 
 - (void) windowDidChangeScreen:(NSNotification *)aNotification
 {
-    NSLog(@"windowDidChangeScreen");
-    
-    @try {
-        // Did the user change the window resolution?
+    if (startingUP == NO)
+    {
         
-        BOOL screenChanged = NO, dbScreenChanged = NO;
+        NSLog(@"windowDidChangeScreen");
         
-        float ratioX = 1, ratioY = 1;
-        
-        for( int i = 0 ; i < [[NSScreen screens] count] ; i++)
-        {
-            NSScreen *s = [[NSScreen screens] objectAtIndex: i];
+        @try {
+            // Did the user change the window resolution?
             
-            if( NSEqualRects( [s visibleFrame], visibleScreenRect[ i]) == NO)
+            BOOL screenChanged = NO, dbScreenChanged = NO;
+            
+            float ratioX = 1, ratioY = 1;
+            
+            for( int i = 0 ; i < [[NSScreen screens] count] ; i++)
             {
-                screenChanged = YES;
+                NSScreen *s = [[NSScreen screens] objectAtIndex: i];
                 
-                if( [[self window] screen] == s)
+                if( NSEqualRects( [s visibleFrame], visibleScreenRect[ i]) == NO)
                 {
-                    NSLog( @"[[self window] frame]: %@", NSStringFromRect( [[self window] frame]));
-                    NSLog( @"visibleScreenRect[ i]: %@", NSStringFromRect( visibleScreenRect[ i]));
+                    screenChanged = YES;
                     
-                    dbScreenChanged = YES;
+                    if( [[self window] screen] == s)
+                    {
+                        NSLog( @"[[self window] frame]: %@", NSStringFromRect( [[self window] frame]));
+                        NSLog( @"visibleScreenRect[ i]: %@", NSStringFromRect( visibleScreenRect[ i]));
+                        
+                        dbScreenChanged = YES;
+                    }
+                    
+                    ratioX = visibleScreenRect[ i].size.width / [s visibleFrame].size.width;
+                    ratioY = visibleScreenRect[ i].size.height / [s visibleFrame].size.height;
+                    
+                    visibleScreenRect[ i] = [s visibleFrame];
+                }
+            }
+            
+            if( dbScreenChanged)
+            {
+                [[self window] zoom: self];
+            }
+            
+            if( screenChanged)
+            {
+                for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+                {
+                    NSRect r = [[v window] frame];
+                    
+                    r.origin.x /= ratioX;
+                    r.origin.y /= ratioY;
+                    
+                    r.size.width /= ratioX;
+                    r.size.height /= ratioY;
+                    
+                    [[v window] setFrame: r display: NO];
                 }
                 
-                ratioX = visibleScreenRect[ i].size.width / [s visibleFrame].size.width;
-                ratioY = visibleScreenRect[ i].size.height / [s visibleFrame].size.height;
-                
-                visibleScreenRect[ i] = [s visibleFrame];
-            }
-        }
-        
-        if( dbScreenChanged)
-        {
-            [[self window] zoom: self];
-        }
-        
-        if( screenChanged)
-        {
-            for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-            {
-                NSRect r = [[v window] frame];
-                
-                r.origin.x /= ratioX;
-                r.origin.y /= ratioY;
-                
-                r.size.width /= ratioX;
-                r.size.height /= ratioY;
-                
-                [[v window] setFrame: r display: NO];
+                if( delayedTileWindows)
+                    [NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
+                delayedTileWindows = YES;
+                [[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.1];
             }
             
-            if( delayedTileWindows)
-                [NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
-            delayedTileWindows = YES;
-            [[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.1];
+        }
+        @catch (NSException *exception) {
+            N2LogException( exception);
+            [[AppController sharedAppController] closeAllViewers: self];
         }
         
-    }
-    @catch (NSException *exception) {
-        N2LogException( exception);
-        [[AppController sharedAppController] closeAllViewers: self];
     }
 }
 
@@ -14384,6 +14390,9 @@ static NSArray*	openSubSeriesArray = nil;
             [[self window] performZoom:self];
         });
     }
+    
+    
+    startingUP = NO;
     
     [O2HMigrationAssistant performStartupO2HTasks:self];
 }

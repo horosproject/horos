@@ -726,6 +726,24 @@ static NSDate *lastWarningDate = nil;
 	return YES;
 }
 
+
++(BOOL) hasMacOSXElCapitan
+{
+    SInt32 OSXversionMajor, OSXversionMinor;
+    if(Gestalt(gestaltSystemVersionMajor, &OSXversionMajor) == noErr &&
+       Gestalt(gestaltSystemVersionMinor, &OSXversionMinor) == noErr)
+    {
+        if(OSXversionMajor == 10 &&
+           OSXversionMinor >= 11)
+        {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
+
 +(BOOL) hasMacOSXYosemite
 {
     SInt32 OSXversionMajor, OSXversionMinor;
