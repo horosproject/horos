@@ -10383,8 +10383,8 @@ constrainSplitPosition:(CGFloat)proposedPosition
             rightFrame.size.height = splitFrame.size.height;
             rightFrame.origin.x = leftFrame.origin.x + leftFrame.size.width + dividerThickness;
             rightFrame.size.width = availableWidth - leftFrame.size.width;
-            if( rightFrame.size.width >= 201)
-                rightFrame.size.width = 201;
+            if( rightFrame.size.width >= 192)
+                rightFrame.size.width = 192;
             
             leftFrame.size.height = splitFrame.size.height;
             leftFrame.size.width = availableWidth - rightFrame.size.width;
@@ -10551,7 +10551,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
         if( gHorizontalHistory)
             return MINIMUMSIZEFORCOMPARATIVEDRAWER_HORZ;
         else
-            return [sender bounds].size.width-201;
+            return [sender bounds].size.width-192;
     }
     
     if ([sender isEqual: bannerSplit])
@@ -10571,7 +10571,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
         return [sender bounds].size.height- (2*[oMatrix cellSize].height);
     
     if (sender == splitDrawer)
-        return 201;
+        return 192;
     
     if (sender == splitComparative)
     {
