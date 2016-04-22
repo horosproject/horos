@@ -38,7 +38,7 @@
 
 /**  
  
- The OSIEnvironment class is the main access point into the OsiriX Plugin SDK. It provides access to the list of Viewer Windows that are currently open.
+ The OSIEnvironment class is the main access point into the Horos Plugin SDK. It provides access to the list of Viewer Windows that are currently open.
  Whenever a Viewer Window is opened or closed a `OSIEnvironmentOpenVolumeWindowsDidUpdateNotification` is posted. 
  
  */

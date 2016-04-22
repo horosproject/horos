@@ -217,6 +217,10 @@
 	<string>public.app-category.medical</string>
 	<key>LSCanProvideIMVideoDataSource</key>
 	<string>Yes</string>
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>MacOSX</string>
+	</array>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.11</string>
 	<key>LSRequiresNativeExecution</key>
