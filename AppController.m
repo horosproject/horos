@@ -853,6 +853,7 @@ static NSDate *lastWarningDate = nil;
 -(void)applicationDidChangeScreenParameters:(NSNotification*)aNotification
 {
     NSLog( @"--- applicationDidChangeScreenParameters");
+    
     [[AppController sharedAppController] closeAllViewers: self];
     
     [AppController resetThumbnailsList];

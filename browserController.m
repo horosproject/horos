@@ -175,8 +175,6 @@ static NSString *smartAlbumDistantArraySync = @"smartAlbumDistantArraySync";
 
 extern int delayedTileWindows;
 extern BOOL NEEDTOREBUILD;//, COMPLETEREBUILD;
-static BOOL startingUP = YES;
-
 
 #pragma deprecated(asciiString)
 NSString* asciiString(NSString* str)
@@ -10175,9 +10173,6 @@ constrainSplitPosition:(CGFloat)proposedPosition
 
 - (void) windowDidChangeScreen:(NSNotification *)aNotification
 {
-    if (startingUP == NO)
-    {
-        
         NSLog(@"windowDidChangeScreen");
         
         @try {
@@ -10241,8 +10236,6 @@ constrainSplitPosition:(CGFloat)proposedPosition
             N2LogException( exception);
             [[AppController sharedAppController] closeAllViewers: self];
         }
-        
-    }
 }
 
 -(void)previewMatrixScrollViewFrameDidChange:(NSNotification*)note
@@ -14390,9 +14383,6 @@ static NSArray*	openSubSeriesArray = nil;
             [[self window] performZoom:self];
         });
     }
-    
-    
-    startingUP = NO;
     
     [O2HMigrationAssistant performStartupO2HTasks:self];
 }
