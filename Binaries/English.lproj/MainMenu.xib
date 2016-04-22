@@ -4917,7 +4917,7 @@ Gw
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <subviews>
                                     <button verticalHuggingPriority="750" id="14651">
-                                        <rect key="frame" x="0.0" y="-1" width="21" height="17"/>
+                                        <rect key="frame" x="2" y="2" width="21" height="17"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <buttonCell key="cell" type="roundTextured" title="Albums, Sources and Activity" bezelStyle="texturedRounded" image="List" imagePosition="only" alignment="center" controlSize="mini" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="14652">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
