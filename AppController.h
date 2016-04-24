@@ -192,7 +192,7 @@ extern AppController* OsiriX;
 
 #pragma mark-
 #pragma mark  Server management
-- (void) terminate :(id) sender; /**< Terminate listener (Q/R SCP) */
+- (IBAction) terminate :(id) sender; /**< Terminate listener (Q/R SCP) */
 - (void) restartSTORESCP; /**< Restart listener (Q/R SCP) */
 - (void) startSTORESCP:(id) sender; /**< Start listener (Q/R SCP) */
 - (void) startSTORESCPTLS:(id) sender; /**< Start TLS listener (Q/R SCP) */

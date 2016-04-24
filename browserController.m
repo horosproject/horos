@@ -10207,7 +10207,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
             
             if( dbScreenChanged)
             {
-                [[self window] zoom: self];
+                //[[self window] zoom: self];
             }
             
             if( screenChanged)

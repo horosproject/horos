@@ -612,72 +612,6 @@ static NSString *getResolvedAliasPath(NSData* inData)
     return outPath;  
 }  
 
-static void dumpLSArchitecturesForX86_64()  
-{ 
-    // The path of the com.apple.LaunchServices.plist file.  
-    NSString *prefsPath = @"~/Library/Preferences/com.apple.LaunchServices.plist";  
-    prefsPath = [prefsPath stringByExpandingTildeInPath];  
-    
-    NSDictionary *mainDict = [NSDictionary dictionaryWithContentsOfFile:prefsPath];  
-    if(mainDict != nil)  
-    {  
-        // We are only interested by the  
-        // "LSArchitecturesForX86_64" dictionary.  
-        NSDictionary *architectureDict = [mainDict objectForKey:@"LSArchitecturesForX86_64"];  
-        
-        // Get the list of applications.  
-        // The array is ordered by applicationID.  
-        NSArray *applicationIDArray = [architectureDict allKeys];  
-        if(applicationIDArray != nil)  
-        {  
-            // For each applicationID  
-            NSUInteger i = 0;  
-            for(i = 0 ; i < [applicationIDArray count] ; i++)  
-            {  
-                NSString *applicationID = [applicationIDArray objectAtIndex:i];
-                NSArray *appArray = [architectureDict objectForKey:applicationID];
-                
-                // For each instance of the application,  
-                // there is a pair (Alias, architecture).  
-                // The alias is stored as a NSData  
-                // and the architecture as a NSString.  
-                NSUInteger j = 0;  
-                for(j = 0 ; j < [appArray count] / 2 ; j++)  
-                {  
-                    // Just for safety  
-                    if(j * 2 + 1 < [appArray count])  
-                    {  
-                        NSData *aliasData = [appArray objectAtIndex:j * 2];  
-                        
-                        NSString *theArch = [appArray objectAtIndex:j * 2 + 1];  
-                        
-                        if(aliasData != nil && theArch != nil)  
-                        {  
-                            // Get the path of the application  
-                            NSString *resolvedPath = getResolvedAliasPath(aliasData);  
-                            
-                            if( [resolvedPath isEqualToString: [[NSBundle mainBundle] bundlePath]])
-                            {
-                                if( [theArch isEqualToString: @"i386"])
-                                {										
-                                    NSAlert* alert = [[NSAlert new] autorelease];
-                                    [alert setMessageText: NSLocalizedString(@"64-bit", nil)];
-                                    [alert setInformativeText: NSLocalizedString(@"This version of Horos can run in 64-bit, but it is set to run in 32-bit. You can change this setting, by selecting the Horos icon in Applications folder, select 'Get Info' in Finder File menu and UNCHECK 'run in 32-bit mode'.", nil)];
-                                    [alert setShowsSuppressionButton:YES ];
-                                    [alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
-                                    [alert runModal];
-                                    if ([[alert suppressionButton] state] == NSOnState)
-                                        [[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideAlertRunIn32bit"];
-                                }
-                            }
-                        }  
-                    }  
-                }  
-            }  
-        }  
-    }
-}  
-
 void exceptionHandler(NSException *exception)
 {
     N2LogExceptionWithStackTrace(exception);
@@ -695,8 +629,6 @@ void exceptionHandler(NSException *exception)
 @end
 
 
-
-static NSDate *lastWarningDate = nil;
 
 
 @interface AppController ()

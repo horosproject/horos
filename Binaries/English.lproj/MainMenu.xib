@@ -3474,7 +3474,7 @@ Gw
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" autosaveColumns="NO" autosaveName="emailNotificationTable" rowHeight="14" headerView="13882" id="13881">
-                                                <rect key="frame" x="0.0" y="0.0" width="742" height="137"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="742" height="16"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -3768,7 +3768,7 @@ Gw
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" autosaveColumns="NO" autosaveName="emailNotificationTable" rowHeight="14" headerView="13942" id="13943">
-                                                <rect key="frame" x="0.0" y="0.0" width="742" height="180"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="742" height="16"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -4298,18 +4298,18 @@ Gw
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
                                     <splitView autosaveName="comparative" dividerStyle="thin" vertical="YES" id="14729">
-                                        <rect key="frame" x="0.0" y="0.0" width="1043" height="652"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="1043" height="651"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <scrollView borderType="none" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="964">
-                                                <rect key="frame" x="0.0" y="0.0" width="837" height="652"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="837" height="651"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <clipView key="contentView" id="cHT-ZM-bts">
-                                                    <rect key="frame" x="0.0" y="0.0" width="837" height="652"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="837" height="651"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <outlineView focusRingType="exterior" verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" emptySelection="NO" autosaveColumns="NO" headerView="13469" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="958" id="966" customClass="MyOutlineView">
-                                                            <rect key="frame" x="0.0" y="0.0" width="2592" height="629"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="2592" height="628"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>
                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -4668,11 +4668,11 @@ Gw
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                 </clipView>
                                                 <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="13468">
-                                                    <rect key="frame" x="0.0" y="636" width="837" height="16"/>
+                                                    <rect key="frame" x="0.0" y="635" width="837" height="16"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
                                                 <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="13467">
-                                                    <rect key="frame" x="821" y="23" width="16" height="629"/>
+                                                    <rect key="frame" x="822" y="23" width="15" height="628"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </scroller>
                                                 <tableHeaderView key="headerView" id="13469">
@@ -4681,14 +4681,14 @@ Gw
                                                 </tableHeaderView>
                                             </scrollView>
                                             <scrollView focusRingType="none" borderType="none" autohidesScrollers="YES" horizontalLineScroll="31" horizontalPageScroll="10" verticalLineScroll="31" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="14720">
-                                                <rect key="frame" x="838" y="0.0" width="205" height="652"/>
+                                                <rect key="frame" x="838" y="0.0" width="205" height="651"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <clipView key="contentView" drawsBackground="NO" id="vKi-LS-gLS">
-                                                    <rect key="frame" x="0.0" y="0.0" width="205" height="652"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="205" height="651"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="firstColumnOnly" selectionHighlightStyle="sourceList" columnReordering="NO" multipleSelection="NO" emptySelection="NO" autosaveColumns="NO" rowHeight="29" headerView="14721" id="14724">
-                                                            <rect key="frame" x="0.0" y="0.0" width="205" height="629"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="205" height="628"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>
                                                             <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -4739,18 +4739,18 @@ Gw
                                         </connections>
                                     </splitView>
                                     <splitView autosaveName="BrowserRightBottom" dividerStyle="thin" vertical="YES" id="12421" userLabel="Split View">
-                                        <rect key="frame" x="0.0" y="653" width="1043" height="1"/>
+                                        <rect key="frame" x="0.0" y="652" width="1043" height="2"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
-                                            <customView id="14637">
-                                                <rect key="frame" x="0.0" y="0.0" width="0.0" height="1"/>
+                                            <customView id="14637" userLabel="Thumbs+Preview View">
+                                                <rect key="frame" x="0.0" y="0.0" width="0.0" height="2"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
-                                                    <splitView wantsLayer="YES" focusRingType="none" dividerStyle="thin" id="14624">
-                                                        <rect key="frame" x="0.0" y="1" width="0.0" height="0.0"/>
+                                                    <splitView wantsLayer="YES" focusRingType="none" dividerStyle="thin" id="14624" userLabel="Matrix Split">
+                                                        <rect key="frame" x="0.0" y="1" width="0.0" height="1"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
-                                                            <customView id="14635">
+                                                            <customView id="14635" userLabel="Thumbs View">
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <subviews>
                                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" id="14751">
@@ -4863,22 +4863,27 @@ Gw
                                                                             <rect key="frame" x="-100" y="-100" width="470" height="15"/>
                                                                             <autoresizingMask key="autoresizingMask"/>
                                                                         </scroller>
-                                                                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="0.85879629629629628" horizontal="NO" id="13470">
+                                                                        <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="13470">
                                                                             <rect key="frame" x="368" y="0.0" width="16" height="0.0"/>
                                                                             <autoresizingMask key="autoresizingMask"/>
                                                                         </scroller>
                                                                     </scrollView>
                                                                 </subviews>
                                                             </customView>
+                                                            <customView id="Btg-Tj-pxI" userLabel="Banner View">
+                                                                <rect key="frame" x="0.0" y="1" width="0.0" height="0.0"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                            </customView>
                                                         </subviews>
                                                         <holdingPriorities>
+                                                            <real value="250"/>
                                                             <real value="250"/>
                                                         </holdingPriorities>
                                                     </splitView>
                                                 </subviews>
                                             </customView>
                                             <customView id="1166" customClass="PreviewView">
-                                                <rect key="frame" x="1" y="0.0" width="1042" height="1"/>
+                                                <rect key="frame" x="1" y="0.0" width="1042" height="2"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             </customView>
                                         </subviews>
