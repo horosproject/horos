@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
@@ -26,36 +26,28 @@
                 <rect key="frame" x="0.0" y="0.0" width="583" height="397"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <customView hidden="YES" translatesAutoresizingMaskIntoConstraints="NO" id="754" customClass="SFAuthorizationView">
+                    <customView hidden="YES" id="754" customClass="SFAuthorizationView">
                         <rect key="frame" x="583" y="100" width="0.0" height="297"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     </customView>
-                    <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="715">
+                    <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="715">
                         <rect key="frame" x="0.0" y="0.0" width="583" height="397"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="0tL-TD-8IP">
                             <rect key="frame" x="0.0" y="0.0" width="583" height="397"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <customView translatesAutoresizingMaskIntoConstraints="NO" id="718">
+                                <customView id="718">
                                     <rect key="frame" x="0.0" y="0.0" width="583" height="397"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <customView translatesAutoresizingMaskIntoConstraints="NO" id="757" customClass="PreferencesView">
+                                        <customView id="757" customClass="PreferencesView">
                                             <rect key="frame" x="0.0" y="0.0" width="583" height="397"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         </customView>
                                     </subviews>
-                                    <constraints>
-                                        <constraint firstItem="757" firstAttribute="leading" secondItem="718" secondAttribute="leading" id="DTe-O9-YKp"/>
-                                        <constraint firstAttribute="trailing" secondItem="757" secondAttribute="trailing" id="aNM-3c-8wy"/>
-                                        <constraint firstAttribute="bottom" secondItem="757" secondAttribute="bottom" id="aXj-2j-xiO"/>
-                                        <constraint firstItem="757" firstAttribute="top" secondItem="718" secondAttribute="top" id="lfY-R8-eK4"/>
-                                    </constraints>
                                 </customView>
                             </subviews>
-                            <constraints>
-                                <constraint firstItem="718" firstAttribute="leading" secondItem="0tL-TD-8IP" secondAttribute="leading" id="3KP-Bg-qOq"/>
-                                <constraint firstItem="718" firstAttribute="top" secondItem="0tL-TD-8IP" secondAttribute="top" id="R4l-Y5-YlT"/>
-                                <constraint firstAttribute="trailing" secondItem="718" secondAttribute="trailing" id="V4j-Mx-spq"/>
-                                <constraint firstAttribute="bottom" secondItem="718" secondAttribute="bottom" id="Y02-Cy-nNV"/>
-                            </constraints>
                         </clipView>
                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="717">
                             <rect key="frame" x="0.0" y="381" width="300" height="16"/>
@@ -67,16 +59,6 @@
                         </scroller>
                     </scrollView>
                 </subviews>
-                <constraints>
-                    <constraint firstItem="715" firstAttribute="top" secondItem="21" secondAttribute="top" id="2a9-hL-3CR"/>
-                    <constraint firstAttribute="trailing" secondItem="715" secondAttribute="trailing" id="GtT-iS-jd7"/>
-                    <constraint firstAttribute="bottom" secondItem="715" secondAttribute="bottom" id="UVV-qE-Qq6"/>
-                    <constraint firstAttribute="bottom" secondItem="754" secondAttribute="bottom" constant="100" id="ZKc-hl-CzT"/>
-                    <constraint firstItem="754" firstAttribute="leading" secondItem="715" secondAttribute="trailing" id="e32-KZ-W8o"/>
-                    <constraint firstItem="715" firstAttribute="top" secondItem="754" secondAttribute="top" id="jiI-lP-K5l"/>
-                    <constraint firstItem="715" firstAttribute="leading" secondItem="21" secondAttribute="leading" id="l0M-Nx-1Qa"/>
-                    <constraint firstItem="715" firstAttribute="trailing" secondItem="754" secondAttribute="trailing" id="vX5-84-LE3"/>
-                </constraints>
             </view>
             <toolbar key="toolbar" implicitIdentifier="95223799-629E-4BA8-B285-ED3A011B2554" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="600">
                 <allowedToolbarItems>
