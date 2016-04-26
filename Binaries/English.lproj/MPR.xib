@@ -12,6 +12,7 @@
                 <outlet property="clutPopup" destination="677" id="798"/>
                 <outlet property="dcmSeriesView" destination="426" id="762"/>
                 <outlet property="dcmWindow" destination="413" id="648"/>
+                <outlet property="horizontalSplit" destination="MJ2-6l-46Q" id="1Dc-Xc-wYw"/>
                 <outlet property="moviePosSlider" destination="847" id="881"/>
                 <outlet property="mprView1" destination="u7X-hW-sCM" id="zwu-Y4-fxO"/>
                 <outlet property="mprView2" destination="fej-P8-y9E" id="dsL-Q5-RX9"/>
@@ -33,6 +34,7 @@
                 <outlet property="tbViewsPosition" destination="1157" id="1161"/>
                 <outlet property="tbWLWW" destination="672" id="741"/>
                 <outlet property="toolsMatrix" destination="700" id="1081"/>
+                <outlet property="verticalSplit" destination="3II-UZ-yx4" id="1Ww-JB-dO8"/>
                 <outlet property="window" destination="eSp-ks-1pn" id="q46-Ar-6f8"/>
                 <outlet property="wlwwPopup" destination="678" id="799"/>
             </connections>
@@ -990,7 +992,7 @@ Gw
                     <button id="527">
                         <rect key="frame" x="265" y="4" width="60" height="23"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="bevel" title="edit" bezelStyle="regularSquare" image="E7220BD1-38AD-4EC4-B22A-83B1892AC15D" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" id="574">
+                        <buttonCell key="cell" type="bevel" title="edit" bezelStyle="regularSquare" image="A83A9ED0-EE1F-4D2A-8B28-77AEEC26982A" imagePosition="overlaps" alignment="center" controlSize="small" borderStyle="border" id="574">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
@@ -2183,7 +2185,7 @@ Gw
         <image name="2DMPRnormalPosition" width="20" height="20"/>
         <image name="2DMPRverticalPosition" width="20" height="20"/>
         <image name="3DRotateCamera" width="98" height="101"/>
-        <image name="E7220BD1-38AD-4EC4-B22A-83B1892AC15D" width="1" height="1">
+        <image name="A83A9ED0-EE1F-4D2A-8B28-77AEEC26982A" width="1" height="1">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPT5YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQrLjE3OlUkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw
