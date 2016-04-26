@@ -94,7 +94,7 @@
 		_valueLength = vl;
 		_values =  nil;
 		if (dicomData) {
-			NSArray *array = [self valuesForVR:_vr length:_valueLength data:dicomData];
+			NSArray *array = [self valuesForVR:_vr length:(int)_valueLength data:dicomData];
 			_values = [[NSMutableArray alloc]  initWithArray:array];
 			if (DCMDEBUG){
 				NSLog( @"%@", [self description]);
@@ -199,7 +199,7 @@
 {
 	const char *chars = [_vr UTF8String];
 	int vr = chars[0]<<8 | chars[1];
-	int length = 0;
+	long length = 0;
 	int vm = self.valueMultiplicity;
 	NSString *string;
 	switch (vr) {
@@ -213,7 +213,7 @@
 				[[_values objectAtIndex:0] isKindOfClass:[DCMCalendarDate class]] && 
 				[[_values objectAtIndex:0] isQuery]) {
 				string = [_values componentsJoinedByString:@"\\"];
-				length = [string length];
+				length = (long) [string length];
 			}	
 			else
 				length = vm * 8 + (vm - 1);  //add (vm - 1) for between values.
@@ -224,7 +224,7 @@
 				[[_values objectAtIndex:0] isKindOfClass:[DCMCalendarDate class]] && 
 				[[_values objectAtIndex:0] isQuery]) {
 				string = [_values componentsJoinedByString:@"\\"];
-				length = [string length];
+				length = (long) [string length];
 			}	
 			else
 			//length is 13 if we use microseconds
@@ -235,7 +235,7 @@
 				[[_values objectAtIndex:0] isKindOfClass:[DCMCalendarDate class]] && 
 				[[_values objectAtIndex:0] isQuery]) {
 				string = [_values componentsJoinedByString:@"\\"];
-				length = [string length];
+				length = (long) [string length];
 			}	
 			else
 		//Date Time YYYYMMDDHHMMSS.FFFFFF&ZZZZ FFFFFF= fractional Sec. ZZZZ=offset from Hr and min offset from universal time
@@ -252,7 +252,7 @@
 		case DCM_OW:	//other word 16bit word
 				length = 0;
 				for ( NSData *data in _values )
-					length += [data length];
+					length += (long) [data length];
 				//length = [(NSData *)[_values objectAtIndex:0] length];
                 break;
 		case DCM_AT:	//Attribute Tag 16bit unsigned integer
@@ -287,10 +287,10 @@
 			if( characterSet == nil)
 				characterSet = [[DCMCharacterSet alloc] initWithCode: @"ISO_IR 100"];
 			
-			length = [string lengthOfBytesUsingEncoding: [characterSet encoding]];
+			length = (long) [string lengthOfBytesUsingEncoding: [characterSet encoding]];
 			break;
 		default: 
-			length = [(NSData *)[_values objectAtIndex:0] length];
+			length = (long) [(NSData *)[_values objectAtIndex:0] length];
 			break;
 		}
 		
@@ -308,8 +308,8 @@
 	return paddedLength;
 }
 
-- (int)valueMultiplicity{
-	return [_values count];
+- (int) valueMultiplicity {
+	return (int) [_values count];
 }
 
 - (NSString *)vrStringValue{
@@ -705,7 +705,7 @@
                         [stringBuffer appendString: @"0x"];
                         const unsigned char *dataBuffer = [value bytes];
                         for (long x=0; x<[value length]; x++) {
-                            [stringBuffer appendFormat:@"%02X", (NSUInteger)dataBuffer[x]];
+                            [stringBuffer appendFormat:@"%02lX", (unsigned long)dataBuffer[x]];
                         }
                         string = stringBuffer;
                     }
