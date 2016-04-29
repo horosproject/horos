@@ -1513,7 +1513,7 @@ static NSConditionLock *threadLock = nil;
         for( int i = 0; i < [filenames count]; i++)
         {
             NSString *aPath = [filenames objectAtIndex:i];
-            if ([[aPath pathExtension] isEqualToString:@"horosplugin"])
+            if ([[aPath pathExtension] isEqualToString:@"horosplugin"] || [[aPath pathExtension] isEqualToString:@"osirixplugin"])
                 [pluginsArray addObject:aPath];
         }
         
