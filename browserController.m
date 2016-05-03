@@ -1513,7 +1513,7 @@ static NSConditionLock *threadLock = nil;
         for( int i = 0; i < [filenames count]; i++)
         {
             NSString *aPath = [filenames objectAtIndex:i];
-            if ([[aPath pathExtension] isEqualToString:@"horosplugin"])
+            if ([[aPath pathExtension] isEqualToString:@"horosplugin"] || [[aPath pathExtension] isEqualToString:@"osirixplugin"])
                 [pluginsArray addObject:aPath];
         }
         
@@ -8782,19 +8782,19 @@ static BOOL withReset = NO;
         }
         
         
-        [cell setLineBreakMode: NSLineBreakByCharWrapping];
-        [cell setFont:[NSFont systemFontOfSize: [self fontSize: @"dbMatrixFont"]]];
-        
-        [cell setImagePosition: NSImageBelow];
-        [cell setTransparent:NO];
-        [cell setEnabled:YES];
-        
-        [cell setButtonType:NSPushOnPushOffButton];
-        [cell setBezelStyle:NSShadowlessSquareBezelStyle];
-        //[cell setShowsStateBy:NSPushInCellMask];
-        [cell setHighlightsBy:NSContentsCellMask];
-        [cell setImageScaling:NSImageScaleProportionallyDown];
-        [cell setBordered:YES];
+//        [cell setLineBreakMode: NSLineBreakByCharWrapping];
+//        [cell setFont:[NSFont systemFontOfSize: [self fontSize: @"dbMatrixFont"]]];
+//        
+//        [cell setImagePosition: NSImageBelow];
+//        [cell setTransparent:NO];
+//        [cell setEnabled:YES];
+//        
+//        [cell setButtonType:NSPushOnPushOffButton];
+//        [cell setBezelStyle:NSShadowlessSquareBezelStyle];
+//        [cell setShowsStateBy:NSPushInCellMask];
+//        [cell setHighlightsBy:NSContentsCellMask];
+//        [cell setImageScaling:NSImageScaleProportionallyDown];
+//        [cell setBordered:YES];
         
         
         
@@ -9217,24 +9217,24 @@ static BOOL withReset = NO;
     {
         NSManagedObject *dcmFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
         
-        if (dcmFile)
-        {
-            [theCell setLineBreakMode: NSLineBreakByCharWrapping];
-            [theCell setFont:[NSFont systemFontOfSize: [self fontSize: @"dbMatrixFont"]]];
-            
-            [theCell setRepresentedObject: [dcmFile objectID]];
-            
-            [theCell setImagePosition: NSImageBelow];
-            [theCell setTransparent:NO];
-            [theCell setEnabled:YES];
-            
-            [theCell setButtonType:NSPushOnPushOffButton];
-            [theCell setBezelStyle:NSShadowlessSquareBezelStyle];
-            //[theCell setShowsStateBy:NSPushInCellMask];
-            [theCell setHighlightsBy:NSContentsCellMask];
-            [theCell setImageScaling:NSImageScaleProportionallyDown];
-            [theCell setBordered:YES];
-        }
+//        if (dcmFile)
+//        {
+//            [theCell setLineBreakMode: NSLineBreakByCharWrapping];
+//            [theCell setFont:[NSFont systemFontOfSize: [self fontSize: @"dbMatrixFont"]]];
+//            
+////            [theCell setRepresentedObject: [dcmFile objectID]];
+//            
+//            [theCell setImagePosition: NSImageBelow];
+//            [theCell setTransparent:NO];
+//            [theCell setEnabled:YES];
+//            
+//            [theCell setButtonType:NSPushOnPushOffButton];
+//            [theCell setBezelStyle:NSShadowlessSquareBezelStyle];
+//            //[theCell setShowsStateBy:NSPushInCellMask];
+//            [theCell setHighlightsBy:NSContentsCellMask];
+//            [theCell setImageScaling:NSImageScaleProportionallyDown];
+//            [theCell setBordered:YES];
+//        }
         
         
         if( [[dcmFile valueForKey:@"type"] isEqualToString: @"Series"] && [[[dcmFile valueForKey:@"images"] allObjects] count] > 1)
@@ -9260,21 +9260,21 @@ static BOOL withReset = NO;
         
         if (dcmFile)
         {
-            [theCell setLineBreakMode: NSLineBreakByCharWrapping];
-            [theCell setFont:[NSFont systemFontOfSize: [self fontSize: @"dbMatrixFont"]]];
-            
-            [theCell setRepresentedObject: [dcmFile objectID]];
-            
-            [theCell setImagePosition: NSImageBelow];
-            [theCell setTransparent:NO];
-            [theCell setEnabled:YES];
-            
-            [theCell setButtonType:NSPushOnPushOffButton];
-            [theCell setBezelStyle:NSShadowlessSquareBezelStyle];
-            //[theCell setShowsStateBy:NSPushInCellMask];
-            [theCell setHighlightsBy:NSContentsCellMask];
-            [theCell setImageScaling:NSImageScaleProportionallyDown];
-            [theCell setBordered:YES];
+//            [theCell setLineBreakMode: NSLineBreakByCharWrapping];
+//            [theCell setFont:[NSFont systemFontOfSize: [self fontSize: @"dbMatrixFont"]]];
+//            
+//            [theCell setRepresentedObject: [dcmFile objectID]];
+//            
+//            [theCell setImagePosition: NSImageBelow];
+//            [theCell setTransparent:NO];
+//            [theCell setEnabled:YES];
+//            
+//            [theCell setButtonType:NSPushOnPushOffButton];
+//            [theCell setBezelStyle:NSShadowlessSquareBezelStyle];
+//            [theCell setShowsStateBy:NSPushInCellMask];
+//            [theCell setHighlightsBy:NSContentsCellMask];
+//            [theCell setImageScaling:NSImageScaleProportionallyDown];
+//            [theCell setBordered:YES];
         }
         
         if( [[dcmFile valueForKey:@"type"] isEqualToString: @"Study"] == NO)
@@ -9406,8 +9406,8 @@ static BOOL withReset = NO;
 
                 [cell setButtonType:NSPushOnPushOffButton];
                 [cell setBezelStyle:NSShadowlessSquareBezelStyle];
-                //[cell setShowsStateBy:NSPushInCellMask];
-                [cell setHighlightsBy:NSContentsCellMask];
+//                [cell setShowsStateBy:NSPushInCellMask];
+//                [cell setHighlightsBy:NSContentsCellMask];
                 [cell setImageScaling:NSImageScaleProportionallyDown];
                 [cell setBordered:YES];
                 
@@ -9501,19 +9501,20 @@ static BOOL withReset = NO;
                     img = [ii retain];
                 }
                 
+                [cell setHighlightsBy:NSNoCellMask]; // don't show highlight
                 switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"dbFontSize"])
                 {
                     case -1:
                         [cell setImage: [img imageByScalingProportionallyUsingNSImage: 0.6]];
-                        [cell setAlternateImage: [img imageByScalingProportionallyUsingNSImage: 0.6]];
+//                        [cell setAlternateImage: [img imageByScalingProportionallyUsingNSImage: 0.6]];
                         break;
                     case 0:
                         [cell setImage: img];
-                        [cell setAlternateImage:img];
+//                        [cell setAlternateImage:img];
                         break;
                     case 1:
                         [cell setImage: [img imageByScalingProportionallyUsingNSImage: 1.3]];
-                        [cell setAlternateImage:[img imageByScalingProportionallyUsingNSImage: 1.3]];
+//                        [cell setAlternateImage:[img imageByScalingProportionallyUsingNSImage: 1.3]];
                         break;
                 }
                 
@@ -9550,8 +9551,8 @@ static BOOL withReset = NO;
                 
                 [cell setButtonType:NSPushOnPushOffButton];
                 [cell setBezelStyle:NSShadowlessSquareBezelStyle];
-                //[cell setShowsStateBy:NSPushInCellMask];
-                [cell setHighlightsBy:NSContentsCellMask];
+//                [cell setShowsStateBy:NSPushInCellMask];
+//                [cell setHighlightsBy:NSContentsCellMask];
                 [cell setImageScaling:NSImageScaleProportionallyDown];
                 [cell setBordered:YES];
                 

@@ -572,7 +572,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
     
     path = [path stringByDeletingLastPathComponent];
     
-    if (([[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"horosplugin"]))
+    if (([[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"horosplugin"] || [[name pathExtension] isEqualToString:@"osirixplugin"]))
     {
         if( [pluginsNames valueForKey: [[name lastPathComponent] stringByDeletingPathExtension]])
         {
@@ -801,7 +801,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                 
                 NSString* name;
                 while (name = [e nextObject])
-                    if (/*[[name pathExtension] isEqualToString:@"horosplugin"] &&*/ [donotloadnames containsObject:[name stringByDeletingPathExtension]] == NO)
+                    if ([donotloadnames containsObject:[name stringByDeletingPathExtension]] == NO)
                         [pathsOfPluginsToLoad addObject:[NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[path stringByAppendingPathComponent: name]]];
             } @catch (NSException* e) {
                 N2LogExceptionWithStackTrace(e);
@@ -1323,7 +1323,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 		NSString *name;
 		while(name = [e nextObject])
 		{
-			if([[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"horosplugin"])
+			if([[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"horosplugin"] || [[name pathExtension] isEqualToString:@"osirixplugin"])
 			{
 //				NSBundle *plugin = [NSBundle bundleWithPath:[PluginManager pathResolved:[path stringByAppendingPathComponent:name]]];
 //				if (filterClass = [plugin principalClass])	

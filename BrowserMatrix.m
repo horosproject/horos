@@ -89,7 +89,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 			NSInteger start = [[self cells] indexOfObject: [[self selectedCells] objectAtIndex: 0]];
 			NSInteger end = [[self cells] indexOfObject: [self cellAtRow:row column:column]];
 			
-			[self setSelectionFrom:start to:end anchor:start highlight: YES];
+			[self setSelectionFrom:start to:end anchor:start highlight: NO];
 			
 		}
 		else if( [theEvent modifierFlags] & NSCommandKeyMask )
@@ -99,7 +99,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 			if( [[self selectedCells] containsObject:[self cellAtRow:row column:column]])
 				[self setSelectionFrom:end to:end anchor:end highlight: NO];
 			else
-				[self setSelectionFrom:end to:end anchor:end highlight: YES];
+				[self setSelectionFrom:end to:end anchor:end highlight: NO];
 
 		}
 		else
