@@ -113,7 +113,7 @@
 
 - (NSString*) UniqueLabelForSelectedServer;
 {
-	return @"com.osirixviewer.osirixwebserver";
+	return @"org.horosproject.horoswebserver";
 }
 
 - (void)getTLSCertificate;

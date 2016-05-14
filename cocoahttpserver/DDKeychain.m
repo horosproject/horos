@@ -423,7 +423,7 @@ SecPolicySearchCreate:
 	NSLog(@"outItems: %@", (NSArray *)outItems);
 	
 	SecIdentityRef identity = (SecIdentityRef)[(NSArray *)outItems lastObject];
-	[DDKeychain KeychainAccessSetPreferredIdentity:identity forName:@"com.osirixviewer.osirixwebserver" keyUse:CSSM_KEYUSE_ANY];
+	[DDKeychain KeychainAccessSetPreferredIdentity:identity forName:@"org.horosproject.horoswebserver" keyUse:CSSM_KEYUSE_ANY];
 	
 	// Don't forget to delete the temporary files
 	[[NSFileManager defaultManager] removeFileAtPath:privateKeyPath handler:nil];
@@ -527,7 +527,7 @@ SecPolicySearchCreate:
 				// Ugly Hack
 				// For some reason, name sometimes contains odd characters at the end of it
 				// I'm not sure why, and I don't know of a proper fix, thus the use of the hasPrefix: method
-				if([name hasPrefix: @"com.osirixviewer.osirixwebserver"])
+				if([name hasPrefix: @"org.horosproject.horoswebserver"])
 				{
 					// It's possible for there to be more than one private key with the above prefix
 					// But we're only allowed to have one identity, so we make sure to only add one to the array

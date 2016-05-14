@@ -9,7 +9,6 @@
             <connections>
                 <outlet property="authButton" destination="743" id="747"/>
                 <outlet property="authView" destination="754" id="755"/>
-                <outlet property="flippedDocumentView" destination="21" id="CiB-ew-7LV"/>
                 <outlet property="panesListView" destination="iNA-ea-kTn" id="iZ4-Nw-hBM"/>
                 <outlet property="window" destination="19" id="449"/>
             </connections>

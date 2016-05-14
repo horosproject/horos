@@ -47,6 +47,7 @@
     NSString *WLWWNewName;
     NSNumber *WLnew, *WWnew;
     NSMutableDictionary *currentWLWWProtocol;
+    IBOutlet NSButton* newHangingProtocolButton;
 }
 
 @property (retain, nonatomic) NSString *modalityForHangingProtocols;
@@ -55,7 +56,7 @@
 
 - (void) mainViewDidLoad;
 - (void) deleteSelectedRow:(id)sender;
-- (IBAction)newHangingProtocol:(id)sender;
+- (IBAction) newHangingProtocol:(id)sender;
 
 
 @end

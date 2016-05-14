@@ -49,7 +49,6 @@
 	IBOutlet SFAuthorizationView* authView;
 	PreferencesWindowContext* currentContext;
 	NSMutableArray* animations;
-	IBOutlet NSView* documentView;
 }
 
 @property(readonly) NSMutableArray* animations;
