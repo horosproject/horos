@@ -3478,7 +3478,7 @@ static BOOL initialized = NO;
     {
         [[NSFileManager defaultManager] removeItemAtPath: OsiriXCrashed error: nil];
         
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CheckOsiriXUpdates4"] == NO)
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CheckHorosUpdates"] == NO)
         {
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
                 [NSThread detachNewThreadSelector: @selector(checkForUpdates:) toTarget: self withObject: @"crash"];
@@ -4095,7 +4095,7 @@ static BOOL initialized = NO;
 		switch( NSRunInformationalAlertPanel( NSLocalizedString(@"Horos Updates", nil), NSLocalizedString( @"Would you like to activate automatic checking for updates?", nil), NSLocalizedString( @"Yes", nil), NSLocalizedString( @"No", nil), nil))
 		{
 			case 0:
-				[[NSUserDefaults standardUserDefaults] setObject: @"NO" forKey: @"CheckOsiriXUpdates4"];
+				[[NSUserDefaults standardUserDefaults] setObject: @"NO" forKey: @"CheckHorosUpdates"];
 			break;
 		}
 	}
@@ -4402,7 +4402,7 @@ static BOOL initialized = NO;
 			}
 			else
 			{
-				if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"CheckOsiriXUpdates4"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO) || verboseUpdateCheck == YES)
+				if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"CheckHorosUpdates"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO) || verboseUpdateCheck == YES)
 				{
                     if( verboseAfterCrash)
                         [self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATECRASH" waitUntilDone: NO];
