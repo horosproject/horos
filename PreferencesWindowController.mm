@@ -57,7 +57,8 @@
 
 @synthesize title = _title, parentBundle = _parentBundle, resourceName = _resourceName, pane = _pane;
 
--(id)initWithTitle:(NSString*)title withResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle {
+-(id) initWithTitle:(NSString*)title withResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle
+{
 	self = [super init];
 	
 	self.title = title;
@@ -67,7 +68,9 @@
 	return self;
 }
 
--(void)dealloc {
+
+-(void) dealloc
+{
 	//NSLog(@"[PreferencesWindowContext dealloc], title %@", self.title);
 	self.title = NULL;
 	self.parentBundle = NULL;
@@ -78,10 +81,11 @@
 
 static NSMutableDictionary *prefPanes = nil;
 
--(NSPreferencePane*)pane {
-	if (!_pane)
+-(NSPreferencePane*)pane
+{
+    if (!_pane)
 	{
-		Class builtinPrefPaneClass = NSClassFromString( self.resourceName);
+		Class builtinPrefPaneClass = NSClassFromString(self.resourceName);
 	
 		if( builtinPrefPaneClass)
 		{
@@ -97,7 +101,7 @@ static NSMutableDictionary *prefPanes = nil;
         
 		if( builtinPrefPaneClass)
 		{
-			self.pane = [[[builtinPrefPaneClass alloc] initWithBundle: nil] autorelease];
+			self.pane = [[[builtinPrefPaneClass alloc] initWithBundle:nil] autorelease];
 		}
 		else
 		{
@@ -137,6 +141,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
     return prefsController;
 }
 
+
 -(id)init
 {
 //	AuthorizationRef authRef = nil;
@@ -167,6 +172,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	return self;
 }
 
+
 -(void)addPaneWithResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle withTitle:(NSString*)title image:(NSImage*)image toGroupWithName:(NSString*)groupName
 {
 	Class builtinPrefPaneClass = NSClassFromString(resourceName);
@@ -189,12 +195,14 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
     [context release];
 }
 
+
 +(void) addPluginPaneWithResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle withTitle:(NSString*)title image:(NSImage*)image
 {
 	if (!image)
 		image = [NSImage imageNamed:@"horosplugin"];
 	[pluginPanes addObject:[NSArray arrayWithObjects:resourceName, parentBundle, title, image, NULL]];
 }
+
 
 +(void) removePluginPaneWithBundle:(NSBundle*)parentBundle
 {
@@ -209,6 +217,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
         }
     }
 }
+
 
 -(void)view:(NSView*)view recursiveBindEnableToObject:(id)obj withKeyPath:(NSString*)keyPath {
 	if ([view isKindOfClass:[NSControl class]]) {
@@ -240,6 +249,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		[self view:subview recursiveBindEnableToObject:obj withKeyPath:keyPath];
 }
 
+
 -(void)view:(NSView*)view recursiveUnBindEnableFromObject:(id)obj withKeyPath:(NSString*)keyPath {
 	if ([view isKindOfClass:[NSControl class]]) {
 		NSUInteger bki = 0;
@@ -266,7 +276,9 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		[self view:subview recursiveUnBindEnableFromObject:obj withKeyPath:keyPath];
 }
 
--(void)pane:(NSPreferencePane*)pane enable:(BOOL)enable {
+
+-(void)pane:(NSPreferencePane*)pane enable:(BOOL)enable
+{
 	[self willChangeValueForKey:@"isUnlocked"];
 	
 	[authButton setImage:[NSImage imageNamed: enable? @"NSLockUnlockedTemplate" : @"NSLockLockedTemplate" ]];
@@ -275,7 +287,9 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
 //	[self view:pane.mainView recursiveEnable:enable];
 	
-	if ([pane respondsToSelector:@selector(enableControls:)]) { // retro-compatibility with old preference bundles
+	if ([pane respondsToSelector:@selector(enableControls:)])
+    {
+        // retro-compatibility with old preference bundles
 		NSInvocation* inv = [NSInvocation invocationWithMethodSignature:[[pane class] instanceMethodSignatureForSelector:@selector(enableControls:)]];
 		[inv setSelector:@selector(enableControls:)];
 		[inv setArgument:&enable atIndex:2];
@@ -284,9 +298,12 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
 }
 
--(void)awakeFromNib {
+
+-(void)awakeFromNib
+{
 	[authView setDelegate:self];
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
+
+    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"])
 	{
 		[authView setString:"BUNDLE_IDENTIFIER.preferences.database"];
 	}
@@ -295,9 +312,12 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		[authView setString:"BUNDLE_IDENTIFIER.preferences.allowalways"];
 		[authView setEnabled:NO];
 	}
-	[authView updateStatus:self];
 	
-	NSRect mainScreenFrame = [[NSScreen mainScreen] visibleFrame];
+    [authView updateStatus:self];
+	
+	
+    
+    NSRect mainScreenFrame = [[NSScreen mainScreen] visibleFrame];
 	[[self window] setFrameTopLeftPoint:NSMakePoint(mainScreenFrame.origin.x, mainScreenFrame.origin.y+mainScreenFrame.size.height)];
 	
 	[panesListView retain];
@@ -316,13 +336,15 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[self addPaneWithResourceNamed:@"OSICDPreferencePanePref" inBundle:bundle withTitle:NSLocalizedString(@"CD/DVD", @"Panel in preferences window") image:[NSImage imageNamed:@"CD"] toGroupWithName:name];
 	[self addPaneWithResourceNamed:@"OSIHangingPreferencePanePref" inBundle:bundle withTitle:NSLocalizedString(@"Protocols", @"Panel in preferences window") image:[NSImage imageNamed:@"ZoomToFit"] toGroupWithName:name];
     [self addPaneWithResourceNamed:@"OSIHotKeysPref" inBundle:bundle withTitle:NSLocalizedString(@"Hot Keys", @"Panel in preferences window") image:[NSImage imageNamed:@"key"] toGroupWithName:name];
-	name = NSLocalizedString(@"Display", @"Section in preferences window");
+	
+    name = NSLocalizedString(@"Display", @"Section in preferences window");
 	[self addPaneWithResourceNamed:@"OSIViewerPreferencePanePref" inBundle:bundle withTitle:NSLocalizedString(@"Viewers", @"Panel in preferences window") image:[NSImage imageNamed:@"AxialSmall"] toGroupWithName:name];
 	[self addPaneWithResourceNamed:@"OSI3DPreferencePanePref" inBundle:bundle withTitle:NSLocalizedString(@"3D", @"Panel in preferences window") image:[NSImage imageNamed:@"VolumeRendering"] toGroupWithName:name];
 	[self addPaneWithResourceNamed:@"OSIPETPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"PET", @"Panel in preferences window") image:[NSImage imageNamed:@"SUV"] toGroupWithName:name];
 	[self addPaneWithResourceNamed:@"OSICustomImageAnnotations" inBundle:bundle withTitle:NSLocalizedString(@"Annotations", @"Panel in preferences window") image:[NSImage imageNamed:@"CustomImageAnnotations"] toGroupWithName:name];
     [self addPaneWithResourceNamed:@"AYDicomPrintPref" inBundle:bundle withTitle:NSLocalizedString(@"DICOM Print", @"Panel in preferences window") image:[NSImage imageNamed:@"Print"] toGroupWithName:name];
-	name = NSLocalizedString(@"Sharing", @"Section in preferences window");
+	
+    name = NSLocalizedString(@"Sharing", @"Section in preferences window");
 	[self addPaneWithResourceNamed:@"OSIListenerPreferencePanePref" inBundle:bundle withTitle:NSLocalizedString(@"Listener", @"Panel in preferences window") image:[NSImage imageNamed:@"Network"] toGroupWithName:name];
 	[self addPaneWithResourceNamed:@"OSILocationsPreferencePanePref" inBundle:bundle withTitle:NSLocalizedString(@"Locations", @"Panel in preferences window") image:[NSImage imageNamed:@"AccountPreferences"] toGroupWithName:name];
 	[self addPaneWithResourceNamed:@"OSIAutoroutingPreferencePanePref" inBundle:bundle withTitle:NSLocalizedString(@"Routing", @"Panel in preferences window") image:[NSImage imageNamed:@"route"] toGroupWithName:name];
@@ -330,16 +352,17 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
     [self addPaneWithResourceNamed:@"OSIPACSOnDemandPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"On-Demand", @"Panel in preferences window") image:[NSImage imageNamed:@"Cloud"] toGroupWithName:name];
 	
 	for (NSArray* pluginPane in pluginPanes)
-		[self addPaneWithResourceNamed:[pluginPane objectAtIndex:0] inBundle:[pluginPane objectAtIndex:1] withTitle:[pluginPane objectAtIndex:2] image:[pluginPane objectAtIndex:3] toGroupWithName:NSLocalizedString(@"Plugins", @"Title of Plugins section in preferences window")];
+		[self addPaneWithResourceNamed:[pluginPane objectAtIndex:0]
+                              inBundle:[pluginPane objectAtIndex:1]
+                             withTitle:[pluginPane objectAtIndex:2]
+                                 image:[pluginPane objectAtIndex:3]
+                       toGroupWithName:NSLocalizedString(@"Plugins", @"Title of Plugins section in preferences window")];
 	
-    flippedDocumentView.translatesAutoresizingMaskIntoConstraints = YES;
-    panesListView.translatesAutoresizingMaskIntoConstraints = YES;
+    NSSize initialSize = [panesListView frame].size;
     
-	[flippedDocumentView setFrameSize:panesListView.frame.size];
-	[panesListView setFrameSize:flippedDocumentView.frame.size];
-	
-	[self synchronizeSizeWithContent];
+    [[self window] setContentView:panesListView];
     
+    [self synchronizeSizeWithContent:initialSize];
     
     // If we need to remove a plugin with a custom pref pane
     for (NSWindow* window in [NSApp windows])
@@ -349,15 +372,21 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
     }
 }
 
--(void)windowDidLoad {
+
+-(void)windowDidLoad
+{
 	[self showAllAction:NULL];
 }
 
--(BOOL)windowShouldClose:(id)sender {
+
+-(BOOL)windowShouldClose:(id)sender
+{
 	if (currentContext && [currentContext.pane shouldUnselect] == NSUnselectCancel)
 		return NO;
+    
 	return YES;
 }
+
 
 -(void)windowWillClose:(NSNotification *)notification
 {
@@ -367,9 +396,14 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 
--(BOOL)isUnlocked {
-	return ![[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"] || ([authView authorizationState] == SFAuthorizationViewUnlockedState);
+
+-(BOOL)isUnlocked
+{
+	//return ![[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"] || ([authView authorizationState] == SFAuthorizationViewUnlockedState);
+    //TODO
+    return YES;
 }
+
 
 -(void)setCurrentContextWithResourceName: (NSString*) name
 {
@@ -382,157 +416,143 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
     }
 }
 
--(void)setCurrentContext:(PreferencesWindowContext*)context {
+
+-(void)setCurrentContext:(PreferencesWindowContext*)context
+{
 	if (context == currentContext)
 		return;
 	
-	if (!currentContext || [currentContext.pane shouldUnselect]) { // TODO: NSUnselectNow or NSUnselectLater?
+	if (!currentContext || [currentContext.pane shouldUnselect])
+    {
+        // TODO: NSUnselectNow or NSUnselectLater?
 		[self willChangeValueForKey:@"currentContext"];
 		
-		if (context && !context.pane.mainView) {
-			@try {
+		if (context && !context.pane.mainView)
+        {
+			@try
+            {
 				[context.pane loadMainView];
-			} @catch (NSException* e) {
+			}
+            @catch (NSException* e)
+            {
 				NSLog(@"Warning: %@", e.description);
 				return;
 			}
 		}
 		
-		//[self pane:context.pane enable: [authView authorizationState] == SFAuthorizationViewUnlockedState];
 		
-		[animations removeAllObjects];
-		
-		// remove old view
+        // remove old view
 		[currentContext.pane willUnselect];
         [currentContext.pane.mainView.window makeFirstResponder: nil];
-		NSView* oldview = currentContext? currentContext.pane.mainView : panesListView;
+        
+		NSView* oldview = currentContext ? currentContext.pane.mainView : panesListView;
 		[oldview retain];
-		[oldview removeFromSuperview];
 
 		[self view:oldview recursiveUnBindEnableFromObject:self withKeyPath:@"isUnlocked"];
-		// add new view
+        
+        // add new view
 		[self view:context.pane.mainView recursiveBindEnableToObject:self withKeyPath:@"isUnlocked"];
 		
-		NSView* view = context? context.pane.mainView : panesListView;
+		NSView* view = context ? context.pane.mainView : panesListView;
 		
         NSString* title = NSLocalizedString(@"Horos Preferences", NULL);
+        
         if (context)
+        {
             title = [title stringByAppendingFormat:@"%@%@", NSLocalizedString(@": ", @"Semicolon with space prefix and suffix (example: english ': ', french ' : ')"), context.title];
-		[self.window setTitle:title];
+        }
+		
+        [self.window setTitle:title];
 		
 		[context.pane willSelect];
-		[flippedDocumentView setFrameSize:view.frame.size];
-		[flippedDocumentView addSubview:view];
-        [animations addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-							       view, NSViewAnimationTargetKey,
-							       NSViewAnimationFadeInEffect, NSViewAnimationEffectKey,
-							   NULL]];
+        
+        NSSize newSize = [view frame].size;
+        
+        [[self window] setContentView:view];
+        
 		[context.pane didSelect];
 
 		[currentContext.pane didUnselect];
+        
 		currentContext = context;
 		
 		[self didChangeValueForKey:@"currentContext"];
-		
-		[self synchronizeSizeWithContent];
+        
+        [self synchronizeSizeWithContent:newSize];
 		
 		[oldview release];
 	}
 
 }
 
--(void)dealloc {
+
+-(void)dealloc
+{
 	[self setCurrentContext:NULL];
 	[panesListView release];
 	[animations release];
 	[super dealloc];
 }
 
--(void)authorizationViewDidAuthorize:(SFAuthorizationView*)view {
+
+-(void)authorizationViewDidAuthorize:(SFAuthorizationView*)view
+{
 	[self pane:currentContext.pane enable:YES];
 }
 
--(void)authorizationViewDidDeauthorize:(SFAuthorizationView*)view {    
+
+-(void)authorizationViewDidDeauthorize:(SFAuthorizationView*)view
+{
 	[self pane:currentContext.pane enable:NO];
 }
 
--(NSAnimation*)synchronizeSizeWithContent {
-	NSRect paneFrame = [[scrollView documentView] frame];
-	for (NSDictionary* animation in animations)
-		if ([animation objectForKey:NSViewAnimationTargetKey] == [scrollView documentView] && [animation objectForKey:NSViewAnimationEndFrameKey])
-			paneFrame = [[animation objectForKey:NSViewAnimationEndFrameKey] rectValue];
-	
-	NSRect initframe = [self.window frame];
-	NSRect sizeframe = [self.window frameRectForContentRect:paneFrame];
-	NSRect frame = initframe;
-	frame.origin.y += frame.size.height-sizeframe.size.height;
-	frame.size = sizeframe.size;
-	
-	NSRect idealFrame = frame;
-	// if window doesn't fit in screen, then resize it
-	NSRect screenFrame = self.window.screen.visibleFrame;
-	frame.size.width = std::min(frame.size.width, screenFrame.size.width);
-	if (frame.size.height > screenFrame.size.height) {
-		frame.origin.y += frame.size.height-screenFrame.size.height;
-		frame.size.height = screenFrame.size.height;
-	}
-	
-	NSRect tempFrame = frame;
-	// the resizing makes scrollers appear, give them space
-	if (tempFrame.size.height < idealFrame.size.height)
-		if (tempFrame.size.width < screenFrame.size.width)
-			frame.size.width = std::min(frame.size.width+scrollView.horizontalScroller.frame.size.height, screenFrame.size.width);
-	if (tempFrame.size.width < idealFrame.size.width)
-		if (tempFrame.size.height < screenFrame.size.height)
-			frame.size.height = std::min(frame.size.height+scrollView.verticalScroller.frame.size.width, screenFrame.size.height);
-	
-	[scrollView setHasHorizontalScroller:NO];
-	[scrollView setHasVerticalScroller:NO];
-	
-	[animations addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-						       self.window, NSViewAnimationTargetKey,
-						       [NSValue valueWithRect:frame], NSViewAnimationEndFrameKey,
-						   NULL]];
-	
-	// scroll to topleft
-/*	CGFloat vp = [scrollView.documentView frame].size.height-initframe.size.height;
-	if (vp > 0) {
-		[scrollView.contentView scrollToPoint:NSMakePoint(0, vp)];
-		[scrollView reflectScrolledClipView:scrollView.contentView];
-	}*/
-	
-	NSViewAnimation* animation = [[NSViewAnimation alloc] initWithViewAnimations:animations];
-	@try {
-		[animation setAnimationBlockingMode:NSAnimationBlocking];
-		[animation setDuration:0.2];
-		[animation setAnimationCurve:NSAnimationEaseInOut];
-		[animation startAnimation];
-	} @catch (...) {
-	}
-	
-	[animation release];
-	[animations removeAllObjects];
-	
-	NSSize windowMaxSize = idealFrame.size;
-	if (tempFrame.size.height < idealFrame.size.height)
-		windowMaxSize.width += scrollView.verticalScroller.frame.size.width;
-	if (tempFrame.size.width < idealFrame.size.width)
-		windowMaxSize.height += scrollView.horizontalScroller.frame.size.height;
-	windowMaxSize.height -= self.window.toolbarHeight;
-	self.window.maxSize = windowMaxSize;
-	
-	[scrollView setHasHorizontalScroller:YES];
-	[scrollView setHasVerticalScroller:YES];
-	
-	return animation;
+
+- (CGFloat)toolbarHeight
+{
+    NSToolbar *toolbar = [[self window] toolbar];
+    CGFloat toolbarHeight = 0.0;
+    NSRect windowFrame;
+    
+    if (toolbar && [toolbar isVisible])
+    {
+        windowFrame = [[[self window ] class] contentRectForFrameRect:[[self window] frame]
+                                                  styleMask:[[self window] styleMask]];
+        
+        toolbarHeight = NSHeight(windowFrame) - NSHeight([[[self window] contentView] frame]);
+    }
+    
+    return toolbarHeight;
 }
 
--(IBAction)navigationAction:(id)sender {
+
+-(void) synchronizeSizeWithContent:(NSSize) newSize
+{
+    CGFloat newHeight = newSize.height + [self toolbarHeight];
+    CGFloat newWidth = newSize.width;
+    
+    NSRect aFrame = [[[self window] class] contentRectForFrameRect:[[self window] frame]
+                                                         styleMask:[[self window] styleMask]];
+    
+    aFrame.origin.y += aFrame.size.height;
+    aFrame.origin.y -= newHeight;
+    aFrame.size.height = newHeight;
+    aFrame.size.width = newWidth;
+    
+    aFrame = [[[self window] class] frameRectForContentRect:aFrame
+                                                  styleMask:[[self window]styleMask]];
+    
+    [[self  window] setFrame:aFrame display:YES animate:YES];
+}
+
+
+-(IBAction)navigationAction:(id)sender
+{
 	NSInteger index = -1;
 	if (currentContext)
 		index = [panesListView indexOfItemWithContext:currentContext];
 	
-	switch ([sender selectedSegment]){
+	switch ([sender selectedSegment])
+    {
 		case 0:	--index; break;
 		case 1: ++index; break;
 	}
@@ -544,17 +564,24 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[self setCurrentContext:[panesListView contextForItemAtIndex:index]];
 }
 
--(IBAction)showAllAction:(id)sender {
+
+-(IBAction)showAllAction:(id)sender
+{
 	[self setCurrentContext:NULL];
 }
 
--(IBAction)authAction:(id)sender {
+
+-(IBAction)authAction:(id)sender
+{
 	[authView buttonPressed:NULL];
 }
 
+
 // ------
 
--(void)reopenDatabase {
+
+-(void)reopenDatabase
+{
 	[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
 	[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
 	[[BrowserController currentBrowser] resetToLocalDatabase];

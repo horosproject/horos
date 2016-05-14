@@ -49,7 +49,7 @@
 	IBOutlet SFAuthorizationView* authView;
 	PreferencesWindowContext* currentContext;
 	NSMutableArray* animations;
-	IBOutlet NSView* flippedDocumentView;
+	IBOutlet NSView* documentView;
 }
 
 @property(readonly) NSMutableArray* animations;

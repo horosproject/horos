@@ -1,63 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+        <deployment version="101100" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PreferencesWindowController">
             <connections>
                 <outlet property="authButton" destination="743" id="747"/>
                 <outlet property="authView" destination="754" id="755"/>
-                <outlet property="flippedDocumentView" destination="718" id="758"/>
-                <outlet property="panesListView" destination="757" id="759"/>
-                <outlet property="scrollView" destination="715" id="720"/>
+                <outlet property="flippedDocumentView" destination="21" id="CiB-ew-7LV"/>
+                <outlet property="panesListView" destination="iNA-ea-kTn" id="iZ4-Nw-hBM"/>
                 <outlet property="window" destination="19" id="449"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <window title="Horos Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" visibleAtLaunch="NO" frameAutosaveName="PreferencesWindow" animationBehavior="default" id="19" userLabel="OsiriX Preferences">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES" unifiedTitleAndToolbar="YES"/>
-            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="114" y="455" width="583" height="397"/>
+        <window title="Horos Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" visibleAtLaunch="NO" frameAutosaveName="PreferencesWindow" animationBehavior="default" id="19">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" texturedBackground="YES" unifiedTitleAndToolbar="YES"/>
+            <rect key="contentRect" x="114" y="455" width="554" height="432"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
             <view key="contentView" id="21">
-                <rect key="frame" x="0.0" y="0.0" width="583" height="397"/>
+                <rect key="frame" x="0.0" y="0.0" width="554" height="432"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
+                    <customView id="iNA-ea-kTn" customClass="PreferencesView">
+                        <rect key="frame" x="0.0" y="0.0" width="554" height="432"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    </customView>
                     <customView hidden="YES" id="754" customClass="SFAuthorizationView">
-                        <rect key="frame" x="583" y="100" width="0.0" height="297"/>
+                        <rect key="frame" x="583" y="135" width="0.0" height="297"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     </customView>
-                    <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="715">
-                        <rect key="frame" x="0.0" y="0.0" width="583" height="397"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <clipView key="contentView" id="0tL-TD-8IP">
-                            <rect key="frame" x="0.0" y="0.0" width="583" height="397"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                            <subviews>
-                                <customView id="718">
-                                    <rect key="frame" x="0.0" y="0.0" width="583" height="397"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <customView id="757" customClass="PreferencesView">
-                                            <rect key="frame" x="0.0" y="0.0" width="583" height="397"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                        </customView>
-                                    </subviews>
-                                </customView>
-                            </subviews>
-                        </clipView>
-                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="717">
-                            <rect key="frame" x="0.0" y="381" width="300" height="16"/>
-                            <autoresizingMask key="autoresizingMask"/>
-                        </scroller>
-                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="716">
-                            <rect key="frame" x="719" y="0.0" width="16" height="397"/>
-                            <autoresizingMask key="autoresizingMask"/>
-                        </scroller>
-                    </scrollView>
                 </subviews>
             </view>
             <toolbar key="toolbar" implicitIdentifier="95223799-629E-4BA8-B285-ED3A011B2554" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="600">
@@ -67,7 +41,7 @@
                         <size key="minSize" width="49" height="25"/>
                         <size key="maxSize" width="53" height="25"/>
                         <segmentedControl key="view" verticalHuggingPriority="750" id="619">
-                            <rect key="frame" x="8" y="14" width="49" height="25"/>
+                            <rect key="frame" x="7" y="14" width="49" height="25"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <segmentedCell key="cell" state="on" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="momentary" id="620">
                                 <font key="font" metaFont="system"/>
@@ -108,7 +82,7 @@
                         <size key="minSize" width="40" height="25"/>
                         <size key="maxSize" width="40" height="25"/>
                         <button key="view" verticalHuggingPriority="750" id="743">
-                            <rect key="frame" x="23" y="14" width="40" height="25"/>
+                            <rect key="frame" x="22" y="14" width="40" height="25"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <buttonCell key="cell" type="roundTextured" title="Lock" bezelStyle="texturedRounded" image="NSLockUnlockedTemplate" imagePosition="only" alignment="center" borderStyle="border" inset="2" id="744">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -128,6 +102,7 @@
                     <toolbarItem reference="745"/>
                 </defaultToolbarItems>
             </toolbar>
+            <point key="canvasLocation" x="586" y="277"/>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="728"/>
         <comboBoxCell controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" buttonBordered="NO" completes="NO" numberOfVisibleItems="5" id="756">

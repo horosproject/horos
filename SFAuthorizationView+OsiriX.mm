@@ -33,4 +33,11 @@
 
 #import "SFAuthorizationView+OsiriX.h"
 
+@implementation SFAuthorizationView (Private)
 
+- (void) buttonPressed:(id) sender
+{
+    //TODO
+}
+
+@end

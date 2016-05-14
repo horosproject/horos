@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13C59" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <deployment defaultVersion="1070" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
+        <deployment version="101100" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="OSIHotKeysPref">
@@ -13,28 +13,28 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
-        <window title="&lt;&lt; do not localize >>" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" wantsToBeColor="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="&lt;&lt; do not localize &gt;&gt;" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="121" y="86" width="639" height="528"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1028"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
             <view key="contentView" horizontalCompressionResistancePriority="1000" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="639" height="528"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <scrollView horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="98">
+                    <scrollView horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="98">
                         <rect key="frame" x="20" y="108" width="599" height="400"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <clipView key="contentView" id="Gsa-DI-VFg">
-                            <rect key="frame" x="1" y="17" width="597" height="382"/>
+                            <rect key="frame" x="1" y="0.0" width="597" height="399"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="121" id="99" customClass="HotKeyTableView">
-                                    <rect key="frame" x="0.0" y="0.0" width="597" height="382"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="597" height="376"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
-                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
                                         <tableColumn editable="NO" width="327" minWidth="300" maxWidth="600" id="100">
@@ -73,10 +73,10 @@
                                             <connections>
                                                 <binding destination="102" name="value" keyPath="arrangedObjects.key" id="114">
                                                     <dictionary key="options">
-                                                        <integer key="NSValidatesImmediately" value="1"/>
-                                                        <integer key="NSContinuouslyUpdatesValue" value="1"/>
                                                         <integer key="NSAlwaysPresentsApplicationModalAlerts" value="1"/>
+                                                        <integer key="NSContinuouslyUpdatesValue" value="1"/>
                                                         <integer key="NSCreatesSortDescriptor" value="0"/>
+                                                        <integer key="NSValidatesImmediately" value="1"/>
                                                     </dictionary>
                                                 </binding>
                                             </connections>
@@ -91,15 +91,15 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="119">
-                            <rect key="frame" x="583" y="17" width="15" height="382"/>
+                            <rect key="frame" x="582" y="23" width="16" height="376"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <tableHeaderView key="headerView" id="121">
-                            <rect key="frame" x="0.0" y="0.0" width="597" height="17"/>
+                            <rect key="frame" x="0.0" y="0.0" width="597" height="23"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
                     </scrollView>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fsR-Nh-CHB">
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="fsR-Nh-CHB">
                         <rect key="frame" x="18" y="83" width="85" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Special Keys:" id="bWF-P5-4N0">
@@ -108,7 +108,7 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="o7C-aR-0gz">
+                    <button verticalHuggingPriority="750" id="o7C-aR-0gz">
                         <rect key="frame" x="103" y="73" width="172" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Double-Click" bezelStyle="rounded" alignment="center" scrollable="YES" lineBreakMode="clipping" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="pIb-dz-dhK">
@@ -119,7 +119,7 @@
                             <action selector="specialKeyButton:" target="-2" id="bZ6-4F-Vou"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="Gkb-36-KF9">
+                    <button verticalHuggingPriority="750" tag="1" id="Gkb-36-KF9">
                         <rect key="frame" x="103" y="40" width="172" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Double-Click + Alt" bezelStyle="rounded" alignment="center" scrollable="YES" lineBreakMode="clipping" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="4zn-Z1-N6D">
@@ -130,7 +130,7 @@
                             <action selector="specialKeyButton:" target="-2" id="RWY-wc-C5D"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="J0w-lN-nnr">
+                    <button verticalHuggingPriority="750" tag="2" id="J0w-lN-nnr">
                         <rect key="frame" x="103" y="7" width="172" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Double-Click + Cmd" bezelStyle="rounded" alignment="center" scrollable="YES" lineBreakMode="clipping" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="y9J-z5-cFp">
@@ -142,22 +142,6 @@
                         </connections>
                     </button>
                 </subviews>
-                <constraints>
-                    <constraint firstItem="o7C-aR-0gz" firstAttribute="leading" secondItem="fsR-Nh-CHB" secondAttribute="trailing" constant="8" symbolic="YES" id="Ffg-TW-3PE"/>
-                    <constraint firstAttribute="trailing" secondItem="98" secondAttribute="trailing" constant="20" symbolic="YES" id="GHd-Wm-rcN"/>
-                    <constraint firstAttribute="bottom" secondItem="J0w-lN-nnr" secondAttribute="bottom" constant="14" id="KDh-T0-fMB"/>
-                    <constraint firstItem="fsR-Nh-CHB" firstAttribute="leading" secondItem="98" secondAttribute="leading" id="RUb-2c-wnb"/>
-                    <constraint firstItem="98" firstAttribute="top" secondItem="6" secondAttribute="top" constant="20" symbolic="YES" id="SoM-yO-5b2"/>
-                    <constraint firstItem="J0w-lN-nnr" firstAttribute="width" secondItem="Gkb-36-KF9" secondAttribute="width" id="Yog-av-9it"/>
-                    <constraint firstItem="o7C-aR-0gz" firstAttribute="baseline" secondItem="fsR-Nh-CHB" secondAttribute="baseline" id="Z5u-Ey-Km9"/>
-                    <constraint firstItem="98" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="20" symbolic="YES" id="e53-wX-PrI"/>
-                    <constraint firstItem="J0w-lN-nnr" firstAttribute="top" secondItem="Gkb-36-KF9" secondAttribute="bottom" constant="12" symbolic="YES" id="gvz-9o-P0a"/>
-                    <constraint firstItem="Gkb-36-KF9" firstAttribute="top" secondItem="o7C-aR-0gz" secondAttribute="bottom" constant="12" symbolic="YES" id="hx6-cd-01i"/>
-                    <constraint firstItem="fsR-Nh-CHB" firstAttribute="top" secondItem="98" secondAttribute="bottom" constant="8" symbolic="YES" id="mYK-ag-jmb"/>
-                    <constraint firstItem="Gkb-36-KF9" firstAttribute="width" secondItem="o7C-aR-0gz" secondAttribute="width" id="nyN-rZ-NfC"/>
-                    <constraint firstItem="Gkb-36-KF9" firstAttribute="leading" secondItem="J0w-lN-nnr" secondAttribute="leading" id="pYf-E4-lE5"/>
-                    <constraint firstItem="Gkb-36-KF9" firstAttribute="leading" secondItem="o7C-aR-0gz" secondAttribute="leading" id="zGY-kc-dkC"/>
-                </constraints>
             </view>
         </window>
         <arrayController id="102" userLabel="ActionController" customClass="HotKeyArrayController">

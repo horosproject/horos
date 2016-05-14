@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6250" systemVersion="14A389" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6250"/>
+        <deployment version="101100" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="OSICDPreferencePanePref">
@@ -17,20 +18,22 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="57" y="247" width="674" height="341"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
             <value key="minSize" type="size" width="224.66300000000001" height="10"/>
             <view key="contentView" horizontalCompressionResistancePriority="1000" id="6">
                 <rect key="frame" x="0.0" y="0.0" width="674" height="341"/>
-                <autoresizingMask key="autoresizingMask"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                 <subviews>
-                    <box horizontalCompressionResistancePriority="1000" title="Reading CD/DVDs" translatesAutoresizingMaskIntoConstraints="NO" id="98">
+                    <box horizontalCompressionResistancePriority="1000" title="Reading CD/DVDs" id="98">
                         <rect key="frame" x="17" y="100" width="640" height="221"/>
-                        <view key="contentView">
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <view key="contentView" id="xMf-RZ-a1x">
                             <rect key="frame" x="2" y="2" width="636" height="201"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <button toolTip="Once an inserted disk is successfully indexed, it is automatically selected" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="196">
+                                <button toolTip="Once an inserted disk is successfully indexed, it is automatically selected" horizontalCompressionResistancePriority="1000" id="196">
                                     <rect key="frame" x="327" y="161" width="233" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="check" title="Eject the disk when done copying" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="197">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -39,8 +42,9 @@
                                         <binding destination="173" name="value" keyPath="values.CDDVDEjectAfterAutoCopy" id="215"/>
                                     </connections>
                                 </button>
-                                <button toolTip="Once an inserted disk is successfully indexed, it is automatically selected" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="210">
+                                <button toolTip="Once an inserted disk is successfully indexed, it is automatically selected" horizontalCompressionResistancePriority="1000" id="210">
                                     <rect key="frame" x="327" y="141" width="294" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="check" title="Automatically select the source when ready" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="211">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -49,10 +53,11 @@
                                         <binding destination="173" name="value" keyPath="values.autoSelectSourceCDDVD" id="212"/>
                                     </connections>
                                 </button>
-                                <matrix horizontalHuggingPriority="396" verticalHuggingPriority="750" horizontalCompressionResistancePriority="998" misplaced="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="102">
+                                <matrix horizontalHuggingPriority="396" verticalHuggingPriority="750" horizontalCompressionResistancePriority="998" allowsEmptySelection="NO" autorecalculatesCellSize="YES" id="102">
                                     <rect key="frame" x="17" y="35" width="562" height="38"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="554" height="18"/>
+                                    <size key="cellSize" width="543" height="18"/>
                                     <size key="intercellSpacing" width="4" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Files indexed in the DICOMDIR file" imagePosition="left" alignment="left" state="on" toolTip="Use DICOMDIR on the media to load the images." tag="1" inset="2" id="gZ3-mY-LlL">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -74,8 +79,9 @@
                                         <binding destination="173" name="selectedTag" keyPath="values.UseDICOMDIRFileCD" id="188"/>
                                     </connections>
                                 </matrix>
-                                <button misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="199">
+                                <button id="199">
                                     <rect key="frame" x="27" y="11" width="330" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="check" title="If no DICOM files are found, switch to Scan Mode" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="200">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -85,10 +91,11 @@
                                         <binding destination="173" name="enabled" keyPath="values.UseDICOMDIRFileCD" id="849-Eu-Tav"/>
                                     </connections>
                                 </button>
-                                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="216">
+                                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" id="216">
                                     <rect key="frame" x="17" y="101" width="267" height="78"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="cellSize" width="269" height="18"/>
+                                    <size key="cellSize" width="263" height="18"/>
                                     <size key="intercellSpacing" width="4" height="2"/>
                                     <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="217">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -118,16 +125,18 @@
                                         <binding destination="173" name="selectedTag" keyPath="values.MOUNT" id="224"/>
                                     </connections>
                                 </matrix>
-                                <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="220">
+                                <textField verticalHuggingPriority="750" id="220">
                                     <rect key="frame" x="15" y="182" width="164" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="When a disc is inserted:" id="221">
                                         <font key="font" metaFont="systemBold"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="225">
+                                <textField verticalHuggingPriority="750" id="225">
                                     <rect key="frame" x="15" y="78" width="269" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Determine disc content by considering:" id="226">
                                         <font key="font" metaFont="systemBold"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -136,38 +145,20 @@
                                 </textField>
                             </subviews>
                         </view>
-                        <constraints>
-                            <constraint firstItem="102" firstAttribute="top" secondItem="225" secondAttribute="bottom" constant="5" id="0gj-M6-4lW"/>
-                            <constraint firstItem="102" firstAttribute="leading" secondItem="225" secondAttribute="leading" id="1hi-hU-C3k"/>
-                            <constraint firstItem="216" firstAttribute="top" secondItem="220" secondAttribute="bottom" constant="3" id="5Zr-Na-bxh"/>
-                            <constraint firstItem="199" firstAttribute="leading" secondItem="98" secondAttribute="leading" constant="28" id="7vK-Zn-jeE"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="210" secondAttribute="trailing" constant="16" id="Aiw-8e-nDr"/>
-                            <constraint firstItem="210" firstAttribute="top" secondItem="196" secondAttribute="bottom" constant="6" symbolic="YES" id="Fln-cU-N6w"/>
-                            <constraint firstAttribute="bottom" secondItem="199" secondAttribute="bottom" constant="11" id="GP0-en-I5A"/>
-                            <constraint firstItem="220" firstAttribute="leading" secondItem="216" secondAttribute="leading" id="S44-Xl-cRi"/>
-                            <constraint firstItem="216" firstAttribute="leading" secondItem="225" secondAttribute="leading" id="aEd-Jz-FdV"/>
-                            <constraint firstItem="196" firstAttribute="leading" secondItem="210" secondAttribute="leading" id="bKX-54-j1Q"/>
-                            <constraint firstItem="199" firstAttribute="top" secondItem="102" secondAttribute="bottom" constant="8" symbolic="YES" id="czV-4B-YAV"/>
-                            <constraint firstItem="196" firstAttribute="leading" secondItem="216" secondAttribute="trailing" constant="45" id="jdT-Mh-b0T"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="102" secondAttribute="trailing" constant="16" id="jdi-QV-zle"/>
-                            <constraint firstItem="102" firstAttribute="top" secondItem="210" secondAttribute="bottom" constant="70" id="qFn-ZI-9Kf"/>
-                            <constraint firstAttribute="height" constant="217" id="tm1-VB-mef"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="196" secondAttribute="trailing" constant="16" id="wyy-2k-Hpp"/>
-                            <constraint firstItem="225" firstAttribute="top" secondItem="216" secondAttribute="bottom" constant="6" id="xG6-0w-zfR"/>
-                            <constraint firstItem="220" firstAttribute="leading" secondItem="98" secondAttribute="leading" constant="16" id="zvM-bB-gIe"/>
-                        </constraints>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
                     </box>
-                    <box verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" title="Writing CD/DVDs" translatesAutoresizingMaskIntoConstraints="NO" id="132">
+                    <box verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" title="Writing CD/DVDs" id="132">
                         <rect key="frame" x="17" y="16" width="640" height="80"/>
-                        <view key="contentView">
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <view key="contentView" id="9xj-yw-ZnU">
                             <rect key="frame" x="2" y="2" width="636" height="60"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <button misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="135">
+                                <button id="135">
                                     <rect key="frame" x="15" y="14" width="215" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="check" title="Include contents of this folder:" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="163">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -176,8 +167,9 @@
                                         <binding destination="173" name="value" keyPath="values.BurnSupplementaryFolder" id="174"/>
                                     </connections>
                                 </button>
-                                <button misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="183">
+                                <button id="183">
                                     <rect key="frame" x="15" y="37" width="525" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <buttonCell key="cell" type="check" title="Prefer standard JPEG instead of JPEG2000 / JPEG LS compression for DICOM files" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="184">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -189,8 +181,9 @@
                                         <binding destination="173" name="value" keyPath="values.JPEGinsteadJPEG2000" id="187"/>
                                     </connections>
                                 </button>
-                                <pathControl verticalHuggingPriority="750" misplaced="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="202">
+                                <pathControl verticalHuggingPriority="750" allowsExpansionToolTips="YES" id="202">
                                     <rect key="frame" x="235" y="12" width="318" height="20"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <pathCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" alignment="left" pathStyle="navigationBar" id="203">
                                         <font key="font" metaFont="smallSystem"/>
                                         <url key="url" string="~Documents/FolderToBurn">
@@ -204,32 +197,11 @@
                                 </pathControl>
                             </subviews>
                         </view>
-                        <constraints>
-                            <constraint firstItem="135" firstAttribute="top" secondItem="183" secondAttribute="bottom" constant="9" id="0mi-Vn-ddk"/>
-                            <constraint firstItem="183" firstAttribute="leading" secondItem="132" secondAttribute="leading" constant="16" id="Ccn-cy-DlG"/>
-                            <constraint firstAttribute="bottom" secondItem="202" secondAttribute="bottom" constant="11" id="DFg-ZM-GNF"/>
-                            <constraint firstItem="202" firstAttribute="leading" secondItem="135" secondAttribute="trailing" constant="8" symbolic="YES" id="Gxs-Cc-e9s"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="183" secondAttribute="trailing" constant="16" id="VaP-Eb-IoP"/>
-                            <constraint firstItem="183" firstAttribute="leading" secondItem="135" secondAttribute="leading" id="YIJ-f7-aR7"/>
-                            <constraint firstAttribute="height" constant="76" id="dPe-cf-vRY"/>
-                            <constraint firstItem="183" firstAttribute="top" secondItem="132" secondAttribute="top" constant="25" id="iQf-eo-RMa"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="202" secondAttribute="trailing" constant="16" id="peF-Bl-X4U"/>
-                            <constraint firstItem="202" firstAttribute="top" secondItem="183" secondAttribute="bottom" constant="8" id="q3O-fA-0az"/>
-                        </constraints>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
                     </box>
                 </subviews>
-                <constraints>
-                    <constraint firstAttribute="bottom" secondItem="132" secondAttribute="bottom" constant="20" symbolic="YES" id="KZb-9a-Bc0"/>
-                    <constraint firstAttribute="trailing" secondItem="132" secondAttribute="trailing" constant="20" symbolic="YES" id="MGs-ni-RCX"/>
-                    <constraint firstItem="132" firstAttribute="top" secondItem="98" secondAttribute="bottom" constant="8" symbolic="YES" id="T7r-lS-omh"/>
-                    <constraint firstAttribute="trailing" secondItem="98" secondAttribute="trailing" constant="20" symbolic="YES" id="Z1u-aV-yAi"/>
-                    <constraint firstItem="98" firstAttribute="top" secondItem="6" secondAttribute="top" constant="20" symbolic="YES" id="a7m-qN-u5H"/>
-                    <constraint firstItem="98" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="20" symbolic="YES" id="hyX-Yg-qVz"/>
-                    <constraint firstItem="98" firstAttribute="leading" secondItem="132" secondAttribute="leading" id="tEy-9i-r5c"/>
-                </constraints>
             </view>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="173"/>

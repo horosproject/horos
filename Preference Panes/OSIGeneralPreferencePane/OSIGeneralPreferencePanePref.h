@@ -38,6 +38,7 @@
 	IBOutlet NSWindow *compressionSettingsWindow;
 	NSArray *compressionSettingsCopy, *compressionSettingsLowResCopy;
 	IBOutlet NSWindow *mainWindow;
+    IBOutlet NSButton *CheckUpdatesOnOff;
     NSMutableArray *languages;
 }
 
