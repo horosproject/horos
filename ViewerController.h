@@ -368,6 +368,9 @@ enum
     
     NSRect                  windowFrameToRestore;
     BOOL                    scaleFitToRestore;
+    
+    IBOutlet NSView         *viewerView;
+    
 }
 @property(retain) NSCalendarDate *injectionDateTime;
 @property(readonly) short currentOrientationTool;

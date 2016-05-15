@@ -760,6 +760,8 @@
 		993DB4A11C0244430084218A /* FeedbackReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		993DB4A21C024F7C0084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
 		993DB4A31C024FB40084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
+		9953013E1CE8B03800B3FB2C /* ofthread.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E6709B6828B00545F5E /* ofthread.cc */; };
+		9953013F1CE8B06D00B3FB2C /* ofstring.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E6509B6828B00545F5E /* ofstring.cc */; };
 		9953FE521BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 9953FE4E1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx */; };
 		9953FE531BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 9953FE4F1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h */; };
 		9963031B1BCACF26009CE3E5 /* libGDCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 9963031A1BCACF26009CE3E5 /* libGDCM.h */; };
@@ -11795,6 +11797,7 @@
 				7E8340DC08E9F7C500E41C5E /* DCMPresentationState.m in Sources */,
 				BFDDE5C2091717F80033317B /* DCMEncapsulatedPDF.m in Sources */,
 				CE79D9890FD84C350043DD73 /* DCMAbstractSyntaxUID.m in Sources */,
+				9953013F1CE8B06D00B3FB2C /* ofstring.cc in Sources */,
 				CE44401E1165D1B70034BF18 /* jaricom.c in Sources */,
 				CE44401F1165D1B70034BF18 /* jcapimin.c in Sources */,
 				CE4440201165D1B70034BF18 /* jcapistd.c in Sources */,
@@ -11898,6 +11901,7 @@
 				CE4440911165D1B70034BF18 /* jdhuff.c in Sources */,
 				CE4440931165D1B70034BF18 /* jdinput.c in Sources */,
 				CE4440941165D1B70034BF18 /* jdlhuff.c in Sources */,
+				9953013E1CE8B03800B3FB2C /* ofthread.cc in Sources */,
 				CE4440951165D1B70034BF18 /* jdlossls.c in Sources */,
 				CE4440961165D1B70034BF18 /* jdlossy.c in Sources */,
 				CE4440971165D1B70034BF18 /* jdmainct.c in Sources */,
@@ -14049,6 +14053,7 @@
 					__TEXT,
 					__info_plist,
 					"Deployment-Info.plist",
+					"-lc++",
 				);
 				PRODUCT_NAME = Horos;
 				SDKROOT = macosx10.11;
@@ -14122,6 +14127,7 @@
 				OTHER_LDFLAGS = (
 					"-seg1addr",
 					0x20000000,
+					"-lc++",
 				);
 				PRODUCT_NAME = HorosDCM;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
@@ -14290,6 +14296,7 @@
 					Foundation,
 					"-framework",
 					AppKit,
+					"-lc++",
 				);
 				PRODUCT_NAME = Decompress;
 				SDKROOT = macosx10.11;
@@ -14433,6 +14440,7 @@
 				OTHER_LDFLAGS = (
 					"-seg1addr",
 					0x20000000,
+					"-lc++",
 				);
 				PRODUCT_NAME = HorosDCM;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
@@ -14551,6 +14559,7 @@
 					__TEXT,
 					__info_plist,
 					"Deployment-Info.plist",
+					"-lc++",
 				);
 				PRODUCT_NAME = Horos;
 				SDKROOT = macosx10.11;
@@ -14861,6 +14870,7 @@
 					Foundation,
 					"-framework",
 					AppKit,
+					"-lc++",
 				);
 				PRODUCT_NAME = Decompress;
 				SDKROOT = macosx10.11;
