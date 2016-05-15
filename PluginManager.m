@@ -572,7 +572,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
     
     path = [path stringByDeletingLastPathComponent];
     
-    if (([[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"horosplugin"] || [[name pathExtension] isEqualToString:@"osirixplugin"]))
+    if (([[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"horosplugin"] /* || [[name pathExtension] isEqualToString:@"osirixplugin"] */))
     {
         if( [pluginsNames valueForKey: [[name lastPathComponent] stringByDeletingPathExtension]])
         {
@@ -1383,6 +1383,14 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 
 - (IBAction)checkForUpdates:(id)sender
 {
+    
+    
+    return;
+    
+    
+    
+    
+    
 	NSURL				*url;
 	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
 	

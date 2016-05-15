@@ -198,7 +198,15 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     parameters.decod_format = buffer_format(jp2Data);
     
     // Create the stream
-    decodeInfo.stream = opj_stream_create_buffer_stream((OPJ_BYTE *)jp2Data, (OPJ_SIZE_T) jp2DataSize , OPJ_STREAM_READ);
+    opj_buffer_info_t bufferInfo;
+    bufferInfo.cur = bufferInfo.buf = (OPJ_BYTE *)jp2Data;
+    bufferInfo.len = (OPJ_SIZE_T) jp2DataSize;
+    // Create the stream
+    decodeInfo.stream = opj_stream_create_buffer_stream(&bufferInfo , OPJ_STREAM_READ);
+    
+    
+    //GROK
+    //decodeInfo.stream = opj_stream_create_buffer_stream((OPJ_BYTE *)jp2Data, (OPJ_SIZE_T) jp2DataSize , OPJ_STREAM_READ);
     
     
     if (!decodeInfo.stream)
