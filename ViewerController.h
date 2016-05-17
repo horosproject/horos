@@ -63,7 +63,7 @@
 
 #define ToolsMenuIconSize NSMakeSize(28.0, 28.0)
 
-@interface NSObject(HorosPluginDraggingDestination)
+@interface NSObject(AppPluginDraggingDestination)
 - (BOOL)performPluginDragOperation:(id <NSDraggingInfo>)sender destination:(ViewerController*)vc;
 @end
 

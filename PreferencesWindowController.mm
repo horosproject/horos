@@ -196,10 +196,22 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 }
 
 
-+(void) addPluginPaneWithResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle withTitle:(NSString*)title image:(NSImage*)image
++ (void) addPluginPaneWithResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle withTitle:(NSString*)title image:(NSImage*)image
 {
 	if (!image)
-		image = [NSImage imageNamed:@"horosplugin"];
+    {
+        image = [NSImage imageNamed:@"horosplugin"];
+        
+        if ([resourceName rangeOfString:@"osirixplugin" options:NSCaseInsensitiveSearch].location == NSNotFound)
+        {
+            image = [NSImage imageNamed:@"horosplugin"];
+        }
+        else
+        {
+            image = [NSImage imageNamed:@"osirixplugin"];
+        }
+    }
+    
 	[pluginPanes addObject:[NSArray arrayWithObjects:resourceName, parentBundle, title, image, NULL]];
 }
 

@@ -855,6 +855,7 @@
 		9966A2E61AE0B9A200F2D81A /* OsiriXDCMFrameworkHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9966A2E51AE0B9A200F2D81A /* OsiriXDCMFrameworkHeaders.mm */; };
 		9966A2E71AE0C55600F2D81A /* HorosDCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */; };
 		9966A2E81AE0C56900F2D81A /* HorosDCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */; };
+		9966BCB51CEB5BA50086A8D7 /* osirixplugin.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9966BCB41CEB5BA50086A8D7 /* osirixplugin.icns */; };
 		99676F211BF43C22007C7531 /* format_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 99676F1D1BF43C22007C7531 /* format_defs.h */; };
 		99676F221BF43C22007C7531 /* openjpeg.h in Headers */ = {isa = PBXBuildFile; fileRef = 99676F1E1BF43C22007C7531 /* openjpeg.h */; };
 		99676F231BF43C22007C7531 /* opj_config.h in Headers */ = {isa = PBXBuildFile; fileRef = 99676F1F1BF43C22007C7531 /* opj_config.h */; };
@@ -4071,6 +4072,7 @@
 		9966A1B61AE0B7A000F2D81A /* DCMAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DCMAPI.framework; path = build/Development/DCMAPI.framework; sourceTree = "<group>"; };
 		9966A2E11AE0B7E000F2D81A /* OsiriX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9966A2E51AE0B9A200F2D81A /* OsiriXDCMFrameworkHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXDCMFrameworkHeaders.mm; sourceTree = "<group>"; };
+		9966BCB41CEB5BA50086A8D7 /* osirixplugin.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = osirixplugin.icns; sourceTree = "<group>"; };
 		99676F1D1BF43C22007C7531 /* format_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = format_defs.h; path = Binaries/openjpeg/format_defs.h; sourceTree = "<group>"; };
 		99676F1E1BF43C22007C7531 /* openjpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = openjpeg.h; path = Binaries/openjpeg/openjpeg.h; sourceTree = "<group>"; };
 		99676F1F1BF43C22007C7531 /* opj_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = opj_config.h; path = Binaries/openjpeg/opj_config.h; sourceTree = "<group>"; };
@@ -7881,6 +7883,7 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				9966BCB41CEB5BA50086A8D7 /* osirixplugin.icns */,
 				991B8B5B1BB8B279006AF439 /* O2HMigrationAssistant.png */,
 				999B0B661BB711ED00AF018A /* CurvedArrowGrayLeft.png */,
 				9966A1AF1AE09FFE00F2D81A /* Osirix.icns */,
@@ -11428,6 +11431,7 @@
 				84CD250D11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom in Resources */,
 				A9A80E3811F73E22009F54B9 /* Activity_Stop.tif in Resources */,
 				A9A80E3911F73E22009F54B9 /* Activity_StopPressed.tif in Resources */,
+				9966BCB51CEB5BA50086A8D7 /* osirixplugin.icns in Resources */,
 				59FB654F12312D8900EBA136 /* weasis in Resources */,
 				A97569581237D132003F00D3 /* PathAssistant.png in Resources */,
 				59D9471D125333640095680D /* SWFInit.as in Resources */,

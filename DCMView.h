@@ -93,12 +93,14 @@ typedef NS_ENUM(short, ToolMode)
 };
 
 
-extern NSString * const pasteBoardOsiriX __deprecated;
-extern NSString * const pasteBoardOsiriXPlugin __deprecated;
-extern NSString * const OsirixPluginPboardUTI __deprecated;
+extern NSString * const pasteBoardOsiriX; // __deprecated;
+extern NSString * const pasteBoardOsiriXPlugin; // __deprecated;
+extern NSString * const OsirixPluginPboardUTI; // __deprecated;
+
 extern NSString * const pasteBoardHoros;
 extern NSString * const pasteBoardHorosPlugin;
 extern NSString * const HorosPluginPboardUTI;
+
 extern int CLUTBARS, ANNOTATIONS, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES;
 
 enum { annotNone = 0, annotGraphics, annotBase, annotFull };

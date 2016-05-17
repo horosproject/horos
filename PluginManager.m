@@ -453,7 +453,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 		
 		[PluginManager discoverPlugins];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadNext:) name:HorosPluginDownloadInstallDidFinishNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadNext:) name:AppPluginDownloadInstallDidFinishNotification object:nil];
 	}
 	return self;
 }
@@ -572,7 +572,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
     
     path = [path stringByDeletingLastPathComponent];
     
-    if (([[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"horosplugin"] /* || [[name pathExtension] isEqualToString:@"osirixplugin"] */))
+    if (([[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"horosplugin"] || [[name pathExtension] isEqualToString:@"osirixplugin"] ))
     {
         if( [pluginsNames valueForKey: [[name lastPathComponent] stringByDeletingPathExtension]])
         {
@@ -1416,7 +1416,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 			{
 				NSString *name = [[[plugin valueForKey:@"download_url"] lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 				name = [name stringByDeletingPathExtension]; // removes the .zip extension
-				name = [name stringByDeletingPathExtension]; // removes the .horosplugin extension
+				name = [name stringByDeletingPathExtension]; // removes the .horosplugin / .osirixplugin extension
 				
 				if([pluginName isEqualToString:name])
 				{

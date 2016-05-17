@@ -91,11 +91,12 @@ static		NSDictionary				*_hotKeyDictionary = nil, *_hotKeyModifiersDictionary = 
 static		NSRecursiveLock				*drawLock = nil;
 static		NSMutableArray				*globalStringTextureCache = nil;
 
+NSString * const pasteBoardHoros = @"Horos pasteboard";
+NSString * const pasteBoardHorosPlugin = @"HorosPluginDataType";
+NSString * const HorosPluginPboardUTI = @"com.opensource.horos.plugin.uti";
+
 NSString * const pasteBoardOsiriX = @"OsiriX pasteboard";
 NSString * const pasteBoardOsiriXPlugin = @"OsiriXPluginDataType";
-NSString * const HorosPluginPboardUTI = @"com.opensource.osirix.plugin.uti";
-NSString * const pasteBoardHoros = @"OsiriX pasteboard";
-NSString * const pasteBoardHorosPlugin = @"OsiriXPluginDataType";
 NSString * const OsirixPluginPboardUTI = @"com.opensource.osirix.plugin.uti";
 
 // intersect3D_SegmentPlane(): intersect a segment and a plane
