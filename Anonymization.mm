@@ -51,6 +51,7 @@
 #import "DicomFileDCMTKCategory.h"
 #import "XMLControllerDCMTKCategory.h"
 #import "N2Debug.h"
+#import "libGDCM.h"
 
 static NSString *templateDicomFile = nil;
 
@@ -306,10 +307,18 @@ static NSString *templateDicomFile = nil;
 	if( [files count] != [dicomImages count])
 	{
 		NSLog( @"***** anonymizeFiles [files count] != [dicomImages count]");
+        
 		return nil;
 	}
+    
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    //////////////////////
 
 	NSMutableArray* tags = [NSMutableArray arrayWithCapacity:intags.count];
+    
 	for (NSArray* intag in intags)
 	{
 		DCMAttributeTag* tag = [intag objectAtIndex:0];
@@ -334,17 +343,31 @@ static NSString *templateDicomFile = nil;
 		
 		[tags addObject:[NSArray arrayWithObjects: tag, val, NULL]];
 	}
+    
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    //////////////////////
 	
 	NSMutableDictionary* filenameTranslation = [NSMutableDictionary dictionaryWithCapacity:files.count];
 	
 	NSString* tempDirPath = [dirPath stringByAppendingPathComponent:@".temp"];
-    @try {
+    @try
+    {
         [[NSFileManager defaultManager] confirmDirectoryAtPath:tempDirPath];
     }
-    @catch (NSException *exception) {
-        [self performSelectorOnMainThread: @selector( error:) withObject: exception.description waitUntilDone: NO];
+    @catch (NSException *exception)
+    {
+        [self performSelectorOnMainThread: @selector(error:) withObject: exception.description waitUntilDone: NO];
         return nil;
     }
+    
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    //////////////////////
 	
     Wait *splash = nil;
     if( [NSThread isMainThread])
@@ -355,102 +378,154 @@ static NSString *templateDicomFile = nil;
         [splash setCancel: YES];
 	}
     
-	NSMutableArray* producedFiles = [NSMutableArray arrayWithCapacity: files.count];
-	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForAnonymization"])
-	{
-		NSInteger fileIndex = 0;
-		for( NSString* filePath in files)
-		{
-			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-			
-			@try
-			{
-				NSString* ext = [filePath pathExtension];
-				if (!ext.length) ext = @"dcm";
-				NSString* tempFileName = [NSString stringWithFormat:@"%d.%@", (int) fileIndex, ext];
-				NSString* tempFilePath = [tempDirPath stringByAppendingPathComponent:tempFileName];
-				
-				[[NSFileManager defaultManager] copyItemAtPath: filePath toPath: tempFilePath byReplacingExisting: YES error: nil];
-				
-				[filenameTranslation setObject:tempFilePath forKey:filePath];
-				++fileIndex;
-				
-				[producedFiles addObject: tempFilePath];
-				
-				[splash incrementBy: 1];
-			}
-			@catch (NSException * e)
-			{
-				N2LogExceptionWithStackTrace(e);
-			}
-			
-			[pool release];
-			
-			if( [splash aborted]) break;
-		}
-		
-		// Prepare the parameters
-		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
-		for( NSArray *intag in tags)
-		{
-			DCMAttributeTag* tag = [intag objectAtIndex:0];
-			id val = intag.count>1? [intag objectAtIndex:1] : NULL;
-			
-			if( val == nil || [[val description] length] == 0)
-				[params addObjectsFromArray: [NSArray arrayWithObjects: @"-e", [NSString stringWithFormat: @"(%@)", tag.stringValue], nil]];
-			else
-				[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"(%@)=%@", tag.stringValue, [val description]], nil]];
-		}
-		
-		[params addObjectsFromArray: producedFiles];
-		
-		@try
-		{
-			NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [producedFiles lastObject]] objectAtIndex: 0]];
-			
-			[XMLController modifyDicom: params encoding: encoding];
-			
-			for( id loopItem in files)
-				[[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
-		}
-		@catch (NSException * e)
-		{
-			NSLog(@"**** DicomStudy setComment: %@", e);
-		}
-	}
-	else
-	{
-		NSInteger fileIndex = 0;
-		for( NSString* filePath in files)
-		{
-			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-			
-			@try
-			{
-				NSString* ext = [filePath pathExtension];
-				if (!ext.length) ext = @"dcm";
-				NSString* tempFileName = [NSString stringWithFormat:@"%d.%@", (int) fileIndex, ext];
-				NSString* tempFilePath = [tempDirPath stringByAppendingPathComponent:tempFileName];
-				[DCMObject anonymizeContentsOfFile:filePath tags:tags writingToFile:tempFilePath];
-				[filenameTranslation setObject:tempFilePath forKey:filePath];
-				++fileIndex;
-				
-				[producedFiles addObject: tempFilePath];
-				
-				[splash incrementBy: 1];
-			}
-			@catch (NSException * e)
-			{
-				N2LogExceptionWithStackTrace(e);
-			}
-			
-			[pool release];
-			
-			if( [splash aborted]) break;
-		}
-	}
-	
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    
+    NSMutableArray* producedFiles = [NSMutableArray arrayWithCapacity: files.count];
+    
+    NSInteger fileIndex = 0;
+    
+    for( NSString* filePath in files)
+    {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        
+        @try
+        {
+            NSString* ext = [filePath pathExtension];
+            
+            if (!ext.length)
+                ext = @"dcm";
+            
+            NSString* tempFileName = [NSString stringWithFormat:@"%d.%@", (int) fileIndex, ext];
+            NSString* tempFilePath = [tempDirPath stringByAppendingPathComponent:tempFileName];
+            
+            [[NSFileManager defaultManager] copyItemAtPath: filePath toPath: tempFilePath byReplacingExisting: YES error: nil];
+            
+            [filenameTranslation setObject:tempFilePath forKey:filePath];
+            ++fileIndex;
+            
+            [producedFiles addObject: tempFilePath];
+            
+            [splash incrementBy: 1];
+        }
+        @catch (NSException * e)
+        {
+            N2LogExceptionWithStackTrace(e);
+        }
+        
+        [pool release];
+        
+        if( [splash aborted])
+            break;
+    }
+    
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    
+    for (NSString* f in producedFiles)
+    {
+        const char* filename = [f cStringUsingEncoding:[NSString defaultCStringEncoding]];
+        
+        gdcm::Reader reader;
+        
+        reader.SetFileName(filename);
+        
+        if( !reader.Read() )
+        {
+            std::cerr << "Skipping from anonymization process (continue mode)." << std::endl;
+            
+            continue;
+        }
+        else
+        {
+            gdcm::File &file = reader.GetFile();
+            
+            gdcm::MediaStorage ms;
+            ms.SetFromFile(file);
+            if( !gdcm::Defs::GetIODNameFromMediaStorage(ms) )
+            {
+                std::cerr << "The Media Storage Type of your file is not supported: " << ms << std::endl;
+                
+                continue;
+            }
+            else
+            {
+                std::vector<gdcm::Tag> empty_tags;
+                
+                std::vector<gdcm::Tag> remove_tags;
+                
+                std::vector< std::pair<gdcm::Tag, std::string> > replace_tags;
+                for (NSArray* replacingItem in tags)
+                {
+                    DCMAttributeTag* tag = [replacingItem objectAtIndex:0];
+                    std::string newValue([[replacingItem objectAtIndex:1] cStringUsingEncoding:[NSString defaultCStringEncoding]] );
+                    
+                    replace_tags.push_back( std::make_pair(gdcm::Tag(tag.group,tag.element),newValue) );                    
+                }
+                
+                /////////////////////////////
+                
+                gdcm::Anonymizer anon;
+                anon.SetFile( file );
+                
+                bool success = true;
+                
+                std::vector<gdcm::Tag>::const_iterator it = empty_tags.begin();
+                for(; it != empty_tags.end(); ++it)
+                {
+                    success = success && anon.Empty( *it );
+                }
+                
+                
+                it = remove_tags.begin();
+                for(; it != remove_tags.end(); ++it)
+                {
+                    success = success && anon.Remove( *it );
+                }
+
+                
+                std::vector< std::pair<gdcm::Tag, std::string> >::const_iterator it2 = replace_tags.begin();
+                for(; it2 != replace_tags.end(); ++it2)
+                {
+                    success = success && anon.Replace( it2->first, it2->second.c_str() );
+                }
+                
+                /////////////////////////////
+                
+                const char* outfilename = filename;
+                
+                gdcm::Writer writer;
+                writer.SetFileName( outfilename );
+                writer.SetFile( file );
+                
+                if( !writer.Write() )
+                {
+                    std::cerr << "Could not Write : " << outfilename << std::endl;
+                    if( strcmp(filename,outfilename) != 0 )
+                    {
+                        gdcm::System::RemoveFile( outfilename );
+                    }
+                    else
+                    {
+                        std::cerr << "gdcmanon just corrupted: " << filename << " for you (data lost)." << std::endl;
+                    }
+                }
+            }
+        }
+    }
+    
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    
 	if( [producedFiles count] != [dicomImages count])
 	{
 		NSLog( @"***** anonymizeFiles [producedFiles count] != [dicomImages count]");
@@ -460,6 +535,7 @@ static NSString *templateDicomFile = nil;
 	else
     {
         NSMutableArray* dicomSeries = [NSMutableArray array];
+        
         for (int i = 0; i < [dicomImages count]; i++)
         {
             DicomImage *image = [dicomImages objectAtIndex: i];
@@ -467,28 +543,38 @@ static NSString *templateDicomFile = nil;
             @try
             {		
                 if (![dicomSeries containsObject:image.series])
+                {
                     [dicomSeries addObject:image.series];
+                }
                 
                 NSString* tempFilePath = [producedFiles objectAtIndex: i];
                 NSString* ext = [tempFilePath pathExtension];
                 NSString* fileDirPath = nil;
                 
                 if( [image.series.study.patientID length] > 0)
+                {
                     fileDirPath = [dirPath stringByAppendingPathComponent: [NSString stringWithFormat: NSLocalizedString( @"Anonymized - %@", nil), [Anonymization cleanStringForFile:image.series.study.patientID]]];
+                }
                 else
+                {
                     fileDirPath = [dirPath stringByAppendingPathComponent: NSLocalizedString( @"Anonymized", nil)];
+                }
                 
                 fileDirPath = [fileDirPath stringByAppendingPathComponent: [Anonymization cleanStringForFile: image.series.study.studyName]];
                 
                 fileDirPath = [fileDirPath stringByAppendingPathComponent: [Anonymization cleanStringForFile: [NSString stringWithFormat:@"%@ - %@", image.series.name, image.series.id]]];
                 
-                @try {
+                @try
+                {
                     [[NSFileManager defaultManager] confirmDirectoryAtPath:fileDirPath];
                 }
-                @catch (NSException *exception) {
+                @catch (NSException *exception)
+                {
                     [self performSelectorOnMainThread: @selector( error:) withObject: exception.description waitUntilDone: NO];
+                    
                     break;
                 }
+                
                 
                 NSString* filePath;
                 NSInteger i = 0;
@@ -498,14 +584,21 @@ static NSString *templateDicomFile = nil;
                     NSString* is = i ? [NSString stringWithFormat:@"-%4.4d", (int) i] : @"";
                     NSString* fileName = [NSString stringWithFormat:@"IM-%4.4d-%4.4d%@.%@", (int) dicomSeries.count, (int) [image.instanceNumber intValue], is, ext];
                     filePath = [fileDirPath stringByAppendingPathComponent:fileName];
+                    
                 } while ([[NSFileManager defaultManager] fileExistsAtPath:filePath]);
                 
                 [[NSFileManager defaultManager] moveItemAtPath:tempFilePath toPath:filePath error:NULL];
                 
                 NSString* k = [filenameTranslation keyForObject:tempFilePath];
                 
-                if (k) [filenameTranslation setObject:filePath forKey: k];
-                else NSLog(@"Warning: anonymization file naming error: unknown original for %@ which should have changed to %@", tempFilePath, filePath);
+                if (k)
+                {
+                    [filenameTranslation setObject:filePath forKey: k];
+                }
+                else
+                {
+                    NSLog(@"Warning: anonymization file naming error: unknown original for %@ which should have changed to %@", tempFilePath, filePath);
+                }
             }
             @catch (NSException * e)
             {
@@ -516,10 +609,18 @@ static NSString *templateDicomFile = nil;
         }
         
         if( tempDirPath)
+        {
             [[NSFileManager defaultManager] removeItemAtPath:tempDirPath error:NULL];
+        }
 	}
     
 	[splash close];
+    
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    //////////////////////
 	
 	return [[filenameTranslation copy] autorelease];
 }
