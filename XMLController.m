@@ -714,6 +714,9 @@ extern int delayedTileWindows;
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+    table.dataSource = nil;
+    table.delegate = nil;
+    
 	[[self window] setAcceptsMouseMovedEvents: NO];
 	
 	[self autorelease];
