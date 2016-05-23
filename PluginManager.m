@@ -1532,97 +1532,154 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 #pragma mark -
 #pragma mark auto update
 
+- (NSArray*)checkForHorosPluginsUpdates:(id)sender
+{
+    NSURL *url = [NSURL URLWithString:HOROS_PLUGIN_LIST_URL];
+    
+    NSMutableArray *pluginsToUpdate = [NSMutableArray array];
+    
+    if (url)
+    {
+        NSMutableArray *onlinePlugins = [NSMutableArray arrayWithContentsOfURL:url];
+        NSArray *installedPlugins = [PluginManager pluginsList];
+        
+        
+        
+        for (NSDictionary *installedPlugin in installedPlugins)
+        {
+            NSString *pluginName = [installedPlugin valueForKey:@"name"];
+            
+            NSDictionary *onlinePlugin = nil;
+            for (NSDictionary *plugin in onlinePlugins)
+            {
+                NSString *name = [[[plugin valueForKey:@"download_url"] lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                name = [name stringByDeletingPathExtension]; // removes the .zip extension
+                name = [name stringByDeletingPathExtension]; // removes the .horosplugin / .osirixplugin extension
+                
+                if([pluginName isEqualToString:name])
+                {
+                    onlinePlugin = plugin;
+                    break;
+                }
+            }
+            
+            if( onlinePlugin)
+            {
+                NSString *currVersion = [installedPlugin objectForKey:@"version"];
+                NSString *onlineVersion = [onlinePlugin objectForKey:@"version"];
+                
+                if(currVersion && onlineVersion && [currVersion length] > 0 && [currVersion length] > 0)
+                {
+                    if( [currVersion isEqualToString:onlineVersion] == NO && [PluginManager compareVersion: currVersion withVersion: onlineVersion] < 0)
+                    {
+                        NSLog( @"PLUGIN UPDATE NEEDED -------> current vers: %@ versus online vers: %@ - %@", currVersion, onlineVersion, pluginName);
+                        NSMutableDictionary *modifiedOnlinePlugin = [NSMutableDictionary dictionaryWithDictionary:onlinePlugin];
+                        [modifiedOnlinePlugin setObject:pluginName forKey:@"name"];
+                        [pluginsToUpdate addObject:modifiedOnlinePlugin];
+                    }
+                }
+                [onlinePlugins removeObject:onlinePlugin];
+            }
+        }
+    }
+    
+    return pluginsToUpdate;
+}
+
+
+- (NSArray*) checkForOsiriXPluginsUpdates:(id)sender
+{
+    NSURL *url = [NSURL URLWithString:OSIRIX_PLUGIN_LIST_URL];
+    
+    NSMutableArray *pluginsToUpdate = [NSMutableArray array];
+    
+    if (url)
+    {
+        NSMutableArray *onlinePlugins = [NSMutableArray arrayWithContentsOfURL:url];
+        NSArray *installedPlugins = [PluginManager pluginsList];
+        
+        
+        
+        for (NSDictionary *installedPlugin in installedPlugins)
+        {
+            NSString *pluginName = [installedPlugin valueForKey:@"name"];
+            
+            NSDictionary *onlinePlugin = nil;
+            for (NSDictionary *plugin in onlinePlugins)
+            {
+                NSString *name = [[[plugin valueForKey:@"download_url"] lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                name = [name stringByDeletingPathExtension]; // removes the .zip extension
+                name = [name stringByDeletingPathExtension]; // removes the .horosplugin / .osirixplugin extension
+                
+                if([pluginName isEqualToString:name])
+                {
+                    onlinePlugin = plugin;
+                    break;
+                }
+            }
+            
+            if( onlinePlugin)
+            {
+                NSString *currVersion = [installedPlugin objectForKey:@"version"];
+                NSString *onlineVersion = [onlinePlugin objectForKey:@"version"];
+                
+                if(currVersion && onlineVersion && [currVersion length] > 0 && [currVersion length] > 0)
+                {
+                    if( [currVersion isEqualToString:onlineVersion] == NO && [PluginManager compareVersion: currVersion withVersion: onlineVersion] < 0)
+                    {
+                        NSLog( @"PLUGIN UPDATE NEEDED -------> current vers: %@ versus online vers: %@ - %@", currVersion, onlineVersion, pluginName);
+                        NSMutableDictionary *modifiedOnlinePlugin = [NSMutableDictionary dictionaryWithDictionary:onlinePlugin];
+                        [modifiedOnlinePlugin setObject:pluginName forKey:@"name"];
+                        [pluginsToUpdate addObject:modifiedOnlinePlugin];
+                    }
+                }
+                [onlinePlugins removeObject:onlinePlugin];
+            }
+        }
+    }
+    
+    return pluginsToUpdate;
+}
+
+
 - (IBAction)checkForUpdates:(id)sender
 {
-    
-    
-    return;
-    
-    
-    
-    
-    
-	NSURL				*url;
-	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
     [NSThread currentThread].name = @"Check for plugins updates";
     
 	[NSThread sleepForTimeInterval: 10];
 	
-	url = [NSURL URLWithString:@"http://www.osirix-viewer.com/osirix_plugins/plugins.plist"];
-	
-	if(url)
-	{
-		NSMutableArray *onlinePlugins = [NSMutableArray arrayWithContentsOfURL:url];
-		NSArray *installedPlugins = [PluginManager pluginsList];
-		
-		NSMutableArray *pluginsToUpdate = [NSMutableArray array];
-		
-		for (NSDictionary *installedPlugin in installedPlugins)
-		{
-			NSString *pluginName = [installedPlugin valueForKey:@"name"];
-			
-			NSDictionary *onlinePlugin = nil;
-			for (NSDictionary *plugin in onlinePlugins)
-			{
-				NSString *name = [[[plugin valueForKey:@"download_url"] lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-				name = [name stringByDeletingPathExtension]; // removes the .zip extension
-				name = [name stringByDeletingPathExtension]; // removes the .horosplugin / .osirixplugin extension
-				
-				if([pluginName isEqualToString:name])
-				{
-					onlinePlugin = plugin;
-					break;
-				}
-			}
-			
-			if( onlinePlugin)
-			{
-				NSString *currVersion = [installedPlugin objectForKey:@"version"];
-				NSString *onlineVersion = [onlinePlugin objectForKey:@"version"];
-				
-				if(currVersion && onlineVersion && [currVersion length] > 0 && [currVersion length] > 0)
-				{
-					if( [currVersion isEqualToString:onlineVersion] == NO && [PluginManager compareVersion: currVersion withVersion: onlineVersion] < 0)
-					{
-						NSLog( @"PLUGIN UPDATE NEEDED -------> current vers: %@ versus online vers: %@ - %@", currVersion, onlineVersion, pluginName);
-						NSMutableDictionary *modifiedOnlinePlugin = [NSMutableDictionary dictionaryWithDictionary:onlinePlugin];
-						[modifiedOnlinePlugin setObject:pluginName forKey:@"name"];
-						[pluginsToUpdate addObject:modifiedOnlinePlugin];
-					}
-				}
-				[onlinePlugins removeObject:onlinePlugin];
-			}
-		}
+    NSMutableArray* pluginsToUpdate = [NSMutableArray arrayWithArray:[self checkForHorosPluginsUpdates:sender]];
+    [pluginsToUpdate addObjectsFromArray:[self checkForOsiriXPluginsUpdates:sender]];
         
+    //ici
+    if([pluginsToUpdate count])
+    {
+        NSString *title;
+        NSMutableString *message = [NSMutableString string];
         
-		//ici
-		if([pluginsToUpdate count])
-		{
-			NSString *title;
-			NSMutableString *message = [NSMutableString string];
-			
-			if([pluginsToUpdate count]==1)
-			{
-				title = NSLocalizedString(@"Plugin Update Available", @"");
-				[message appendFormat:NSLocalizedString(@"A new version of the plugin \"%@\" is available.", @""), [[pluginsToUpdate objectAtIndex:0] objectForKey:@"name"]];
-			}
-			else
-			{
-				title = NSLocalizedString(@"Plugin Updates Available", @"");
-				[message appendString:NSLocalizedString(@"New versions of the following plugins are available:\n", @"")];
-				for (NSDictionary *plugin in pluginsToUpdate)
-				{
-					[message appendFormat:@"%@, ", [plugin objectForKey:@"name"]];
-				}
-				message = [NSMutableString stringWithString:[message substringToIndex:[message length]-2]];
-			}
+        if([pluginsToUpdate count]==1)
+        {
+            title = NSLocalizedString(@"Plugin Update Available", @"");
+            [message appendFormat:NSLocalizedString(@"A new version of the plugin \"%@\" is available.", @""), [[pluginsToUpdate objectAtIndex:0] objectForKey:@"name"]];
+        }
+        else
+        {
+            title = NSLocalizedString(@"Plugin Updates Available", @"");
+            [message appendString:NSLocalizedString(@"New versions of the following plugins are available:\n", @"")];
+            for (NSDictionary *plugin in pluginsToUpdate)
+            {
+                [message appendFormat:@"%@, ", [plugin objectForKey:@"name"]];
+            }
+            message = [NSMutableString stringWithString:[message substringToIndex:[message length]-2]];
+        }
 								
-			NSDictionary *messageDictionary = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:title, message, pluginsToUpdate, nil] forKeys:[NSArray arrayWithObjects:@"title", @"body", @"plugins", nil]];
-			
-			[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:messageDictionary waitUntilDone: NO];
-		}
-	}
+        NSDictionary *messageDictionary = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:title, message, pluginsToUpdate, nil] forKeys:[NSArray arrayWithObjects:@"title", @"body", @"plugins", nil]];
+        
+        [self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:messageDictionary waitUntilDone: NO];
+    }
+
 	
 	[pool release];
 }
@@ -1649,8 +1706,20 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 				self.downloadQueue = [NSMutableArray arrayWithArray:pluginsToDownload];
 				
 				NSLog(@"Download Plugin : %@", [[pluginsToDownload objectAtIndex:0] objectForKey:@"download_url"]);
-				[pluginManagerController setDownloadURL:[[pluginsToDownload objectAtIndex:0] objectForKey:@"download_url"]];
-				[pluginManagerController download:self];
+                
+                NSString* pluginURL = [[pluginsToDownload objectAtIndex:0] objectForKey:@"download_url"];
+                
+                if ( [pluginURL containsString:@"horosplugin"] )
+                {
+                    [pluginManagerController setHorosPluginDownloadURL:pluginURL];
+                    [pluginManagerController downloadHorosPlugin:self];
+                    
+                }
+                else if ( [pluginURL containsString:@"osirixplugin"] )
+                {
+                    [pluginManagerController setOsiriXPluginDownloadURL:pluginURL];
+                    [pluginManagerController downloadOsiriXPlugin:self];
+                }
 			}
 		}
 		else startedUpdateProcess = NO;
@@ -1673,9 +1742,21 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 
 		PluginManagerController *pluginManagerController = [[BrowserController currentBrowser] pluginManagerController];
 
-		NSLog(@"Download Plugin : %@", [[downloadQueue objectAtIndex:0] objectForKey:@"download_url"]);
-		[pluginManagerController setDownloadURL:[[downloadQueue objectAtIndex:0] objectForKey:@"download_url"]];
-		[pluginManagerController download:self];
+		NSLog(@"Download Plugin : %@",[[downloadQueue objectAtIndex:0] objectForKey:@"download_url"]);
+        
+        NSString* pluginURL = [[downloadQueue objectAtIndex:0] objectForKey:@"download_url"];
+        
+        if ( [pluginURL containsString:@"horosplugin"] )
+        {
+            [pluginManagerController setHorosPluginDownloadURL:pluginURL];
+            [pluginManagerController downloadHorosPlugin:self];
+
+        }
+        else if ( [pluginURL containsString:@"osirixplugin"] )
+        {
+            [pluginManagerController setOsiriXPluginDownloadURL:pluginURL];
+            [pluginManagerController downloadOsiriXPlugin:self];
+        }
 	}
 	else
 	{
