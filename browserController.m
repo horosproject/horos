@@ -14388,6 +14388,12 @@ static NSArray*	openSubSeriesArray = nil;
         });
     }
     
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"FIRSTIMEEXECUTION_2.0"] == nil)
+    {
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"FIRSTIMEEXECUTION_2.0"];
+        [self restoreWindowState:self];
+    }
+    
     [O2HMigrationAssistant performStartupO2HTasks:self];
 }
 
