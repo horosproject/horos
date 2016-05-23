@@ -44,7 +44,7 @@
 }
 @end
 
-@interface PluginManagerController : NSWindowController <NSURLDownloadDelegate>
+@interface PluginManagerController : NSWindowController <NSURLDownloadDelegate, WebPolicyDelegate>
 {
 
     IBOutlet NSMenu	*filtersMenu;
@@ -65,8 +65,12 @@
 	NSString *osirixPluginDownloadURL, *horosPluginDownloadURL;
     IBOutlet NSButton *osirixPluginDownloadButton, *horosPluginDownloadButton;
     
-	IBOutlet NSTextField *statusTextField;
-	IBOutlet NSProgressIndicator *statusProgressIndicator;
+    IBOutlet NSTextField *osirixPluginStatusTextField, *horosPluginStatusTextField;
+    IBOutlet NSProgressIndicator *osirixPluginStatusProgressIndicator, *horosPluginStatusProgressIndicator;
+    
+    IBOutlet NSBox *validatedInHorosBox;
+    IBOutlet NSBox *NOTvalidatedInHorosBox;
+    IBOutlet NSTextField *protectedModeLabel;
     
     NSMutableDictionary *downloadingPlugins;
 }

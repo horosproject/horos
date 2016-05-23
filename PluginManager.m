@@ -457,7 +457,9 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 		
 		[PluginManager discoverPlugins];
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadNext:) name:AppPluginDownloadInstallDidFinishNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadNext:)
+                                                     name:AppPluginDownloadInstallDidFinishNotification
+                                                   object:nil];
 	}
 	return self;
 }
@@ -586,9 +588,8 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 
 + (void) loadPluginBundle:(NSString*) path
 {
-    if ([PluginManager isPluginBundleSignatureValid:path])
+    if ([PluginManager isPluginBundleSignatureValid:path] && [DCMPix isRunOsiriXInProtectedModeActivated] == NO)
     {
-    
         NSString *name = [path lastPathComponent];
         
         path = [path stringByDeletingLastPathComponent];
@@ -704,15 +705,13 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 
 + (void) loadHorosPluginAtPath:(NSString*) path
 {
-    
-    
+    [self loadPluginBundle:path];
 }
 
 
 + (void) loadOsiriXPluginAtPath:(NSString*) path
 {
-    
-    
+    [self loadPluginBundle:path];
 }
 
 
@@ -762,23 +761,12 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 		NSString	*userPath = [NSHomeDirectory() stringByAppendingPathComponent:appSupport];
 		NSString	*sysPath = [@"/" stringByAppendingPathComponent:appSupport];
 		
-		#ifndef MACAPPSTORE
-		if ([[NSFileManager defaultManager] fileExistsAtPath:appPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:appPath attributes:nil];
-		if ([[NSFileManager defaultManager] fileExistsAtPath:userPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:userPath attributes:nil];
-		if ([[NSFileManager defaultManager] fileExistsAtPath:sysPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:sysPath attributes:nil];
-		#endif
-		
 		appSupport = [appSupport stringByAppendingPathComponent :@"Plugins/"];
 		appAppStoreSupport = [appAppStoreSupport stringByAppendingPathComponent :@"Plugins/"];
 		
 		userPath = [NSHomeDirectory() stringByAppendingPathComponent:appSupport];
         userAppStorePath = [NSHomeDirectory() stringByAppendingPathComponent:appAppStoreSupport];
 		sysPath = [@"/" stringByAppendingPathComponent:appSupport];
-		
-		#ifndef MACAPPSTORE
-		if ([[NSFileManager defaultManager] fileExistsAtPath:userPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:userPath attributes:nil];
-		if ([[NSFileManager defaultManager] fileExistsAtPath:sysPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:sysPath attributes:nil];
-		#endif
 		
 		NSArray* paths = [NSArray arrayWithObjects: [NSNull null], appPath, userPath, userAppStorePath, sysPath, nil]; // [NSNull null] is a placeholder for launch parameters load commands
 		
@@ -1507,7 +1495,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
                         }
                     }
 					
-                    [pluginDescription setObject:[[NSNumber numberWithBool:NO] boolValue]?@"YES":@"NO" forKey:@"horosCompatible"];
+                    [pluginDescription setObject:[[NSNumber numberWithBool:NO] boolValue]?@"YES":@"NO" forKey:@"HorosCompatiblePlugin"];
                     
                     //////////////
                     
@@ -1642,7 +1630,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 
 
 
-- (void)displayUpdateMessage:(NSDictionary*)messageDictionary;
+- (void) displayUpdateMessage:(NSDictionary*) messageDictionary;
 {
 	[messageDictionary retain];
 
@@ -1674,9 +1662,10 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 
 
 
--(void)downloadNext:(NSNotification*)notification;
+-(void) downloadNext:(NSNotification*) notification;
 {
-	if(!startedUpdateProcess) return;
+	if (!startedUpdateProcess)
+        return;
 	
 	if([downloadQueue count]>1)
 	{

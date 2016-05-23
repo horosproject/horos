@@ -56,13 +56,19 @@ static NSDate *CachedHorosPluginsListDate = nil;
 
 - (void)keyDown:(NSEvent *)event
 {
-    if( [[event characters] length] == 0) return;
+    if( [[event characters] length] == 0)
+        return;
     
 	unichar c = [[event characters] characterAtIndex:0];
-	if (( c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey) && [self selectedRow] >= 0 && [self numberOfRows] > 0)
+	
+    if ( (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey) && [self selectedRow] >= 0 && [self numberOfRows] > 0 )
+    {
 		[(PluginManagerController*)[self delegate] delete:self];
+    }
 	else
+    {
 		 [super keyDown:event];
+    }
 }
 
 @end
@@ -71,8 +77,20 @@ static NSDate *CachedHorosPluginsListDate = nil;
 
 @implementation PluginManagerController
 
+
 - (void) WebViewProgressStartedNotification: (NSNotification*) n
 {
+    NSProgressIndicator *statusProgressIndicator = nil;
+    
+    if (osirixPluginWebView == [n object])
+    {
+        statusProgressIndicator = osirixPluginStatusProgressIndicator;
+    }
+    else
+    {
+        statusProgressIndicator = horosPluginStatusProgressIndicator;
+    }
+    
     [statusProgressIndicator setHidden: NO];
 	[statusProgressIndicator startAnimation: self];
     
@@ -82,6 +100,17 @@ static NSDate *CachedHorosPluginsListDate = nil;
 
 - (void) WebViewProgressFinishedNotification: (NSNotification*) n
 {
+    NSProgressIndicator *statusProgressIndicator = nil;
+    
+    if (osirixPluginWebView == [n object])
+    {
+        statusProgressIndicator = osirixPluginStatusProgressIndicator;
+    }
+    else
+    {
+        statusProgressIndicator = horosPluginStatusProgressIndicator;
+    }
+    
     [statusProgressIndicator setHidden: YES];
 	[statusProgressIndicator stopAnimation: self];
     
@@ -97,25 +126,9 @@ static NSDate *CachedHorosPluginsListDate = nil;
     
 	plugins = [[NSMutableArray arrayWithArray:[PluginManager pluginsList]] retain];
 	
-	osirixPluginListURLs = [[NSArray arrayWithObjects:OSIRIX_PLUGIN_LIST_URL, OSIRIX_PLUGIN_LIST_ALT_URL, nil] retain];
+	osirixPluginListURLs = [[NSArray arrayWithObjects:OSIRIX_PLUGIN_LIST_URL, nil] retain];
     horosPluginListURLs = [[NSArray arrayWithObjects:HOROS_PLUGIN_LIST_URL, nil] retain];
 	 
-	[osirixPluginWebView setPolicyDelegate:self];
-    [horosPluginWebView setPolicyDelegate:self];
-	
-	[statusTextField setHidden:YES];
-	[statusProgressIndicator setHidden:YES];
-	
-	// deactivate the back/forward options in the webView's contextual menu
-	[[osirixPluginWebView backForwardList] setCapacity:0];
-    [[horosPluginWebView backForwardList] setCapacity:0];
-	
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WebViewProgressStartedNotification:)  name:WebViewProgressStartedNotification  object:osirixPluginWebView];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WebViewProgressFinishedNotification:) name:WebViewProgressFinishedNotification object:osirixPluginWebView];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(WebViewProgressStartedNotification:)  name:WebViewProgressStartedNotification  object:horosPluginWebView];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(WebViewProgressFinishedNotification:) name:WebViewProgressFinishedNotification object:horosPluginWebView];
-    
 	return self;
 }
 
@@ -181,7 +194,7 @@ static NSDate *CachedHorosPluginsListDate = nil;
 }
 
 
-- (IBAction)delete:(id)sender;
+- (IBAction) delete:(id)sender;
 {
 	if( NSRunInformationalAlertPanel(NSLocalizedString(@"Delete a plugin", nil),
 									 NSLocalizedString(@"Are you sure you want to delete the selected plugin?", nil),
@@ -194,7 +207,9 @@ static NSDate *CachedHorosPluginsListDate = nil;
 		NSString *availability = [[pluginsList objectAtIndex:[pluginTable selectedRow]] objectForKey:@"availability"];
 		BOOL pluginIsActive = [[[pluginsList objectAtIndex:[pluginTable selectedRow]] objectForKey:@"active"] boolValue];
 		
-		[PluginManager deletePluginWithName:pluginName availability: availability isActive: pluginIsActive];
+		[PluginManager deletePluginWithName:pluginName
+                               availability:availability
+                                   isActive: pluginIsActive];
         
 		[self refreshPluginList];
 	}
@@ -260,14 +275,39 @@ static NSDate *CachedHorosPluginsListDate = nil;
 
 - (void) awakeFromNib
 {
+    if ([DCMPix isRunOsiriXInProtectedModeActivated])
+        [protectedModeLabel setHidden:NO];
+    else    
+        [protectedModeLabel setHidden:YES];
+    
+    
+    [osirixPluginWebView setPolicyDelegate:self];
+    [horosPluginWebView setPolicyDelegate:self];
+    
+    [osirixPluginStatusTextField setHidden:YES];
+    [osirixPluginStatusProgressIndicator setHidden:YES];
+    
+    [horosPluginStatusTextField setHidden:YES];
+    [horosPluginStatusProgressIndicator setHidden:YES];
+    
+    // deactivate the back/forward options in the webView's contextual menu
+    [[osirixPluginWebView backForwardList] setCapacity:0];
+    [[horosPluginWebView backForwardList] setCapacity:0];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WebViewProgressStartedNotification:)  name:WebViewProgressStartedNotification  object:osirixPluginWebView];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WebViewProgressFinishedNotification:) name:WebViewProgressFinishedNotification object:osirixPluginWebView];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WebViewProgressStartedNotification:)  name:WebViewProgressStartedNotification  object:horosPluginWebView];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WebViewProgressFinishedNotification:) name:WebViewProgressFinishedNotification object:horosPluginWebView];
+    
 	if ([[self availableOsiriXPlugins] count]<1)
 	{
 		[osirixPluginListPopUp removeAllItems];
 		[osirixPluginListPopUp setEnabled:NO];
 		[osirixPluginDownloadButton setEnabled:NO];
 		
-        [statusTextField setHidden:NO];
-		[statusTextField setStringValue:NSLocalizedString(@"No OsiriX plugin server available.", nil)];
+        [osirixPluginStatusTextField setHidden:NO];
+		[osirixPluginStatusTextField setStringValue:NSLocalizedString(@"No OsiriX plugin server available.", nil)];
 	}
 	else
 	{
@@ -286,8 +326,8 @@ static NSDate *CachedHorosPluginsListDate = nil;
         [horosPluginListPopUp setEnabled:NO];
         [horosPluginDownloadButton setEnabled:NO];
         
-        [statusTextField setHidden:NO];
-        [statusTextField setStringValue:NSLocalizedString(@"No Horos plugin server available.", nil)];
+        [horosPluginStatusTextField setHidden:NO];
+        [horosPluginStatusTextField setStringValue:NSLocalizedString(@"No Horos plugin server available.", nil)];
     }
     else
     {
@@ -472,8 +512,19 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	
     for (NSDictionary *plugin in availablePlugins)
 	{
-		if([[plugin valueForKey:@"name"] isEqualToString:name])
+		if ([[plugin valueForKey:@"name"] isEqualToString:name])
 		{
+            if ([[plugin valueForKey:@"HorosCompatiblePlugin"] boolValue])
+            {
+                [self->validatedInHorosBox setHidden:NO];
+                [self->NOTvalidatedInHorosBox setHidden:YES];
+            }
+            else
+            {
+                [self->NOTvalidatedInHorosBox setHidden:NO];
+                [self->validatedInHorosBox setHidden:YES];
+            }
+            
 			[self setOsiriXPluginURL:[plugin valueForKey:@"url"]];
 			[self setOsiriXPluginDownloadURL:[plugin valueForKey:@"download_url"]];
 			
@@ -484,28 +535,44 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 			{	
 				NSString *name = [[[plugin valueForKey:@"download_url"] lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 				name = [name stringByDeletingPathExtension]; // removes the .zip extension
-				name = [name stringByDeletingPathExtension]; // removes the .horosplugin / .osirixplugin extension
-				sameName = [name isEqualToString:[installedPlugin valueForKey:@"name"]];
-				sameVersion = [[plugin valueForKey:@"version"] isEqualToString:[installedPlugin valueForKey:@"version"]];
-
+				name = [name stringByDeletingPathExtension]; // removes .osirixplugin extension
+				
+                sameName = [name isEqualToString:[installedPlugin valueForKey:@"name"]];
+                
+                sameVersion = [[plugin valueForKey:@"version"] isEqualToString:[installedPlugin valueForKey:@"version"]];
+                
+                @try
+                {
+                    NSDecimalNumber* installedVersion = [NSDecimalNumber decimalNumberWithString:[installedPlugin valueForKey:@"version"] locale:nil];
+                    NSDecimalNumber* availableVersion = [NSDecimalNumber decimalNumberWithString:[plugin valueForKey:@"version"] locale:nil];
+                    
+                    sameVersion = ([installedVersion floatValue] >= [availableVersion floatValue]);
+                }
+                @catch(...)
+                {
+                   
+                }
+                
 				alreadyInstalled = alreadyInstalled || sameName || (sameName && sameVersion);
 				
-				if(alreadyInstalled) break;
+				if (alreadyInstalled)
+                    break;
 			}
 			
-			if(alreadyInstalled)
+			if (alreadyInstalled)
 			{
-				[statusTextField setHidden:NO];
-				if(sameName && sameVersion)
-					[statusTextField setStringValue:NSLocalizedString(@"Plugin already installed", nil)];
+				[osirixPluginStatusTextField setHidden:NO];
+                
+				if (sameName && sameVersion)
+					[osirixPluginStatusTextField setStringValue:NSLocalizedString(@"Plugin already installed", nil)];
 				else
-					[statusTextField setStringValue:NSLocalizedString(@"Download the new version!", nil)];
+					[osirixPluginStatusTextField setStringValue:NSLocalizedString(@"Download the new version!", nil)];
 			}
 			else
 			{
-				[statusTextField setHidden:YES];
+				[osirixPluginStatusTextField setHidden:YES];
 			}
-			
+            
 			return;
 		}
 	}
@@ -551,21 +618,22 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
                 
                 alreadyInstalled = alreadyInstalled || sameName || (sameName && sameVersion);
                 
-                if(alreadyInstalled) break;
+                if (alreadyInstalled)
+                    break;
             }
             
             if(alreadyInstalled)
             {
-                [statusTextField setHidden:NO];
+                [horosPluginStatusTextField setHidden:NO];
                 
                 if(sameName && sameVersion)
-                    [statusTextField setStringValue:NSLocalizedString(@"Plugin already installed", nil)];
+                    [horosPluginStatusTextField setStringValue:NSLocalizedString(@"Plugin already installed", nil)];
                 else
-                    [statusTextField setStringValue:NSLocalizedString(@"Download the new version!", nil)];
+                    [horosPluginStatusTextField setStringValue:NSLocalizedString(@"Download the new version!", nil)];
             }
             else
             {
-                [statusTextField setHidden:YES];
+                [horosPluginStatusTextField setHidden:YES];
             }
             
             return;
@@ -707,8 +775,35 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 
 
 
-- (void)downloadDidBegin:(NSURLDownload *)download
+- (void)downloadDidBegin:(NSURLDownload *) download
 {
+    NSTextField *statusTextField = nil;
+    NSProgressIndicator *statusProgressIndicator = nil;
+    
+    //////////////
+    
+    NSArray *paths = nil;
+    @synchronized(downloadingPlugins)
+    {
+        paths = [downloadingPlugins allKeysForObject:download];
+        
+        if (paths.count == 1)
+        {
+            if ([[paths objectAtIndex:0] containsString:@"osirixplugin"])
+            {
+                statusTextField = osirixPluginStatusTextField;
+                statusProgressIndicator = osirixPluginStatusProgressIndicator;
+            }
+            else
+            {
+                statusTextField = horosPluginStatusTextField;
+                statusProgressIndicator = horosPluginStatusProgressIndicator;
+            }
+        }
+    }
+    
+    //////////////
+    
 	[statusTextField setHidden:NO];
 	[statusTextField setStringValue:NSLocalizedString(@"Downloading...", nil)];
 	[statusProgressIndicator setHidden:NO];
@@ -716,19 +811,47 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 }
 
 
-- (void)downloadDidFinish:(NSURLDownload *)download
+- (void)downloadDidFinish:(NSURLDownload *) download
 {
+    NSTextField *statusTextField = nil;
+    NSProgressIndicator *statusProgressIndicator = nil;
+    
+    //////////////
+    
+    NSArray *paths = nil;
+    @synchronized(downloadingPlugins)
+    {
+        paths = [downloadingPlugins allKeysForObject:download];
+        
+        if (paths.count == 1)
+        {
+            if ([[paths objectAtIndex:0] containsString:@"osirixplugin"])
+            {
+                statusTextField = osirixPluginStatusTextField;
+                statusProgressIndicator = osirixPluginStatusProgressIndicator;
+            }
+            else
+            {
+                statusTextField = horosPluginStatusTextField;
+                statusProgressIndicator = horosPluginStatusProgressIndicator;
+            }
+        }
+    }
+    
+    //////////////
+    
 	[statusTextField setStringValue:NSLocalizedString(@"Plugin downloaded", nil)];
 	[statusProgressIndicator setHidden:YES];
 	[statusProgressIndicator stopAnimation:self];
     
-    NSArray *paths = nil;
+    //////////////
+    
     @synchronized( downloadingPlugins)
     {
         paths = [downloadingPlugins allKeysForObject: download];
     }
     
-    if( paths.count == 1)
+    if (paths.count == 1)
     {
         [self installDownloadedPluginAtPath: [paths lastObject]];
         
@@ -740,43 +863,92 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
         }
     }
     else
+    {
         NSLog( @"***** downloadDidFinish path for download?");
+    }
 }
 
 
 - (void) download:(NSURLDownload *)download didFailWithError:(NSError *)error
 {
+    NSTextField *statusTextField = nil;
+    NSProgressIndicator *statusProgressIndicator = nil;
+    
+    //////////////
+    
+    NSArray *paths = nil;
+    @synchronized(downloadingPlugins)
+    {
+        paths = [downloadingPlugins allKeysForObject:download];
+        
+        if (paths.count == 1)
+        {
+            if ([[paths objectAtIndex:0] containsString:@"osirixplugin"])
+            {
+                statusTextField = osirixPluginStatusTextField;
+                statusProgressIndicator = osirixPluginStatusProgressIndicator;
+            }
+            else
+            {
+                statusTextField = horosPluginStatusTextField;
+                statusProgressIndicator = horosPluginStatusProgressIndicator;
+            }
+        }
+    }
+    
+    //////////////
+    
 	[statusTextField setHidden:NO];
 	[statusTextField setStringValue:NSLocalizedString(@"Download failed", nil)];
      
-    NSRunCriticalAlertPanel( NSLocalizedString(@"Download failed", nil), @"%@", NSLocalizedString(@"OK", nil), nil, nil, [error localizedDescription]);
+    NSRunCriticalAlertPanel( NSLocalizedString(@"Download failed", nil), @"%@",
+                             NSLocalizedString(@"OK", nil), nil, nil,
+                             [error localizedDescription]);
     
 	[statusProgressIndicator setHidden:YES];
 	[statusProgressIndicator stopAnimation:self];
     
-    NSArray *paths = nil;
+    //////////////
+    
     @synchronized( downloadingPlugins)
     {
         paths = [downloadingPlugins allKeysForObject: download];
     }
     
-    if( paths.count == 1)
+    if(paths.count == 1)
     {
         @synchronized( downloadingPlugins)
         {
-            [downloadingPlugins removeObjectForKey: [paths lastObject]];
+            [downloadingPlugins removeObjectForKey:[paths lastObject]];
         }
     }
     else
+    {
         NSLog( @"***** download didFailWithError path for download?");
+    }
 }
 
 
 
-#pragma mark install
+#pragma mark install / uinstall
 
-- (void) installDownloadedPluginAtPath:(NSString*)path;
+- (void) installDownloadedPluginAtPath:(NSString*) path;
 {
+    NSTextField *statusTextField = nil;
+    NSProgressIndicator *statusProgressIndicator = nil;
+    
+    if ([path containsString:@"osirixplugin"])
+    {
+        statusTextField = osirixPluginStatusTextField;
+        statusProgressIndicator = osirixPluginStatusProgressIndicator;
+    }
+    else
+    {
+        statusTextField = horosPluginStatusTextField;
+        statusProgressIndicator = horosPluginStatusProgressIndicator;
+    }
+    
+    
 	[statusProgressIndicator setHidden:NO];
 	[statusProgressIndicator startAnimation:self];
 	
