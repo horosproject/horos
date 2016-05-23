@@ -57,13 +57,14 @@
 	IBOutlet PluginsTableView *pluginTable;
 	
 	IBOutlet NSTabView *tabView;
-	IBOutlet NSTabViewItem *installedPluginsTabViewItem, *webViewTabViewItem;
+	IBOutlet NSTabViewItem *installedPluginsTabViewItem, *osirixPluginsTabViewItem, *horosPluginsTabViewItem;
 	
-	IBOutlet WebView *webView;
-	NSArray *pluginsListURLs;
-	IBOutlet NSPopUpButton *pluginsListPopUp;
-	NSString *downloadURL;
-	IBOutlet NSButton *downloadButton;
+    IBOutlet WebView *osirixPluginWebView, *horosPluginWebView;
+	NSArray *osirixPluginListURLs, *horosPluginListURLs;
+    IBOutlet NSPopUpButton *osirixPluginListPopUp, *horosPluginListPopUp;
+	NSString *osirixPluginDownloadURL, *horosPluginDownloadURL;
+    IBOutlet NSButton *osirixPluginDownloadButton, *horosPluginDownloadButton;
+    
 	IBOutlet NSTextField *statusTextField;
 	IBOutlet NSProgressIndicator *statusProgressIndicator;
     
@@ -78,14 +79,21 @@
 - (IBAction)loadPlugins:(id)sender;
 - (void)refreshPluginList;
 
-- (NSArray*)availablePlugins;
-- (void)generateAvailablePluginsMenu;
-- (void)setURL:(NSString*)url;
-- (IBAction)changeWebView:(id)sender;
-- (void)setURLforPluginWithName:(NSString*)name;
+- (NSArray*)availableOsiriXPlugins;
+- (NSArray*)availableHorosPlugins;
+- (void)generateAvailableOsiriXPluginsMenu;
+- (void)generateAvailableHorosPluginsMenu;
+- (void)setOsiriXPluginURL:(NSString*)url;
+- (void)setHorosPluginURL:(NSString*)url;
+- (IBAction) changeOsiriXPluginWebView:(id)sender;
+- (IBAction) changeHorosPluginWebView:(id)sender;
+- (void)setURLforOsiriXPluginWithName:(NSString*)name;
+- (void)setURLforHorosPluginWithName:(NSString*)name;
+- (void)setOsiriXPluginDownloadURL:(NSString*)url;
+- (void)setHorosPluginDownloadURL:(NSString*)url;
 
-- (void)setDownloadURL:(NSString*)url;
-- (IBAction)download:(id)sender;
+- (IBAction) downloadOsiriXPlugin:(id)sender;
+- (IBAction) downloadHorosPlugin:(id)sender;
 
 - (void)installDownloadedPluginAtPath:(NSString*)path;
 - (BOOL)isZippedFileAtPath:(NSString*)path;

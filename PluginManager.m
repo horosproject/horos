@@ -210,6 +210,8 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
     }
 }
 
+
+
 + (void) setMenus:(NSMenu*) filtersMenu :(NSMenu*) roisMenu :(NSMenu*) othersMenu :(NSMenu*) dbMenu
 {
     [filtersMenu removeAllItems];
@@ -435,6 +437,8 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	}
 }
 
+
+
 - (id)init
 {
 	if (self = [super init])
@@ -457,6 +461,8 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	}
 	return self;
 }
+
+
 
 + (NSString*) pathResolved:(NSString*) inPath
 {
@@ -484,6 +490,8 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	if( resolvedPath == nil) return inPath;
 	else return [(NSString *) resolvedPath autorelease];
 }
+
+
 
 + (void) releaseInstanciedObjectsOfClass: (Class) class
 {
@@ -515,7 +523,9 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
     }
 }
 
-+ (void) unloadPlugin: (NSBundle*) bundle
+
+
++ (void) unloadPluginBundle:(NSBundle*) bundle
 {
 //    NSLog( @"--- will unloadplugin: %@", [bundle bundlePath]);
 //    @try
@@ -557,132 +567,189 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 //    }
 }
 
+
 + (void) unloadPluginWithName: (NSString*) name
 {
     for( NSBundle *bundle in [pluginsBundleDictionnary allValues])
     {
         if( [[[[bundle bundlePath] lastPathComponent] stringByDeletingPathExtension] isEqualToString: name])
-            [PluginManager unloadPlugin: bundle];
+            [PluginManager unloadPluginBundle:bundle];
     }
 }
+
+
++ (BOOL) isPluginBundleSignatureValid:(NSString*) path
+{
+    return YES;
+}
+
+
++ (void) loadPluginBundle:(NSString*) path
+{
+    if ([PluginManager isPluginBundleSignatureValid:path])
+    {
+    
+        NSString *name = [path lastPathComponent];
+        
+        path = [path stringByDeletingLastPathComponent];
+        
+        [pluginsNames setValue: path forKey: [[name lastPathComponent] stringByDeletingPathExtension]];
+        
+        
+        
+        @try
+        {
+            NSString *pathResolved = [PluginManager pathResolved: [path stringByAppendingPathComponent: name]];
+            
+            [PluginManager startProtectForCrashWithPath: pathResolved];
+            
+            
+            
+            NSBundle *plugin = [NSBundle bundleWithPath: pathResolved];
+            
+            if( plugin == nil)
+                NSLog( @"**** Bundle opening failed for plugin: %@", [path stringByAppendingPathComponent:name]);
+            else
+            {
+                if (![plugin load])
+                {
+                    NSLog( @"******* Bundle code loading failed for plugin %@", [path stringByAppendingPathComponent:name]);
+                }
+                else
+                {
+                    Class filterClass = [plugin principalClass];
+                    
+                    if( filterClass)
+                    {
+                        [pluginsBundleDictionnary setObject: plugin forKey: pathResolved];
+                        
+                        NSString *version = [[plugin infoDictionary] valueForKey: (NSString*) kCFBundleVersionKey];
+                        
+                        if( version == nil)
+                        {
+                            version = [[plugin infoDictionary] valueForKey: @"CFBundleShortVersionString"];
+                        }
+                        
+                        NSLog( @"Loaded: %@, vers: %@ (%@)", [name stringByDeletingPathExtension], version, path);
+                        
+                        if( filterClass == NSClassFromString( @"ARGS"))
+                        {
+                            return;
+                        }
+                        
+                        if ([[[plugin infoDictionary] objectForKey:@"pluginType"] rangeOfString:@"Pre-Process"].location != NSNotFound)
+                        {
+                            PluginFilter *filter = [filterClass filter];
+                            [preProcessPlugins addObject: filter];
+                        }
+                        else if ([[plugin infoDictionary] objectForKey:@"FileFormats"])
+                        {
+                            NSEnumerator *enumerator = [[[plugin infoDictionary] objectForKey:@"FileFormats"] objectEnumerator];
+                            NSString *fileFormat;
+                            while (fileFormat = [enumerator nextObject])
+                            {
+                                //we will save the bundle rather than a filter.  Each file decode will require a separate decoder
+                                [fileFormatPlugins setObject:plugin forKey:fileFormat];
+                            }
+                        }
+                        else if ( [filterClass instancesRespondToSelector:@selector(filterImage:)])
+                        {
+                            NSArray *menuTitles = [[plugin infoDictionary] objectForKey:@"MenuTitles"];
+                            PluginFilter *filter = [filterClass filter];
+                            
+                            if( menuTitles)
+                            {
+                                for( NSString *menuTitle in menuTitles)
+                                {
+                                    [plugins setObject:filter forKey:menuTitle];
+                                    [pluginsDict setObject:plugin forKey:menuTitle];
+                                }
+                            }
+                            
+                            NSArray *toolbarNames = [[plugin infoDictionary] objectForKey:@"ToolbarNames"];
+                            
+                            if( toolbarNames)
+                            {
+                                for( NSString *toolbarName in toolbarNames)
+                                {
+                                    [plugins setObject:filter forKey:toolbarName];
+                                    [pluginsDict setObject:plugin forKey:toolbarName];
+                                }
+                            }
+                        }
+                        
+                        if ([[[plugin infoDictionary] objectForKey:@"pluginType"] rangeOfString: @"Report"].location != NSNotFound)
+                        {
+                            [reportPlugins setObject: plugin forKey:[[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];
+                        }
+                    }
+                    else
+                    {
+                        NSLog( @"********* principal class not found for: %@ - %@", name, [plugin principalClass]);
+                    }
+                }
+            }
+            
+            
+            
+            [PluginManager endProtectForCrash];
+        }
+        @catch( NSException *e)
+        {
+            NSLog( @"******** Plugin loading exception: %@", e);
+        }
+    }
+}
+
+
++ (void) loadHorosPluginAtPath:(NSString*) path
+{
+    
+    
+}
+
+
++ (void) loadOsiriXPluginAtPath:(NSString*) path
+{
+    
+    
+}
+
 
 + (void) loadPluginAtPath: (NSString*) path
 {
     NSString *name = [path lastPathComponent];
     
-    path = [path stringByDeletingLastPathComponent];
     
-    if (([[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"horosplugin"] || [[name pathExtension] isEqualToString:@"osirixplugin"] ))
+    if ([pluginsNames valueForKey: [[name lastPathComponent] stringByDeletingPathExtension]])
     {
-        if( [pluginsNames valueForKey: [[name lastPathComponent] stringByDeletingPathExtension]])
-        {
-            NSLog( @"***** Multiple plugins: %@", [name lastPathComponent]);
-            
-            if( [name.lastPathComponent isEqualToString: @"UserManual.horosplugin"] == NO)
-            {
-                NSString *message = NSLocalizedString(@"Warning! Multiple instances of the same plugin have been found. Only one instance will be loaded. Check the Plugin Manager (Plugins menu) for multiple identical plugins.", nil);
-                
-                message = [message stringByAppendingFormat:@"\r\r%@", [name lastPathComponent]];
-                
-                NSRunAlertPanel( NSLocalizedString(@"Plugins", nil), @"%@" , nil, nil, nil, message);
-            }
-        }
-        else
-        {
-            [pluginsNames setValue: path forKey: [[name lastPathComponent] stringByDeletingPathExtension]];
-            
-            @try
-            {
-                NSString *pathResolved = [PluginManager pathResolved: [path stringByAppendingPathComponent: name]];
-                
-                [PluginManager startProtectForCrashWithPath: pathResolved];
-                
-                NSBundle *plugin = [NSBundle bundleWithPath: pathResolved];
-                
-                if( plugin == nil)
-                    NSLog( @"**** Bundle opening failed for plugin: %@", [path stringByAppendingPathComponent:name]);
-                else
-                {
-                    if (![plugin load])
-                    {
-                        NSLog( @"******* Bundle code loading failed for plugin %@", [path stringByAppendingPathComponent:name]);
-                    }
-                    else
-                    {
-                        Class filterClass = [plugin principalClass];
-                        
-                        if( filterClass)
-                        {
-                            [pluginsBundleDictionnary setObject: plugin forKey: pathResolved];
-                            
-                            NSString *version = [[plugin infoDictionary] valueForKey: (NSString*) kCFBundleVersionKey];
-                            
-                            if( version == nil)
-                                version = [[plugin infoDictionary] valueForKey: @"CFBundleShortVersionString"];
-                            
-                            NSLog( @"Loaded: %@, vers: %@ (%@)", [name stringByDeletingPathExtension], version, path);
-                            
-                            if( filterClass == NSClassFromString( @"ARGS")) return;
-                            
-                            if ([[[plugin infoDictionary] objectForKey:@"pluginType"] rangeOfString:@"Pre-Process"].location != NSNotFound) 
-                            {
-                                PluginFilter *filter = [filterClass filter];
-                                [preProcessPlugins addObject: filter];
-                            }
-                            else if ([[plugin infoDictionary] objectForKey:@"FileFormats"]) 
-                            {
-                                NSEnumerator *enumerator = [[[plugin infoDictionary] objectForKey:@"FileFormats"] objectEnumerator];
-                                NSString *fileFormat;
-                                while (fileFormat = [enumerator nextObject])
-                                {
-                                    //we will save the bundle rather than a filter.  Each file decode will require a separate decoder
-                                    [fileFormatPlugins setObject:plugin forKey:fileFormat];
-                                }
-                            }
-                            else if ( [filterClass instancesRespondToSelector:@selector(filterImage:)])
-                            {
-                                NSArray *menuTitles = [[plugin infoDictionary] objectForKey:@"MenuTitles"];
-                                PluginFilter *filter = [filterClass filter];
-                                
-                                if( menuTitles)
-                                {
-                                    for( NSString *menuTitle in menuTitles)
-                                    {
-                                        [plugins setObject:filter forKey:menuTitle];
-                                        [pluginsDict setObject:plugin forKey:menuTitle];
-                                    }
-                                }
-                                
-                                NSArray *toolbarNames = [[plugin infoDictionary] objectForKey:@"ToolbarNames"];
-                                
-                                if( toolbarNames)
-                                {
-                                    for( NSString *toolbarName in toolbarNames)
-                                    {
-                                        [plugins setObject:filter forKey:toolbarName];
-                                        [pluginsDict setObject:plugin forKey:toolbarName];
-                                    }
-                                }
-                            }
-                            
-                            if ([[[plugin infoDictionary] objectForKey:@"pluginType"] rangeOfString: @"Report"].location != NSNotFound) 
-                            {
-                                [reportPlugins setObject: plugin forKey:[[plugin infoDictionary] objectForKey:@"CFBundleExecutable"]];
-                            }
-                        }
-                        else NSLog( @"********* principal class not found for: %@ - %@", name, [plugin principalClass]);
-                    }
-                }
-                
-                [PluginManager endProtectForCrash];
-            }
-            @catch( NSException *e)
-            {
-                NSLog( @"******** Plugin loading exception: %@", e);
-            }
-        }
+        NSLog( @"***** Multiple plugins: %@", [name lastPathComponent]);
+        
+        NSString *message = NSLocalizedString(@"Warning! Multiple instances of the same plugin have been found. Only one instance will be loaded. Check the Plugin Manager (Plugins menu) for multiple identical plugins.", nil);
+        
+        message = [message stringByAppendingFormat:@"\r\r%@", [name lastPathComponent]];
+        
+        NSRunAlertPanel( NSLocalizedString(@"Plugins", nil), @"%@" , nil, nil, nil, message);
+        
+        return;
+    }
+    
+    
+    
+    if ( [[name pathExtension] isEqualToString:@"horosplugin"] )
+    {
+        [PluginManager loadHorosPluginAtPath:path];
+    }
+    else if ( [[name pathExtension] isEqualToString:@"osirixplugin"] )
+    {
+        [PluginManager loadOsiriXPluginAtPath:path];
+    }
+    else if ( [[name pathExtension] isEqualToString:@"plugin"] )
+    {
+        //[PluginManager loadUnknownPluginAtPath:path];
     }
 }
+
 
 + (void) discoverPlugins
 {
@@ -716,7 +783,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 		NSArray* paths = [NSArray arrayWithObjects: [NSNull null], appPath, userPath, userAppStorePath, sysPath, nil]; // [NSNull null] is a placeholder for launch parameters load commands
 		
         for( NSBundle *bundle in [pluginsBundleDictionnary allValues])
-            [PluginManager unloadPlugin: bundle];
+            [PluginManager unloadPluginBundle: bundle];
         
 		[plugins release];
 		[pluginsDict release];
@@ -748,7 +815,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
         {
             NSString *pluginCrashPath = [NSString stringWithContentsOfFile: pluginCrash encoding: NSUTF8StringEncoding error: nil];
             
-            int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed", nil), NSLocalizedString(@"Previous crash is maybe related to a plugin.\r\rShould I remove this plugin (%@)?", nil), NSLocalizedString(@"Delete Plugin",nil), NSLocalizedString(@"Continue",nil), nil, [pluginCrashPath lastPathComponent]);
+            int result = NSRunInformationalAlertPanel(NSLocalizedString(@"Horos crashed", nil), NSLocalizedString(@"Previous crash is maybe related to a plugin.\r\rShould I remove this plugin (%@)?", nil), NSLocalizedString(@"Delete Plugin",nil), NSLocalizedString(@"Continue",nil), nil, [pluginCrashPath lastPathComponent]);
             
             if( result == NSAlertDefaultReturn) // Delete Plugin
             {
@@ -855,10 +922,14 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	}
 }
 
+
+
 -(void) noPlugins:(id) sender
 {
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_PLUGINS]];
 }
+
+
 
 #pragma mark -
 #pragma mark Plugin user management
@@ -874,6 +945,8 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
     #endif
 }
 
+
+
 + (NSString*)inactivePluginsDirectoryPath;
 {
     #ifdef MACAPPSTORE
@@ -883,15 +956,21 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
     #endif
 }
 
+
+
 + (NSString*)userActivePluginsDirectoryPath;
 {
 	return [NSHomeDirectory() stringByAppendingPathComponent:[PluginManager activePluginsDirectoryPath]];
 }
 
+
+
 + (NSString*)userInactivePluginsDirectoryPath;
 {
 	return [NSHomeDirectory() stringByAppendingPathComponent:[PluginManager inactivePluginsDirectoryPath]];
 }
+
+
 
 + (NSString*)systemActivePluginsDirectoryPath;
 {
@@ -899,16 +978,22 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	return [s stringByAppendingPathComponent:[PluginManager activePluginsDirectoryPath]];
 }
 
+
+
 + (NSString*)systemInactivePluginsDirectoryPath;
 {
 	NSString *s = @"/";
 	return [s stringByAppendingPathComponent:[PluginManager inactivePluginsDirectoryPath]];
 }
 
+
+
 + (NSString*)appActivePluginsDirectoryPath;
 {
 	return [[NSBundle mainBundle] builtInPlugInsPath];
 }
+
+
 
 + (NSString*)appInactivePluginsDirectoryPath;
 {
@@ -917,10 +1002,14 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	return appPath;
 }
 
+
+
 + (NSArray*)activeDirectories;
 {
 	return [NSArray arrayWithObjects:[PluginManager userActivePluginsDirectoryPath], [PluginManager systemActivePluginsDirectoryPath], [PluginManager appActivePluginsDirectoryPath], nil];
 }
+
+
 
 + (NSArray*)inactiveDirectories;
 {
@@ -952,6 +1041,8 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 //	return NO;
 //}
 
+
+
 + (void)movePluginFromPath:(NSString*)sourcePath toPath:(NSString*)destinationPath;
 {
 	if([sourcePath isEqualToString:destinationPath]) return;
@@ -977,6 +1068,8 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
         [[BLAuthentication sharedInstance] executeCommand:@"/bin/cp" withArgs:args];
     }
 }
+
+
 
 + (void)activatePluginWithName:(NSString*)pluginName;
 {
@@ -1007,6 +1100,8 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
         NSRunInformationalAlertPanel(NSLocalizedString(@"Plugins", @""), NSLocalizedString( @"Restart Horos to apply the changes to the plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
     gPluginsAlertAlreadyDisplayed = YES;
 }
+
+
 
 + (void)deactivatePluginWithName:(NSString*)pluginName;
 {
@@ -1044,6 +1139,8 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
     gPluginsAlertAlreadyDisplayed = YES;
 }
 
+
+
 + (void)changeAvailabilityOfPluginWithName:(NSString*)pluginName to:(NSString*)availability;
 {
     NSArray *availabilities = [PluginManager availabilities];
@@ -1051,7 +1148,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 #ifdef MACAPPSTORE
     if([availability isEqualTo:[availabilities objectAtIndex:0]] == NO)
     {
-        NSRunCriticalAlertPanel( NSLocalizedString(@"Plugin",nil),  NSLocalizedString( @"You cannot move the plugin to another location with this version of OsiriX.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+        NSRunCriticalAlertPanel( NSLocalizedString(@"Plugin",nil),  NSLocalizedString( @"You cannot move the plugin to another location with this version of Horos.", nil), NSLocalizedString(@"OK",nil), nil, nil);
     }
 #endif
     
@@ -1103,6 +1200,8 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	[PluginManager movePluginFromPath:completePluginPath toPath:newPluginPath];
 }
 
+
+
 + (void)createDirectory:(NSString*)directoryPath;
 {
 	BOOL isDir = YES;
@@ -1117,6 +1216,9 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 		[[BLAuthentication sharedInstance] executeCommand:@"/bin/mkdir" withArgs:args];
 	}
 }
+
+
+
 
 #pragma mark Instalation
 
@@ -1189,12 +1291,18 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 //    [PluginManager loadPluginAtPath: destinationPath];
 }
 
+
+
+
 #pragma mark Deletion
 
 + (NSString*) deletePluginWithName:(NSString*)pluginName;
 {
 	return [PluginManager deletePluginWithName: pluginName availability: nil isActive: YES];
 }
+
+
+
 
 + (NSString*) deletePluginWithName:(NSString*)pluginName availability: (NSString*) availability isActive:(BOOL) isActive
 {
@@ -1277,6 +1385,9 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	return returnPath;
 }
 
+
+
+
 #pragma mark plugins
 
 NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
@@ -1287,7 +1398,9 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 	return [name1 compare:name2 options: NSCaseInsensitiveSearch];
 }
 
-+ (NSArray*)pluginsList;
+
+
++ (NSArray*) pluginsList;
 {
 	NSString *userActivePath = [PluginManager userActivePluginsDirectoryPath];
 	NSString *userInactivePath = [PluginManager userInactivePluginsDirectoryPath];
@@ -1304,7 +1417,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 	
     NSMutableArray *plugins = [NSMutableArray array];
 	
-    for(path in paths)
+    for (path in paths)
 	{
 //		BOOL active = ([path isEqualToString:userActivePath] || [path isEqualToString:sysActivePath]);
 //		BOOL allUsers = ([path isEqualToString:sysActivePath] || [path isEqualToString:sysInactivePath]);
@@ -1312,18 +1425,23 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 		BOOL allUsers = ([path isEqualToString:sysActivePath] || [path isEqualToString:sysInactivePath] || [path isEqualToString:[PluginManager appActivePluginsDirectoryPath]] || [path isEqualToString:[PluginManager appInactivePluginsDirectoryPath]]);
 		
 		NSString *availability = nil;
-		if([path isEqualToString:sysActivePath] || [path isEqualToString:sysInactivePath])
+		
+        if([path isEqualToString:sysActivePath] || [path isEqualToString:sysInactivePath])
 			availability = [[PluginManager availabilities] objectAtIndex:1];
-		else if([path isEqualToString:[PluginManager appActivePluginsDirectoryPath]] || [path isEqualToString:[PluginManager appInactivePluginsDirectoryPath]])
+		
+        else if([path isEqualToString:[PluginManager appActivePluginsDirectoryPath]] || [path isEqualToString:[PluginManager appInactivePluginsDirectoryPath]])
 			availability = [[PluginManager availabilities] objectAtIndex:2];
+        
 		else if([path isEqualToString:userActivePath] || [path isEqualToString:userInactivePath])
 			availability = [[PluginManager availabilities] objectAtIndex:0];
 		
 		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
-		NSString *name;
-		while(name = [e nextObject])
+		
+        NSString *name = nil;
+		
+        while(name = [e nextObject])
 		{
-			if([[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"horosplugin"] || [[name pathExtension] isEqualToString:@"osirixplugin"])
+			if(/* [[name pathExtension] isEqualToString:@"plugin"] || */ [[name pathExtension] isEqualToString:@"horosplugin"] || [[name pathExtension] isEqualToString:@"osirixplugin"])
 			{
 //				NSBundle *plugin = [NSBundle bundleWithPath:[PluginManager pathResolved:[path stringByAppendingPathComponent:name]]];
 //				if (filterClass = [plugin principalClass])	
@@ -1332,49 +1450,94 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 					[pluginDescription setObject:[name stringByDeletingPathExtension] forKey:@"name"];
 					[pluginDescription setObject:[NSNumber numberWithBool:active] forKey:@"active"];
 					[pluginDescription setObject:[NSNumber numberWithBool:allUsers] forKey:@"allUsers"];
-						
 					[pluginDescription setObject:availability forKey:@"availability"];
+                    
+                    if ([[name pathExtension] isEqualToString:@"osirixplugin"])
+                    {
+                        [pluginDescription setObject:[NSImage imageNamed:@"osirixplugin"] forKey:@"typeIcon"];
+                    }
+                    else
+                    {
+                        [pluginDescription setObject:[NSImage imageNamed:@"horosplugin"] forKey:@"typeIcon"];
+                    }
 					
-					// plugin version
-					
+					////////////////////////////////////
+                    // plugin version and compatibility
+					////////////////////////////////////
+                    
 					// taking the "version" through NSBundle is a BAD idea: Cocoa keeps the NSBundle in cache... thus for a same path you'll always have the same version
-					
 					NSURL *bundleURL = [NSURL fileURLWithPath:[PluginManager pathResolved:[path stringByAppendingPathComponent:name]]];
-					CFDictionaryRef bundleInfoDict = CFBundleCopyInfoDictionaryInDirectory((CFURLRef)bundleURL);
+					CFDictionaryRef bundleInfoDict = CFBundleCopyInfoDictionaryInDirectory((CFURLRef) bundleURL);
 								
-					CFStringRef versionString = nil;
-					if(bundleInfoDict != NULL)
+					//////////////
+                    
+                    CFStringRef versionString = nil;
+					
+                    if(bundleInfoDict != NULL)
 					{
 						versionString = CFDictionaryGetValue(bundleInfoDict, CFSTR("CFBundleVersion"));
 					
 						if(versionString == nil)
+                        {
 							versionString = CFDictionaryGetValue(bundleInfoDict, CFSTR("CFBundleShortVersionString"));
+                        }
 					}
 					
-					NSString *pluginVersion;
+                    NSString *pluginVersion = nil;
+                    
 					if(versionString != NULL)
-						pluginVersion = (NSString*)versionString;
+						pluginVersion = (NSString*) versionString;
 					else
 						pluginVersion = @"";
 						
 					[pluginDescription setObject:pluginVersion forKey:@"version"];
 					
-					if(bundleInfoDict != NULL)
-						CFRelease( bundleInfoDict);
+                    
+                    //////////////
+                    
+                    NSNumber * horosCompatible = [NSNumber numberWithBool:NO];
+                    
+                    if (bundleInfoDict != NULL)
+                    {
+                        horosCompatible = CFDictionaryGetValue(bundleInfoDict, CFSTR("HorosCompatiblePlugin"));
+                        
+                        if (horosCompatible == nil)
+                        {
+                            horosCompatible = [NSNumber numberWithBool:NO];
+                        }
+                    }
 					
+                    [pluginDescription setObject:[[NSNumber numberWithBool:NO] boolValue]?@"YES":@"NO" forKey:@"horosCompatible"];
+                    
+                    //////////////
+                    
+                    if(bundleInfoDict != NULL)
+                    {
+						CFRelease( bundleInfoDict);
+                    }
+					
+                    ////////////////////////////////////
+                    
+                    
 					// plugin description dictionary
 					[plugins addObject:pluginDescription];
 				}
 			}
 		}
 	}
-	NSArray *sortedPlugins = [plugins sortedArrayUsingFunction:sortPluginArray context:NULL];
+	
+    NSArray *sortedPlugins = [plugins sortedArrayUsingFunction:sortPluginArray context:NULL];
+    
 	return sortedPlugins;
 }
 
+
+
 + (NSArray*)availabilities;
 {
-	return [NSArray arrayWithObjects:NSLocalizedString(@"Current user", nil), NSLocalizedString(@"All users", nil), NSLocalizedString(@"OsiriX bundle", nil), nil];
+	return [NSArray arrayWithObjects:NSLocalizedString(@"Current user", nil),
+                                     NSLocalizedString(@"All users", nil),
+                                     NSLocalizedString(@"Horos bundle", nil), nil];
 }
 
 
@@ -1443,6 +1606,8 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 				[onlinePlugins removeObject:onlinePlugin];
 			}
 		}
+        
+        
 		//ici
 		if([pluginsToUpdate count])
 		{
@@ -1474,6 +1639,9 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 	[pool release];
 }
 
+
+
+
 - (void)displayUpdateMessage:(NSDictionary*)messageDictionary;
 {
 	[messageDictionary retain];
@@ -1503,6 +1671,8 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 	
 	[messageDictionary release];
 }
+
+
 
 -(void)downloadNext:(NSNotification*)notification;
 {

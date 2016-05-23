@@ -140,8 +140,9 @@ extern const char *GetPrivateIP();
             //            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionOpened:) name:N2ConnectionListenerOpenedConnectionNotification object:_listener];
             [_listener setThreadPerConnection:YES];
             if (_listener)
-                NSLog(@"OsiriX database shared on port %d", [_listener port]);
-            else NSLog(@"Warning: unable to share OsiriX database");
+                NSLog(@"Horos database shared on port %d", [_listener port]);
+            else
+                NSLog(@"Warning: unable to share Horos database");
         }
         
         if (!activate && _listener) {
@@ -172,7 +173,7 @@ extern const char *GetPrivateIP();
         [txtrec setObject:[AppController UID] forKey:@"UID"];
     
     if( [_bonjour setTXTRecordData:[NSNetService dataFromTXTRecordDictionary:txtrec]] == NO)
-        NSLog(@"Warning: OsiriX Bonjour net service setTXTRecordData FAILED");
+        NSLog(@"Warning: Horos Bonjour net service setTXTRecordData FAILED");
     
     if (_listener)
         [_bonjour publish];
@@ -185,14 +186,14 @@ extern const char *GetPrivateIP();
 
 - (void)netService:(NSNetService*)sender didNotPublish:(NSDictionary*)errorDict
 {
-    NSLog(@"Warning: OsiriX Bonjour net service did not publish, %@", errorDict);
+    NSLog(@"Warning: Horos Bonjour net service did not publish, %@", errorDict);
     [_bonjour release];
     _bonjour = nil;
 }
 
 - (void) netServiceDidStop:(NSNetService *)sender
 {
-    NSLog(@"OsiriX Bonjour net service did stop");
+    NSLog(@"Horos Bonjour net service did stop");
 }
 
 
