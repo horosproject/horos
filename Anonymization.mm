@@ -465,8 +465,11 @@ static NSString *templateDicomFile = nil;
                 std::vector< std::pair<gdcm::Tag, std::string> > replace_tags;
                 for (NSArray* replacingItem in tags)
                 {
+                    std::string newValue = "";
+                    
                     DCMAttributeTag* tag = [replacingItem objectAtIndex:0];
-                    std::string newValue([[replacingItem objectAtIndex:1] cStringUsingEncoding:[NSString defaultCStringEncoding]] );
+                    if ([replacingItem count] > 1)
+                        newValue = std::string( [[replacingItem objectAtIndex:1] cStringUsingEncoding:[NSString defaultCStringEncoding]] );
                     
                     replace_tags.push_back( std::make_pair(gdcm::Tag(tag.group,tag.element),newValue) );                    
                 }
