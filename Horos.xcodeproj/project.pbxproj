@@ -3323,6 +3323,13 @@
 			remoteGlobalIDString = 9966A1B91AE0B7E000F2D81A;
 			remoteInfo = "OsiriX Framework";
 		};
+		99FE27FC1CF4A442003C32AB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4A2F5931078D148300C514A2;
+			remoteInfo = "Unzip Binaries";
+		};
 		AB0F3A411046BFB9004129DD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -10985,6 +10992,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				99FE27FD1CF4A442003C32AB /* PBXTargetDependency */,
 				4A2ADDFD078D3C6200416F53 /* PBXTargetDependency */,
 				59BDEE6B117CB393007F1F2C /* PBXTargetDependency */,
 			);
@@ -11583,7 +11591,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo openssl.zip\nunzip -uo GDCMLibs.zip\nunzip -uo GDCMHeaders.zip\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo ITKLibs.zip\nunzip -uo VTKLibs.zip\nunzip -uo ITKHeaders.zip\nunzip -uo VTKHeaders.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo FeedbackReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo libPapyrusToolkit.a.zip\nunzip -uo Ming.zip\nunzip -uo weasis-portable.zip\nchmod -R 755 weasis\ncd \"$SRCROOT/Binaries/weasis\"\nif [ -d \"weasis-portable\" ]; then\n    cd \"weasis-portable\"\n    for f in *; do\n        rm -Rf \"../$f\"\n        mv \"$f\" ..\n    done\n    cd ..\n    rm -Rf weasis-portable\nfi\nfind . -name __MACOSX | xargs rm -Rf\n\ncd \"$SRCROOT/Binaries/ReportsToPDF/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\n# Don't overwrite customized files\ncd \"$SRCROOT\"\nif [ ! -f \"options.h\" ] ; then\n    unzip -uo options.h.zip\nfi\nif [ ! -f \"url.h\" ] ; then\n    unzip -uo url.h.zip\nfi\n\nexit 0\n";
+			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo openssl.zip\nunzip -uo GDCMLibs.zip\nunzip -uo GDCMHeaders.zip\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo ITKLibs.zip\nunzip -uo VTKLibs.zip\nunzip -uo ITKHeaders.zip\nunzip -uo VTKHeaders.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo FeedbackReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo libPapyrusToolkit.a.zip\nunzip -uo Ming.zip\nunzip -uo weasis-portable.zip\nchmod -R 755 weasis\ncd \"$SRCROOT/Binaries/weasis\"\nif [ -d \"weasis-portable\" ]; then\n    cd \"weasis-portable\"\n    for f in *; do\n        rm -Rf \"../$f\"\n        mv \"$f\" ..\n    done\n    cd ..\n    rm -Rf weasis-portable\nfi\nfind . -name __MACOSX | xargs rm -Rf\n\ncd \"$SRCROOT/Binaries/ReportsToPDF/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\n# Don't overwrite customized files\n#cd \"$SRCROOT\"\n#if [ ! -f \"options.h\" ] ; then\n#    unzip -uo options.h.zip\n#fi\n#if [ ! -f \"url.h\" ] ; then\n#    unzip -uo url.h.zip\n#fi\n\nexit 0\n";
 		};
 		59BDEDC8117CAB86007F1F2C /* Zip Horos Lite into Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -13376,6 +13384,11 @@
 			isa = PBXTargetDependency;
 			target = 9966A1B91AE0B7E000F2D81A /* OsiriX DCM Framework (Legacy) */;
 			targetProxy = 9966A2E31AE0B8AF00F2D81A /* PBXContainerItemProxy */;
+		};
+		99FE27FD1CF4A442003C32AB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4A2F5931078D148300C514A2 /* Unzip Binaries */;
+			targetProxy = 99FE27FC1CF4A442003C32AB /* PBXContainerItemProxy */;
 		};
 		AB0F3A421046BFB9004129DD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

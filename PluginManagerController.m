@@ -613,8 +613,22 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
                 NSString *name = [[[plugin valueForKey:@"download_url"] lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
                 name = [name stringByDeletingPathExtension]; // removes the .zip extension
                 name = [name stringByDeletingPathExtension]; // removes the .horosplugin
+                
                 sameName = [name isEqualToString:[installedPlugin valueForKey:@"name"]];
+                
                 sameVersion = [[plugin valueForKey:@"version"] isEqualToString:[installedPlugin valueForKey:@"version"]];
+                
+                @try
+                {
+                    NSDecimalNumber* installedVersion = [NSDecimalNumber decimalNumberWithString:[installedPlugin valueForKey:@"version"] locale:nil];
+                    NSDecimalNumber* availableVersion = [NSDecimalNumber decimalNumberWithString:[plugin valueForKey:@"version"] locale:nil];
+                    
+                    sameVersion = ([installedVersion floatValue] >= [availableVersion floatValue]);
+                }
+                @catch(...)
+                {
+                    
+                }
                 
                 alreadyInstalled = alreadyInstalled || sameName || (sameName && sameVersion);
                 
