@@ -1483,19 +1483,26 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
                     
                     //////////////
                     
-                    NSNumber * horosCompatible = [NSNumber numberWithBool:NO];
-                    
-                    if (bundleInfoDict != NULL)
+                    if ([[name pathExtension] isEqualToString:@"horosplugin"])
                     {
-                        horosCompatible = CFDictionaryGetValue(bundleInfoDict, CFSTR("HorosCompatiblePlugin"));
-                        
-                        if (horosCompatible == nil)
-                        {
-                            horosCompatible = [NSNumber numberWithBool:NO];
-                        }
+                        [pluginDescription setObject:@"YES" forKey:@"HorosCompatiblePlugin"];
                     }
-					
-                    [pluginDescription setObject:[[NSNumber numberWithBool:NO] boolValue]?@"YES":@"NO" forKey:@"HorosCompatiblePlugin"];
+                    else
+                    {
+                        NSNumber * horosCompatible = [NSNumber numberWithBool:NO];
+                        
+                        if (bundleInfoDict != NULL)
+                        {
+                            horosCompatible = CFDictionaryGetValue(bundleInfoDict, CFSTR("HorosCompatiblePlugin"));
+                            
+                            if (horosCompatible == nil)
+                            {
+                                horosCompatible = [NSNumber numberWithBool:NO];
+                            }
+                        }
+                        
+                        [pluginDescription setObject:[[NSNumber numberWithBool:NO] boolValue]?@"YES":@"NO" forKey:@"HorosCompatiblePlugin"];
+                    }
                     
                     //////////////
                     
