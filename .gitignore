@@ -37,6 +37,9 @@ Binaries/weasis/
 Binaries/._OsiriX Report.template
 Binaries/FeedbackReporter.framework/
 Binaries/openssl
+options.h
+url.h
+
 
 *.xcscheme
 xcuserdata/
