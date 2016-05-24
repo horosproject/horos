@@ -126,8 +126,8 @@ static NSDate *CachedHorosPluginsListDate = nil;
     
 	plugins = [[NSMutableArray arrayWithArray:[PluginManager pluginsList]] retain];
 	
-	osirixPluginListURLs = [[NSArray arrayWithObjects:OSIRIX_PLUGIN_LIST_URL, nil] retain];
-    horosPluginListURLs = [[NSArray arrayWithObjects:HOROS_PLUGIN_LIST_URL, nil] retain];
+	osirixPluginListURLs = [[NSArray arrayWithObjects:OSIRIX_PLUGIN_LIST_URL, OSIRIX_PLUGIN_LIST_ALT_URL, nil] retain];
+    horosPluginListURLs = [[NSArray arrayWithObjects:HOROS_PLUGIN_LIST_URL, HOROS_PLUGIN_LIST_ALT_URL, nil] retain];
 	 
 	return self;
 }

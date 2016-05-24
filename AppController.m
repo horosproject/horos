@@ -4380,10 +4380,7 @@ static BOOL initialized = NO;
     if( [sender isKindOfClass:[NSString class]] && [sender isEqualToString: @"crash"])
         verboseAfterCrash = YES;
     
-	if( [AppController hasMacOSXMountainLion]) // or better
-		url = [NSURL URLWithString:URL_HOROS_VERSION];
-	else
-		url = [NSURL URLWithString:URL_HOROS_VERSION_OLD_OS];  // TODO: remove
+    url = [NSURL URLWithString:URL_HOROS_VERSION];
 	
 	if( url)
 	{

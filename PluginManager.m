@@ -1534,16 +1534,23 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 
 - (NSArray*)checkForHorosPluginsUpdates:(id)sender
 {
-    NSURL *url = [NSURL URLWithString:HOROS_PLUGIN_LIST_URL];
-    
     NSMutableArray *pluginsToUpdate = [NSMutableArray array];
     
-    if (url)
+    
+    NSURL *url = [NSURL URLWithString:HOROS_PLUGIN_LIST_URL];
+    
+    NSMutableArray *onlinePlugins = [NSMutableArray arrayWithContentsOfURL:url];
+    
+    if (url == nil || onlinePlugins == nil || [onlinePlugins count] <= 0)
     {
-        NSMutableArray *onlinePlugins = [NSMutableArray arrayWithContentsOfURL:url];
+        url = [NSURL URLWithString:HOROS_PLUGIN_LIST_ALT_URL];
+        
+        onlinePlugins = [NSMutableArray arrayWithContentsOfURL:url];
+    }
+    
+    if (url && onlinePlugins && [onlinePlugins count] > 0)
+    {
         NSArray *installedPlugins = [PluginManager pluginsList];
-        
-        
         
         for (NSDictionary *installedPlugin in installedPlugins)
         {
@@ -1554,7 +1561,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
             {
                 NSString *name = [[[plugin valueForKey:@"download_url"] lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
                 name = [name stringByDeletingPathExtension]; // removes the .zip extension
-                name = [name stringByDeletingPathExtension]; // removes the .horosplugin / .osirixplugin extension
+                name = [name stringByDeletingPathExtension]; // removes the .horosplugin
                 
                 if([pluginName isEqualToString:name])
                 {
@@ -1589,16 +1596,23 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 
 - (NSArray*) checkForOsiriXPluginsUpdates:(id)sender
 {
-    NSURL *url = [NSURL URLWithString:OSIRIX_PLUGIN_LIST_URL];
-    
     NSMutableArray *pluginsToUpdate = [NSMutableArray array];
     
-    if (url)
+    
+    NSURL *url = [NSURL URLWithString:OSIRIX_PLUGIN_LIST_URL];
+    
+    NSMutableArray *onlinePlugins = [NSMutableArray arrayWithContentsOfURL:url];
+    
+    if (url == nil || onlinePlugins == nil || [onlinePlugins count] <= 0)
     {
-        NSMutableArray *onlinePlugins = [NSMutableArray arrayWithContentsOfURL:url];
+        url = [NSURL URLWithString:OSIRIX_PLUGIN_LIST_ALT_URL];
+        
+        onlinePlugins = [NSMutableArray arrayWithContentsOfURL:url];
+    }
+    
+    if (url && onlinePlugins && [onlinePlugins count] > 0)
+    {
         NSArray *installedPlugins = [PluginManager pluginsList];
-        
-        
         
         for (NSDictionary *installedPlugin in installedPlugins)
         {
@@ -1609,7 +1623,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
             {
                 NSString *name = [[[plugin valueForKey:@"download_url"] lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
                 name = [name stringByDeletingPathExtension]; // removes the .zip extension
-                name = [name stringByDeletingPathExtension]; // removes the .horosplugin / .osirixplugin extension
+                name = [name stringByDeletingPathExtension]; // removes the .osirixplugin extension
                 
                 if([pluginName isEqualToString:name])
                 {
