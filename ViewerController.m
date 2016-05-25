@@ -9107,13 +9107,10 @@ static int avoidReentryRefreshDatabase = 0;
     
     @autoreleasepool
     {
-        int i, x;
         BOOL compressed = NO;
         
         NSArray *pixListArray = [dict objectForKey: @"pixListArray"];
-        NSArray *fileListArray = [dict objectForKey: @"fileListArray"];
-        NSArray *volumeDataArray = [dict objectForKey: @"volumeDataArray"];
-        ViewerController *viewer = [dict objectForKey: @"viewerController"];
+		ViewerController *viewer = [dict objectForKey: @"viewerController"];
         
         [NSThread currentThread].name = @"Load Image Data";
         

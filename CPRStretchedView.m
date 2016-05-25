@@ -2133,7 +2133,6 @@ extern int splitPosition[ 3];
 	N3Vector pixVector;
 	N3Vector lineStart;
 	N3Vector lineEnd;
-	CGFloat height;
 	CGFloat distance;
 	CGFloat minDistance;
     

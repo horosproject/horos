@@ -8861,7 +8861,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         glEnd();
     }
     
-    size_t step = sizeof(CGFloat)*numberOfChannels;
     for (size_t i = 0; i < numberOfChannels; ++i) {
         DCMWaveformChannelDefinition* cd = [ws.channelDefinitions objectAtIndex:i];
         CGFloat min, max; [cd getValuesMin:&min max:&max];

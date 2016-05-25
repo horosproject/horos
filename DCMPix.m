@@ -6505,7 +6505,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     if( bitsAllocated == 16)
                     {
                         short *bufPtr = (short*) oImage, *tmpImage;
-                        long loop, totSize;
+                        long loop;
                         const int shift = bitsAllocated - bitsStored;
                         
                         tmpImage = malloc( height * width * 2L);
@@ -10594,17 +10594,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         if(![key isEqualToString:@"sameAsDefault"])
         {
             NSArray *annotations = [annotationsForModality objectForKey: key];
-            NSMutableArray *annotationsOUT = [NSMutableArray array];
-            
+			
             @try
             {
                 for ( NSDictionary *annot in annotations)
                 {
                     NSArray *content = [annot objectForKey:@"fullContent"];
-                    NSMutableArray *contentOUT = [NSMutableArray array];
-                    
-                    BOOL contentForLine = NO;
-                    
+					
                     for ( int f=0; f<[content count]; f++)
                     {
                         @try

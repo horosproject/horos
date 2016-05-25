@@ -400,7 +400,7 @@
 
 - (void) mmClosing:(vImage_Buffer *) buffer :(vImagePixelCount) x :(vImagePixelCount) y
 {
-    vImage_Buffer tmpResult, result;
+    vImage_Buffer tmpResult;
     tmpResult.width     = buffer->width;
     tmpResult.height    = buffer->height;
     tmpResult.rowBytes  = buffer->rowBytes;
