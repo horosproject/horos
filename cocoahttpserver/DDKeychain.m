@@ -709,7 +709,6 @@ SecPolicySearchCreate:
     
     for(int i = 0; i < CFArrayGetCount(arrayRef); i++) {
         NSDictionary * attr = (__bridge NSDictionary *)(CFArrayGetValueAtIndex(arrayRef, i));
-        NSString * label = (NSString *)[attr objectForKey:kSecAttrLabel];
         
         if (YES)  {
             SecIdentityRef identityRef = (__bridge SecIdentityRef)([attr objectForKey:kSecValueRef]);
