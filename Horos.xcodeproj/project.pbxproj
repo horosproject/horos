@@ -11041,7 +11041,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = NO;
 				LastTestingUpgradeCheck = 0730;
-				LastUpgradeCheck = 0640;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = "The Horos Project";
 				TargetAttributes = {
 					59BDEC2C117C92B2007F1F2C = {
