@@ -63,6 +63,7 @@
 	NSArray *osirixPluginListURLs, *horosPluginListURLs;
     IBOutlet NSPopUpButton *osirixPluginListPopUp, *horosPluginListPopUp;
 	NSString *osirixPluginDownloadURL, *horosPluginDownloadURL;
+    BOOL osiriXPluginHorosCompatibility;
     IBOutlet NSButton *osirixPluginDownloadButton, *horosPluginDownloadButton;
     
     IBOutlet NSTextField *osirixPluginStatusTextField, *horosPluginStatusTextField;

@@ -270,6 +270,8 @@ static NSDate *CachedHorosPluginsListDate = nil;
             [window close];
         }
     }
+    
+    [[self window] makeKeyAndOrderFront:nil];
 }
 
 
@@ -314,6 +316,9 @@ static NSDate *CachedHorosPluginsListDate = nil;
 		[self generateAvailableOsiriXPluginsMenu];
 		[self setURLforOsiriXPluginWithName:[[[self availableOsiriXPlugins] objectAtIndex:0] valueForKey:@"name"]];
 		[self setOsiriXPluginDownloadURL:[[[self availableOsiriXPlugins] objectAtIndex:0] valueForKey:@"download_url"]];
+        [self setOsiriXPluginHorosCompatibility:
+         [ [ [ [self availableOsiriXPlugins] objectAtIndex:0] valueForKey:@"HorosCompatiblePlugin" ] boolValue]
+        ];
 	}
 
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -527,6 +532,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
             
 			[self setOsiriXPluginURL:[plugin valueForKey:@"url"]];
 			[self setOsiriXPluginDownloadURL:[plugin valueForKey:@"download_url"]];
+            [self setOsiriXPluginHorosCompatibility:[[plugin valueForKey:@"HorosCompatiblePlugin"] boolValue]];
 			
 			BOOL alreadyInstalled = NO;
 			BOOL sameName = NO;
@@ -669,7 +675,12 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 
 #pragma mark download
 
-- (void) setOsiriXPluginDownloadURL:(NSString*)url;
+- (void) setOsiriXPluginHorosCompatibility:(BOOL) compatible
+{
+    osiriXPluginHorosCompatibility = compatible;
+}
+
+- (void) setOsiriXPluginDownloadURL:(NSString*)url
 {
 	if (osirixPluginDownloadURL)
     {
@@ -691,7 +702,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 }
 
 
-- (void) setHorosPluginDownloadURL:(NSString*)url;
+- (void) setHorosPluginDownloadURL:(NSString*)url
 {
     if (horosPluginDownloadURL)
     {
@@ -738,6 +749,24 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 
 - (IBAction) downloadOsiriXPlugin:(id)sender;
 {
+    if (self->osiriXPluginHorosCompatibility == NO)
+    {
+        NSAlert *alert = [[NSAlert alloc] init];
+        [alert addButtonWithTitle:NSLocalizedString(@"Yes",nil)];
+        [alert addButtonWithTitle:NSLocalizedString(@"No",nil)];
+        [alert setMessageText:NSLocalizedString(@"Not validated OsiriX plugin.",nil)];
+        [alert setInformativeText:NSLocalizedString(@"Not validated OsiriX plugins may cause Horos run-time errors. In case of problems, you can disable/uninstall them in [Plugins => Plugin Manager]. Continue installing?",nil)];
+        [alert setAlertStyle:NSWarningAlertStyle];
+        
+        if ([alert runModal] != NSAlertFirstButtonReturn)
+        {
+            [alert release];
+            return;
+        }
+        
+        [alert release];
+    }
+    
     NSString *downloadedFilePath = [NSString stringWithFormat:@"/tmp/%@", [[osirixPluginDownloadURL lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     
     @synchronized(downloadingPlugins)
