@@ -69,8 +69,8 @@ typedef struct decode_info
 /* position 45: "\xff\x52" */
 #define J2K_CODESTREAM_MAGIC "\xff\x4f\xff\x51"
 
-static OFMutex decoderMutex;
-static OFMutex enconderMutex;
+//static OFMutex decoderMutex;
+//static OFMutex enconderMutex;
 
 // Adapted from infile_format() in /src/bin/jp2/opj_decompress.c
 static int buffer_format(void * buf)
@@ -173,7 +173,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
                                              long *decompressedBufferSize,
                                              int *colorModel)
 {
-    decoderMutex.lock();
+    //decoderMutex.lock();
     
     opj_dparameters_t parameters;
     int i;
@@ -184,7 +184,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     
     if (jp2DataSize<12)
     {
-        decoderMutex.unlock();
+        //decoderMutex.unlock();
         
         return 0;
     }
@@ -213,7 +213,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     {
         fprintf(stderr,"%s:%d:\n\tNO decodeInfo.stream\n",__FILE__,__LINE__);
         
-        decoderMutex.unlock();
+        //decoderMutex.unlock();
         
         return NULL;
     }
@@ -242,7 +242,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
             
             fprintf(stderr,"%s:%d: decode format missing\n",__FILE__,__LINE__);
             
-             decoderMutex.unlock();
+             //decoderMutex.unlock();
             
             return NULL;
     }
@@ -326,7 +326,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
             if (!opj_decode(decodeInfo.codec, decodeInfo.stream, decodeInfo.image)) {
                 fprintf(stderr,"%s:%d:\n\topj_decode failed\n",__FILE__,__LINE__);
                 
-                decoderMutex.unlock();
+                //decoderMutex.unlock();
                 
                 return NULL;
             }
@@ -354,7 +354,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     
     if (fails)
     {
-        decoderMutex.unlock();
+        //decoderMutex.unlock();
         
         return NULL;
     }
@@ -570,7 +570,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     release(&decodeInfo);
     opj_destroy_cstr_index(&(decodeInfo.cstr_index));
     
-    decoderMutex.unlock();
+    //decoderMutex.unlock();
     
     return inputBuffer;
 }
@@ -734,7 +734,7 @@ OPJSupport::compressJPEG2K(void *data,
                            int rate,
                            long *compressedDataSize)
 {
-    enconderMutex.lock();
+    //enconderMutex.lock();
     
     opj_cparameters_t parameters;
     
@@ -785,7 +785,7 @@ OPJSupport::compressJPEG2K(void *data,
         
         *compressedDataSize = 0;
         
-        enconderMutex.unlock();
+        //enconderMutex.unlock();
         
         return NULL;
     }
@@ -821,7 +821,7 @@ OPJSupport::compressJPEG2K(void *data,
             
             *compressedDataSize = 0;
             
-            enconderMutex.unlock();
+            //enconderMutex.unlock();
             
             return NULL;
     }
@@ -843,7 +843,7 @@ OPJSupport::compressJPEG2K(void *data,
         
         *compressedDataSize = 0;
         
-        enconderMutex.unlock();
+        //enconderMutex.unlock();
         
         return NULL;
     }
@@ -871,7 +871,7 @@ OPJSupport::compressJPEG2K(void *data,
         
         *compressedDataSize = 0;
         
-        enconderMutex.unlock();
+        //enconderMutex.unlock();
         
         return NULL;
     }
@@ -909,7 +909,7 @@ OPJSupport::compressJPEG2K(void *data,
         
         *compressedDataSize = 0;
         
-        enconderMutex.unlock();
+        //enconderMutex.unlock();
         
         return NULL;
     }
@@ -951,7 +951,7 @@ OPJSupport::compressJPEG2K(void *data,
                 
                 *compressedDataSize = 0;
                 
-                enconderMutex.unlock();
+                //enconderMutex.unlock();
                 
                 return NULL;
             }
@@ -974,7 +974,7 @@ OPJSupport::compressJPEG2K(void *data,
                     
                     *compressedDataSize = 0;
                     
-                    enconderMutex.unlock();
+                    //enconderMutex.unlock();
                     
                     return NULL;
                 }
@@ -1076,7 +1076,7 @@ OPJSupport::compressJPEG2K(void *data,
 #endif
     }
     
-    enconderMutex.unlock();
+    //enconderMutex.unlock();
     
     return to;
 }
