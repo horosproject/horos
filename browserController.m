@@ -14407,39 +14407,40 @@ static NSArray*	openSubSeriesArray = nil;
     }
     
     
-    BOOL firstTimeExecution = ([[NSUserDefaults standardUserDefaults] objectForKey:@"FIRSTTIMEEXECUTION"] == nil);
-    if (firstTimeExecution == YES)
-    {
-        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:NO] forKey:@"FIRSTTIMEEXECUTION"];
-        
-        [[NSUserDefaults standardUserDefaults] setInteger:CPRInterpolationModeCubic
-                                                   forKey:@"selectedCPRInterpolationMode"];
-        
-        dispatch_async(dispatch_get_main_queue(), ^() {
-            [self restoreWindowState:self];
-            [[self window] performZoom:self];
-        });
-    }
+    BOOL firstTimeExecution = ([[NSUserDefaults standardUserDefaults] objectForKey:@"FIRST_TIME_EXECUTION_2_0"] == nil);
+    BOOL foundNotValidatedOsiriXPlugins = NO;
     
-    BOOL foundOsiriXPlugin = NO;
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"FIRSTIMEEXECUTION_2.0"] == nil)
+    if (firstTimeExecution)
     {
-        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"FIRSTIMEEXECUTION_2.0"];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"FIRST_TIME_EXECUTION_2_0"];
+        
+        
         
         NSArray* installedPlugins = [self->pluginManagerController plugins];
         for (NSDictionary* pluginDesc in installedPlugins)
         {
             if ([[pluginDesc objectForKey:@"HorosCompatiblePlugin"] boolValue] == NO)
             {
-                foundOsiriXPlugin = YES;
+                foundNotValidatedOsiriXPlugins = YES;
                 break;
             }
         }
         
-        [self restoreWindowState:self];
+        
+        [[NSUserDefaults standardUserDefaults] setInteger:CPRInterpolationModeCubic
+                                                   forKey:@"selectedCPRInterpolationMode"];
+        
+        
+        dispatch_async(dispatch_get_main_queue(), ^() {
+            
+            [self restoreWindowState:self];
+            
+        });
     }
     
-    if (foundOsiriXPlugin == YES)
+    
+    
+    if (firstTimeExecution == YES && foundNotValidatedOsiriXPlugins == YES)
     {
         NSAlert *alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:NSLocalizedString(@"OK",nil)];
@@ -14450,6 +14451,8 @@ static NSArray*	openSubSeriesArray = nil;
         [alert release];
         
     }
+    
+    
     
     [O2HMigrationAssistant performStartupO2HTasks:self];
 }
