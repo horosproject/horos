@@ -2767,7 +2767,7 @@ typedef struct _xyzArray
 
 - (IBAction)changeColor:(id)sender
 {	
-	if( [backgroundColor isActive])
+	if( [backColor isActive])
 	{
 		NSColor *color=  [[(NSColorPanel*)sender color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace];
 		aRenderer->SetBackground([color redComponent],[color greenComponent],[ color blueComponent]);

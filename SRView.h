@@ -239,7 +239,7 @@ typedef struct renderSurface
 	IBOutlet NSWindow			*export3DVRWindow;
 	IBOutlet NSMatrix			*VRFrames;
 	
-	IBOutlet NSColorWell		*backgroundColor;
+	IBOutlet NSColorWell		*backColor;
 	
 	double						camPosition[ 3];
 	double						camFocal[ 3];
