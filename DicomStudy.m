@@ -969,6 +969,42 @@ static NSRecursiveLock *dbModifyLock = nil;
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     [[DicomStudy dbModifyLock] lock];
     @try {
+        
+        NSMutableArray* tagAndValues = [NSMutableArray array];
+        
+        if( [dict objectForKey: @"value"] == nil || [(NSString*)[dict objectForKey: @"value"] length] == 0)
+        {
+            
+            [tagAndValues addObjectsFromArray:
+             [NSArray  arrayWithObjects:[DCMAttributeTag tagWithTagString:[dict objectForKey: @"field"]],
+              @"",nil]
+             ];
+            
+            //[params addObjectsFromArray: [NSArray arrayWithObjects: @"-e", [dict objectForKey: @"field"], nil]];
+        }
+        else
+        {
+            [tagAndValues addObjectsFromArray:
+             [NSArray  arrayWithObjects:[DCMAttributeTag tagWithTagString:[dict objectForKey: @"field"]],
+              [dict objectForKey: @"value"],nil]
+             ];
+            
+            //[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", [dict objectForKey: @"field"], [dict objectForKey: @"value"]], nil]];
+        }
+        
+        NSMutableArray *files = [NSMutableArray arrayWithArray: [dict objectForKey: @"files"]];
+        
+        [XMLController modifyDicom:tagAndValues dicomFiles:files];
+        
+        for( id loopItem in files)
+        {
+            [[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:nil];
+        }
+        
+        
+        
+        
+        /*
         NSMutableArray *files = [NSMutableArray arrayWithArray: [dict objectForKey: @"files"]];
         NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
         NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files objectAtIndex: 0]] objectAtIndex: 0]];
@@ -1003,6 +1039,7 @@ static NSRecursiveLock *dbModifyLock = nil;
                 NSLog(@"**** DicomStudy setComment: %@", e);
             }
         }
+        */
     }
     @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);

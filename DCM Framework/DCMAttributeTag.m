@@ -88,8 +88,12 @@
 - (id) initWithTagString:(NSString *)tagString{
 	if (self = [super init])
 	{
-		NSScanner *scanner = [NSScanner scannerWithString:tagString];
-		if( tagString == nil)
+        NSString* _tag = [NSString stringWithString:tagString];
+        _tag = [_tag stringByReplacingOccurrencesOfString:@"(" withString:@""];
+        _tag = [_tag stringByReplacingOccurrencesOfString:@")" withString:@""];
+        
+		NSScanner *scanner = [NSScanner scannerWithString:_tag];
+		if( tagString == nil || _tag == nil)
 			NSLog( @"tagString == nil");
 		unsigned int uGroup, uElement;
 		[scanner scanHexInt:&uGroup];
@@ -98,7 +102,7 @@
 		_group = (int)uGroup;
 		_element = (int)uElement;
 
-		NSDictionary *dict = [[DCMTagDictionary sharedTagDictionary] objectForKey:tagString];
+		NSDictionary *dict = [[DCMTagDictionary sharedTagDictionary] objectForKey:_tag];
 		
 		if (dict)
 		{
