@@ -4078,7 +4078,6 @@
 		9966A1B01AE0A1BA00F2D81A /* OsiriX.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = OsiriX.sdef; sourceTree = "<group>"; };
 		9966A1B11AE0A47600F2D81A /* HorosAPI-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "HorosAPI-Info.plist"; sourceTree = "<group>"; };
 		9966A1B21AE0A66C00F2D81A /* OsiriXAPI-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "OsiriXAPI-Info.plist"; sourceTree = "<group>"; };
-		9966A1B61AE0B7A000F2D81A /* DCMAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DCMAPI.framework; path = build/Development/DCMAPI.framework; sourceTree = "<group>"; };
 		9966A2E11AE0B7E000F2D81A /* OsiriX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9966A2E51AE0B9A200F2D81A /* OsiriXDCMFrameworkHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXDCMFrameworkHeaders.mm; sourceTree = "<group>"; };
 		9966BCB41CEB5BA50086A8D7 /* osirixplugin.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = osirixplugin.icns; sourceTree = "<group>"; };
@@ -4204,7 +4203,6 @@
 		A97B73970CB380EF00E5348D /* horosplugin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = horosplugin.png; sourceTree = "<group>"; };
 		A97D4C5F0CE3459D003FE2E6 /* PieChartImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PieChartImage.h; sourceTree = "<group>"; };
 		A97D4C600CE3459D003FE2E6 /* PieChartImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PieChartImage.m; sourceTree = "<group>"; };
-		A98795C316DB9FD100926023 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		A98795CC16DB9FD100926023 /* Unit Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Unit Tests-Info.plist"; sourceTree = "<group>"; };
 		A98795D016DB9FD100926023 /* DICOMFilesTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DICOMFilesTests.h; sourceTree = "<group>"; };
 		A98795D116DB9FD100926023 /* DICOMFilesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DICOMFilesTests.m; sourceTree = "<group>"; };
@@ -6334,7 +6332,6 @@
 				993DB49F1C0243D50084218A /* FeedbackReporter.framework */,
 				439B8C131A19CCC300F396D7 /* 3DconnexionClient.framework */,
 				CE2BE05D1524344D00AE6156 /* Growl.framework */,
-				9966A1B61AE0B7A000F2D81A /* DCMAPI.framework */,
 				CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */,
 				CE6693C60AF551210073D923 /* libxerces-c.27.dylib */,
 			);
@@ -6559,7 +6556,6 @@
 				431BCC3F1A24AC94002B36FB /* libtiff.a */,
 				9932BC6B1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib */,
 				9932BC6C1CC7C8EB0062BB0B /* libssl.0.9.8.dylib */,
-				A98795C316DB9FD100926023 /* SenTestingKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
