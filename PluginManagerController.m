@@ -522,9 +522,9 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 		[horosPluginListPopUp addItemWithTitle:[loopItem objectForKey:@"name"]];
 	}
 	
-	[[horosPluginListPopUp menu] addItem:[NSMenuItem separatorItem]];
+	//[[horosPluginListPopUp menu] addItem:[NSMenuItem separatorItem]];
     
-	[horosPluginListPopUp addItemWithTitle:NSLocalizedString(@"Your Horos Plugin here!", nil)];
+	//[horosPluginListPopUp addItemWithTitle:NSLocalizedString(@"Your Horos Plugin here!", nil)];
 }
 
 

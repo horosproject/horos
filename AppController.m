@@ -36,6 +36,9 @@
 #import "SystemConfiguration/SCDynamicStoreCopySpecific.h"
 #include <CoreFoundation/CoreFoundation.h>
 #include <ApplicationServices/ApplicationServices.h>
+
+#import <FeedbackReporter/FRFeedbackReporter.h>
+
 #import "ToolbarPanel.h"
 #import "ThumbnailsListPanel.h"
 #import "AppController.h"
@@ -5789,7 +5792,7 @@ static NSMutableDictionary* _receivingDict = nil;
 {
     NSLog(@"Unicode test: مرحبا - 你好 - שלום");
     
-    [[FRFeedbackReporter sharedReporter] setDelegate:self];
+    [[FRFeedbackReporter sharedReporter] setDelegate:(id<FRFeedbackReporterDelegate>) self];
     
     //[[FRFeedbackReporter sharedReporter] reportFeedback];
     //return;
