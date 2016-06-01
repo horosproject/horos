@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
         <capability name="box content view" minToolsVersion="7.0"/>
     </dependencies>
     <objects>
@@ -57,7 +57,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="914" height="672"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <customView hidden="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1170" customClass="SFAuthorizationView">
+                    <customView hidden="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1170" customClass="SFHorosAuthorizationView">
                         <rect key="frame" x="749" y="611" width="165" height="60"/>
                     </customView>
                     <tabView controlSize="mini" translatesAutoresizingMaskIntoConstraints="NO" id="657">
@@ -1465,7 +1465,7 @@
                         <size key="minSize" width="49" height="25"/>
                         <size key="maxSize" width="53" height="25"/>
                         <segmentedControl key="view" verticalHuggingPriority="750" id="1107">
-                            <rect key="frame" x="8" y="14" width="49" height="25"/>
+                            <rect key="frame" x="7" y="14" width="49" height="25"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <segmentedCell key="cell" state="on" borderStyle="border" alignment="left" tag="1" style="texturedSquare" trackingMode="momentary" id="1108">
                                 <font key="font" metaFont="system"/>
@@ -1518,7 +1518,7 @@
                         <size key="minSize" width="40" height="25"/>
                         <size key="maxSize" width="40" height="25"/>
                         <button key="view" verticalHuggingPriority="750" id="1111">
-                            <rect key="frame" x="23" y="14" width="40" height="25"/>
+                            <rect key="frame" x="22" y="14" width="40" height="25"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <buttonCell key="cell" type="roundTextured" title="Lock" bezelStyle="texturedRounded" image="NSLockUnlockedTemplate" imagePosition="only" alignment="center" borderStyle="border" inset="2" id="1112">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>

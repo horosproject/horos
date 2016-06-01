@@ -34,7 +34,7 @@
 
 #import "NSPreferencePane+OsiriX.h"
 #import "PreferencesWindowController.h"
-#import <SecurityInterface/SFAuthorizationView.h>
+#import "SFHorosAuthorizationView.h"
 
 
 @implementation NSPreferencePane (OsiriX)

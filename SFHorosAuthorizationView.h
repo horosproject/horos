@@ -35,7 +35,7 @@
 #import <SecurityInterface/SFAuthorizationView.h>
 
 
-@interface SFAuthorizationView (Private)
+@interface SFHorosAuthorizationView : SFAuthorizationView
 
 -(void)buttonPressed:(id)sender;
 
