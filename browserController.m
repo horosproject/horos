@@ -14449,7 +14449,6 @@ static NSArray*	openSubSeriesArray = nil;
         [alert setAlertStyle:NSWarningAlertStyle];
         [alert runModal];
         [alert release];
-        
     }
     
     
