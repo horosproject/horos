@@ -32,11 +32,11 @@
  ============================================================================*/
 
 #import "OSIDatabasePreferencePanePref.h"
-#import <OsiriXAPI/PluginManager.h>
-#import <OsiriXAPI/BrowserController.h>
-#import <OsiriXAPI/PreferencesWindowController+DCMTK.h>
+#import <HorosAPI/PluginManager.h>
+#import <HorosAPI/BrowserController.h>
+#import <HorosAPI/PreferencesWindowController+DCMTK.h>
 #import <OsiriX/DCMAbstractSyntaxUID.h>
-#import <OsiriXAPI/BrowserControllerDCMTKCategory.h>
+#import <HorosAPI/BrowserControllerDCMTKCategory.h>
 #import "DicomDatabase.h"
 #import "dicomFile.h"
 #import "WaitRendering.h"

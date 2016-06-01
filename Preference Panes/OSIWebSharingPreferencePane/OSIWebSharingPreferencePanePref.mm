@@ -35,15 +35,15 @@
 #import <SecurityInterface/SFCertificateView.h>
 #import "WebPortalUser.h"
 #import "OSIWebSharingPreferencePanePref.h"
-#import <OsiriXAPI/DefaultsOsiriX.h>
-#import <OsiriXAPI/NSUserDefaults+OsiriX.h>
-#import <OsiriXAPI/BrowserController.h>
-#import <OsiriXAPI/AppController.h>
-#import <OsiriXAPI/NSFileManager+N2.h>
-#import <OsiriXAPI/WebPortal.h>
-#import <OsiriXAPI/WebPortalDatabase.h>
-#import <OsiriXAPI/DicomDatabase.h>
-#import <OsiriXAPI/DicomStudy.h>
+#import <HorosAPI/DefaultsOsiriX.h>
+#import <HorosAPI/NSUserDefaults+OsiriX.h>
+#import <HorosAPI/BrowserController.h>
+#import <HorosAPI/AppController.h>
+#import <HorosAPI/NSFileManager+N2.h>
+#import <HorosAPI/WebPortal.h>
+#import <HorosAPI/WebPortalDatabase.h>
+#import <HorosAPI/DicomDatabase.h>
+#import <HorosAPI/DicomStudy.h>
 
 #import "DDKeychain.h"
 #import "url.h"

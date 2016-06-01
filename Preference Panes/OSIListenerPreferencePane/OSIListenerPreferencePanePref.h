@@ -33,7 +33,7 @@
 
 #import <PreferencePanes/PreferencePanes.h>
 
-#import <OsiriXAPI/DICOMTLS.h>
+#import <HorosAPI/DICOMTLS.h>
 
 @interface OSIListenerPreferencePanePref : NSPreferencePane 
 {

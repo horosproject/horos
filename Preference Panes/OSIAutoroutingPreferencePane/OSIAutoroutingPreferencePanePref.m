@@ -33,8 +33,8 @@
 
 #import <OsiriX/DCMObject.h>
 #import "OSIAutoroutingPreferencePanePref.h"
-#import <OsiriXAPI/NSPreferencePane+OsiriX.h>
-#import <OsiriXAPI/AppController.h>
+#import <HorosAPI/NSPreferencePane+OsiriX.h>
+#import <HorosAPI/AppController.h>
 
 #define CURRENTVERSION 1
 
