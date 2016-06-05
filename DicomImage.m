@@ -556,6 +556,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 #pragma mark-
 
+/*
+ dict [ files <= @"files",
+        tagString <= @"field",
+        value <= @"value"
+ */
+
 - (void) dcmodifyThread: (NSDictionary*) dict
 {
 #ifdef OSIRIX_VIEWER
@@ -563,6 +569,43 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	[[DicomStudy dbModifyLock] lock];
 	@try {
+        
+         NSMutableArray* tagAndValues = [NSMutableArray array];
+        
+        if( [dict objectForKey: @"value"] == nil || [(NSString*)[dict objectForKey: @"value"] length] == 0)
+        {
+            
+            [tagAndValues addObjectsFromArray:
+                                                [NSArray  arrayWithObjects:[DCMAttributeTag tagWithTagString:[dict objectForKey: @"field"]],
+                                                                            @"",nil]
+            ];
+            
+            //[params addObjectsFromArray: [NSArray arrayWithObjects: @"-e", [dict objectForKey: @"field"], nil]];
+        }
+        else
+        {
+            [tagAndValues addObjectsFromArray:
+                                                [NSArray  arrayWithObjects:[DCMAttributeTag tagWithTagString:[dict objectForKey: @"field"]],
+                                                                            [dict objectForKey: @"value"],nil]
+            ];
+            
+            //[params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", [dict objectForKey: @"field"], [dict objectForKey: @"value"]], nil]];
+        }
+        
+        NSMutableArray *files = [NSMutableArray arrayWithArray: [dict objectForKey: @"files"]];
+        
+        [XMLController modifyDicom:tagAndValues dicomFiles:files];
+        
+        for( id loopItem in files)
+        {
+            [[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:nil];
+        }
+        
+        
+        
+        
+        
+        /*
 		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
 		
 		if( [dict objectForKey: @"value"] == nil || [(NSString*)[dict objectForKey: @"value"] length] == 0)
@@ -592,6 +635,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 				NSLog(@"**** DicomStudy setComment: %@", e);
 			}
 		}
+        */
 	}
 	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);

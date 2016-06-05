@@ -33,10 +33,10 @@
 
 
 #import "OSIGeneralPreferencePanePref.h"
-#import <OsiriXAPI/NSPreferencePane+OsiriX.h>
-#import <OsiriXAPI/AppController.h>
-#import <OsiriXAPI/DefaultsOsiriX.h>
-#import <OsiriXAPI/N2Debug.h>
+#import <HorosAPI/NSPreferencePane+OsiriX.h>
+#import <HorosAPI/AppController.h>
+#import <HorosAPI/DefaultsOsiriX.h>
+#import <HorosAPI/N2Debug.h>
 
 static NSArray *languagesToMoveWhenQuitting = nil;
 

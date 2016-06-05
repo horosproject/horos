@@ -459,8 +459,8 @@
 		59C447E41451705900D71580 /* Eject_lightgray.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 59C447E11451705900D71580 /* Eject_lightgray.pdf */; };
 		59C447E81451710F00D71580 /* NSScreen+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C447E61451710F00D71580 /* NSScreen+N2.h */; };
 		59C447EA1451710F00D71580 /* NSArray+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C447E71451710F00D71580 /* NSArray+N2.mm */; };
-		59C512C01189C0E40074ECBC /* SFAuthorizationView+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C512BE1189C0E40074ECBC /* SFAuthorizationView+OsiriX.h */; };
-		59C512C11189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C512BF1189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm */; };
+		59C512C01189C0E40074ECBC /* SFHorosAuthorizationView.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C512BE1189C0E40074ECBC /* SFHorosAuthorizationView.h */; };
+		59C512C11189C0E40074ECBC /* SFHorosAuthorizationView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C512BF1189C0E40074ECBC /* SFHorosAuthorizationView.mm */; };
 		59D9471D125333640095680D /* SWFInit.as in Resources */ = {isa = PBXBuildFile; fileRef = 59D9471C125333640095680D /* SWFInit.as */; };
 		59DB26FB1450787E00E78E03 /* N2Debug.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA011293378009EB238 /* N2Debug.mm */; };
 		59DB26FE14507ACA00E78E03 /* PrettyCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DB26FC14507ACA00E78E03 /* PrettyCell.h */; };
@@ -868,6 +868,7 @@
 		999B0B651BB70F0800AF018A /* O2HMigrationAssistant.xib in Resources */ = {isa = PBXBuildFile; fileRef = 999B0B621BB70F0800AF018A /* O2HMigrationAssistant.xib */; };
 		999B0B671BB711ED00AF018A /* CurvedArrowGrayLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = 999B0B661BB711ED00AF018A /* CurvedArrowGrayLeft.png */; };
 		999B0B681BB7309200AF018A /* Osirix.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9966A1AF1AE09FFE00F2D81A /* Osirix.icns */; };
+		99C32EEF1CFF78E7001E71F3 /* PluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = AB2C24E10677861300A08910 /* PluginFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		99CDC0F51ADF0D0900F34F19 /* libCharLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB451802149F464B006674BF /* libCharLS.a */; };
 		A0344496143DE4AA003E1AFA /* DCMUSRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = A085E104141E53210072BF0D /* DCMUSRegion.m */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
@@ -3783,8 +3784,8 @@
 		59C447E11451705900D71580 /* Eject_lightgray.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Eject_lightgray.pdf; sourceTree = "<group>"; };
 		59C447E61451710F00D71580 /* NSScreen+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSScreen+N2.h"; path = "nitrogen/Sources/NSScreen+N2.h"; sourceTree = "<group>"; };
 		59C447E71451710F00D71580 /* NSArray+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSArray+N2.mm"; path = "nitrogen/Sources/NSArray+N2.mm"; sourceTree = "<group>"; };
-		59C512BE1189C0E40074ECBC /* SFAuthorizationView+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SFAuthorizationView+OsiriX.h"; sourceTree = "<group>"; };
-		59C512BF1189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "SFAuthorizationView+OsiriX.mm"; sourceTree = "<group>"; };
+		59C512BE1189C0E40074ECBC /* SFHorosAuthorizationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SFHorosAuthorizationView.h; sourceTree = "<group>"; };
+		59C512BF1189C0E40074ECBC /* SFHorosAuthorizationView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SFHorosAuthorizationView.mm; sourceTree = "<group>"; };
 		59D9471C125333640095680D /* SWFInit.as */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SWFInit.as; path = Binaries/SWFInit.as; sourceTree = "<group>"; };
 		59DB26FC14507ACA00E78E03 /* PrettyCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrettyCell.h; sourceTree = "<group>"; };
 		59DB26FD14507ACA00E78E03 /* PrettyCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PrettyCell.mm; sourceTree = "<group>"; };
@@ -4078,7 +4079,6 @@
 		9966A1B01AE0A1BA00F2D81A /* OsiriX.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = OsiriX.sdef; sourceTree = "<group>"; };
 		9966A1B11AE0A47600F2D81A /* HorosAPI-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "HorosAPI-Info.plist"; sourceTree = "<group>"; };
 		9966A1B21AE0A66C00F2D81A /* OsiriXAPI-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "OsiriXAPI-Info.plist"; sourceTree = "<group>"; };
-		9966A1B61AE0B7A000F2D81A /* DCMAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DCMAPI.framework; path = build/Development/DCMAPI.framework; sourceTree = "<group>"; };
 		9966A2E11AE0B7E000F2D81A /* OsiriX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9966A2E51AE0B9A200F2D81A /* OsiriXDCMFrameworkHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXDCMFrameworkHeaders.mm; sourceTree = "<group>"; };
 		9966BCB41CEB5BA50086A8D7 /* osirixplugin.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = osirixplugin.icns; sourceTree = "<group>"; };
@@ -4204,7 +4204,6 @@
 		A97B73970CB380EF00E5348D /* horosplugin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = horosplugin.png; sourceTree = "<group>"; };
 		A97D4C5F0CE3459D003FE2E6 /* PieChartImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PieChartImage.h; sourceTree = "<group>"; };
 		A97D4C600CE3459D003FE2E6 /* PieChartImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PieChartImage.m; sourceTree = "<group>"; };
-		A98795C316DB9FD100926023 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		A98795CC16DB9FD100926023 /* Unit Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Unit Tests-Info.plist"; sourceTree = "<group>"; };
 		A98795D016DB9FD100926023 /* DICOMFilesTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DICOMFilesTests.h; sourceTree = "<group>"; };
 		A98795D116DB9FD100926023 /* DICOMFilesTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DICOMFilesTests.m; sourceTree = "<group>"; };
@@ -6334,7 +6333,6 @@
 				993DB49F1C0243D50084218A /* FeedbackReporter.framework */,
 				439B8C131A19CCC300F396D7 /* 3DconnexionClient.framework */,
 				CE2BE05D1524344D00AE6156 /* Growl.framework */,
-				9966A1B61AE0B7A000F2D81A /* DCMAPI.framework */,
 				CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */,
 				CE6693C60AF551210073D923 /* libxerces-c.27.dylib */,
 			);
@@ -6559,7 +6557,6 @@
 				431BCC3F1A24AC94002B36FB /* libtiff.a */,
 				9932BC6B1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib */,
 				9932BC6C1CC7C8EB0062BB0B /* libssl.0.9.8.dylib */,
-				A98795C316DB9FD100926023 /* SenTestingKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -6845,8 +6842,8 @@
 				59BDF11D117EE72C007F1F2C /* PreferencesWindowController+DCMTK.mm */,
 				59BDF125117EFA41007F1F2C /* PreferencesView.h */,
 				59BDF126117EFA41007F1F2C /* PreferencesView.mm */,
-				59C512BE1189C0E40074ECBC /* SFAuthorizationView+OsiriX.h */,
-				59C512BF1189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm */,
+				59C512BE1189C0E40074ECBC /* SFHorosAuthorizationView.h */,
+				59C512BF1189C0E40074ECBC /* SFHorosAuthorizationView.mm */,
 				596EB3041189D9A600880192 /* NSPreferencePane+OsiriX.h */,
 				596EB3051189D9A600880192 /* NSPreferencePane+OsiriX.mm */,
 				CEB989E9133506D40083F3FD /* Built-in Panes */,
@@ -10649,7 +10646,7 @@
 				59BDF11E117EE72C007F1F2C /* PreferencesWindowController+DCMTK.h in Headers */,
 				59BDF127117EFA41007F1F2C /* PreferencesView.h in Headers */,
 				99676F221BF43C22007C7531 /* openjpeg.h in Headers */,
-				59C512C01189C0E40074ECBC /* SFAuthorizationView+OsiriX.h in Headers */,
+				59C512C01189C0E40074ECBC /* SFHorosAuthorizationView.h in Headers */,
 				596EB3061189D9A600880192 /* NSPreferencePane+OsiriX.h in Headers */,
 				596EB3F6118ABBB000880192 /* NSWindow+N2.h in Headers */,
 				594830CD118B0AC100D7E606 /* N2ImageView.h in Headers */,
@@ -10872,6 +10869,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				99C32EEF1CFF78E7001E71F3 /* PluginFilter.h in Headers */,
 				CEC4467C10664C2B0061B338 /* ViewerController.h in Headers */,
 				434B46191A19F322008CF8CF /* options.h in Headers */,
 			);
@@ -11041,7 +11039,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = NO;
 				LastTestingUpgradeCheck = 0730;
-				LastUpgradeCheck = 0640;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = "The Horos Project";
 				TargetAttributes = {
 					59BDEC2C117C92B2007F1F2C = {
@@ -11675,7 +11673,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /usr/bin/perl;
-			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen OsiriX_h, \">\", \"$destination/OsiriX.h\" or die $!;\n\nprint OsiriX_h \"#ifndef __OsiriX_API\\n#define __OsiriX_API\\n\\n\";\n\nmy @fromdirs = (\"$ENV{PROJECT_DIR}/cocoahttpserver\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/config\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmsr\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmdata\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/ofstd\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmnet\", \"$ENV{PROJECT_DIR}/VTKHeaders\", \"$ENV{PROJECT_DIR}/Nitrogen/Sources\", \"$ENV{PROJECT_DIR}/Nitrogen/Sources/JSON\", $ENV{PROJECT_DIR});\n\nforeach my $root (@fromdirs) {\n    opendir(DIR, $root);\n    \n    my @files = readdir(DIR);\n    foreach (@files) {\n        my $filename = $_;\n        next unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n        my @args = ( \"cp\", \"-fp\", \"$root/$filename\", \"$destination/\".(basename $filename) );\n        system(@args) == 0 or die \"Copy failed: $?\";\n        print OsiriX_h \"#include <OsiriXAPI/$filename>\\n\";\n    }\n    \n    closedir(DIR);\n}\n\nprint OsiriX_h \"\\n#endif\\n\";\nclose OsiriX_h;\n\nchdir \"$ENV{TARGET_BUILD_DIR}/$ENV{FULL_PRODUCT_NAME}\";\nsymlink \"Versions/Current/Headers\", \"Headers\";\n\nexit 0;";
+			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen OsiriX_h, \">\", \"$destination/OsiriX.h\" or die $!;\n\nprint OsiriX_h \"#ifndef __OsiriX_API\\n#define __OsiriX_API\\n\\n\";\n\n\n# TODO TODO TODO\n# -------------------------------------------------------------------------------------------------- #\n\n# \"$ENV{PROJECT_DIR}/cocoahttpserver\",\n# \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/config\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmsr\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmdata\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/ofstd\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmnet,\n\n# -------------------------------------------------------------------------------------------------- #\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/nitrogen/Sources\", \"$ENV{PROJECT_DIR}/nitrogen/Sources/JSON\", $ENV{PROJECT_DIR} );\n\nforeach my $root (@fromdirs) {\n    opendir(DIR, $root);\n    \n    my @files = readdir(DIR);\n    foreach (@files) {\n        my $filename = $_;\n        next unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n        my @args = ( \"cp\", \"-fp\", \"$root/$filename\", \"$destination/\".(basename $filename) );\n        system(@args) == 0 or die \"Copy failed: $?\";\n        print OsiriX_h \"#include <OsiriXAPI/$filename>\\n\";\n    }\n    \n    closedir(DIR);\n}\n\nprint OsiriX_h \"\\n#endif\\n\";\nclose OsiriX_h;\n\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/Binaries/VTKHeaders\" );\n\nforeach my $root (@fromdirs) {\n    my @args = ( \"cp\", \"-Rfp\", \"$root\", \"$destination/\" );\n    system(@args) == 0 or die \"Copy failed: $?\";\n}\n\n\n\nchdir \"$ENV{TARGET_BUILD_DIR}/$ENV{FULL_PRODUCT_NAME}\";\nsymlink \"Versions/Current/Headers\", \"Headers\";\n\nexit 0;";
 		};
 		9966A1961AE099A400F2D81A /* Code Signing */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -11703,7 +11701,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /usr/bin/perl;
-			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen Horos_h, \">\", \"$destination/Horos.h\" or die $!;\n\nprint Horos_h \"#ifndef __Horos_API\\n#define __Horos_API\\n\\n\";\n\nmy @fromdirs = (\"$ENV{PROJECT_DIR}/cocoahttpserver\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/config\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmsr\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmdata\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/ofstd\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmnet\", \"$ENV{PROJECT_DIR}/VTKHeaders\", \"$ENV{PROJECT_DIR}/Nitrogen/Sources\", \"$ENV{PROJECT_DIR}/Nitrogen/Sources/JSON\", $ENV{PROJECT_DIR});\n\nforeach my $root (@fromdirs) {\n\topendir(DIR, $root);\n\t\n\tmy @files = readdir(DIR);\n\tforeach (@files) {\n\t\tmy $filename = $_;\n\t\tnext unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n\t\tmy @args = ( \"cp\", \"-fp\", \"$root/$filename\", \"$destination/\".(basename $filename) );\n\t\tsystem(@args) == 0 or die \"Copy failed: $?\";\n\t\tprint Horos_h \"#include <HorosAPI/$filename>\\n\";\n\t}\n\t\n\tclosedir(DIR);\n}\n\nprint Horos_h \"\\n#endif\\n\";\nclose Horos_h;\n\nchdir \"$ENV{TARGET_BUILD_DIR}/$ENV{FULL_PRODUCT_NAME}\";\nsymlink \"Versions/Current/Headers\", \"Headers\";\n\nexit 0;";
+			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen Horos_h, \">\", \"$destination/Horos.h\" or die $!;\n\nprint Horos_h \"#ifndef __Horos_API\\n#define __Horos_API\\n\\n\";\n\n\n# TODO TODO TODO\n# -------------------------------------------------------------------------------------------------- #\n\n# \"$ENV{PROJECT_DIR}/cocoahttpserver\",\n# \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/config\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmsr\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmdata\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/ofstd\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmnet,\n\n# -------------------------------------------------------------------------------------------------- #\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/nitrogen/Sources\", \"$ENV{PROJECT_DIR}/nitrogen/Sources/JSON\", $ENV{PROJECT_DIR} );\n\nforeach my $root (@fromdirs) {\n\topendir(DIR, $root);\n\t\n\tmy @files = readdir(DIR);\n\tforeach (@files) {\n\t\tmy $filename = $_;\n\t\tnext unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n\t\tmy @args = ( \"cp\", \"-fp\", \"$root/$filename\", \"$destination/\".(basename $filename) );\n\t\tsystem(@args) == 0 or die \"Copy failed: $?\";\n\t\tprint Horos_h \"#include <HorosAPI/$filename>\\n\";\n\t}\n\t\n\tclosedir(DIR);\n}\n\nprint Horos_h \"\\n#endif\\n\";\nclose Horos_h;\n\n\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/Binaries/VTKHeaders\" );\n\nforeach my $root (@fromdirs) {\n    my @args = ( \"cp\", \"-Rfp\", \"$root\", \"$destination/\" );\n    system(@args) == 0 or die \"Copy failed: $?\";\n}\n\n\n\n\nchdir \"$ENV{TARGET_BUILD_DIR}/$ENV{FULL_PRODUCT_NAME}\";\nsymlink \"Versions/Current/Headers\", \"Headers\";\n\nexit 0;\n\n";
 		};
 		ABF307FB1443330100BBC96A /* Copy odt2pdf script */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -12299,7 +12297,7 @@
 				59BDF113117EE6A1007F1F2C /* PreferencesWindowController.mm in Sources */,
 				59BDF11F117EE72C007F1F2C /* PreferencesWindowController+DCMTK.mm in Sources */,
 				59BDF128117EFA41007F1F2C /* PreferencesView.mm in Sources */,
-				59C512C11189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm in Sources */,
+				59C512C11189C0E40074ECBC /* SFHorosAuthorizationView.mm in Sources */,
 				596EB3071189D9A600880192 /* NSPreferencePane+OsiriX.mm in Sources */,
 				596EB3F7118ABBB000880192 /* NSWindow+N2.mm in Sources */,
 				594830CE118B0AC100D7E606 /* N2ImageView.mm in Sources */,

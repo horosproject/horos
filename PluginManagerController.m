@@ -248,94 +248,136 @@ static NSDate *CachedHorosPluginsListDate = nil;
 }
 
 
+
 - (IBAction) showWindow:(id)sender;
 {
-    NSArray *viewers = [ViewerController getDisplayed2DViewers];
-    for (ViewerController *viewer in viewers)
+    if ([[self window] isVisible])
     {
-        [[viewer window] close];
+        [[self window] makeKeyAndOrderFront:nil];
+        return;
     }
     
-    [super showWindow:sender];
+    WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString( @"Initializing Plugin Manager...", nil)];
+    [splash showWindow:self];
     
-    
-    [self refreshPluginList];
-    
-    
-    // If we need to remove a plugin with a custom pref pane
-    for (NSWindow* window in [NSApp windows])
-    {
-        if ([window.windowController isKindOfClass:[PreferencesWindowController class]])
-        {
-            [window close];
-        }
-    }
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        [self availableOsiriXPlugins];
+        [self availableHorosPlugins];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            NSArray *viewers = [ViewerController getDisplayed2DViewers];
+            for (ViewerController *viewer in viewers)
+            {
+                [[viewer window] close];
+            }
+            
+            [super showWindow:sender];
+            
+            
+            [self refreshPluginList];
+            
+            
+            
+            ////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////
+            
+            if ([DCMPix isRunOsiriXInProtectedModeActivated])
+                [protectedModeLabel setHidden:NO];
+            else
+                [protectedModeLabel setHidden:YES];
+            
+            
+            [osirixPluginWebView setPolicyDelegate:self];
+            [horosPluginWebView setPolicyDelegate:self];
+            
+            [osirixPluginStatusTextField setHidden:YES];
+            [osirixPluginStatusProgressIndicator setHidden:YES];
+            
+            [horosPluginStatusTextField setHidden:YES];
+            [horosPluginStatusProgressIndicator setHidden:YES];
+            
+            // deactivate the back/forward options in the webView's contextual menu
+            [[osirixPluginWebView backForwardList] setCapacity:0];
+            [[horosPluginWebView backForwardList] setCapacity:0];
+            
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WebViewProgressStartedNotification:)  name:WebViewProgressStartedNotification  object:osirixPluginWebView];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WebViewProgressFinishedNotification:) name:WebViewProgressFinishedNotification object:osirixPluginWebView];
+            
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WebViewProgressStartedNotification:)  name:WebViewProgressStartedNotification  object:horosPluginWebView];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WebViewProgressFinishedNotification:) name:WebViewProgressFinishedNotification object:horosPluginWebView];
+            
+            ////////////////////////////////////////////////////////////////////////////////////////
+            
+            if ([[self availableOsiriXPlugins] count]<1)
+            {
+                [osirixPluginListPopUp removeAllItems];
+                [osirixPluginListPopUp setEnabled:NO];
+                [osirixPluginDownloadButton setEnabled:NO];
+                
+                [osirixPluginStatusTextField setHidden:NO];
+                [osirixPluginStatusTextField setStringValue:NSLocalizedString(@"No OsiriX plugin server available.", nil)];
+            }
+            else
+            {
+                [self generateAvailableOsiriXPluginsMenu];
+                [self setURLforOsiriXPluginWithName:[[[self availableOsiriXPlugins] objectAtIndex:0] valueForKey:@"name"]];
+                [self setOsiriXPluginDownloadURL:[[[self availableOsiriXPlugins] objectAtIndex:0] valueForKey:@"download_url"]];
+                
+                [self setOsiriXPluginHorosCompatibility:
+                 [ [ [ [self availableOsiriXPlugins] objectAtIndex:0] valueForKey:@"HorosCompatiblePlugin" ] boolValue]
+                 ];
+            }
+            
+            ////////////////////////////////////////////////////////////////////////////////////////
+            
+            if ([[self availableHorosPlugins] count]<1)
+            {
+                [horosPluginListPopUp removeAllItems];
+                [horosPluginListPopUp setEnabled:NO];
+                [horosPluginDownloadButton setEnabled:NO];
+                
+                [horosPluginStatusTextField setHidden:NO];
+                [horosPluginStatusTextField setStringValue:NSLocalizedString(@"No Horos plugin server available.", nil)];
+            }
+            else
+            {
+                [self generateAvailableHorosPluginsMenu];
+                [self setURLforHorosPluginWithName:[[[self availableHorosPlugins] objectAtIndex:0] valueForKey:@"name"]];
+                [self setHorosPluginDownloadURL:[[[self availableHorosPlugins] objectAtIndex:0] valueForKey:@"download_url"]];
+            }
+            
+            ////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////
+            
+            
+            
+            // If we need to remove a plugin with a custom pref pane
+            for (NSWindow* window in [NSApp windows])
+            {
+                if ([window.windowController isKindOfClass:[PreferencesWindowController class]])
+                {
+                    [window close];
+                }
+            }
+            
+            [[self window] makeKeyAndOrderFront:nil];
+            
+            
+            [ splash close ];
+            [ splash release ];
+        
+        });
+    });
 }
 
 
 - (void) awakeFromNib
 {
-    if ([DCMPix isRunOsiriXInProtectedModeActivated])
-        [protectedModeLabel setHidden:NO];
-    else    
-        [protectedModeLabel setHidden:YES];
-    
-    
-    [osirixPluginWebView setPolicyDelegate:self];
-    [horosPluginWebView setPolicyDelegate:self];
-    
-    [osirixPluginStatusTextField setHidden:YES];
-    [osirixPluginStatusProgressIndicator setHidden:YES];
-    
-    [horosPluginStatusTextField setHidden:YES];
-    [horosPluginStatusProgressIndicator setHidden:YES];
-    
-    // deactivate the back/forward options in the webView's contextual menu
-    [[osirixPluginWebView backForwardList] setCapacity:0];
-    [[horosPluginWebView backForwardList] setCapacity:0];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WebViewProgressStartedNotification:)  name:WebViewProgressStartedNotification  object:osirixPluginWebView];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WebViewProgressFinishedNotification:) name:WebViewProgressFinishedNotification object:osirixPluginWebView];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WebViewProgressStartedNotification:)  name:WebViewProgressStartedNotification  object:horosPluginWebView];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WebViewProgressFinishedNotification:) name:WebViewProgressFinishedNotification object:horosPluginWebView];
-    
-	if ([[self availableOsiriXPlugins] count]<1)
-	{
-		[osirixPluginListPopUp removeAllItems];
-		[osirixPluginListPopUp setEnabled:NO];
-		[osirixPluginDownloadButton setEnabled:NO];
-		
-        [osirixPluginStatusTextField setHidden:NO];
-		[osirixPluginStatusTextField setStringValue:NSLocalizedString(@"No OsiriX plugin server available.", nil)];
-	}
-	else
-	{
-		[self generateAvailableOsiriXPluginsMenu];
-		[self setURLforOsiriXPluginWithName:[[[self availableOsiriXPlugins] objectAtIndex:0] valueForKey:@"name"]];
-		[self setOsiriXPluginDownloadURL:[[[self availableOsiriXPlugins] objectAtIndex:0] valueForKey:@"download_url"]];
-	}
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////
-    
-    if ([[self availableHorosPlugins] count]<1)
-    {
-        [horosPluginListPopUp removeAllItems];
-        [horosPluginListPopUp setEnabled:NO];
-        [horosPluginDownloadButton setEnabled:NO];
-        
-        [horosPluginStatusTextField setHidden:NO];
-        [horosPluginStatusTextField setStringValue:NSLocalizedString(@"No Horos plugin server available.", nil)];
-    }
-    else
-    {
-        [self generateAvailableHorosPluginsMenu];
-        [self setURLforHorosPluginWithName:[[[self availableHorosPlugins] objectAtIndex:0] valueForKey:@"name"]];
-        [self setHorosPluginDownloadURL:[[[self availableHorosPlugins] objectAtIndex:0] valueForKey:@"download_url"]];
-    }
-	
+    [super awakeFromNib];
 }
 
 
@@ -392,16 +434,11 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
     
     ////////////////////////////////////////////
 
-	WaitRendering *splash = [[[WaitRendering alloc] init:NSLocalizedString( @"Check Plugins...", nil)] autorelease];
-	[splash showWindow:self];
-
 	for (int i=0; i < [osirixPluginListURLs count] && !pluginsList; i++)
 	{
 		pluginsListURL = [osirixPluginListURLs objectAtIndex:i];
 		pluginsList = [NSArray arrayWithContentsOfURL:[NSURL URLWithString:pluginsListURL]];
 	}
-	
-	[splash close];
 	
     ////////////////////////////////////////////
     
@@ -437,16 +474,11 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
     
     ////////////////////////////////////////////
     
-    WaitRendering *splash = [[[WaitRendering alloc] init:NSLocalizedString( @"Check Plugins...", nil)] autorelease];
-    [splash showWindow:self];
-    
     for (int i=0; i < [horosPluginListURLs count] && !pluginsList; i++)
     {
         pluginsListURL = [horosPluginListURLs objectAtIndex:i];
         pluginsList = [NSArray arrayWithContentsOfURL:[NSURL URLWithString:pluginsListURL]];
     }
-    
-    [splash close];
     
     ////////////////////////////////////////////
     
@@ -490,9 +522,9 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 		[horosPluginListPopUp addItemWithTitle:[loopItem objectForKey:@"name"]];
 	}
 	
-	[[horosPluginListPopUp menu] addItem:[NSMenuItem separatorItem]];
+	//[[horosPluginListPopUp menu] addItem:[NSMenuItem separatorItem]];
     
-	[horosPluginListPopUp addItemWithTitle:NSLocalizedString(@"Your Horos Plugin here!", nil)];
+	//[horosPluginListPopUp addItemWithTitle:NSLocalizedString(@"Your Horos Plugin here!", nil)];
 }
 
 
@@ -527,6 +559,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
             
 			[self setOsiriXPluginURL:[plugin valueForKey:@"url"]];
 			[self setOsiriXPluginDownloadURL:[plugin valueForKey:@"download_url"]];
+            [self setOsiriXPluginHorosCompatibility:[[plugin valueForKey:@"HorosCompatiblePlugin"] boolValue]];
 			
 			BOOL alreadyInstalled = NO;
 			BOOL sameName = NO;
@@ -669,7 +702,12 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 
 #pragma mark download
 
-- (void) setOsiriXPluginDownloadURL:(NSString*)url;
+- (void) setOsiriXPluginHorosCompatibility:(BOOL) compatible
+{
+    osiriXPluginHorosCompatibility = compatible;
+}
+
+- (void) setOsiriXPluginDownloadURL:(NSString*)url
 {
 	if (osirixPluginDownloadURL)
     {
@@ -691,7 +729,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 }
 
 
-- (void) setHorosPluginDownloadURL:(NSString*)url;
+- (void) setHorosPluginDownloadURL:(NSString*)url
 {
     if (horosPluginDownloadURL)
     {
@@ -738,6 +776,24 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 
 - (IBAction) downloadOsiriXPlugin:(id)sender;
 {
+    if (self->osiriXPluginHorosCompatibility == NO)
+    {
+        NSAlert *alert = [[NSAlert alloc] init];
+        [alert addButtonWithTitle:NSLocalizedString(@"Yes",nil)];
+        [alert addButtonWithTitle:NSLocalizedString(@"No",nil)];
+        [alert setMessageText:NSLocalizedString(@"Not validated OsiriX plugin.",nil)];
+        [alert setInformativeText:NSLocalizedString(@"Not validated OsiriX plugins may cause Horos run-time errors. In case of problems, you can disable/uninstall them in [Plugins => Plugin Manager]. Continue installing?",nil)];
+        [alert setAlertStyle:NSWarningAlertStyle];
+        
+        if ([alert runModal] != NSAlertFirstButtonReturn)
+        {
+            [alert release];
+            return;
+        }
+        
+        [alert release];
+    }
+    
     NSString *downloadedFilePath = [NSString stringWithFormat:@"/tmp/%@", [[osirixPluginDownloadURL lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     
     @synchronized(downloadingPlugins)

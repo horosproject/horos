@@ -34,10 +34,10 @@
 #import <PreferencePanes/PreferencePanes.h>
 #import <SecurityInterface/SFChooseIdentityPanel.h>
 #import <SecurityInterface/SFCertificateView.h>
-#import <OsiriXAPI/DNDArrayController.h>
+#import <HorosAPI/DNDArrayController.h>
 #import <WebKit/WebKit.h>
 
-#import <OsiriXAPI/DICOMTLS.h>
+#import <HorosAPI/DICOMTLS.h>
 
 @interface OSILocationsPreferencePanePref : NSPreferencePane 
 {

@@ -48,9 +48,133 @@
 #define INCLUDE_CSTDIO
 #include "ofstdinc.h"
 
+
+#import "dicomFile.h"
+#import "DICOMToNSString.h"
+#import "DicomFileDCMTKCategory.h"
+#import "DCMAttributeTag.h"
+#include "libGDCM.h"
+
 extern NSRecursiveLock *PapyrusLock;
 
 @implementation XMLController (XMLControllerDCMTKCategory)
+
+
++ (BOOL) modifyDicom:(NSArray*) tagAndValues dicomFiles:(NSArray*) dicomFiles
+{
+    BOOL modifySuccess = YES;
+    
+    for (NSString* f in dicomFiles)
+    {
+        const char* filename = [f cStringUsingEncoding:[NSString defaultCStringEncoding]];
+        
+        gdcm::Reader reader;
+        
+        reader.SetFileName(filename);
+        
+        if( !reader.Read() )
+        {
+            std::cerr << "Can't read file for anonymization." << std::endl;
+            
+            modifySuccess = NO;
+            
+            continue;
+        }
+        else
+        {
+            gdcm::File &file = reader.GetFile();
+            
+            gdcm::MediaStorage ms;
+            ms.SetFromFile(file);
+            if( !gdcm::Defs::GetIODNameFromMediaStorage(ms) )
+            {
+                std::cerr << "The Media Storage Type is not supported for anonymization: " << ms << std::endl;
+                
+                modifySuccess = NO;
+                
+                continue;
+            }
+            else
+            {
+                NSStringEncoding encoding =
+                [NSString encodingForDICOMCharacterSet:[[DicomFile getEncodingArrayForFile:[dicomFiles lastObject]] objectAtIndex: 0]];
+                
+                std::vector< std::pair<gdcm::Tag, std::string> > replace_tags;
+                for (NSArray* replacingItem in tagAndValues)
+                {
+                    std::string newValue = "";
+                    
+                    DCMAttributeTag* tag = [replacingItem objectAtIndex:0];
+                    if ([replacingItem count] > 1)
+                        newValue = std::string( [[replacingItem objectAtIndex:1] cStringUsingEncoding:encoding] );
+                    
+                    replace_tags.push_back( std::make_pair(gdcm::Tag(tag.group,tag.element),newValue) );
+                }
+                
+                /////////////////////////////
+                /////////////////////////////
+                /////////////////////////////
+                /////////////////////////////
+                /////////////////////////////
+                
+                gdcm::Anonymizer anon;
+                anon.SetFile( file );
+                
+                bool success = true;
+                
+                std::vector< std::pair<gdcm::Tag, std::string> >::const_iterator it2 = replace_tags.begin();
+                for(; it2 != replace_tags.end(); ++it2)
+                {
+                    success = success && anon.Replace( it2->first, it2->second.c_str() );
+                }
+                
+                if (!success)
+                {
+                    modifySuccess = NO;
+                }
+                
+                /////////////////////////////
+                /////////////////////////////
+                /////////////////////////////
+                /////////////////////////////
+                /////////////////////////////
+                
+                const char* outfilename = filename;
+                
+                gdcm::Writer writer;
+                writer.SetFileName( outfilename );
+                writer.SetFile( file );
+                
+                if( !writer.Write() )
+                {
+                    std::cerr << "Could not Write : " << outfilename << std::endl;
+                    if( strcmp(filename,outfilename) != 0 )
+                    {
+                        gdcm::System::RemoveFile( outfilename );
+                    }
+                    else
+                    {
+                        std::cerr << "gdcmanon just corrupted: " << filename << " (data lost)." << std::endl;
+                        
+                    }
+                    
+                    modifySuccess = NO;
+                    
+                    continue;
+                }
+            }
+        }
+    }
+    
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    
+    return modifySuccess;
+}
+
 
 + (int) modifyDicom:(NSArray*) params encoding: (NSStringEncoding) encoding
 {

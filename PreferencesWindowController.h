@@ -34,7 +34,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <PreferencePanes/NSPreferencePane.h>
-#import "SFAuthorizationView+OsiriX.h"
+#import "SFHorosAuthorizationView.h"
 
 
 @class PreferencesView, PreferencesWindowContext;
@@ -46,13 +46,13 @@
 	IBOutlet NSScrollView* scrollView;
 	IBOutlet PreferencesView* panesListView;
 	IBOutlet NSButton* authButton;
-	IBOutlet SFAuthorizationView* authView;
+	IBOutlet SFHorosAuthorizationView* authView;
 	PreferencesWindowContext* currentContext;
 	NSMutableArray* animations;
 }
 
 @property(readonly) NSMutableArray* animations;
-@property(readonly) SFAuthorizationView* authView;
+@property(readonly) SFHorosAuthorizationView* authView;
 
 + (PreferencesWindowController*) sharedPreferencesWindowController;
 +(void) addPluginPaneWithResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle withTitle:(NSString*)title image:(NSImage*)image;

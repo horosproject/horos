@@ -38,7 +38,6 @@
 #import <Security/Security.h>
 #import "PreferencesWindowController.h"
 #import "N2AdaptiveBox.h"
-#import "SFAuthorizationView+OsiriX.h"
 #import "AppController.h"
 #import "BrowserController.h"
 #import "DicomFile.h"
@@ -311,6 +310,30 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 }
 
 
+
+-(void)authorizationViewDidAuthorize:(SFAuthorizationView*)view
+{
+    [self pane:currentContext.pane enable:YES];
+}
+
+
+-(void)authorizationViewDidDeauthorize:(SFAuthorizationView*)view
+{
+    [self pane:currentContext.pane enable:NO];
+}
+
+-(BOOL)isUnlocked
+{
+    return ![[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"] || ([authView authorizationState] == SFAuthorizationViewUnlockedState);
+}
+
+
+-(IBAction)authAction:(id)sender
+{
+    [self->authView buttonPressed:sender];
+}
+
+
 -(void)awakeFromNib
 {
 	[authView setDelegate:self];
@@ -409,14 +432,6 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 }
 
 
--(BOOL)isUnlocked
-{
-	//return ![[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"] || ([authView authorizationState] == SFAuthorizationViewUnlockedState);
-    //TODO
-    return YES;
-}
-
-
 -(void)setCurrentContextWithResourceName: (NSString*) name
 {
     NSInteger panesCount = [panesListView itemsCount];
@@ -507,18 +522,6 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 }
 
 
--(void)authorizationViewDidAuthorize:(SFAuthorizationView*)view
-{
-	[self pane:currentContext.pane enable:YES];
-}
-
-
--(void)authorizationViewDidDeauthorize:(SFAuthorizationView*)view
-{
-	[self pane:currentContext.pane enable:NO];
-}
-
-
 - (CGFloat)toolbarHeight
 {
     NSToolbar *toolbar = [[self window] toolbar];
@@ -580,12 +583,6 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 -(IBAction)showAllAction:(id)sender
 {
 	[self setCurrentContext:NULL];
-}
-
-
--(IBAction)authAction:(id)sender
-{
-	[authView buttonPressed:NULL];
 }
 
 

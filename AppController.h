@@ -55,7 +55,6 @@
 
 #import <AppKit/AppKit.h>
 #import "XMLRPCMethods.h"
-#import <FeedbackReporter/FRFeedbackReporter.h>
 
 #include "options.h"
 
@@ -119,7 +118,7 @@ extern "C"
 
 extern AppController* OsiriX;
 
-@interface AppController : NSObject	<NSNetServiceBrowserDelegate, NSNetServiceDelegate, NSSoundDelegate, NSMenuDelegate, FRFeedbackReporterDelegate> // GrowlApplicationBridgeDelegate
+@interface AppController : NSObject	<NSNetServiceBrowserDelegate, NSNetServiceDelegate, NSSoundDelegate, NSMenuDelegate > //, FRFeedbackReporterDelegate> // GrowlApplicationBridgeDelegate
 {
 	IBOutlet BrowserController		*browserController;
 

@@ -31,13 +31,8 @@
      PURPOSE.
  ============================================================================*/
 
-#import "SFAuthorizationView+OsiriX.h"
+#import "SFHorosAuthorizationView.h"
 
-@implementation SFAuthorizationView (Private)
-
-- (void) buttonPressed:(id) sender
-{
-    //TODO
-}
+@implementation SFHorosAuthorizationView
 
 @end

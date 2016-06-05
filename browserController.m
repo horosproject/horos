@@ -95,6 +95,7 @@
 #import "BrowserMatrix.h"
 #import "DicomAlbum.h"
 #import "PluginManager.h"
+#import "PluginManagerController.h"
 #import "N2OpenGLViewWithSplitsWindow.h"
 #import "XMLController.h"
 #import "WebPortalConnection.h"
@@ -5391,9 +5392,19 @@ static NSConditionLock *threadLock = nil;
                                 [params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0010,0020)", destStudy.patientID], @"-i", [NSString stringWithFormat: @"%@=%@", @"(0010,0010)", originalPatientName], @"-i", [NSString stringWithFormat: @"%@=%@", @"(0010,0030)", originalBirthDate], nil]];
                                 [params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0010,1000)", existingOtherPatientIDs], @"-i", [NSString stringWithFormat: @"%@=%@", @"(0010,1001)", existingOtherPatientNames], nil]];
                                 
-                                NSMutableArray *files = [NSMutableArray arrayWithArray: [[study paths] allObjects]];
                                 
-                                if( files)
+                                NSArray* tagAndValues = [NSArray arrayWithObjects:
+                                                                                    [NSArray  arrayWithObjects:[DCMAttributeTag tagWithTagString:@"(0010,0020)"],(destStudy.patientID?destStudy.patientID:@""),nil],
+                                                                                    [NSArray  arrayWithObjects:[DCMAttributeTag tagWithTagString:@"(0010,0010)"],(originalPatientName?originalPatientName:@""),nil],
+                                                                                    [NSArray  arrayWithObjects:[DCMAttributeTag tagWithTagString:@"(0010,0030)"],(originalBirthDate?originalBirthDate:@""),nil],
+                                                                                    [NSArray  arrayWithObjects:[DCMAttributeTag tagWithTagString:@"(0010,1000)"],(existingOtherPatientIDs?existingOtherPatientIDs:@""),nil],
+                                                                                    [NSArray  arrayWithObjects:[DCMAttributeTag tagWithTagString:@"(0010,1001)"],(existingOtherPatientNames?existingOtherPatientNames:@""),nil],
+                                nil];
+                                
+                                
+                                NSMutableArray *files = [NSMutableArray arrayWithArray:[[study paths] allObjects]];
+                                
+                                if (files)
                                 {
                                     [files removeDuplicatedStrings];
                                     
@@ -5401,12 +5412,15 @@ static NSConditionLock *threadLock = nil;
                                     
                                     @try
                                     {
-                                        NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files lastObject]] objectAtIndex: 0]];
+                                        //NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files lastObject]] objectAtIndex: 0]];
+                                        //[XMLController modifyDicom: params encoding: encoding];
                                         
-                                        [XMLController modifyDicom: params encoding: encoding];
+                                        [XMLController modifyDicom:tagAndValues dicomFiles:files];
                                         
                                         for( id loopItem in files)
-                                            [[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
+                                        {
+                                            [[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:nil];
+                                        }
                                     }
                                     @catch (NSException * e)
                                     {
@@ -5559,13 +5573,29 @@ static NSConditionLock *threadLock = nil;
                             {
                                 //                                NSString *logLine = [NSString stringWithFormat: @"---- Study Unify: %@ %@ -> %@ %@", study.name, study.patientID, destStudy.name, destStudy.patientID, nil];
                                 
+                                NSMutableArray* tagAndValues = [NSMutableArray array];
+                                
                                 if( [destStudy.patientID isEqualToString: study.patientID] == NO || [destStudy.name isEqualToString: study.name] == NO)
                                 {
                                     [params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0010,0020)", destStudy.patientID], @"-i", [NSString stringWithFormat: @"%@=%@", @"(0010,0010)", originalPatientName], @"-i", [NSString stringWithFormat: @"%@=%@", @"(0010,0030)", originalBirthDate], nil]];
                                     [params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0010,1000)", existingOtherPatientIDs], @"-i", [NSString stringWithFormat: @"%@=%@", @"(0010,1001)", existingOtherPatientNames], nil]];
+                                    
+                                    [tagAndValues addObjectsFromArray:[NSArray arrayWithObjects:
+                                                                                                [NSArray  arrayWithObjects:[DCMAttributeTag tagWithTagString:@"(0010,0020)"],(destStudy.patientID?destStudy.patientID:@""),nil],
+                                                                                                [NSArray  arrayWithObjects:[DCMAttributeTag tagWithTagString:@"(0010,0010)"],(originalPatientName?originalPatientName:@""),nil],
+                                                                                                [NSArray  arrayWithObjects:[DCMAttributeTag tagWithTagString:@"(0010,0030)"],(originalBirthDate?originalBirthDate:@""),nil],
+                                                                                                [NSArray  arrayWithObjects:[DCMAttributeTag tagWithTagString:@"(0010,1000)"],(existingOtherPatientIDs?existingOtherPatientIDs:@""),nil],
+                                                                                                [NSArray  arrayWithObjects:[DCMAttributeTag tagWithTagString:@"(0010,1001)"],(existingOtherPatientNames?existingOtherPatientNames:@""),nil],
+                                                                                                nil]];
                                 }
                                 
                                 [params addObjectsFromArray: [NSArray arrayWithObjects: @"-i", [NSString stringWithFormat: @"%@=%@", @"(0020,0010)", originalStudyID], @"-i", [NSString stringWithFormat: @"%@=%@", @"(0020,000D)", originalStudyInstanceUID], @"-i", [NSString stringWithFormat: @"%@=%@", @"(0008,1030)", originalStudyDescription], nil]];
+                                
+                                [tagAndValues addObjectsFromArray:[NSArray arrayWithObjects:
+                                                                                            [NSArray  arrayWithObjects:[DCMAttributeTag tagWithTagString:@"(0020,0010)"],(originalStudyID?originalStudyID:@""),nil],
+                                                                                            [NSArray  arrayWithObjects:[DCMAttributeTag tagWithTagString:@"(0020,000D)"],(originalStudyInstanceUID?originalStudyInstanceUID:@""),nil],
+                                                                                            [NSArray  arrayWithObjects:[DCMAttributeTag tagWithTagString:@"(0008,1030)"],(originalStudyDescription?originalStudyDescription:@""),nil],
+                                                                                            nil]];
                                 
                                 NSMutableArray *files = [NSMutableArray arrayWithArray: [[study paths] allObjects]];
                                 
@@ -5577,12 +5607,15 @@ static NSConditionLock *threadLock = nil;
                                     
                                     @try
                                     {
-                                        NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files lastObject]] objectAtIndex: 0]];
+                                        //NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: [files lastObject]] objectAtIndex: 0]];
+                                        //[XMLController modifyDicom: params encoding: encoding];
                                         
-                                        [XMLController modifyDicom: params encoding: encoding];
+                                        [XMLController modifyDicom:tagAndValues dicomFiles:files];
                                         
                                         for( id loopItem in files)
+                                        {
                                             [[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
+                                        }
                                     }
                                     @catch (NSException * e)
                                     {
@@ -14374,25 +14407,51 @@ static NSArray*	openSubSeriesArray = nil;
     }
     
     
-    BOOL firstTimeExecution = ([[NSUserDefaults standardUserDefaults] objectForKey:@"FIRSTTIMEEXECUTION"] == nil);
-    if (firstTimeExecution == YES)
+    BOOL firstTimeExecution = ([[NSUserDefaults standardUserDefaults] objectForKey:@"FIRST_TIME_EXECUTION_2_0"] == nil);
+    BOOL foundNotValidatedOsiriXPlugins = NO;
+    
+    if (firstTimeExecution)
     {
-        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:NO] forKey:@"FIRSTTIMEEXECUTION"];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"FIRST_TIME_EXECUTION_2_0"];
+        
+        
+        
+        NSArray* installedPlugins = [self->pluginManagerController plugins];
+        for (NSDictionary* pluginDesc in installedPlugins)
+        {
+            if ([[pluginDesc objectForKey:@"HorosCompatiblePlugin"] boolValue] == NO)
+            {
+                foundNotValidatedOsiriXPlugins = YES;
+                break;
+            }
+        }
+        
         
         [[NSUserDefaults standardUserDefaults] setInteger:CPRInterpolationModeCubic
                                                    forKey:@"selectedCPRInterpolationMode"];
         
+        
         dispatch_async(dispatch_get_main_queue(), ^() {
+            
             [self restoreWindowState:self];
-            [[self window] performZoom:self];
+            
         });
     }
     
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"FIRSTIMEEXECUTION_2.0"] == nil)
+    
+    
+    if (firstTimeExecution == YES && foundNotValidatedOsiriXPlugins == YES)
     {
-        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"FIRSTIMEEXECUTION_2.0"];
-        [self restoreWindowState:self];
+        NSAlert *alert = [[NSAlert alloc] init];
+        [alert addButtonWithTitle:NSLocalizedString(@"OK",nil)];
+        [alert setMessageText:NSLocalizedString(@"Not validated OsiriX plugins were detected!",nil)];
+        [alert setInformativeText:NSLocalizedString(@"Not validated OsiriX plugins may cause Horos run-time errors. In case of problems, you can disable/uninstall them in [Plugins => Plugin Manager]. A brand new Horos plugin database is being built for you.",nil)];
+        [alert setAlertStyle:NSWarningAlertStyle];
+        [alert runModal];
+        [alert release];
     }
+    
+    
     
     [O2HMigrationAssistant performStartupO2HTasks:self];
 }

@@ -440,7 +440,7 @@ static NSString *templateDicomFile = nil;
         
         if( !reader.Read() )
         {
-            std::cerr << "Skipping from anonymization process (continue mode)." << std::endl;
+            std::cerr << "Can't read file for anonymization." << std::endl;
             
             anonymationSuccess = NO;
             
@@ -454,7 +454,7 @@ static NSString *templateDicomFile = nil;
             ms.SetFromFile(file);
             if( !gdcm::Defs::GetIODNameFromMediaStorage(ms) )
             {
-                std::cerr << "The Media Storage Type of your file is not supported: " << ms << std::endl;
+                std::cerr << "The Media Storage Type is not supported for anonymization: " << ms << std::endl;
                 
                 anonymationSuccess = NO;
                 
@@ -462,6 +462,9 @@ static NSString *templateDicomFile = nil;
             }
             else
             {
+                NSStringEncoding encoding =
+                [NSString encodingForDICOMCharacterSet:[[DicomFile getEncodingArrayForFile:[producedFiles lastObject]] objectAtIndex: 0]];
+                
                 std::vector< std::pair<gdcm::Tag, std::string> > replace_tags;
                 for (NSArray* replacingItem in tags)
                 {
@@ -469,11 +472,15 @@ static NSString *templateDicomFile = nil;
                     
                     DCMAttributeTag* tag = [replacingItem objectAtIndex:0];
                     if ([replacingItem count] > 1)
-                        newValue = std::string( [[replacingItem objectAtIndex:1] cStringUsingEncoding:[NSString defaultCStringEncoding]] );
+                        newValue = std::string( [[replacingItem objectAtIndex:1] cStringUsingEncoding:encoding] );
                     
                     replace_tags.push_back( std::make_pair(gdcm::Tag(tag.group,tag.element),newValue) );                    
                 }
                 
+                /////////////////////////////
+                /////////////////////////////
+                /////////////////////////////
+                /////////////////////////////
                 /////////////////////////////
                 
                 gdcm::Anonymizer anon;
@@ -493,6 +500,10 @@ static NSString *templateDicomFile = nil;
                 }
                 
                 /////////////////////////////
+                /////////////////////////////
+                /////////////////////////////
+                /////////////////////////////
+                /////////////////////////////
                 
                 const char* outfilename = filename;
                 
@@ -509,10 +520,13 @@ static NSString *templateDicomFile = nil;
                     }
                     else
                     {
-                        std::cerr << "gdcmanon just corrupted: " << filename << " for you (data lost)." << std::endl;
+                        std::cerr << "gdcmanon just corrupted: " << filename << " (data lost)." << std::endl;
                         
-                        anonymationSuccess = NO;
                     }
+                    
+                    anonymationSuccess = NO;
+                    
+                    continue;
                 }
             }
         }
