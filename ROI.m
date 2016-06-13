@@ -2098,8 +2098,14 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 					c.y = pt.y - p1.y;
 
 					// point in the layer image coordinate system
-					float y = (c.y-c.x*(v.y/v.x))/(w.y-w.x*(v.y/v.x));
-					float x = (c.x-y*w.x)/v.x;
+                    float x, y;
+                    if (v.x) {
+                        y = (c.y-c.x*(v.y/v.x))/(w.y-w.x*(v.y/v.x));
+                        x = (c.x-y*w.x)/v.x;
+                    } else {
+                        y = (c.x-c.y*(v.x/v.y))/(w.x-w.y*(v.x/v.y));
+                        x = (c.y-x*w.y)/v.y;
+                    }
 					
 					x *= scaleRatio;
 					y *= scaleRatio;
