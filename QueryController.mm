@@ -99,7 +99,9 @@ extern "C"
 
 @implementation QueryController
 
-@synthesize autoQuery, autoQueryLock, outlineView, DatabaseIsEdited, currentAutoQR, authView;
+@synthesize autoQuery;
+@synthesize autoQueryLock;
+@synthesize outlineView, DatabaseIsEdited, currentAutoQR, authView;
 
 + (void) queryTest: (NSDictionary*) aServer
 {
@@ -4800,7 +4802,7 @@ extern "C"
 			
             [self willChangeValueForKey: @"instancesMenuList"];
             
-            autoQRInstances = [[[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettingsArray"] mutableCopy];
+            autoQRInstances = [[[NSUserDefaults standardUserDefaults] objectForKey:@"savedAutoDICOMQuerySettingsArray"] mutableCopy];
             
             if( autoQRInstances == nil)
                 autoQRInstances = [NSMutableArray new];
@@ -5006,7 +5008,11 @@ extern "C"
         {
             @synchronized( autoQRInstances)
             {
-                [[autoQRInstances objectAtIndex: currentAutoQR] addEntriesFromDictionary: [self savePresetInDictionaryWithDICOMNodes: YES]];
+                NSMutableDictionary* newDic = [[autoQRInstances objectAtIndex: currentAutoQR] mutableCopy];
+                [newDic addEntriesFromDictionary: [self savePresetInDictionaryWithDICOMNodes: YES]];
+                
+                if (newDic != nil)
+                    [autoQRInstances replaceObjectAtIndex:currentAutoQR withObject:newDic];
                 
                 NSMutableArray *resultsArrays = [NSMutableArray array];
                 
