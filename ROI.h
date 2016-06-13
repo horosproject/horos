@@ -191,7 +191,7 @@ enum
 @property BOOL clickInTextBox;
 @property(setter=setROIRect:) NSRect rect; // To create a Rectangular ROI (tROI) or an Oval ROI (tOval) or a 2DPoint
 @property(nonatomic, retain) DCMPix *pix; // The DCMPix associated to this ROI
-@property(readonly) DCMView *curView;  // The DCMView associated to this ROI
+@property(assign, nonatomic) DCMView *curView;  // The DCMView associated to this ROI
 @property float mousePosMeasure;
 @property(readonly) NSData *data;
 @property(nonatomic, setter=setColor:) RGBColor rgbcolor;
@@ -349,7 +349,7 @@ enum
 - (NSMutableDictionary*) dataString;
 
 /** Set the associated view */
-- (void) setRoiView:(DCMView*) v;
+- (void) setRoiView:(DCMView*) v __deprecated; // use setCurView:
 
 /** Draw a NSString in OpenGL */
 - (void) glStr: (NSString*) str :(float) x :(float) y :(float) line;
