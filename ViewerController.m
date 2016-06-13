@@ -3253,7 +3253,12 @@ static volatile int numberOfThreadsForRelisce = 0;
     [toolbarPanel release];
     toolbarPanel = nil;
     
+    
+    [self finalizeSeriesViewing];
+    
+    
     [self autorelease];
+    
     
     numberOf2DViewer--;
     @synchronized( arrayOf2DViewers)
@@ -7952,7 +7957,7 @@ static int avoidReentryRefreshDatabase = 0;
     
     [[NSNotificationCenter defaultCenter] removeObserver: self];
     
-    [self finalizeSeriesViewing];
+    //[self finalizeSeriesViewing]; /**** CALLED IN windowWillClose *****/
     
     @synchronized( loadingThread)
     {
