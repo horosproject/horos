@@ -56,9 +56,9 @@
 #define URL_HOROS_UPDATE           URL_HOROS_VIEWER@"/adaa7f5d1f33cb8ddd89fe300da7c2cd/"
 #define URL_HOROS_UPDATE_CRASH     URL_HOROS_VIEWER@"/adaa7f5d1f33cb8ddd89fe300da7c2cd/"
 
-#define URL_HOROS_VERSION          URL_HOROS_VIEWER@"/version.xml"
+#define URL_HOROS_VERSION          URL_HOROS_VIEWER@"/wp-content/uploads/version.xml"
 
-#define URL_HOROS_PLUGINS          URL_HOROS_VIEWER@"/horosplugins.html"
+#define URL_HOROS_PLUGINS          URL_HOROS_VIEWER@"/wp-content/uploads/horos_plugins/index.html"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -75,12 +75,12 @@
 //#define OSIRIX_PLUGIN_LIST_URL            @"http://www.osirix-viewer.com/osirix_plugins/plugins.plist"
 //#define OSIRIX_PLUGIN_LIST_ALT_URL        @"http://www.osirixviewer.com/osirix_plugins/plugins.plist"
 
-#define OSIRIX_PLUGIN_LIST_URL              @"http://www.horosproject.org/osirix_plugins/osirixplugins.plist"
-#define OSIRIX_PLUGIN_LIST_ALT_URL          @"http://www.horosproject.org/wp-content/uploads/osirix_plugins/osirixplugins.plist"
+#define OSIRIX_PLUGIN_LIST_URL              URL_HOROS_VIEWER@"/osirix_plugins/osirixplugins.plist"
+#define OSIRIX_PLUGIN_LIST_ALT_URL          URL_HOROS_VIEWER@"/wp-content/uploads/osirix_plugins/osirixplugins.plist"
 
-#define HOROS_PLUGIN_LIST_URL               @"http://www.horosproject.org/horos_plugins/horosplugins.plist"
-#define HOROS_PLUGIN_LIST_ALT_URL           @"http://www.horosproject.org/wp-content/uploads/horos_plugins/horosplugins.plist"
+#define HOROS_PLUGIN_LIST_URL               URL_HOROS_VIEWER@"/horos_plugins/horosplugins.plist"
+#define HOROS_PLUGIN_LIST_ALT_URL           URL_HOROS_VIEWER@"/wp-content/uploads/horos_plugins/horosplugins.plist"
 
-#define HOROS_PLUGIN_SUBMISSION_URL         @"http://www.horosproject.org/wp-content/horos_plugins/submit_plugin/index.html"
+#define HOROS_PLUGIN_SUBMISSION_URL         URL_HOROS_VIEWER@"/wp-content/horos_plugins/submit_plugin/index.html"
 
 #endif
