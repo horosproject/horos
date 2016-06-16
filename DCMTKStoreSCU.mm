@@ -121,9 +121,9 @@ END_EXTERN_C
 #define APPLICATIONTITLE        "STORESCU"
 #define PEERAPPLICATIONTITLE    "ANY-SCP"
 
-static OFBool opt_verbose = OFTrue;
-static OFBool opt_showPresentationContexts = OFTrue;
-static OFBool opt_debug = OFTrue;
+static OFBool opt_verbose = OFFalse;
+static OFBool opt_showPresentationContexts = OFFalse;
+static OFBool opt_debug = OFFalse;
 static OFBool opt_abortAssociation = OFFalse;
 static OFCmdUnsignedInt opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
 //static OFCmdUnsignedInt opt_maxSendPDULength = 0;

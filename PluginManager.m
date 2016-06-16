@@ -1546,7 +1546,14 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
     
     NSURL *url = [NSURL URLWithString:HOROS_PLUGIN_LIST_URL];
     
-    NSMutableArray *onlinePlugins = [NSMutableArray arrayWithContentsOfURL:url];    
+    NSMutableArray *onlinePlugins = [NSMutableArray arrayWithContentsOfURL:url];
+    
+    if (url == nil || onlinePlugins == nil || [onlinePlugins count] <= 0)
+    {
+        url = [NSURL URLWithString:HOROS_PLUGIN_LIST_ALT_URL];
+        
+        onlinePlugins = [NSMutableArray arrayWithContentsOfURL:url];
+    }
     
     if (url && onlinePlugins && [onlinePlugins count] > 0)
     {
@@ -1601,7 +1608,14 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
     
     NSURL *url = [NSURL URLWithString:OSIRIX_PLUGIN_LIST_URL];
     
-    NSMutableArray *onlinePlugins = [NSMutableArray arrayWithContentsOfURL:url];    
+    NSMutableArray *onlinePlugins = [NSMutableArray arrayWithContentsOfURL:url];
+    
+    if (url == nil || onlinePlugins == nil || [onlinePlugins count] <= 0)
+    {
+        url = [NSURL URLWithString:OSIRIX_PLUGIN_LIST_ALT_URL];
+        
+        onlinePlugins = [NSMutableArray arrayWithContentsOfURL:url];
+    }
     
     if (url && onlinePlugins && [onlinePlugins count] > 0)
     {
