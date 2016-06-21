@@ -18012,8 +18012,10 @@ restart:
     {
         //		[self.window makeKeyAndOrderFront:sender];
         
-        if( [sender tag] == 0 && [QueryController currentQueryController] == nil) [[QueryController alloc] initAutoQuery: NO];
-        else if( [sender tag] == 1 && [QueryController currentAutoQueryController] == nil) [[QueryController alloc] initAutoQuery: YES];
+        if ([sender tag] == 0 && [QueryController currentQueryController] == nil)
+            [[QueryController alloc] initAutoQuery: NO];
+        else if ([sender tag] == 1 && [QueryController currentAutoQueryController] == nil)
+            [[QueryController alloc] initAutoQuery: YES];
         
         if( [sender tag] == 0)
             [[QueryController currentQueryController] showWindow:self];
