@@ -54,7 +54,7 @@ readFromData8(NSData *data, JOCTET *buffer, int currentPosition, int length){
 		lengthToRead = length;
 	}
 	else{
-		lengthToRead = [data length] - currentPosition;
+		lengthToRead = (int)[data length] - currentPosition;
 		range = NSMakeRange(currentPosition, lengthToRead);
 	}
 	
@@ -188,7 +188,7 @@ fill_input_buffer (j_decompress_ptr cinfo)
 	
   data8_src_ptr src = (data8_src_ptr) cinfo->src;
   size_t nbytes;
-	nbytes = readFromData8(src->data, src->buffer, src->currentPosition, INPUT_BUF_SIZE);
+	nbytes = readFromData8(src->data, src->buffer, (int)src->currentPosition, INPUT_BUF_SIZE);
   //nbytes = JFREAD(src->infile, src->buffer, INPUT_BUF_SIZE);
 
   if (nbytes <= 0) {

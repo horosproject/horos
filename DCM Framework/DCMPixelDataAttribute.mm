@@ -680,7 +680,7 @@ static inline int int_ceildivpow2(int a, int b) {
         _framesDecoded = nil;
         
         if (dicomData)
-            _values = [[self valuesForVR:_vr length:_valueLength data:dicomData] mutableCopy];
+            _values = [[self valuesForVR:_vr length:(int)_valueLength data:dicomData] mutableCopy];
         else
             _values = [[NSMutableArray array] retain];
         
@@ -960,14 +960,14 @@ static inline int int_ceildivpow2(int a, int b) {
             if (_pixelDepth <= 16 && _pixelDepth > 8)
             {
                 unsigned short *shortsToSwap = (unsigned short *) ptr;
-                int length = [data length]/2;
+                int length = (int)[data length]/2;
                 while( length-- > 0)
                     shortsToSwap[ length] = NSSwapShort( shortsToSwap[ length]);
             }
             else if (_pixelDepth > 16)
             {
                 unsigned long *longsToSwap = (unsigned long *) ptr;
-                int length = [data length]/4;
+                int length = (int)[data length]/4;
                 while( length-- > 0)
                     longsToSwap[ length] = NSSwapLong(longsToSwap[ length]);
             }
@@ -994,14 +994,14 @@ static inline int int_ceildivpow2(int a, int b) {
             if (_pixelDepth <= 16 && _pixelDepth > 8)
             {
                 unsigned short *shortsToSwap = (unsigned short *) ptr;
-                int length = [data length]/2;
+                int length = (int)[data length]/2;
                 while( length-- > 0)
                     shortsToSwap[ length] = NSSwapShort(shortsToSwap[ length]);
             }
             else if (_pixelDepth > 16)
             {
                 unsigned long *longsToSwap = (unsigned long *) ptr;
-                int length = [data length]/4;
+                int length = (int)[data length]/4;
                 while( length-- > 0)
                     longsToSwap[ length] = NSSwapLong(longsToSwap[ length]);
             }

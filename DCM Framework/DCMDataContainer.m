@@ -175,7 +175,7 @@ void signal_EXC(int sig_num)
 - (id)initWithContentsOfURL:(NSURL *)aURL{
 	NSData *aData = [[[NSMutableData alloc] initWithContentsOfURL:aURL] autorelease];
 	return [self initWithData:aData]; 
-	if (self = [super init]) {
+	/*if (self = [super init]) {
 		dicomData = [[NSMutableData dataWithContentsOfURL:aURL] retain];
 		_ptr = (unsigned char *)[dicomData bytes];
 		if (![self determineTransferSyntax])
@@ -185,7 +185,7 @@ void signal_EXC(int sig_num)
             return nil;
         }
 	}
-	return self;
+	return self;*/
 }
 
 - (id)initWithBytes:(const void *)bytes length:(NSUInteger)length{

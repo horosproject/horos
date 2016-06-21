@@ -50,7 +50,7 @@ readFromData(NSData *data, JOCTET *buffer, int currentPosition, int length){
 		lengthToRead = length;
 	}
 	else{
-		lengthToRead = [data length] - currentPosition - 1;
+		lengthToRead = (int)[data length] - currentPosition - 1;
 		range = NSMakeRange(currentPosition, lengthToRead);
 	}
 	

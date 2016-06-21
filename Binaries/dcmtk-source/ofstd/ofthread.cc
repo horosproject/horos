@@ -182,7 +182,7 @@ unsigned int OFThread::threadID()
 #ifdef HAVE_POINTER_TYPE_PTHREAD_T
   // dangerous - we cast a pointer type to unsigned int and hope that it
   // remains valid after casting back to a pointer type.
-  return OFreinterpret_cast(unsigned long, theThread);
+  return (int)OFreinterpret_cast(unsigned long, theThread);
 #else
   return theThread;
 #endif
@@ -229,7 +229,7 @@ unsigned int OFThread::self()
   return OFstatic_cast(unsigned int, GetCurrentThreadId());
 #elif defined(POSIX_INTERFACE)
 #ifdef HAVE_POINTER_TYPE_PTHREAD_T
-  return OFreinterpret_cast(unsigned long, pthread_self());
+  return (int)OFreinterpret_cast(unsigned long, pthread_self());
 #else
   return OFstatic_cast(unsigned int, pthread_self());
 #endif

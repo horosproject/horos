@@ -119,7 +119,7 @@
     if (string.length) {
         NSArray *timeComponents = [string componentsSeparatedByString:@"."];
         NSString *format = nil;
-        int length = [string length];
+//        int length = (int)[string length];
         
         if( timeComponents.count > 2)
             NSLog( @"****** DICOM DateTime invalid format: %@", string);

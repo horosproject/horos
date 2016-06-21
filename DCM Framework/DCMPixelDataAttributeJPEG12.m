@@ -83,24 +83,24 @@ typedef struct
 } JPEG12ErrorStruct ;
 typedef JPEG12ErrorStruct * JPEG12ErrorPtr;
 
-METHODDEF(void) JPEG12ErrorExit(j_common_ptr cinfo)
-{
-	(*cinfo->err->output_message)(cinfo);
-	char buffer[JMSG_LENGTH_MAX]; 
-	(*cinfo->err->format_message) (cinfo, buffer);
-	NSLog(@"JPEG error %s", buffer);
-}
-
-METHODDEF(void) JPEG12OutputMessage(j_common_ptr cinfo)
-{
-	//JPEG8ErrorStruct *myerr = (JPEG8ErrorStruct *)cinfo->err;
-	char buffer[JMSG_LENGTH_MAX]; 
-	//char buffer[100];   
-	/* Create the message */
-  (*cinfo->err->format_message) (cinfo, buffer);
-	NSLog(@"JPEG error %s", buffer);
-  
-}
+//METHODDEF(void) JPEG12ErrorExit(j_common_ptr cinfo)
+//{
+//	(*cinfo->err->output_message)(cinfo);
+//	char buffer[JMSG_LENGTH_MAX]; 
+//	(*cinfo->err->format_message) (cinfo, buffer);
+//	NSLog(@"JPEG error %s", buffer);
+//}
+//
+//METHODDEF(void) JPEG12OutputMessage(j_common_ptr cinfo)
+//{
+//	//JPEG8ErrorStruct *myerr = (JPEG8ErrorStruct *)cinfo->err;
+//	char buffer[JMSG_LENGTH_MAX]; 
+//	//char buffer[100];   
+//	/* Create the message */
+//  (*cinfo->err->format_message) (cinfo, buffer);
+//	NSLog(@"JPEG error %s", buffer);
+//  
+//}
 
 
 
