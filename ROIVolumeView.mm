@@ -374,7 +374,7 @@
     NSString *error = 0L;
     
     NSMutableArray **ptsPtr = nil;
-    if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 2)
+    if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 0)
         ptsPtr = &ptsArray;
     
     float volume = [vc computeVolume: roi points: ptsPtr generateMissingROIs: YES generatedROIs: generatedROIs computeData: statistics error: &error];
@@ -389,7 +389,7 @@
     }
     
     vtkPolyData *profile = nil;
-    if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 2)
+    if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 0)
     {
         vtkPoints *points = vtkPoints::New();
         long i = 0;
@@ -397,14 +397,15 @@
             points->InsertPoint( i++, [[pt3D objectAtIndex: 0] floatValue]*factor, [[pt3D objectAtIndex: 1] floatValue]*factor, [[pt3D objectAtIndex: 2] floatValue]*factor);
         
         profile = vtkPolyData::New();
-        profile->SetPoints( points);
+        profile->SetPoints(points);
         points->Delete();
     }
     
     switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"])
     {
-        // IsoContour
-        case 2:
+        // Iso Contour
+        default:
+        case 0:
         {
             NSData *vD = nil;
             NSMutableArray *copyPixList = nil;
@@ -439,7 +440,7 @@
             vtkContourFilter *isoExtractor = vtkContourFilter::New();
             isoExtractor->SetInputConnection( reader->GetOutputPort());
             isoExtractor->SetValue(0, 500);
-		isoExtractor->Update();
+            isoExtractor->Update();
             
             reader->Delete();
             
@@ -485,7 +486,7 @@
             vtkPolyDataNormals *isoNormals = vtkPolyDataNormals::New();
             isoNormals->SetInputData( previousOutput);
             isoNormals->SetFeatureAngle( 120);
-	    isoNormals->Update();
+            isoNormals->Update();
             
             vtkPolyDataMapper *isoMapper = vtkPolyDataMapper::New();
             isoMapper->SetInputConnection( isoNormals->GetOutputPort());
@@ -510,8 +511,7 @@
         case 1:
         {
             vtkDelaunay3D *delaunayTriangulator = vtkDelaunay3D::New();
-            delaunayTriangulator->SetInputData( profile);
-            
+            delaunayTriangulator->SetInputData(profile);
             delaunayTriangulator->SetTolerance( 0.001);
             delaunayTriangulator->SetAlpha( 20);
             delaunayTriangulator->BoundingTriangulationOff();
@@ -526,42 +526,88 @@
             map->SetInputConnection( tmapper->GetOutputPort());
             map->ScalarVisibilityOff();
             map->Update();
+            
             mapper = map;
+            
             tmapper->Delete();
             delaunayTriangulator->Delete();
         }
             break;
             
+            /*
             // PowerCrust
-        case 0:
+        case 2:
         {
+            {
+                vtkPolyData* polydata = profile;
+                
+                // Write all of the coordinates of the points in the vtkPolyData to the console.
+                for(vtkIdType i = 0; i < polydata->GetNumberOfPoints(); i++)
+                {
+                    double p[3];
+                    polydata->GetPoint(i,p);
+                    // This is identical to:
+                    // polydata->GetPoints()->GetPoint(i,p);
+                    std::cout << "Point " << i << " : (" << p[0] << " " << p[1] << " " << p[2] << ") ";
+                    std::cout << std::endl;
+                }
+            }
+            
+            
             vtkPowerCrustSurfaceReconstruction *power = vtkPowerCrustSurfaceReconstruction::New();
-            power->SetInputData( profile);
+            power->DebugOn();
+            power->SetInputData(profile);
             power->Update();
             
             vtkPolyDataNormals *polyDataNormals = vtkPolyDataNormals::New();
+            polyDataNormals->DebugOn();
+            polyDataNormals->SetInputData(power->GetOutput());
+            //polyDataNormals->SetInputData(poisson->GetOutput());
+            //polyDataNormals->SetInputData(surface->GetOutput());
+            //polyDataNormals->SetFeatureAngle(60.0);
+            polyDataNormals->ComputePointNormalsOn();
+            polyDataNormals->ComputeCellNormalsOn();
             polyDataNormals->ConsistencyOn();
             polyDataNormals->AutoOrientNormalsOn();
-            polyDataNormals->SetInputConnection(power->GetOutputPort());
-            power->Delete();
+            polyDataNormals->Update();
+            
+            
+            {
+                vtkPolyData* polydata = polyDataNormals->GetOutput();
+                
+                // Write all of the coordinates of the points in the vtkPolyData to the console.
+                for(vtkIdType i = 0; i < polydata->GetNumberOfPoints(); i++)
+                {
+                    double p[3];
+                    polydata->GetPoint(i,p);
+                    // This is identical to:
+                    // polydata->GetPoints()->GetPoint(i,p);
+                    std::cout << "Point " << i << " : (" << p[0] << " " << p[1] << " " << p[2] << ")" << std::endl;
+                }
+            }
+            
             
             vtkTextureMapToSphere *tmapper = vtkTextureMapToSphere::New();
-            tmapper->SetInputData( polyDataNormals->GetOutput());
+            tmapper->DebugOn();
+            tmapper->SetInputData(polyDataNormals->GetOutput());
             tmapper->PreventSeamOn();
             tmapper->Update();
             
             vtkDataSetMapper *map = vtkDataSetMapper::New();
             map->SetInputConnection( tmapper->GetOutputPort());
-            map->ScalarVisibilityOff();
-            
+            map->ScalarVisibilityOff();            
             map->Update();
             
             mapper = map;
             
             tmapper->Delete();
             polyDataNormals->Delete();
+            power->Delete();
+             
+
         }
             break;
+                          */
     }
     
     if( profile)
@@ -617,7 +663,7 @@
             if( mapper)
                 mapper->Delete();
             
-            if( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"] == 2)
+            if( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"] == 0)
             {
                 ROIVolumeController *wo = self.window.windowController;
                 DCMPix *o = [wo.viewer.pixList objectAtIndex: 0];
@@ -657,7 +703,7 @@
 //                ballActor = nil;
 //            }
 //            
-//            if( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"] != 2)
+//            if( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"] != 0)
 //            {
 //                vtkPolyData *profile = nil;
 //                
@@ -771,9 +817,9 @@
         {
             printf( "***** C++ exception in %s\r", __PRETTY_FUNCTION__);
             
-            if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 2) // Iso Contour
+            if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 0) // Iso Contour
             {
-                [[NSUserDefaults standardUserDefaults] setInteger: 2 forKey:@"UseDelaunayFor3DRoi"];
+                [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"UseDelaunayFor3DRoi"];
                 [self renderVolume];
             }
         }
@@ -782,9 +828,9 @@
     {
         N2LogExceptionWithStackTrace(e);
         
-        if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 2) // Iso Contour
+        if( [[NSUserDefaults standardUserDefaults] integerForKey:@"UseDelaunayFor3DRoi"] != 0) // Iso Contour
         {
-            [[NSUserDefaults standardUserDefaults] setInteger: 2 forKey:@"UseDelaunayFor3DRoi"];
+            [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"UseDelaunayFor3DRoi"];
             [self renderVolume];
         }
     }

@@ -147,7 +147,7 @@
 
         map->Delete();
         
-        if( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"] == 2)
+        if( [[NSUserDefaults standardUserDefaults] integerForKey: @"UseDelaunayFor3DRoi"] == 0)
         {
             DCMPix *o = [viewer.pixList objectAtIndex: 0];
             
@@ -180,7 +180,7 @@
         textureImage = vtkTexture::New();
         textureImage->SetInputConnection( bmpread->GetOutputPort());
         textureImage->InterpolateOn();
-        textureImage->Update();
+        //textureImage->Update();
         bmpread->Delete();
 
         roiVolumeActor->SetTexture( textureImage);

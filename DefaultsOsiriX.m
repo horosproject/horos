@@ -823,7 +823,7 @@ static NSHost *currentHost = nil;
 	[presets addObject: shading];
 	
 	[defaultValues setObject:presets forKey:@"shadingsPresets"];
-	[defaultValues setObject:@"2" forKey:@"UseDelaunayFor3DRoi"];
+	[defaultValues setObject:@"0" forKey:@"UseDelaunayFor3DRoi"];
 	[defaultValues setObject:@"1" forKey:@"EJECTCDDVD"];
 	[defaultValues setObject:@"1" forKey:@"automaticWorkspaceLoad"];
 	[defaultValues setObject:@"1" forKey:@"automaticWorkspaceSave"];
