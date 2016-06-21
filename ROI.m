@@ -2104,7 +2104,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
                         x = (c.x-y*w.x)/v.x;
                     } else {
                         y = (c.x-c.y*(v.x/v.y))/(w.x-w.y*(v.x/v.y));
-                        x = (c.y-x*w.y)/v.y;
+                        x = (c.y-y*w.y)/v.y;
                     }
 					
 					x *= scaleRatio;
