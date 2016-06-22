@@ -369,7 +369,7 @@ class OFCommandLine
      */
     int getArgCount() const
     {
-        return ArgumentList.size();
+        return (int)ArgumentList.size();
     }
 
     /** sets first command line argument as the current one.
@@ -412,7 +412,7 @@ class OFCommandLine
      */
     int getParamCount() const
     {
-        return ParamPosList.size();
+        return (int)ParamPosList.size();
     }
 
     /** gets minimum number of parameters which should be accepted.

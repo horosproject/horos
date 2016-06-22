@@ -115,7 +115,7 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
         double *cielab = new double[cin_ctn];
         if (cielab != NULL)
         {
-            register unsigned int i;
+            unsigned int i;
             register double llin = 0;
             register double cub = 0;
             const double amb = getAmbientLightValue();
@@ -137,8 +137,8 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
             DataBuffer = new Uint16[Count];
             if (DataBuffer != NULL)                         // create look-up table
             {
-                register Uint16 *q = DataBuffer;
-                register unsigned int j = 0;
+                Uint16 *q = DataBuffer;
+                unsigned int j = 0;
                 /* check whether to apply the inverse transformation */
                 if (inverse)
                 {
@@ -177,7 +177,7 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                         ddl_max = j;
                     }
                     j = ddl_min;
-                    register const double *r = cielab;
+                    const double *r = cielab;
                     /* convert to DDL */
                     for (i = Count; i != 0; --i, ++r)
                     {

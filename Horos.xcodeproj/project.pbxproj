@@ -538,6 +538,8 @@
 		71AA5A381611F1EB006A6A5F /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AA5A2B1611F1EB006A6A5F /* SBJsonParser.m */; };
 		71AA5A391611F1EB006A6A5F /* SBJsonWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 71AA5A2C1611F1EB006A6A5F /* SBJsonWriter.h */; };
 		71AA5A3A1611F1EB006A6A5F /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AA5A2D1611F1EB006A6A5F /* SBJsonWriter.m */; };
+		71C99EA61D1A81FE00208F3B /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71C99EA51D1A81FE00208F3B /* Growl.framework */; };
+		71C99EA71D1A871700208F3B /* Growl.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 71C99EA51D1A81FE00208F3B /* Growl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		71CE3C19157F489C00AC0112 /* List.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71CE3C18157F489C00AC0112 /* List.pdf */; };
 		71EB83C016DCB7FF00D48646 /* O2DicomPredicateEditor.h in Headers */ = {isa = PBXBuildFile; fileRef = 71EB83B216DCB7FF00D48646 /* O2DicomPredicateEditor.h */; };
 		71EB83C116DCB7FF00D48646 /* O2DicomPredicateEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 71EB83B316DCB7FF00D48646 /* O2DicomPredicateEditor.m */; };
@@ -2677,7 +2679,6 @@
 		BFF97D710BDE8BE6008333CF /* ShadingArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF97D6B0BDE8BE6008333CF /* ShadingArrayController.h */; };
 		BFF97D720BDE8BE6008333CF /* ShadingArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFF97D6C0BDE8BE6008333CF /* ShadingArrayController.m */; };
 		CE03A3CC0EA2AE0300951EF4 /* iPhone.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE03A3CB0EA2AE0300951EF4 /* iPhone.tif */; };
-		CE04B81B15289AF400EF6E52 /* Growl.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BE05D1524344D00AE6156 /* Growl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CE06475210F12DA500551AD9 /* PlayTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = CE06475110F12DA500551AD9 /* PlayTemplate.png */; };
 		CE087B0C0DE9BD6E000E5593 /* GLString.m in Sources */ = {isa = PBXBuildFile; fileRef = CE087B0A0DE9BD6E000E5593 /* GLString.m */; };
 		CE087B0D0DE9BD6E000E5593 /* GLString.h in Headers */ = {isa = PBXBuildFile; fileRef = CE087B0B0DE9BD6E000E5593 /* GLString.h */; };
@@ -2719,7 +2720,6 @@
 		CE286C120964196C001A4573 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE286C100964196C001A4573 /* Localizable.strings */; };
 		CE289B1D0D00AF91004F0A93 /* Mail.scpt in Resources */ = {isa = PBXBuildFile; fileRef = CE289B020D00ADBA004F0A93 /* Mail.scpt */; };
 		CE2AC2681830BEFB00C2B67B /* ThickSlab.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2AC2661830BEFB00C2B67B /* ThickSlab.xib */; };
-		CE2BE05E1524344D00AE6156 /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BE05D1524344D00AE6156 /* Growl.framework */; };
 		CE2BFE57153B177C00037546 /* iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = CE2BFE56153B177C00037546 /* iPad.png */; };
 		CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5F14C20B14E12700B309B9 /* CoreVideo.framework */; };
 		CE373AAA173FEBBB009F60AC /* WADOXML.h in Headers */ = {isa = PBXBuildFile; fileRef = CE373AA8173FEBBB009F60AC /* WADOXML.h */; };
@@ -3346,7 +3346,7 @@
 				9966A1B51AE0B6EE00F2D81A /* HorosDCM.framework in Copy Frameworks */,
 				59F1A515104BA8AE009E3215 /* HorosAPI.framework in Copy Frameworks */,
 				9966A1B41AE0AC7400F2D81A /* OsiriXAPI.framework in Copy Frameworks */,
-				CE04B81B15289AF400EF6E52 /* Growl.framework in Copy Frameworks */,
+				71C99EA71D1A871700208F3B /* Growl.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3859,6 +3859,8 @@
 		71AA5A2B1611F1EB006A6A5F /* SBJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonParser.m; sourceTree = "<group>"; };
 		71AA5A2C1611F1EB006A6A5F /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		71AA5A2D1611F1EB006A6A5F /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
+		71C99EA41D1A7E9F00208F3B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		71C99EA51D1A81FE00208F3B /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Growl.framework; path = Binaries/Growl.framework; sourceTree = "<group>"; };
 		71CE3C18157F489C00AC0112 /* List.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = List.pdf; path = Binaries/Icons/List.pdf; sourceTree = SOURCE_ROOT; };
 		71EB83B216DCB7FF00D48646 /* O2DicomPredicateEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = O2DicomPredicateEditor.h; sourceTree = "<group>"; };
 		71EB83B316DCB7FF00D48646 /* O2DicomPredicateEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = O2DicomPredicateEditor.m; sourceTree = "<group>"; };
@@ -3976,7 +3978,6 @@
 		843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AYDicomPrintPref.h; path = "Preference Panes/AYDicomPrintPreferencePane/AYDicomPrintPref.h"; sourceTree = SOURCE_ROOT; };
 		844003990E8CF99500A00EBD /* dciodvfy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dciodvfy; path = Binaries/dciodvfy; sourceTree = "<group>"; };
 		844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HorosDCM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		84704DBF181ACF440061B1BF /* Rules.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Rules.plist; sourceTree = "<group>"; };
 		848327AA15ED08F3003BAEEB /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/CustomIntervalPanel.xib; sourceTree = "<group>"; };
 		8483ABA50E1BE33900C21B31 /* crossCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = crossCursor.tif; path = Cursors/crossCursor.tif; sourceTree = "<group>"; };
 		848A6BE714C5BBA700C936C3 /* Tiling1x1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling1x1.pdf; path = Binaries/Icons/Tiling/Tiling1x1.pdf; sourceTree = "<group>"; };
@@ -4574,7 +4575,6 @@
 		ABBB64A8063587B200D9531F /* VolumeRendering.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = VolumeRendering.tif; sourceTree = "<group>"; };
 		ABBB64AA063587B200D9531F /* XML.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = XML.icns; sourceTree = "<group>"; };
 		ABBB64AC063587B200D9531F /* ZoomToFit.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ZoomToFit.tif; sourceTree = "<group>"; };
-		ABBFDA3F063480490011BD0A /* Deployment-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "Deployment-Info.plist"; sourceTree = "<group>"; };
 		ABC3E5500B330A58006704E3 /* DNDArrayController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DNDArrayController.m; sourceTree = "<group>"; };
 		ABC3E5510B330A58006704E3 /* DNDArrayController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DNDArrayController.h; sourceTree = "<group>"; };
 		ABC3E5580B330A68006704E3 /* sourcesTableView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = sourcesTableView.m; sourceTree = "<group>"; };
@@ -5589,7 +5589,6 @@
 		CE286C110964196C001A4573 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = Binaries/English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE289B020D00ADBA004F0A93 /* Mail.scpt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.scpt; name = Mail.scpt; path = Binaries/Mail.scpt; sourceTree = "<group>"; };
 		CE2AC2671830BEFB00C2B67B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ThickSlab.xib; sourceTree = "<group>"; };
-		CE2BE05D1524344D00AE6156 /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Growl.framework; path = Binaries/Growl.framework; sourceTree = "<group>"; };
 		CE2BFE56153B177C00037546 /* iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPad.png; sourceTree = "<group>"; };
 		CE3368571595888D00167676 /* WebPortalDB 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 7.xcdatamodel"; sourceTree = "<group>"; };
 		CE373AA8173FEBBB009F60AC /* WADOXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WADOXML.h; sourceTree = "<group>"; };
@@ -5991,6 +5990,7 @@
 				993DB4A01C0243D50084218A /* FeedbackReporter.framework in Frameworks */,
 				4362180C1A2F375C006FA27A /* libvtkFiltersHyperTree-6.2.a in Frameworks */,
 				4362181E1A2F375C006FA27A /* libvtkImagingColor-6.2.a in Frameworks */,
+				71C99EA61D1A81FE00208F3B /* Growl.framework in Frameworks */,
 				436218301A2F375C006FA27A /* libvtkIOExodus-6.2.a in Frameworks */,
 				436217721A2F3730006FA27A /* libITKOptimizers-4.7.a in Frameworks */,
 				4362180E1A2F375C006FA27A /* libvtkFiltersModeling-6.2.a in Frameworks */,
@@ -6141,7 +6141,6 @@
 				4362180F1A2F375C006FA27A /* libvtkFiltersParallel-6.2.a in Frameworks */,
 				436217671A2F3730006FA27A /* libITKIOTransformMatlab-4.7.a in Frameworks */,
 				431BCC401A24AC94002B36FB /* libtiff.a in Frameworks */,
-				CE2BE05E1524344D00AE6156 /* Growl.framework in Frameworks */,
 				436218551A2F375D006FA27A /* libvtkRenderingLOD-6.2.a in Frameworks */,
 				436218261A2F375C006FA27A /* libvtkImagingStatistics-6.2.a in Frameworks */,
 				436218291A2F375C006FA27A /* libvtkInfovisLayout-6.2.a in Frameworks */,
@@ -6309,7 +6308,7 @@
 			children = (
 				993DB49F1C0243D50084218A /* FeedbackReporter.framework */,
 				439B8C131A19CCC300F396D7 /* 3DconnexionClient.framework */,
-				CE2BE05D1524344D00AE6156 /* Growl.framework */,
+				71C99EA51D1A81FE00208F3B /* Growl.framework */,
 				CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */,
 				CE6693C60AF551210073D923 /* libxerces-c.27.dylib */,
 			);
@@ -6365,6 +6364,7 @@
 		29B97314FDCFA39411CA2CEA /* OsiriX */ = {
 			isa = PBXGroup;
 			children = (
+				71C99EA41D1A7E9F00208F3B /* Info.plist */,
 				434B461A1A19F4E4008CF8CF /* OpenJPEG */,
 				AB451801149F44DD006674BF /* JPEG-LS (CharLS) */,
 				84A9D44712F7F8BE00DA1F99 /* KDU SDK */,
@@ -6383,7 +6383,6 @@
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				4A2F58D9078D119600C514A2 /* Dependencies */,
 				A98795CA16DB9FD100926023 /* Unit Tests */,
-				84704DBF181ACF440061B1BF /* Rules.plist */,
 				9966A1B11AE0A47600F2D81A /* HorosAPI-Info.plist */,
 				9966A1B21AE0A66C00F2D81A /* OsiriXAPI-Info.plist */,
 			);
@@ -6487,7 +6486,6 @@
 				CE3F991A0C84724B00CB38F1 /* WaitRendering.xib */,
 				CE3F993E0C84724B00CB38F1 /* XMLViewer.xib */,
 				ABD7BC2E063EFD8D00E24B0E /* BlackBody.plist */,
-				ABBFDA3F063480490011BD0A /* Deployment-Info.plist */,
 				ABD7BC4C063F00A900E24B0E /* Flow.plist */,
 				CEBD3E0C14B9EDE300FBDF08 /* French.plist */,
 				CEBD3E0D14B9EDE300FBDF08 /* Perfusion.plist */,
@@ -13946,6 +13944,11 @@
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Binaries",
+					"$(BUILT_PRODUCTS_DIR)",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -13953,7 +13956,6 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = NO;
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
@@ -13977,9 +13979,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(PROJECT_DIR)",
+					"$(inherited)",
 					"$(PROJECT_DIR)/Binaries",
-					"$(BUILT_PRODUCTS_DIR)",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_FAST_MATH = YES;
@@ -13991,7 +13992,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
@@ -14004,7 +14004,7 @@
 					/usr/local/include,
 				);
 				IBC_FLATTEN_NIBS = YES;
-				INFOPLIST_FILE = "Deployment-Info.plist";
+				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				KEEP_PRIVATE_EXTERNS = YES;
 				LIBRARY_SEARCH_PATHS = (
@@ -14021,7 +14021,6 @@
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
-					"-Wno-deprecated",
 					"-no-pedantic",
 				);
 				OTHER_LDFLAGS = (
@@ -14034,7 +14033,7 @@
 					"-sectcreate",
 					__TEXT,
 					__info_plist,
-					"Deployment-Info.plist",
+					Info.plist,
 					"-lc++",
 				);
 				PRODUCT_NAME = Horos;
@@ -14050,10 +14049,6 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Binaries",
-				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -14111,7 +14106,6 @@
 				);
 				PRODUCT_NAME = HorosDCM;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
-				SECTORDER_FLAGS = "";
 				SKIP_INSTALL = YES;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/openjpeg/**";
 			};
@@ -14204,12 +14198,6 @@
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = YES;
 				DEPLOYMENT_LOCATION = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(FRAMEWORK_SEARCH_PATHS)",
-					"$(SRCROOT)",
-					"$(PROJECT_DIR)/build/Development",
-					"$(PROJECT_DIR)/Binaries",
-				);
 				GCC_FAST_MATH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -14320,10 +14308,6 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Binaries",
-				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -14380,7 +14364,6 @@
 				);
 				PRODUCT_NAME = HorosDCM;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
-				SECTORDER_FLAGS = "";
 				SKIP_INSTALL = YES;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/openjpeg/**";
 			};
@@ -14394,9 +14377,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(PROJECT_DIR)",
+					"$(inherited)",
 					"$(PROJECT_DIR)/Binaries",
-					"$(BUILT_PRODUCTS_DIR)",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -14407,7 +14389,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
@@ -14420,7 +14401,7 @@
 					/usr/local/include,
 				);
 				IBC_FLATTEN_NIBS = NO;
-				INFOPLIST_FILE = "Deployment-Info.plist";
+				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/lib,
@@ -14436,7 +14417,6 @@
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
-					"-Wno-deprecated",
 					"-no-pedantic",
 				);
 				OTHER_LDFLAGS = (
@@ -14449,7 +14429,7 @@
 					"-sectcreate",
 					__TEXT,
 					__info_plist,
-					"Deployment-Info.plist",
+					Info.plist,
 					"-lc++",
 				);
 				PRODUCT_NAME = Horos;
@@ -14507,6 +14487,11 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Binaries",
+					"$(BUILT_PRODUCTS_DIR)",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -14515,7 +14500,6 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
@@ -14721,12 +14705,6 @@
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = YES;
 				DEPLOYMENT_LOCATION = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(FRAMEWORK_SEARCH_PATHS)",
-					"$(SRCROOT)",
-					"$(PROJECT_DIR)/build/Development",
-					"$(PROJECT_DIR)/Binaries",
-				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;

@@ -39,8 +39,8 @@ extern "C"
 #endif /*cplusplus*/
 	#if __ppc__ || __ppc64__
 	// ALTIVEC FUNCTIONS
-	extern void InverseLongs(register vector unsigned int *unaligned_input, register long size);
-	extern void InverseShorts( register vector unsigned short *unaligned_input, register long size);
+	extern void InverseLongs(vector unsigned int *unaligned_input, long size);
+	extern void InverseShorts( vector unsigned short *unaligned_input, long size);
 	extern void vmultiply(vector float *a, vector float *b, vector float *r, long size);
 	extern void vsubtract(vector float *a, vector float *b, vector float *r, long size);
 	extern void vsubtractAbs(vector float *a, vector float *b, vector float *r, long size);

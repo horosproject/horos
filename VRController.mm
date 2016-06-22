@@ -95,6 +95,13 @@ static NSString*	PresetsPanelToolbarItemIdentifier = @"3DPresetsPanel.tif";
 static NSString*	ClippingRangeViewToolbarItemIdentifier = @"ClippingRange";
 static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
+@interface VRController (Dummy)
+
+- (void)SwitchStereoMode:(id)dummy;
+- (void)noAction:(id)dummy;
+
+@end
+
 @implementation VRController
 
 @synthesize deleteValue;
@@ -849,7 +856,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     BOOL isDir = YES;
     
     if( ![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir])
-        [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+        [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:@{}];
     
     DicomSeries *series = nil;
     
@@ -871,7 +878,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     BOOL isDir = YES;
     
     if( ![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir])
-        [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+        [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:@{}];
     
     NSString *str;
     
@@ -908,7 +915,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         
         if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
         {
-            [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+            [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:@{}];
         }
         
         NSString *str;
@@ -3096,7 +3103,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     [path appendString:PRESETS_DIRECTORY];
     BOOL isDir = YES;
     if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
-        [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+        [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:@{}];
     [path appendString:name];
     [path appendString:@".plist"];
     

@@ -93,12 +93,13 @@ typedef NS_ENUM(short, ToolMode)
 };
 
 
-extern NSString * const pasteBoardOsiriX; // __deprecated;
-extern NSString * const pasteBoardOsiriXPlugin; // __deprecated;
-extern NSString * const OsirixPluginPboardUTI; // __deprecated;
+extern NSString * const __deprecated pasteBoardOsiriX;
+extern NSString * const __deprecated pasteBoardOsiriXPlugin;
+extern NSString * const __deprecated OsirixPluginPboardUTI;
 
-extern NSString * const pasteBoardHoros;
-extern NSString * const pasteBoardHorosPlugin;
+extern NSString * const __deprecated pasteBoardHoros;
+extern NSString * const HorosPboardUTI;
+extern NSString * const __deprecated pasteBoardHorosPlugin;
 extern NSString * const HorosPluginPboardUTI;
 
 extern int CLUTBARS, ANNOTATIONS, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES;
@@ -125,7 +126,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 
 /** \brief Image/Frame View for ViewerController */
 
-@interface DCMView: NSOpenGLView
+@interface DCMView: NSOpenGLView <NSDraggingSource>
 {
 	NSInteger		_imageRows;
 	NSInteger		_imageColumns;

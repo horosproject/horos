@@ -4,5 +4,6 @@
 
 #define HOROS_VIEWER
 #define OSIRIX_VIEWER
+
 //#define _STEREO_VISION_
 //#define EXPORTTOOLBARITEM

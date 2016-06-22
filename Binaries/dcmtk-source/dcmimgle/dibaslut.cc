@@ -101,8 +101,8 @@ int DiBaseLUT::compare(const DiBaseLUT *lut)
             register Uint32 i = Count;                  // ... but normally not Valid !
             if ((MinValue == lut->getMinValue()) && (MaxValue == lut->getMaxValue()))
             {                                           // additional check for better performance
-                register const Uint16 *p = Data;
-                register const Uint16 *q = lut->getData();
+                const Uint16 *p = Data;
+                const Uint16 *q = lut->getData();
                 while ((i != 0) && (*(p++) == *(q++)))
                     --i;
             }

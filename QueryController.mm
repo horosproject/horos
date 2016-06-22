@@ -716,9 +716,9 @@ extern "C"
 		if([[serverParameters objectForKey:@"TLSEnabled"] boolValue])
 		{
 			//[DDKeychain unlockTmpFiles];
-			[[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS keyPathForServerAddress:address port:[port intValue] AETitle:aet withStringID:uniqueStringID] handler:nil];
-			[[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS certificatePathForServerAddress:address port:[port intValue] AETitle:aet withStringID:uniqueStringID] handler:nil];
-			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, uniqueStringID] handler:nil];		
+			[[NSFileManager defaultManager] removeItemAtPath:[DICOMTLS keyPathForServerAddress:address port:[port intValue] AETitle:aet withStringID:uniqueStringID] error:NULL];
+			[[NSFileManager defaultManager] removeItemAtPath:[DICOMTLS certificatePathForServerAddress:address port:[port intValue] AETitle:aet withStringID:uniqueStringID] error:NULL];
+			[[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, uniqueStringID] error:NULL];
 		}
 		
         if( [wait aborted])
@@ -2456,7 +2456,7 @@ extern "C"
                     
                     DcmTag tag( [dicomField group], [dicomField element]);
                     
-                    currentQueryKey = [NSString stringWithCString: tag.getTagName()];
+                    currentQueryKey = [NSString stringWithUTF8String:tag.getTagName()];
                     
                     NSLog( @"DICOM Q&R with custom field: %@ : %@", currentQueryKey, customValue);
                     
@@ -2969,16 +2969,18 @@ extern "C"
 
 - (IBAction) saveDBListAs:(id) sender
 {
-	NSString *list = [self exportDBListOnlySelected: NO];
+	NSString *list = [self exportDBListOnlySelected:NO];
 	
-	NSSavePanel *sPanel	= [NSSavePanel savePanel];
+	NSSavePanel *panel = [NSSavePanel savePanel];
+    panel.allowedFileTypes = @[@"txt"];
+    panel.nameFieldStringValue = NSLocalizedString(@"Horos Database List", nil);
 		
-	[sPanel setRequiredFileType:@"txt"];
-	
-	if ([sPanel runModalForDirectory: nil file:NSLocalizedString(@"Horos Database List", nil)] == NSFileHandlingPanelOKButton)
-	{
-		[list writeToFile: [sPanel filename] atomically: YES];
-	}
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
+        [list writeToURL:panel.URL atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+    }];
 }
 
 -(void) query:(id)sender
@@ -3966,8 +3968,9 @@ extern "C"
 	if( checkAndViewTry < 0)
 		return;
 	
-    [[BrowserController currentBrowser] setDatabase: [DicomDatabase activeLocalDatabase]];
-	[[BrowserController currentBrowser] checkIncoming: self];
+    DicomDatabase *db = [DicomDatabase activeLocalDatabase];
+    [[BrowserController currentBrowser] setDatabase:db];
+	[db initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
 	
 	NSError *error = nil;
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
@@ -4038,7 +4041,7 @@ extern "C"
 		
 		if( !success)
 		{
-			[[BrowserController currentBrowser] checkIncoming: self];
+            [db initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
 			
 			if( checkAndViewTry-- > 0 && [sendToPopup indexOfSelectedItem] == 0)
 				[self performSelector:@selector(checkAndView:) withObject:item afterDelay:1.0];
@@ -4657,7 +4660,7 @@ extern "C"
 	{
 		serversArray = [[[DCMNetServiceDelegate DICOMServersList] mutableCopy] autorelease];
 		
-		NSString *ip = [NSString stringWithCString:GetPrivateIP()];
+		NSString *ip = [NSString stringWithUTF8String:GetPrivateIP()];
 		[sendToPopup addItemWithTitle: [NSString stringWithFormat: NSLocalizedString( @"This Computer - %@/%@:%d", nil), [NSUserDefaults defaultAETitle], ip, [NSUserDefaults defaultAEPort]]];
 
 		[[sendToPopup menu] addItem: [NSMenuItem separatorItem]];

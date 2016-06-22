@@ -92,12 +92,16 @@
 	NSMutableArray  *selectedROIs = [NSMutableArray  arrayWithObject:curROI];
 	
 	[panel setCanSelectHiddenExtension:NO];
-	[panel setRequiredFileType:@"roi"];
+	[panel setAllowedFileTypes:@[@"roi"]];
 	
-	if( [panel runModalForDirectory:nil file:[[selectedROIs objectAtIndex:0] name]] == NSFileHandlingPanelOKButton)
-	{
-		[NSArchiver archiveRootObject: selectedROIs toFile :[panel filename]];
-	}
+    panel.nameFieldStringValue = [[selectedROIs objectAtIndex:0] name];
+    
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
+        [NSArchiver archiveRootObject: selectedROIs toFile:panel.URL.path];
+    }];
 }
 
 - (void) dealloc
@@ -390,13 +394,15 @@
 	}
 	
 	NSSavePanel *panel = [NSSavePanel savePanel];
-	
-	[panel setCanSelectHiddenExtension:NO];
-	[panel setRequiredFileType:@"xml"];
-	
-	if( [panel runModalForDirectory:nil file:[curROI name]] == NSFileHandlingPanelOKButton)
-	{
-		NSMutableDictionary *xml = [NSMutableDictionary dictionary];
+    panel.canSelectHiddenExtension = NO;
+    panel.allowedFileTypes = @[@"xml"];
+    panel.nameFieldStringValue = curROI.name;
+    
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+
+        NSMutableDictionary *xml = [NSMutableDictionary dictionary];
 		
 		if( [self allWithSameName])
 		{
@@ -428,8 +434,8 @@
 		else // Output curROI only
             [ROIWindow addROIValues: curROI dictionary: xml];
 		
-		[xml writeToFile:[panel filename] atomically: TRUE];
-	}
+		[xml writeToURL:panel.URL atomically:YES];
+    }];
 }
 
 - (IBAction) histogram:(id) sender

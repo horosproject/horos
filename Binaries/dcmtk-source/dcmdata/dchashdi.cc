@@ -499,7 +499,7 @@ DcmHashDict::loadSummary(ostream& out)
         bucket = hashTab[i];
         if (bucket != NULL) {
             if (int(bucket->size()) > largestBucket) {
-                largestBucket = bucket->size();
+                largestBucket = (int)bucket->size();
             }
         }
     }
@@ -521,7 +521,7 @@ DcmHashDict::loadSummary(ostream& out)
             bucket = hashTab[k];
             l_size = 0;
             if (bucket != NULL) {
-                l_size = bucket->size();
+                l_size = (int)bucket->size();
             }
             if (l_size == x) {
                 n++;

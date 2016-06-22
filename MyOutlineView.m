@@ -82,7 +82,7 @@
     NSAssert(state != nil, @"nil columnState!" );
     NSAssert([state isKindOfClass:[NSArray class]], @"columnState is not an NSArray!" );
 
-    [self removeAllColumns];
+    [self hideAllColumns];
     for (NSDictionary* params in state )
     {
 		if ([[params objectForKey:@"Identifier"] isEqualToString:@"name"] == NO)
@@ -267,8 +267,8 @@
 				return NO;
 			}
 		}
-		[self setNeedsDisplay:YES];    //redraw us with the new image
-		return YES;
+//		[self setNeedsDisplay:YES];    //redraw us with the new image
+//		return YES;
 	}
 	return NO;
 }
@@ -284,7 +284,7 @@
 		{
 			if( [[NSFileManager defaultManager] fileExistsAtPath: [[fileArray objectAtIndex: 0] stringByAppendingPathComponent: @"Database.sql"]])
 			{
-				[[BrowserController currentBrowser] openDatabasePath: [[fileArray objectAtIndex: 0] stringByDeletingLastPathComponent]];
+                [[BrowserController currentBrowser] setDatabase:[DicomDatabase databaseAtPath:[[fileArray objectAtIndex:0] stringByDeletingLastPathComponent]]];
 				done = YES;
 			}
 		}
@@ -294,7 +294,7 @@
 	{
 		if( [fileArray count] == 1 && [[[fileArray objectAtIndex: 0] pathExtension] isEqualToString: @"sql"])  // It's a database file !
 		{
-			[[BrowserController currentBrowser] openDatabasePath: [fileArray objectAtIndex: 0]];
+            [[BrowserController currentBrowser] setDatabase:[DicomDatabase databaseAtPath:[[fileArray objectAtIndex:0] stringByDeletingLastPathComponent]]];
 		}
 		else if( [fileArray count] == 1 && [[[fileArray objectAtIndex: 0] pathExtension] isEqualToString: @"albums"])  // It's a database albums file !
 		{
@@ -303,7 +303,7 @@
 		}
 		else
 		{
-			[[BrowserController currentBrowser] addFilesAndFolderToDatabase: fileArray];
+			[[[BrowserController currentBrowser] database] addFilesAtPaths:fileArray];
 		}
 	}
 }

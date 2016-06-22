@@ -53,7 +53,7 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu,
         if (Overlays[0] != NULL)
         {
             BitsPerSample = 1;
-            register unsigned int i;
+            unsigned int i;
             register DiOverlayPlane *plane;
             for (i = 0; i < Overlays[0]->getCount(); ++i)
             {

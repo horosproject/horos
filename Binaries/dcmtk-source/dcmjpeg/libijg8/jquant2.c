@@ -276,7 +276,7 @@ find_biggest_color_pop (boxptr boxlist, int numboxes)
 {
   register boxptr boxp;
   register int i;
-  register long maxc = 0;
+  long maxc = 0;
   boxptr which = NULL;
   
   for (i = 0, boxp = boxlist; i < numboxes; i++, boxp++) {

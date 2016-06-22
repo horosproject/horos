@@ -158,7 +158,10 @@ int DiJPEGPlugin::write(DiImage *image,
              * which is needed here because otherwise longjmp might clobber
              * the content of the variable
              */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpointer-bool-conversion"
             if (& isMono) { /* nothing */ };
+#pragma clang diagnostic pop
 
             /* code derived from "cjpeg.c" (IJG) and "djeijg8.cc" (DCMJPEG) */
             struct jpeg_compress_struct cinfo;

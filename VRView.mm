@@ -6951,8 +6951,11 @@ public:
         
         NSLog( @"ratio: %f", ratio);
     }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [currentImage setScalesWhenResized:YES];
-    
+#pragma clang diagnostic pop
+
     NSImage *compositingImage = [[NSImage alloc] initWithSize: imageRect.size];
     if( [compositingImage size].width > 0 && [compositingImage size].height > 0)
     {

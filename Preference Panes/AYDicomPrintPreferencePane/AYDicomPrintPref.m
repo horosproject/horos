@@ -92,60 +92,62 @@
 
 - (IBAction) saveList: (id) sender
 {
-	NSSavePanel		*sPanel		= [NSSavePanel savePanel];
-
-	[sPanel setRequiredFileType:@"plist"];
-		
-	if ([sPanel runModalForDirectory:0L file: NSLocalizedString(@"DICOMPrinters.plist", nil)] == NSFileHandlingPanelOKButton)
-	{
-		[[m_PrinterController arrangedObjects] writeToFile:[sPanel filename] atomically: YES];
-	}
+	NSSavePanel	*panel = [NSSavePanel savePanel];
+    panel.allowedFileTypes = @[@"plist"];
+    panel.nameFieldStringValue = NSLocalizedString(@"DICOMPrinters.plist", nil);
+    
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
+        [[m_PrinterController arrangedObjects] writeToURL:panel.URL atomically:YES];
+    }];
 }
 
 - (IBAction) loadList: (id) sender
 {
-	NSOpenPanel		*sPanel		= [NSOpenPanel openPanel];
-	
-	[sPanel setRequiredFileType:@"plist"];
-	
-	if ([sPanel runModalForDirectory:0L file:nil types:[NSArray arrayWithObject:@"plist"]] == NSFileHandlingPanelOKButton)
-	{
-		NSArray	*r = [NSArray arrayWithContentsOfFile: [sPanel filename]];
-		
-		if( r)
-		{
-			if( NSRunInformationalAlertPanel(NSLocalizedString(@"Load printers", nil), NSLocalizedString(@"Should I add or replace the printer list? If you choose 'replace', the current list will be deleted.", nil), NSLocalizedString(@"Add", nil), NSLocalizedString(@"Replace", nil), nil) == NSAlertDefaultReturn)
-			{
-				
-			}
-			else [m_PrinterController removeObjects: [m_PrinterController arrangedObjects]];
-			
-			[m_PrinterController addObjects: r];
-			
-			int i, x;
-			
-			for( i = 0; i < [[m_PrinterController arrangedObjects] count]; i++)
-			{
-				NSDictionary	*server = [[m_PrinterController arrangedObjects] objectAtIndex: i];
-				
-				for( x = 0; x < [[m_PrinterController arrangedObjects] count]; x++)
-				{
-					NSDictionary	*c = [[m_PrinterController arrangedObjects] objectAtIndex: x];
-					
-					if( c != server)
-					{
-						if( [[server valueForKey:@"host"] isEqualToString: [c valueForKey:@"host"]] &&
-							[[server valueForKey:@"port"] isEqualToString: [c valueForKey:@"port"]])
-							{
-								[m_PrinterController removeObjectAtArrangedObjectIndex: i];
-								i--;
-								x = [[m_PrinterController arrangedObjects] count];
-							}
-					}
-				}
-			}
-		}
-	}
+	NSOpenPanel	*panel = [NSOpenPanel openPanel];
+    panel.allowedFileTypes = @[@"plist"];
+    
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+
+        NSArray	*r = [NSArray arrayWithContentsOfURL:panel.URL];
+        if (r)
+        {
+            if( NSRunInformationalAlertPanel(NSLocalizedString(@"Load printers", nil), NSLocalizedString(@"Should I add or replace the printer list? If you choose 'replace', the current list will be deleted.", nil), NSLocalizedString(@"Add", nil), NSLocalizedString(@"Replace", nil), nil) == NSAlertDefaultReturn)
+            {
+                
+            }
+            else [m_PrinterController removeObjects: [m_PrinterController arrangedObjects]];
+            
+            [m_PrinterController addObjects: r];
+            
+            int i, x;
+            
+            for( i = 0; i < [[m_PrinterController arrangedObjects] count]; i++)
+            {
+                NSDictionary	*server = [[m_PrinterController arrangedObjects] objectAtIndex: i];
+                
+                for( x = 0; x < [[m_PrinterController arrangedObjects] count]; x++)
+                {
+                    NSDictionary	*c = [[m_PrinterController arrangedObjects] objectAtIndex: x];
+                    
+                    if( c != server)
+                    {
+                        if( [[server valueForKey:@"host"] isEqualToString: [c valueForKey:@"host"]] &&
+                           [[server valueForKey:@"port"] isEqualToString: [c valueForKey:@"port"]])
+                        {
+                            [m_PrinterController removeObjectAtArrangedObjectIndex: i];
+                            i--;
+                            x = [[m_PrinterController arrangedObjects] count];
+                        }
+                    }
+                }
+            }
+        }
+    }];
 }
 
 - (IBAction) addPrinter: (id) sender

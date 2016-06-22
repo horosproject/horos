@@ -379,7 +379,7 @@ term_destination8 (j_compress_ptr cinfo)
   /* Write any data remaining in the buffer */
  
   if (datacount > 0) {
-    if (writeToData8(dest->data, dest->buffer,  datacount) != datacount) {
+    if (writeToData8(dest->data, dest->buffer, (int)datacount) != datacount) {
 	}
   //    ERREXIT(cinfo, JERR_FILE_WRITE);
   }

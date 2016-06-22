@@ -311,6 +311,8 @@ extern "C"
 @property(retain) NSString *generatedName;
 
 @property(retain) NSString *srcFile;
+- (NSString *)sourceFile __deprecated;
+- (void)setSourceFile:(NSString *)sf __deprecated;
 
 @property(readonly) unsigned int* VOILUT_table;
 

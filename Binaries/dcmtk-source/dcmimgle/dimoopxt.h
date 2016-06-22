@@ -203,7 +203,7 @@ class DiMonoOutputPixelTemplate
     {
         if (Data != NULL)
         {
-            register unsigned int i;
+            unsigned int i;
             for (i = 0; i < FrameSize; ++i)
                 stream << OFstatic_cast(unsigned int, Data[i]) << " ";    // typecast to resolve problems with 'char'
             return 1;
@@ -223,7 +223,7 @@ class DiMonoOutputPixelTemplate
     {
         if (Data != NULL)
         {
-            register unsigned int i;
+            unsigned int i;
             for (i = 0; i < FrameSize; ++i)
                 fprintf(stream, "%u ", OFstatic_cast(unsigned int, Data[i]));
             return 1;
@@ -246,9 +246,9 @@ class DiMonoOutputPixelTemplate
             if (UsedValues != NULL)
             {
                 OFBitmanipTemplate<Uint8>::zeroMem(UsedValues, MaxValue + 1); // initialize array
-                register const T3 *p = Data;
-                register Uint8 *q = UsedValues;
-                register unsigned int i;
+                const T3 *p = Data;
+                Uint8 *q = UsedValues;
+                unsigned int i;
                 for (i = Count; i != 0; --i)
                     *(q + *(p++)) = 1;                                        // mark used entries
             }
@@ -368,7 +368,7 @@ class DiMonoOutputPixelTemplate
                 const DiDisplayLUT *dlut = NULL;
                 const double minvalue = vlut->getMinValue();
                 const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low) + 1;
-                register unsigned int i;
+                unsigned int i;
                 if (minvalue == vlut->getMaxValue())                                    // LUT has only one entry or all entries are equal
                 {
                     T3 value;
@@ -407,13 +407,13 @@ class DiMonoOutputPixelTemplate
                     }
                     OFBitmanipTemplate<T3>::setMem(Data, value, Count);                 // set output pixels to LUT value
                 } else {
-                    register T2 value = 0;
+                    T2 value = 0;
                     const T2 absmin = OFstatic_cast(T2, inter->getAbsMinimum());
                     const T2 firstentry = vlut->getFirstEntry(value);                   // choose signed/unsigned method
                     const T2 lastentry = vlut->getLastEntry(value);
                     const unsigned int ocnt = OFstatic_cast(unsigned int, inter->getAbsMaxRange());  // number of LUT entries
-                    register const T1 *p = pixel + start;
-                    register T3 *q = Data;
+                    const T1 *p = pixel + start;
+                    T3 *q = Data;
                     T3 *lut = NULL;
                     if ((plut != NULL) && (plut->isValid()))                            // has presentation LUT
                     {
@@ -662,9 +662,9 @@ class DiMonoOutputPixelTemplate
                 const double absmax = inter->getAbsMaximum();
                 const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low) + 1;
                 const unsigned int ocnt = OFstatic_cast(unsigned int, inter->getAbsMaxRange());  // number of LUT entries
-                register const T1 *p = pixel + start;
-                register T3 *q = Data;
-                register unsigned int i;
+                const T1 *p = pixel + start;
+                T3 *q = Data;
+                unsigned int i;
                 T3 *lut = NULL;
                 if ((plut != NULL) && (plut->isValid()))                              // has presentation LUT
                 {
@@ -740,7 +740,7 @@ class DiMonoOutputPixelTemplate
                     }
                 } else {                                                              // has no presentation LUT
                     createDisplayLUT(dlut, disp, inter->getBits());
-                    register const double gradient = outrange / (inter->getAbsMaxRange());
+                    const double gradient = outrange / (inter->getAbsMaxRange());
                     if (initOptimizationLUT(lut, ocnt))
                     {                                                                 // use LUT for optimization
                         q = lut;
@@ -831,9 +831,9 @@ class DiMonoOutputPixelTemplate
                 const double rightBorder = center - 0.5 + width_1 / 2;
                 const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low);  // output range
                 const unsigned int ocnt = OFstatic_cast(unsigned int, inter->getAbsMaxRange());  // number of LUT entries
-                register const T1 *p = pixel + start;
-                register T3 *q = Data;
-                register unsigned int i;
+                const T1 *p = pixel + start;
+                T3 *q = Data;
+                unsigned int i;
                 register double value;
                 T3 *lut = NULL;
                 if ((plut != NULL) && (plut->isValid()))                              // has presentation LUT
@@ -1028,9 +1028,9 @@ class DiMonoOutputPixelTemplate
                         plane = overlays[j]->getPlane(i);
                         if ((plane != NULL) && plane->isVisible() && plane->reset(frame))
                         {
-                            register T3 *q;
-                            register Uint16 x;
-                            register Uint16 y;
+                            T3 *q;
+                            Uint16 x;
+                            Uint16 y;
                             const Uint16 xmin = (plane->getLeft(left_pos) > 0) ? plane->getLeft(left_pos) : 0;
                             const Uint16 ymin = (plane->getTop(top_pos) > 0) ? plane->getTop(top_pos) : 0;
                             const Uint16 xmax = (plane->getRight(left_pos) < columns) ? plane->getRight(left_pos) : columns;
@@ -1116,7 +1116,7 @@ class DiMonoOutputPixelTemplate
                                 }
                                 case EMO_BitmapShutter:
                                 {
-                                    register T3 fore = OFstatic_cast(T3, OFstatic_cast(double, maxvalue) * OFstatic_cast(double, plane->getPValue()) / OFstatic_cast(double, DicomImageClass::maxval(WIDTH_OF_PVALUES)));
+                                    T3 fore = OFstatic_cast(T3, OFstatic_cast(double, maxvalue) * OFstatic_cast(double, plane->getPValue()) / OFstatic_cast(double, DicomImageClass::maxval(WIDTH_OF_PVALUES)));
                                     if ((disp != NULL) && (disp->isValid()))
                                     {
                                         const DiDisplayLUT *dlut = disp->getLookupTable(WIDTH_OF_PVALUES);

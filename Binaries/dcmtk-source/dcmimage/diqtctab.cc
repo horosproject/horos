@@ -153,7 +153,7 @@ OFCondition DcmQuantColorTable::medianCut(
   numColors = numberOfColors;
 
   register int i;
-  register unsigned int bi;
+  unsigned int bi;
   DcmQuantPixelBoxArray bv(numberOfColors);
 
   // Set up the initial box.
@@ -298,7 +298,7 @@ OFCondition DcmQuantColorTable::medianCut(
       {
           register int indx = bv[bi].ind;
           register int clrs = bv[bi].colors;
-          register long r = 0, g = 0, b = 0;
+          long r = 0, g = 0, b = 0;
 
           for ( i = 0; i < clrs; ++i )
           {
@@ -318,7 +318,7 @@ OFCondition DcmQuantColorTable::medianCut(
       {
           register int indx = bv[bi].ind;
           register int clrs = bv[bi].colors;
-          register unsigned int r = 0, g = 0, b = 0, sumVal = 0;
+          unsigned int r = 0, g = 0, b = 0, sumVal = 0;
 
           for ( i = 0; i < clrs; ++i )
           {

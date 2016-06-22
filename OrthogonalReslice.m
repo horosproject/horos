@@ -255,7 +255,7 @@
 		{
 			register float	*srcPtr;
 			register float	*dstPtr;
-			register long	rowBytes = [firstPix pwidth];
+			long	rowBytes = [firstPix pwidth];
 			
 			DCMPix *curPix = [newPixListY objectAtIndex: stack];
 			
@@ -306,7 +306,7 @@
 					}
 					dstPtr = [curPix fImage] + x * newX;
 					
-					register long yy = newX;
+					long yy = newX;
 					while (yy-->0)
 					{
 						*dstPtr++ = *srcPtr;

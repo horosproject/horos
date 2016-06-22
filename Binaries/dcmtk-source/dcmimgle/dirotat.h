@@ -157,11 +157,11 @@ class DiRotateTemplate
     {
         if ((src != NULL) && (dest != NULL))
         {
-            register Uint16 x;
-            register Uint16 y;
-            register const T *p;
-            register T *q;
-            register T *r;
+            Uint16 x;
+            Uint16 y;
+            const T *p;
+            T *q;
+            T *r;
             const unsigned int count = OFstatic_cast(unsigned int, this->Dest_X) * OFstatic_cast(unsigned int, this->Dest_Y);
             for (int j = 0; j < this->Planes; ++j)
             {
@@ -194,11 +194,11 @@ class DiRotateTemplate
     {
         if ((src != NULL) && (dest != NULL))
         {
-            register Uint16 x;
-            register Uint16 y;
-            register const T *p;
-            register T *q;
-            register T *r;
+            Uint16 x;
+            Uint16 y;
+            const T *p;
+            T *q;
+            T *r;
             const unsigned int count = OFstatic_cast(unsigned int, this->Dest_X) * OFstatic_cast(unsigned int, this->Dest_Y);
             for (int j = 0; j < this->Planes; ++j)
             {
@@ -231,9 +231,9 @@ class DiRotateTemplate
     {
         if ((src != NULL) && (dest != NULL))
         {
-            register unsigned int i;
-            register const T *p;
-            register T *q;
+            unsigned int i;
+            const T *p;
+            T *q;
             const unsigned int count = OFstatic_cast(unsigned int, this->Dest_X) * OFstatic_cast(unsigned int, this->Dest_Y);
             for (int j = 0; j < this->Planes; ++j)
             {
@@ -262,11 +262,11 @@ class DiRotateTemplate
         T *temp = new T[count];
         if (temp != NULL)
         {
-            register Uint16 x;
-            register Uint16 y;
-            register const T *p;
-            register T *q;
-            register T *r;
+            Uint16 x;
+            Uint16 y;
+            const T *p;
+            T *q;
+            T *r;
             for (int j = 0; j < this->Planes; ++j)
             {
                 r = data[j];
@@ -300,11 +300,11 @@ class DiRotateTemplate
         T *temp = new T[count];
         if (temp != NULL)
         {
-            register Uint16 x;
-            register Uint16 y;
-            register const T *p;
-            register T *q;
-            register T *r;
+            Uint16 x;
+            Uint16 y;
+            const T *p;
+            T *q;
+            T *r;
             for (int j = 0; j < this->Planes; ++j)
             {
                 r = data[j];
@@ -334,10 +334,10 @@ class DiRotateTemplate
     */
     inline void rotateTopDown(T *data[])
     {
-        register unsigned int i;
-        register T *p;
-        register T *q;
-        register T t;
+        unsigned int i;
+        T *p;
+        T *q;
+        T t;
         T *s;
         const unsigned int count = OFstatic_cast(unsigned int, this->Dest_X) * OFstatic_cast(unsigned int, this->Dest_Y);
         for (int j = 0; j < this->Planes; ++j)

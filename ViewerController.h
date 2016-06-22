@@ -274,7 +274,8 @@ enum
     NSNumber* flagListPODComparatives;
 	
 	NSMutableArray			*fileList[ MAX4D];
-    NSMutableArray          *pixList[ MAX4D], *roiList[ MAX4D], *copyRoiList[ MAX4D];
+    NSMutableArray<DCMPix *> *pixList[MAX4D];
+    NSMutableArray<NSMutableArray<ROI *> *>   *roiList[MAX4D], *copyRoiList[MAX4D];
 	NSData					*volumeData[ MAX4D];
 	short					curMovieIndex, maxMovieIndex, orientationVector;
     NSToolbar               *toolbar;

@@ -545,7 +545,7 @@ OFString::rfind (const OFString& pattern, size_t pos) const
         return OFString_npos;
     }
     int above = ((this_size-pattern_size) < pos)?
-                 (this_size-pattern_size):(int)(pos);
+                 (int)(this_size-pattern_size):(int)(pos);
     for (int i=above; i>=0; i--) {
         int match = 1; /* assume there is a match */
         for (size_t j=0; (j<pattern_size) && match; j++) {

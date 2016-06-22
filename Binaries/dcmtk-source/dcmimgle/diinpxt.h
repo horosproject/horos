@@ -179,8 +179,8 @@ class DiInputPixelTemplate
     {
         if (Data != NULL)
         {
-            register T2 *p = Data;
-            register unsigned int i;
+            T2 *p = Data;
+            unsigned int i;
             const unsigned int ocnt = OFstatic_cast(unsigned int, getAbsMaxRange());
             Uint8 *lut = NULL;
             if ((sizeof(T2) <= 2) && (Count > 3 * ocnt))               // optimization criteria
@@ -189,7 +189,7 @@ class DiInputPixelTemplate
                 if (lut != NULL)
                 {
                     OFBitmanipTemplate<Uint8>::zeroMem(lut, ocnt);
-                    register Uint8 *q = lut - OFstatic_cast(T2, getAbsMinimum());
+                    Uint8 *q = lut - OFstatic_cast(T2, getAbsMinimum());
                     for (i = Count; i != 0; --i)                       // fill lookup table
                         *(q + *(p++)) = 1;
                     q = lut;
@@ -243,7 +243,7 @@ class DiInputPixelTemplate
             }
             if (lut == NULL)                                           // use conventional method
             {
-                register T2 value = *p;
+                T2 value = *p;
                 MinValue[0] = value;
                 MaxValue[0] = value;
                 for (i = Count; i > 1; --i)
@@ -358,7 +358,7 @@ class DiInputPixelTemplate
         const Uint32 length_Bytes = getPixelData(pixelData, pixel);
         const Uint32 length_T1 = length_Bytes / sizeof(T1);
         Count = ((length_Bytes * 8) + bitsAllocated - 1) / bitsAllocated;
-        register unsigned int i;
+        unsigned int i;
         
         /* need to split 'length' in order to avoid integer overflow for large pixel data */
         const Uint32 length_B1 = length_Bytes / bitsAllocated;
@@ -375,8 +375,8 @@ class DiInputPixelTemplate
                 ofConsole.unlockCerr();
             }
 #endif
-            register const T1 *p = pixel;
-            register T2 *q = Data;
+            const T1 *p = pixel;
+            T2 *q = Data;
             if (bitsof_T1 == bitsAllocated)                                             // case 1: equal 8/16 bit
             {
                 if (bitsStored == bitsAllocated)
@@ -393,7 +393,7 @@ class DiInputPixelTemplate
                 }
                 else /* bitsStored < bitsAllocated */
                 {
-                    register T1 mask = 0;
+                    T1 mask = 0;
                     for (i = 0; i < bitsStored; ++i)
                         mask |= OFstatic_cast(T1, 1 << i);
                     const T2 sign = 1 << (bitsStored - 1);
@@ -430,11 +430,11 @@ class DiInputPixelTemplate
             else if ((bitsof_T1 > bitsAllocated) && (bitsof_T1 % bitsAllocated == 0))   // case 2: divisor of 8/16 bit
             {
                 const Uint16 times = bitsof_T1 / bitsAllocated;
-                register T1 mask = 0;
+                T1 mask = 0;
                 for (i = 0; i < bitsStored; ++i)
                     mask |= OFstatic_cast(T1, 1 << i);
-                register Uint16 j;
-                register T1 value;
+                Uint16 j;
+                T1 value;
                 if ((bitsStored == bitsAllocated) && (bitsStored == bitsof_T2))
                 {
                     if (times == 2)
@@ -512,9 +512,9 @@ class DiInputPixelTemplate
                 }
 #endif
                 const Uint16 times = bitsAllocated / bitsof_T1;
-                register Uint16 j;
-                register Uint16 shift;
-                register T2 value;
+                Uint16 j;
+                Uint16 shift;
+                T2 value;
                 for (i = length_T1; i != 0; --i)
                 {
                     shift = 0;
@@ -536,8 +536,8 @@ class DiInputPixelTemplate
                     ofConsole.unlockCerr();
                 }
 #endif
-                register T2 value = 0;
-                register Uint16 bits = 0;
+                T2 value = 0;
+                Uint16 bits = 0;
                 register Uint32 skip = highBit + 1 - bitsStored;
                 register Uint32 times;
                 T1 mask[bitsof_T1];

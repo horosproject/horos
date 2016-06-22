@@ -100,7 +100,6 @@
     size_t height = [image size].height;
     size_t bitsPerComponent = 8;
     CGColorSpaceRef cs = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-    CGBitmapInfo bi = kCGImageAlphaNoneSkipFirst;
     NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey, [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey, nil];
     
     // create pixel buffer
@@ -110,7 +109,7 @@
     size_t bytesPerRow = CVPixelBufferGetBytesPerRow(buffer);
     
     // context to draw in, set to pixel buffer's address
-    CGContextRef ctxt = CGBitmapContextCreate(rasterData, width, height, bitsPerComponent, bytesPerRow, cs, bi);
+    CGContextRef ctxt = CGBitmapContextCreate(rasterData, width, height, bitsPerComponent, bytesPerRow, cs, kCGImageAlphaNoneSkipFirst);
     if(ctxt == NULL)
     {
         NSLog(@"******** CVPixelBufferFromNSImage : could not create context");

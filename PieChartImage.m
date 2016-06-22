@@ -47,8 +47,11 @@
 {
 	NSRect pieRect = NSMakeRect(0,0,14.0,14.0);
 	NSImage* pieImage = [[self alloc] initWithSize:pieRect.size];
-	[pieImage setScalesWhenResized:YES];
-	
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    [pieImage setScalesWhenResized:YES];
+#pragma clang diagnostic pop
+
 	if( [pieImage size].width > 0 && [pieImage size].height > 0)
 	{
 		[pieImage lockFocus];

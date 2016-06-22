@@ -172,7 +172,7 @@ jpeg_fill_bit_buffer (bitread_working_state * state,
 /* Load up the bit buffer to a depth of at least nbits */
 {
   /* Copy heavily used state fields into locals (hopefully registers) */
-  register const JOCTET * next_input_byte = state->next_input_byte;
+  const JOCTET * next_input_byte = state->next_input_byte;
   register size_t bytes_in_buffer = state->bytes_in_buffer;
   j_decompress_ptr cinfo = state->cinfo;
 

@@ -190,8 +190,8 @@ class DiColorOutputPixelTemplate
     {
         if (Data != NULL)
         {
-            register T2 *p = Data;
-            register unsigned int i;
+            T2 *p = Data;
+            unsigned int i;
             register int j;
             for (i = FrameSize; i != 0; --i)
                 for (j = 3; j != 0; --j)
@@ -211,8 +211,8 @@ class DiColorOutputPixelTemplate
     {
         if (Data != NULL)
         {
-            register T2 *p = Data;
-            register unsigned int i;
+            T2 *p = Data;
+            unsigned int i;
             register int j;
             for (i = FrameSize; i != 0; --i)
                 for (j = 3; j != 0; --j)
@@ -253,12 +253,12 @@ class DiColorOutputPixelTemplate
                 Data = new T2[FrameSize * 3];
             if (Data != NULL)
             {
-                register T2 *q = Data;
-                register unsigned int i;
+                T2 *q = Data;
+                unsigned int i;
                 const T2 max2 = OFstatic_cast(T2, DicomImageClass::maxval(bits2));
                 if (planar)
                 {
-                    register const T1 *p;
+                    const T1 *p;
                     if (bits1 == bits2)
                     {
                         for (int j = 0; j < 3; ++j)

@@ -345,7 +345,7 @@ extern NSRecursiveLock *PapyrusLock;
             if( [c count] < 10)
             {
                 for( i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-                for( i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
+                for( i = (int)[c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
             }
         }
         

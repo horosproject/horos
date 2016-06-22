@@ -301,6 +301,12 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 
 @end
 
+@interface ViewerController (Dummy)
+
+- (void)resizeWindow:(id)dummy;
+
+@end
+
 enum
 {
     NSTruncateStart,
@@ -778,7 +784,7 @@ static ViewerController *cachedFrontMostDisplayed2DViewer = nil;
     }
     else if( [item action] == @selector(ungroupSelectedROIs:))
     {
-        for( ROI *r in [roiList[ curMovieIndex] objectAtIndex: [imageView curImage]])
+        for( ROI *r in [roiList[curMovieIndex] objectAtIndex: [imageView curImage]])
         {
             if( r.groupID)
             {
@@ -1022,7 +1028,7 @@ static ViewerController *cachedFrontMostDisplayed2DViewer = nil;
     self.windowsStateName = [NSUserDefaults formatDateTime: [NSDate date]];
     
     if( saveWindowsStateWindow)
-        [NSApp beginSheet: saveWindowsStateWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:nil];
+        [NSApp beginSheet: saveWindowsStateWindow modalForWindow: self.window modalDelegate:self didEndSelector:nil contextInfo:nil];
     else
         [ViewerController saveWindowsStateWithDICOMSR: YES name: nil];
 }
@@ -2844,8 +2850,8 @@ static volatile int numberOfThreadsForRelisce = 0;
             @synchronized( loadingThread)
             {
                 if( loadingThread.isExecuting == NO || [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] >= 1)
-                    if( [[imageView curDCM] sourceFile] && [[NSFileManager defaultManager] fileExistsAtPath: [[imageView curDCM] sourceFile]])
-                        [[self window] setRepresentedFilename: [[imageView curDCM] sourceFile]];
+                    if( [[imageView curDCM] srcFile] && [[NSFileManager defaultManager] fileExistsAtPath: [[imageView curDCM] srcFile]])
+                        [[self window] setRepresentedFilename: [[imageView curDCM] srcFile]];
             }
         }
     }
@@ -4377,7 +4383,7 @@ static volatile int numberOfThreadsForRelisce = 0;
             }
         }
         else
-            [self mouseMoved: nil];
+            [self mouseMoved];
     }
 }
 - (IBAction)seriesPopupSelect:(NSMenuItem *)sender
@@ -5687,7 +5693,7 @@ static ViewerController *draggedController = nil;
     NSPasteboard	*paste = [sender draggingPasteboard];
     long			i;
     
-    if( [[paste availableTypeFromArray: [NSArray arrayWithObject: pasteBoardHoros]] isEqualToString: pasteBoardHoros])
+    if ([paste availableTypeFromArray:@[HorosPboardUTI]])
     {
         DCMView	*vi = [sender draggingSource];
         
@@ -5698,10 +5704,7 @@ static ViewerController *draggedController = nil;
             if( [[vi window] windowController] != self) [self completeDragOperation: [[vi window] windowController]];
         }
     }
-	else if(    [[paste availableTypeFromArray: [NSArray arrayWithObject: pasteBoardHorosPlugin]]  isEqualToString: pasteBoardHorosPlugin]
-             || [[paste availableTypeFromArray: [NSArray arrayWithObject: HorosPluginPboardUTI]]   isEqualToString: HorosPluginPboardUTI]
-             || [[paste availableTypeFromArray: [NSArray arrayWithObject: pasteBoardOsiriXPlugin]] isEqualToString: pasteBoardOsiriXPlugin]
-             || [[paste availableTypeFromArray: [NSArray arrayWithObject: OsirixPluginPboardUTI]]  isEqualToString: OsirixPluginPboardUTI])
+	else if ([paste availableTypeFromArray:@[HorosPluginPboardUTI, pasteBoardHorosPlugin, OsirixPluginPboardUTI, pasteBoardOsiriXPlugin]])
     {
         // in this case, the drag operation was performed from a plugin.
         id source = [sender draggingSource];
@@ -6028,7 +6031,11 @@ static ViewerController *draggedController = nil;
     }
 }
 
--(void) mouseMoved: (NSEvent*) theEvent
+- (void)mouseMoved:(NSEvent *)theEvent {
+    [self mouseMoved];
+}
+
+- (void)mouseMoved
 {
     if( ![[self window] isVisible] && ![self FullScreenON])
         return;
@@ -9061,7 +9068,7 @@ static int avoidReentryRefreshDatabase = 0;
     {
         if( fabs( vectors[6]) > fabs(vectors[7]) && fabs( vectors[6]) > fabs(vectors[8]))
         {
-            interval = [[pixList[ curMovieIndex] objectAtIndex:1] originX] - [[pixList[ curMovieIndex] objectAtIndex:2] originX];
+            interval = [[pixList[curMovieIndex] objectAtIndex:1] originX] - [[pixList[curMovieIndex] objectAtIndex:2] originX];
             
             if( vectors[6] > 0)
             {
@@ -9074,7 +9081,7 @@ static int avoidReentryRefreshDatabase = 0;
         
         if( fabs( vectors[7]) > fabs(vectors[6]) && fabs( vectors[7]) > fabs(vectors[8]))
         {
-            interval = [[pixList[ curMovieIndex] objectAtIndex:1] originY] - [[pixList[ curMovieIndex] objectAtIndex:2] originY];
+            interval = [[pixList[curMovieIndex] objectAtIndex:1] originY] - [[pixList[curMovieIndex] objectAtIndex:2] originY];
             
             if( vectors[7] > 0)
             {
@@ -9087,7 +9094,7 @@ static int avoidReentryRefreshDatabase = 0;
         
         if( fabs( vectors[8]) > fabs(vectors[6]) && fabs( vectors[8]) > fabs(vectors[7]))
         {
-            interval = [[pixList[ curMovieIndex] objectAtIndex:1] originZ] - [[pixList[ curMovieIndex] objectAtIndex:2] originZ];
+            interval = [[pixList[curMovieIndex] objectAtIndex:1] originZ] - [[pixList[curMovieIndex] objectAtIndex:2] originZ];
             
             if( vectors[8] > 0)
             {
@@ -20803,8 +20810,12 @@ static float oldsetww, oldsetwl;
     
     
     [[self window] registerForDraggedTypes: [NSArray arrayWithObjects:NSFilenamesPboardType,
-                                             pasteBoardHoros, pasteBoardHorosPlugin, HorosPluginPboardUTI,
+                                             HorosPboardUTI, HorosPluginPboardUTI,
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                                             pasteBoardHoros, pasteBoardHorosPlugin,
                                              pasteBoardOsiriX, pasteBoardOsiriXPlugin, OsirixPluginPboardUTI,
+#pragma clang diagnostic pop
                                              @"BrowserController.database.context.XIDs", nil]];
     
     if( [[pixList[0] objectAtIndex: 0] isRGB] == NO)

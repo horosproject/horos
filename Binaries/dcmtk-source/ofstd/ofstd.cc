@@ -230,7 +230,7 @@ static int my_isinf(double x)
 size_t OFStandard::my_strlcpy(char *dst, const char *src, size_t siz)
 {
   register char *d = dst;
-  register const char *s = src;
+  const char *s = src;
   register size_t n = siz;
 
   /* Copy as many bytes as will fit */
@@ -267,7 +267,7 @@ size_t OFStandard::my_strlcpy(char *dst, const char *src, size_t siz)
 size_t OFStandard::my_strlcat(char *dst, const char *src, size_t siz)
 {
   register char *d = dst;
-  register const char *s = src;
+  const char *s = src;
   register size_t n = siz;
   size_t dlen;
 
@@ -818,8 +818,8 @@ static const double atof_powersOf10[] =
 double OFStandard::atof(const char *s, OFBool *success)
 {
     if (success) *success = OFFalse;
-    register const char *p = s;
-    register char c;
+    const char *p = s;
+    char c;
     int sign = 0;
     int expSign = 0;
     double fraction;
@@ -1438,7 +1438,7 @@ eformat:
       }
   } /* end switch */
 
-  return (t - startp);
+  return (int)(t - startp);
 }
 
 void OFStandard::ftoa(
@@ -1583,8 +1583,8 @@ OFBool OFStandard::stringMatchesCharacterSet( const char *str, const char *chars
     return OFTrue;
 
   OFBool result = OFTrue;
-  unsigned int lenStr = strlen( str );
-  unsigned int lenCharset = strlen( charset );
+  unsigned int lenStr = (unsigned int)strlen( str );
+  unsigned int lenCharset = (unsigned int)strlen( charset );
   for( unsigned int i=0 ; i<lenStr && result ; i++ )
   {
     OFBool charFound = OFFalse;

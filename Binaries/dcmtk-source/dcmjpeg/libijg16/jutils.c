@@ -150,7 +150,7 @@ jcopy_block_row (JBLOCKROW input_row, JBLOCKROW output_row,
   FMEMCOPY(output_row, input_row, num_blocks * (DCTSIZE2 * SIZEOF(JCOEF)));
 #else
   register JCOEFPTR inptr, outptr;
-  register long count;
+  long count;
 
   inptr = (JCOEFPTR) input_row;
   outptr = (JCOEFPTR) output_row;

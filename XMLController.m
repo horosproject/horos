@@ -478,12 +478,16 @@ extern int delayedTileWindows;
     NSSavePanel     *panel = [NSSavePanel savePanel];
 	
     [panel setCanSelectHiddenExtension:NO];
-    [panel setRequiredFileType:@"xml"];
+    [panel setAllowedFileTypes:@[@"xml"]];
     
-    if( [panel runModalForDirectory:nil file: [NSString stringWithFormat: @"%@ - %@", imObj.series.study.name, imObj.series.study.studyName]] == NSFileHandlingPanelOKButton)
-    {
-		[[xmlDocument XMLString] writeToFile:[panel filename] atomically:NO encoding : NSUTF8StringEncoding error: nil];
-    }
+    panel.nameFieldStringValue = [NSString stringWithFormat: @"%@ - %@", imObj.series.study.name, imObj.series.study.studyName];
+    
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
+        [[xmlDocument XMLString] writeToFile:panel.URL.path atomically:NO encoding:NSUTF8StringEncoding error:NULL];
+    }];
 }
 
 -(void) exportText:(id) sender
@@ -491,12 +495,16 @@ extern int delayedTileWindows;
     NSSavePanel     *panel = [NSSavePanel savePanel];
 	
     [panel setCanSelectHiddenExtension:NO];
-    [panel setRequiredFileType:@"txt"];
+    [panel setAllowedFileTypes:@[@"txt"]];
     
-    if( [panel runModalForDirectory:nil file: [NSString stringWithFormat: @"%@ - %@", imObj.series.study.name, imObj.series.study.studyName]] == NSFileHandlingPanelOKButton)
-    {
-		[[dcmDocument description] writeToFile: [panel filename] atomically:NO encoding : NSUTF8StringEncoding error: nil];
-    }
+    panel.nameFieldStringValue = [NSString stringWithFormat: @"%@ - %@", imObj.series.study.name, imObj.series.study.studyName];
+    
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
+        [[dcmDocument description] writeToFile:panel.URL.path atomically:NO encoding:NSUTF8StringEncoding error:NULL];
+    }];
 }
 
 + (XMLController*) windowForViewer: (ViewerController*) v
@@ -993,7 +1001,7 @@ extern int delayedTileWindows;
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
 	return YES;
-	
+	/*
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] == NO) return NO;
 	
 	if( isDICOM == NO) return NO;
@@ -1024,6 +1032,7 @@ extern int delayedTileWindows;
 	}
 	else
 		return NO;
+     */
 }
 
 - (IBAction) switchEditing: (id) sender
@@ -1230,7 +1239,7 @@ extern int delayedTileWindows;
                 
                 
 				for( id loopItem in files)
-					[[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:nil];
+					[[NSFileManager defaultManager] removeItemAtPath:[loopItem stringByAppendingString:@".bak"] error:NULL];
 				
 				[self updateDB: files objects: objects];
 			}

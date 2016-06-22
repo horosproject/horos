@@ -527,7 +527,7 @@ Uint32 DJLSDecoderBase::computeNumberOfFragments(
   if ((numberOfFrames <= 1) || (currentFrame + 1 == OFstatic_cast(Uint32, numberOfFrames)))
   {
     // single-frame image or last frame. All remaining fragments belong to this frame
-    return (numItems - startItem);
+    return (Uint32)(numItems - startItem);
   }
   if (OFstatic_cast(Uint32, numberOfFrames + 1) == numItems)
   {
@@ -644,11 +644,11 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration1Byte(
   if (buf)
   {
     memcpy(buf, imageFrame, (size_t)(3*numPixels));
-    register Uint8 *s = buf;                        // source
-    register Uint8 *r = imageFrame;                 // red plane
-    register Uint8 *g = imageFrame + numPixels;     // green plane
-    register Uint8 *b = imageFrame + (2*numPixels); // blue plane
-    for (register unsigned long i=numPixels; i; i--)
+    Uint8 *s = buf;                        // source
+    Uint8 *r = imageFrame;                 // red plane
+    Uint8 *g = imageFrame + numPixels;     // green plane
+    Uint8 *b = imageFrame + (2*numPixels); // blue plane
+    for (unsigned long i=numPixels; i; i--)
     {
       *r++ = *s++;
       *g++ = *s++;
@@ -674,11 +674,11 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration1Word(
   if (buf)
   {
     memcpy(buf, imageFrame, (size_t)(3*numPixels*sizeof(Uint16)));
-    register Uint16 *s = buf;                        // source
-    register Uint16 *r = imageFrame;                 // red plane
-    register Uint16 *g = imageFrame + numPixels;     // green plane
-    register Uint16 *b = imageFrame + (2*numPixels); // blue plane
-    for (register unsigned long i=numPixels; i; i--)
+    Uint16 *s = buf;                        // source
+    Uint16 *r = imageFrame;                 // red plane
+    Uint16 *g = imageFrame + numPixels;     // green plane
+    Uint16 *b = imageFrame + (2*numPixels); // blue plane
+    for (unsigned long i=numPixels; i; i--)
     {
       *r++ = *s++;
       *g++ = *s++;
@@ -703,11 +703,11 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration0Byte(
   if (buf)
   {
     memcpy(buf, imageFrame, (size_t)(3*numPixels));
-    register Uint8 *t = imageFrame;          // target
-    register Uint8 *r = buf;                 // red plane
-    register Uint8 *g = buf + numPixels;     // green plane
-    register Uint8 *b = buf + (2*numPixels); // blue plane
-    for (register unsigned long i=numPixels; i; i--)
+    Uint8 *t = imageFrame;          // target
+    Uint8 *r = buf;                 // red plane
+    Uint8 *g = buf + numPixels;     // green plane
+    Uint8 *b = buf + (2*numPixels); // blue plane
+    for (unsigned long i=numPixels; i; i--)
     {
       *t++ = *r++;
       *t++ = *g++;
@@ -733,11 +733,11 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration0Word(
   if (buf)
   {
     memcpy(buf, imageFrame, (size_t)(3*numPixels*sizeof(Uint16)));
-    register Uint16 *t = imageFrame;          // target
-    register Uint16 *r = buf;                 // red plane
-    register Uint16 *g = buf + numPixels;     // green plane
-    register Uint16 *b = buf + (2*numPixels); // blue plane
-    for (register unsigned long i=numPixels; i; i--)
+    Uint16 *t = imageFrame;          // target
+    Uint16 *r = buf;                 // red plane
+    Uint16 *g = buf + numPixels;     // green plane
+    Uint16 *b = buf + (2*numPixels); // blue plane
+    for (unsigned long i=numPixels; i; i--)
     {
       *t++ = *r++;
       *t++ = *g++;

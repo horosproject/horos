@@ -207,8 +207,8 @@ OFCondition DcmRLECodecEncoder::encode(
       Uint32 offsetBetweenSamples = 0;
       Uint32 sample = 0;
       Uint32 byte = 0;
-      register Uint32 pixel = 0;
-      register Uint32 columnCounter = 0;
+      Uint32 pixel = 0;
+      Uint32 columnCounter = 0;
 
       DcmRLEEncoder *rleEncoder = NULL;
       Uint32 rleSize = 0;
@@ -274,7 +274,7 @@ OFCondition DcmRLECodecEncoder::encode(
           // compute size of compressed frame including RLE header
           // and populate RLE header
           for (i=0; i<16; i++) rleHeader[i] = 0;
-          rleHeader[0] = rleEncoderList.size();
+          rleHeader[0] = (Uint32)rleEncoderList.size();
           rleSize = 64;
           i = 1;
           first = rleEncoderList.begin();

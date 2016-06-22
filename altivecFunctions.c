@@ -56,11 +56,11 @@
 #if __ppc__ || __ppc64__
 // ALTIVEC FUNCTIONS
 
-void InverseLongs(register vector unsigned int *unaligned_input, register long size)
+void InverseLongs(vector unsigned int *unaligned_input, long size)
 {
-	register long						i = size / 4;
-	register vector unsigned char		identity = vec_lvsl(0, (int*) NULL );
-	register vector unsigned char		byteSwapLongs = vec_xor( identity, vec_splat_u8(sizeof( int )- 1 ) );
+	long						i = size / 4;
+	vector unsigned char		identity = vec_lvsl(0, (int*) NULL );
+	vector unsigned char		byteSwapLongs = vec_xor( identity, vec_splat_u8(sizeof( int )- 1 ) );
 	
 	while(i-- > 0)
 	{
@@ -68,11 +68,11 @@ void InverseLongs(register vector unsigned int *unaligned_input, register long s
 	}
 }
 
-void InverseShorts( register vector unsigned short *unaligned_input, register long size)
+void InverseShorts( vector unsigned short *unaligned_input, long size)
 {
-	register long						i = size / 8;
-	register vector unsigned char		identity = vec_lvsl(0, (int*) NULL );
-	register vector unsigned char		byteSwapShorts = vec_xor( identity, vec_splat_u8(sizeof( short) - 1) );
+	long						i = size / 8;
+	vector unsigned char		identity = vec_lvsl(0, (int*) NULL );
+	vector unsigned char		byteSwapShorts = vec_xor( identity, vec_splat_u8(sizeof( short) - 1) );
 	
 	while(i-- > 0)
 	{
@@ -83,7 +83,7 @@ void InverseShorts( register vector unsigned short *unaligned_input, register lo
 void vmultiply(vector float *a, vector float *b, vector float *r, long size)
 {
 	long i = size / 4;
-	register vector float zero = (vector float) vec_splat_u32(0);
+	vector float zero = (vector float) vec_splat_u32(0);
 	
 	while(i-- > 0)
 	{
