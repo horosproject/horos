@@ -196,6 +196,9 @@ static NSDate *CachedHorosPluginsListDate = nil;
 
 - (IBAction) delete:(id)sender;
 {
+    if ([[pluginsArrayController arrangedObjects] count] == 0)
+        return;
+    
 	if( NSRunInformationalAlertPanel(NSLocalizedString(@"Delete a plugin", nil),
 									 NSLocalizedString(@"Are you sure you want to delete the selected plugin?", nil),
 									 NSLocalizedString(@"OK",nil),
