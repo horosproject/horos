@@ -33,7 +33,6 @@
 
 
 #import "PluginManager.h"
-#import "ViewerController.h"
 #import "AppController.h"
 #import "browserController.h"
 #import "BLAuthentication.h"
@@ -55,6 +54,12 @@ static NSMutableDictionary		*pluginsNames = nil;
 static BOOL						ComPACSTested = NO, isComPACS = NO;
 
 BOOL gPluginsAlertAlreadyDisplayed = NO;
+
+@interface PluginManager (Dummy)
+
+- (void)executeFilter:(id)sender;
+
+@end
 
 @implementation PluginManager
 
@@ -1354,7 +1359,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 				returnPath = path;
 				
 //				// delete
-//				BOOL deleted = [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"%@/%@", path, name] handler:nil];
+//				BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", path, name] error:NULL];
 //				if(!deleted)
 //				{
 //					NSMutableArray *args = [NSMutableArray array];

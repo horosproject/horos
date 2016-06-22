@@ -211,7 +211,7 @@ static int numberOfActiveAssociations = 0;
 	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
 	{
 		NSString *str = [NSString stringWithContentsOfFile: @"/tmp/error_message"];
-		[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/error_message" handler: nil];
+		[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/error_message" error:NULL];
 		
 		if( str && [str length] > 0)
 			[[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:) withObject: str waitUntilDone: NO];
@@ -496,7 +496,7 @@ NSString* DcmQueryRetrieveSCP::getErrorMessage()	// see emptyDeleteQueue: for re
 {
 	NSString *str = [NSString stringWithContentsOfFile: @"/tmp/error_message"];
 	
-	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/error_message" handler: nil];
+	[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/error_message" error:NULL];
 	
 	return str;
 }

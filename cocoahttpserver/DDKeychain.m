@@ -426,10 +426,10 @@ SecPolicySearchCreate:
 	[DDKeychain KeychainAccessSetPreferredIdentity:identity forName:@"org.horosproject.horoswebserver" keyUse:CSSM_KEYUSE_ANY];
 	
 	// Don't forget to delete the temporary files
-	[[NSFileManager defaultManager] removeFileAtPath:privateKeyPath handler:nil];
-	[[NSFileManager defaultManager] removeFileAtPath:reqConfPath handler:nil];
-	[[NSFileManager defaultManager] removeFileAtPath:certificatePath handler:nil];
-	[[NSFileManager defaultManager] removeFileAtPath:certWrapperPath handler:nil];
+	[[NSFileManager defaultManager] removeItemAtPath:privateKeyPath error:NULL];
+	[[NSFileManager defaultManager] removeItemAtPath:reqConfPath error:NULL];
+	[[NSFileManager defaultManager] removeItemAtPath:certificatePath error:NULL];
+	[[NSFileManager defaultManager] removeItemAtPath:certWrapperPath error:NULL];
 	
 	// Don't forget to release anything we may have created
 	if(keychain)   CFRelease(keychain);
@@ -1059,7 +1059,7 @@ SecPolicySearchCreate:
             while( [convertTask isRunning])
                 [NSThread sleepForTimeInterval: 0.1];
             
-			[[NSFileManager defaultManager] removeFileAtPath:[path stringByAppendingPathExtension:@"p12"] handler:nil]; // remove the .p12 file
+			[[NSFileManager defaultManager] removeItemAtPath:[path stringByAppendingPathExtension:@"p12"] error:NULL]; // remove the .p12 file
 		}
 		else NSLog(@"SecKeychainItemExport : error : %@", [DDKeychain stringForError:status]);
 		
@@ -1182,8 +1182,8 @@ SecPolicySearchCreate:
 		if(n==0)
 		{
 			[lockedFiles removeObjectForKey:path];
-			//[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-			//NSLog(@"removeFileAtPath: %@", path);
+			//[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
+			//NSLog(@"removeItemAtPath: %@", path);
 		}
 	}
 }

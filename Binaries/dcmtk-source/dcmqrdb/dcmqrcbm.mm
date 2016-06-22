@@ -134,7 +134,7 @@ OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname)
 		{
 			NSString *path = [NSString stringWithCString:fname encoding:NSUTF8StringEncoding];
 			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
-			[[NSFileManager defaultManager] removeFileAtPath:path handler:0L];
+			[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
 			[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality AET:@"Horos" atomically:YES];
 			[dcmObject release];
 		}

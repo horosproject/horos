@@ -2865,7 +2865,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         [path appendString:@".plist"];
         
         if([[NSFileManager defaultManager] fileExistsAtPath:path])
-            [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+            [[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
         else
             NSLog( @"**** Error: CLUT plist not found!");
         [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object:curCLUTMenu userInfo: nil];

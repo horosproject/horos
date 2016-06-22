@@ -64,7 +64,7 @@
 
 - (void) createDMG:(NSString*) imagePath withSource:(NSString*) directoryPath
 {
-	[[NSFileManager defaultManager] removeFileAtPath:imagePath handler:nil];
+	[[NSFileManager defaultManager] removeItemAtPath:imagePath error:NULL];
 	
 	NSTask* makeImageTask = [[[NSTask alloc] init] autorelease];
 
@@ -92,7 +92,7 @@
 {
     if( self = [super initWithWindowNibName:@"BurnViewer"])
     {
-		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
+		[[NSFileManager defaultManager] removeItemAtPath:[self folderToBurn] error:NULL];
 		
 		files = [theFiles mutableCopy];
 		burning = NO;
@@ -108,7 +108,7 @@
 {
 	if( self = [super initWithWindowNibName:@"BurnViewer"])
 	{
-		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
+		[[NSFileManager defaultManager] removeItemAtPath:[self folderToBurn] error:NULL];
 		
 		files = [theFiles mutableCopy]; // file paths
 		dbObjectsID = [managedObjects mutableCopy];
@@ -256,8 +256,8 @@
             cdName = [@"UNTITLED" retain];
         }
         
-        [[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
-        [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"/tmp/burnAnonymized"] handler:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:[self folderToBurn] error:NULL];
+        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"/tmp/burnAnonymized"] error:NULL];
         
         [writeVolumePath release];
         writeVolumePath = nil;
@@ -325,10 +325,11 @@
                 {
                     NSSavePanel *savePanel = [NSSavePanel savePanel];
                     [savePanel setCanSelectHiddenExtension:YES];
-                    [savePanel setRequiredFileType:@"dmg"];
+                    [savePanel setAllowedFileTypes:@[@"dmg"]];
                     [savePanel setTitle:@"Save as DMG"];
+                    savePanel.nameFieldStringValue = cdName;
                     
-                    if( [savePanel runModalForDirectory:nil file: cdName] == NSFileHandlingPanelOKButton)
+                    if ([savePanel runModal] == NSFileHandlingPanelOKButton)
                     {
                         [writeDMGPath release];
                         writeDMGPath = [[[savePanel URL] path] retain];
@@ -722,8 +723,8 @@
 		return NO;
 	else
 	{
-		[[NSFileManager defaultManager] removeFileAtPath: [self folderToBurn] handler:nil];
-		[[NSFileManager defaultManager] removeFileAtPath: [NSString stringWithFormat:@"/tmp/burnAnonymized"] handler:nil];
+		[[NSFileManager defaultManager] removeItemAtPath: [self folderToBurn] error:NULL];
+		[[NSFileManager defaultManager] removeItemAtPath: [NSString stringWithFormat:@"/tmp/burnAnonymized"] error:NULL];
 		
 		[filesToBurn release];
 		filesToBurn = nil;
@@ -851,8 +852,9 @@
 - (NSNumber*) getSizeOfDirectory: (NSString*) path
 {
 	if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO) return [NSNumber numberWithLong: 0];
-
-	if( [[[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO]fileType]!=NSFileTypeSymbolicLink || [[[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO]fileType]!=NSFileTypeUnknown)
+    
+    NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:NULL];
+	if( ![attributes[NSFileType] isEqualToString:NSFileTypeSymbolicLink] && ![attributes[NSFileType] isEqualToString:NSFileTypeUnknown])
 	{
 		NSArray *args = nil;
 		NSPipe *fromPipe = nil;

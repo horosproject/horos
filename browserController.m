@@ -5419,7 +5419,7 @@ static NSConditionLock *threadLock = nil;
                                         
                                         for( id loopItem in files)
                                         {
-                                            [[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:nil];
+                                            [[NSFileManager defaultManager] removeItemAtPath:[loopItem stringByAppendingString:@".bak"] error:NULL];
                                         }
                                     }
                                     @catch (NSException * e)
@@ -5614,7 +5614,7 @@ static NSConditionLock *threadLock = nil;
                                         
                                         for( id loopItem in files)
                                         {
-                                            [[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
+                                            [[NSFileManager defaultManager] removeItemAtPath: [loopItem stringByAppendingString:@".bak"] error:NULL];
                                         }
                                     }
                                     @catch (NSException * e)
@@ -5940,11 +5940,11 @@ static NSConditionLock *threadLock = nil;
                     {
                         for( NSString *path in nonLocalImagesPath)
                         {
-                            [[NSFileManager defaultManager] removeFileAtPath: path handler:nil];
+                            [[NSFileManager defaultManager] removeItemAtPath: path error:NULL];
                             
                             if( [[path pathExtension] isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
                             {
-                                [[NSFileManager defaultManager] removeFileAtPath:[[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
+                                [[NSFileManager defaultManager] removeItemAtPath:[[path stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] error:NULL];
                             }
                             
                             NSString *currentDirectory = [[path stringByDeletingLastPathComponent] stringByAppendingString:@"/"];
@@ -5952,10 +5952,10 @@ static NSConditionLock *threadLock = nil;
                             
                             //Is this directory empty?? If yes, delete it!
                             
-                            if( [dirContent count] == 0) [[NSFileManager defaultManager] removeFileAtPath:currentDirectory handler:nil];
+                            if( [dirContent count] == 0) [[NSFileManager defaultManager] removeItemAtPath:currentDirectory error:NULL];
                             if( [dirContent count] == 1)
                             {
-                                if( [[[dirContent objectAtIndex: 0] uppercaseString] hasSuffix:@".DS_STORE"]) [[NSFileManager defaultManager] removeFileAtPath:currentDirectory handler:nil];
+                                if( [[[dirContent objectAtIndex: 0] uppercaseString] hasSuffix:@".DS_STORE"]) [[NSFileManager defaultManager] removeItemAtPath:currentDirectory error:NULL];
                             }
                         }
                     }
@@ -8678,9 +8678,9 @@ static NSConditionLock *threadLock = nil;
 - (IBAction) pasteImageForSourceFile: (NSString*) sourceFile
 {
     // If the clipboard contains an image -> generate a SC DICOM file corresponding to the selected patient
-    if( [[NSPasteboard generalPasteboard] dataForType: NSTIFFPboardType])
+    if( [[NSPasteboard generalPasteboard] dataForType: NSPasteboardTypeTIFF])
     {
-        NSImage *image = [[[NSImage alloc] initWithData: [[NSPasteboard generalPasteboard] dataForType: NSTIFFPboardType]] autorelease];
+        NSImage *image = [[[NSImage alloc] initWithData: [[NSPasteboard generalPasteboard] dataForType: NSPasteboardTypeTIFF]] autorelease];
         
         if( sourceFile)
         {
@@ -9743,7 +9743,7 @@ static BOOL withReset = NO;
         [self refreshMatrix: self];
         NSString *uri = [NSString stringWithContentsOfFile: recoveryPath];
         
-        [[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
+        [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error:NULL];
         
         NSManagedObject *studyObject = nil;
         
@@ -14648,8 +14648,8 @@ static NSArray*	openSubSeriesArray = nil;
     
     [[NSUserDefaults standardUserDefaults] synchronize];
     
-    [[NSFileManager defaultManager] removeFileAtPath: @"/tmp/OsiriXTemporaryDatabase" handler: nil];
-    [[NSFileManager defaultManager] removeFileAtPath: @"/tmp/dicomsr_osirix" handler: nil];
+    [[NSFileManager defaultManager] removeItemAtPath: @"/tmp/OsiriXTemporaryDatabase" error:NULL];
+    [[NSFileManager defaultManager] removeItemAtPath: @"/tmp/dicomsr_osirix" error:NULL];
 }
 
 -(void)shouldTerminateCallback:(NSTimer*) tt
@@ -15301,7 +15301,7 @@ static NSArray*	openSubSeriesArray = nil;
                         if( numberOfValidFiles == 0 && [[f lastPathComponent] isEqualToString: @"ROIs"] == NO)
                         {
                             NSLog( @"delete Queue: delete folder: %@", f);
-                            [[NSFileManager defaultManager] removeFileAtPath: f handler: nil];
+                            [[NSFileManager defaultManager] removeItemAtPath: f error:NULL];
                             
                         }
                     }
@@ -15344,7 +15344,7 @@ static NSArray*	openSubSeriesArray = nil;
     NSString *str = [NSString stringWithContentsOfFile: @"/tmp/error_message"];
     if( str)
     {
-        [[NSFileManager defaultManager] removeFileAtPath: @"/tmp/error_message" handler: nil];
+        [[NSFileManager defaultManager] removeItemAtPath: @"/tmp/error_message" error:NULL];
         
         NSString *alertSuppress = @"hideListenerError";
         if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
@@ -15446,7 +15446,7 @@ static NSArray*	openSubSeriesArray = nil;
 
 + (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination showGUI: (BOOL) showGUI
 {
-    [[NSFileManager defaultManager] removeFileAtPath: destination handler: nil];
+    [[NSFileManager defaultManager] removeItemAtPath: destination error:NULL];
     
     NSTask *t;
     NSArray *args;
@@ -15655,7 +15655,7 @@ static NSArray*	openSubSeriesArray = nil;
 //            N2LogExceptionWithStackTrace(e);
 //		}
 //
-//		[[NSFileManager defaultManager] removeFileAtPath: file handler: nil];
+//		[[NSFileManager defaultManager] removeItemAtPath: file error:NULL];
 //		[[NSFileManager defaultManager] movePath:destPath toPath: file handler: nil];
 //	}
 //#endif
@@ -16117,7 +16117,7 @@ static volatile int numberOfThreadsForJPEG = 0;
                 {
                     if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), nil, [tempPath lastPathComponent]) == NSAlertDefaultReturn)
                     {
-                        [[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
+                        [[NSFileManager defaultManager] removeItemAtPath:tempPath error:NULL];
                         [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
                     }
                     else break;
@@ -16539,7 +16539,7 @@ static volatile int numberOfThreadsForJPEG = 0;
                 {
                     if( NSRunInformationalAlertPanel( NSLocalizedString(@"Export", nil), NSLocalizedString(@"A folder already exists. Should I replace it? It will delete the entire content of this folder (%@)", nil), NSLocalizedString(@"Replace", nil), NSLocalizedString(@"Cancel", nil), nil, [tempPath lastPathComponent]) == NSAlertDefaultReturn)
                     {
-                        [[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
+                        [[NSFileManager defaultManager] removeItemAtPath:tempPath error:NULL];
                         [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
                     }
                     else break;
@@ -17020,7 +17020,7 @@ restart:
                 else
                     reportURL = [NSString stringWithFormat: @"%@/%@", [self.database reportsDirPath], [Reports getUniqueFilename: s]];
                 
-                [[NSFileManager defaultManager] removeFileAtPath: reportURL handler: nil];
+                [[NSFileManager defaultManager] removeItemAtPath: reportURL error:NULL];
                 [[NSFileManager defaultManager] copyPath: path toPath: reportURL handler: nil];
                 [s setValue: reportURL forKey: @"reportURL"];
             }
@@ -17167,7 +17167,7 @@ restart:
                         
                         if( a == NSAlertDefaultReturn)
                         {
-                            [[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
+                            [[NSFileManager defaultManager] removeItemAtPath:tempPath error:NULL];
                             [[NSFileManager defaultManager] createDirectoryAtPath:tempPath attributes:nil];
                         }
                         else if( a == NSAlertOtherReturn)
@@ -18477,7 +18477,7 @@ restart:
                     
                     
                     if( [studySelected valueForKey:@"reportURL"] && [[NSFileManager defaultManager] fileExistsAtPath: [studySelected valueForKey:@"reportURL"]])
-                        [[NSFileManager defaultManager] removeFileAtPath: [studySelected valueForKey:@"reportURL"] handler: nil];
+                        [[NSFileManager defaultManager] removeItemAtPath: [studySelected valueForKey:@"reportURL"] error:NULL];
                     
                     if (![_database isLocal])
                         [(RemoteDicomDatabase*)_database object:studySelected setValue:nil forKey:@"reportURL"];

@@ -244,7 +244,7 @@
     //					// store in lossless JPEG format
     //					//fileformat.loadAllDataIntoMemory();
     //
-    //					[[NSFileManager defaultManager] removeFileAtPath: [path stringByAppendingString: @"cc.dcm"] handler:nil];
+    //					[[NSFileManager defaultManager] removeItemAtPath: [path stringByAppendingString: @"cc.dcm"] error:NULL];
     //					cond = fileformat.saveFile( [[path stringByAppendingString: @"cc.dcm"] UTF8String], tSyntax);
     //					BOOL status =  (cond.good()) ? YES : NO;
     //
@@ -304,13 +304,13 @@
     //	if( succeed)
     //	{
     //		if( dest2 == [paths lastObject])
-    //			[[NSFileManager defaultManager] removeFileAtPath: [paths lastObject] handler: nil];
+    //			[[NSFileManager defaultManager] removeItemAtPath: [paths lastObject] error:NULL];
     //		[[NSFileManager defaultManager] movePath: [dest2 stringByAppendingString: @" temp"] toPath: dest2 handler: nil];
     //	}
     //	else
     //	{
     //		NSLog( @"failed to compress file: %@", [paths lastObject]);
-    //		[[NSFileManager defaultManager] removeFileAtPath: [dest2 stringByAppendingString: @" temp"] handler: nil];
+    //		[[NSFileManager defaultManager] removeItemAtPath: [dest2 stringByAppendingString: @" temp"] error:NULL];
     //	}
     //	NSLog( @"** END");
 }
@@ -446,7 +446,7 @@
         
         // Extract the CONTENT to the REPORTS folder
         SRAnnotation *r = [[[SRAnnotation alloc] initWithContentsOfFile: dicomSR] autorelease];
-        [[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
+        [[NSFileManager defaultManager] removeItemAtPath: zipFile error:NULL];
         
         // Check for http/https !
         if( [[r reportURL] length] > 8 && ([[r reportURL] hasPrefix: @"http://"] || [[r reportURL] hasPrefix: @"https://"]))
@@ -457,9 +457,9 @@
             {
                 [[r dataEncapsulated] writeToFile: zipFile atomically: YES];
                 
-                [[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedFile/" handler: nil];
+                [[NSFileManager defaultManager] removeItemAtPath: @"/tmp/zippedFile/" error:NULL];
                 [BrowserController unzipFile: zipFile withPassword: nil destination: @"/tmp/zippedFile/" showGUI: NO];
-                [[NSFileManager defaultManager] removeFileAtPath: zipFile handler: nil];
+                [[NSFileManager defaultManager] removeItemAtPath: zipFile error:NULL];
                 
                 for( NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: @"/tmp/zippedFile/" error: nil])
                 {
@@ -480,7 +480,7 @@
         }
     }
     
-    [[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedFile/" handler: nil];
+    [[NSFileManager defaultManager] removeItemAtPath: @"/tmp/zippedFile/" error:NULL];
     
     if( destPath)
         [[NSFileManager defaultManager] setAttributes: [NSDictionary dictionaryWithObjectsAndKeys: date, NSFileModificationDate, nil] ofItemAtPath: destPath error: nil];

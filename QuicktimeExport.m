@@ -46,15 +46,15 @@
 
 - (id) initWithSelector:(id) o :(SEL) s :(long) f
 {
-	self = [super init];
-	
-	[NSBundle loadNibNamed:@"QuicktimeExport" owner:self];
-	
-	object = [o retain];
-	selector = s;
-	numberOfFrames = f;
-	
-	return self;
+    self = [super init];
+    
+    [[NSBundle bundleForClass:self.class] loadNibNamed:@"QuicktimeExport" owner:self topLevelObjects:NULL];
+    
+    object = [o retain];
+    selector = s;
+    numberOfFrames = f;
+    
+    return self;
 }
 
 - (void) dealloc
@@ -76,14 +76,14 @@
 
 - (IBAction) changeExportType:(id) sender
 {
-	if( [exportTypes count])
-	{
-		NSInteger indexOfSelectedItem = [type indexOfSelectedItem];
+    if( [exportTypes count])
+    {
+        NSInteger indexOfSelectedItem = [type indexOfSelectedItem];
         
-        [panel setRequiredFileType: [[exportTypes objectAtIndex: indexOfSelectedItem] valueForKey:@"extension"]];
+        [panel setAllowedFileTypes:@[[[exportTypes objectAtIndex: indexOfSelectedItem] valueForKey:@"extension"]]];
         
-		[[NSUserDefaults standardUserDefaults] setObject: [[exportTypes objectAtIndex: indexOfSelectedItem] valueForKey:@"videoCodec"] forKey:@"selectedMenuAVFoundationExport"];
-	}
+        [[NSUserDefaults standardUserDefaults] setObject: [[exportTypes objectAtIndex: indexOfSelectedItem] valueForKey:@"videoCodec"] forKey:@"selectedMenuAVFoundationExport"];
+    }
 }
 
 - (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name
@@ -140,22 +140,23 @@
     if (fps > 0)
         [[NSUserDefaults standardUserDefaults] setInteger:fps forKey:@"quicktimeExportRateValue"];
     
-	NSString *fileName;
-	long result;
-
-	exportTypes = [self availableComponents];
-	
-	panel = [NSSavePanel savePanel];
-	
-    [[NSFileManager defaultManager] createDirectoryAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/"]  withIntermediateDirectories: YES attributes: nil error: nil];
+    NSString *fileName;
+    long result;
+    
+    exportTypes = [self availableComponents];
+    
+    panel = [NSSavePanel savePanel];
+    
+    [[NSFileManager defaultManager] createDirectoryAtPath: [[[BrowserController currentBrowser] database] tempDirPath] withIntermediateDirectories:YES attributes:nil error:NULL];
     
     
     if( produceFiles)
     {
         result = NSFileHandlingPanelOKButton;
         
-        [[NSFileManager defaultManager] removeFileAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"] handler: nil];
-        [[NSFileManager defaultManager] createDirectoryAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"] withIntermediateDirectories: YES attributes: nil error: nil];
+        NSString *path =[[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"];
+        [[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
+        [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories: YES attributes: nil error: nil];
         
         fileName = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"OsiriXMovie.mov"];
     }
@@ -179,9 +180,11 @@
         [type selectItemAtIndex: index];
         [self changeExportType: self];
         
-        result = [panel runModalForDirectory:nil file:name];
+        panel.nameFieldStringValue = name;
         
-        fileName = [panel filename];
+        result = [panel runModal];
+        
+        fileName = panel.URL.path;
     }
     
     [[NSFileManager defaultManager] removeItemAtPath: fileName error: nil];
@@ -220,7 +223,7 @@
                         CVPixelBufferRef buffer = nil;
                         
                         NSDisableScreenUpdates();
-                        NSImage	*im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];    
+                        NSImage	*im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];
                         NSEnableScreenUpdates();
                         
                         if( im)
@@ -239,13 +242,13 @@
                                     
                                     if( bitsPerSecond > 0)
                                         videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                     c, AVVideoCodecKey,
-                                                     [NSDictionary dictionaryWithObjectsAndKeys:
-                                                      [NSNumber numberWithDouble: bitsPerSecond], AVVideoAverageBitRateKey,
-                                                      [NSNumber numberWithInteger: 1], AVVideoMaxKeyFrameIntervalKey,
-                                                      nil], AVVideoCompressionPropertiesKey,
-                                                     [NSNumber numberWithInt: im.size.width], AVVideoWidthKey,
-                                                     [NSNumber numberWithInt: im.size.height], AVVideoHeightKey, nil];
+                                                         c, AVVideoCodecKey,
+                                                         [NSDictionary dictionaryWithObjectsAndKeys:
+                                                          [NSNumber numberWithDouble: bitsPerSecond], AVVideoAverageBitRateKey,
+                                                          [NSNumber numberWithInteger: 1], AVVideoMaxKeyFrameIntervalKey,
+                                                          nil], AVVideoCompressionPropertiesKey,
+                                                         [NSNumber numberWithInt: im.size.width], AVVideoWidthKey,
+                                                         [NSNumber numberWithInt: im.size.height], AVVideoHeightKey, nil];
                                     else
                                         N2LogStackTrace( @"********** bitsPerSecond == 0");
                                 }
@@ -330,7 +333,7 @@
         N2LogExceptionWithStackTrace(e);
     }
     
-	return nil;
+    return nil;
 }
 
 @end

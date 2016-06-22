@@ -389,7 +389,7 @@
 {
 	self = [super init];
 	
-	[self registerForDraggedTypes:[NSArray arrayWithObjects:NSTIFFPboardType, NSFilenamesPboardType, nil]];
+	[self registerForDraggedTypes:[NSArray arrayWithObjects:NSPasteboardTypeTIFF, NSFilenamesPboardType, nil]];
 	
 	return self;
 }*/

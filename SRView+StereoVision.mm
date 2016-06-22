@@ -1055,7 +1055,7 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 			else
 				newpath = [QuicktimeExport generateQTVR: path frames: numberOfFrames];
 			
-			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+			[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
 			[[NSFileManager defaultManager] moveItemAtPath: newpath  toPath: path error:NULL];
 			
 			[[NSWorkspace sharedWorkspace] openFile:path withApplication: nil andDeactivate: YES];

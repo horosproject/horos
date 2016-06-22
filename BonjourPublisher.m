@@ -812,7 +812,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
                 {
                     if( value == nil)
                     {
-                        [[NSFileManager defaultManager] removeFileAtPath:[item valueForKeyPath: key] handler:nil];
+                        [[NSFileManager defaultManager] removeItemAtPath:[item valueForKeyPath: key] error:NULL];
                     }
                     else if( [[key pathComponents] count] == 1)
                     {

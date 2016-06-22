@@ -1029,7 +1029,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	if([self isZippedFileAtPath:path] && [self unZipFileAtPath:path])
 	{
 		pluginPath = [path stringByDeletingPathExtension];
-        [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
 	}
     else
     {

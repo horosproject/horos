@@ -653,6 +653,8 @@ extern "C"
 - (void) CheckLoad;
 - (BOOL) isLoaded;
 
+-(void) CheckLoadFromThread:(NSThread*) loadingThread;
+
 /** Compute the float pointer for the image data */
 - (float*) computefImage;
 

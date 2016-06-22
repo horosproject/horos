@@ -946,7 +946,7 @@ static float deg2rad = M_PI / 180.0f;
 					{
 						// Add to the current DB
 						if( dstPath == nil)
-							dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+							dstPath = [[[BrowserController currentBrowser] database] uniquePathForNewDataFileWithExtension:@"dcm"];
 						
 						OFCondition cond = dcmtkFileFormat->saveFile( [dstPath UTF8String], EXS_LittleEndianExplicit, EET_ExplicitLength, EGL_recalcGL, EPD_withoutPadding);
 						OFBool fileWriteSucceeded =  (cond.good()) ? YES : NO;

@@ -1671,7 +1671,7 @@ public:
 //			else
 //				newpath = [QuicktimeExport generateQTVR: path frames: numberOfFrames];
 //
-//			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+//			[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
 //			[[NSFileManager defaultManager] movePath: newpath  toPath: path handler: nil];
 //
 //			[[NSWorkspace sharedWorkspace] openFile: path withApplication: nil andDeactivate: YES];
@@ -7497,11 +7497,11 @@ public:
     
     NSImage *im;
     
-    [pb declareTypes:[NSArray arrayWithObject:NSTIFFPboardType] owner:self];
+    [pb declareTypes:[NSArray arrayWithObject:NSPasteboardTypeTIFF] owner:self];
     
     im = [self nsimage:NO];
     
-    [pb setData: [im TIFFRepresentation] forType:NSTIFFPboardType];
+    [pb setData: [im TIFFRepresentation] forType:NSPasteboardTypeTIFF];
 }
 
 - (void) updateScissorStateButtons
@@ -7565,7 +7565,7 @@ public:
     {
         case 2:
             if( NSRunAlertPanel(NSLocalizedString(@"3D Scissor State", nil), NSLocalizedString(@"Are you sure you want to delete this 3D state? You cannot undo this operation.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
-                [[NSFileManager defaultManager] removeFileAtPath: str handler: nil];
+                [[NSFileManager defaultManager] removeItemAtPath: str error:NULL];
             break;
             
         case 1:	// Load
@@ -8776,7 +8776,7 @@ public:
         if ([event modifierFlags] & NSAlternateKeyMask)
             [ pbTypes addObject: NSFilesPromisePboardType];
         else
-            [pbTypes addObject: NSTIFFPboardType];
+            [pbTypes addObject: NSPasteboardTypeTIFF];
         
         
         [pboard declareTypes:pbTypes  owner:self];
@@ -8802,7 +8802,7 @@ public:
         }
         else
         {
-            [pboard setData: [[NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSTIFFPboardType];
+            [pboard setData: [[NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSPasteboardTypeTIFF];
             
             [ self dragImage:thumbnail
                           at:local_point

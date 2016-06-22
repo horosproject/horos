@@ -1299,7 +1299,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 //          N2LogExceptionWithStackTrace(e);
 //		}
 //
-//		[[NSFileManager defaultManager] removeFileAtPath: file handler: nil];
+//		[[NSFileManager defaultManager] removeItemAtPath: file error:NULL];
 //		[[NSFileManager defaultManager] movePath:destPath toPath: file handler: nil];
 //	}
 //#endif
@@ -1580,14 +1580,14 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                             
                             if ( DELETEFILELISTENER)
                             {
-                                [[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+                                [[NSFileManager defaultManager] removeItemAtPath: newFile error:NULL];
                             }
                             else
                             {
                                 NSLog(@"**** This file in the DATABASE folder: move it to the unreadable folder");
                                 
                                 if ([[NSFileManager defaultManager] moveItemAtPath:newFile toPath:[errorsDirPath stringByAppendingPathComponent:[newFile lastPathComponent]] error:NULL] == NO)
-                                    [[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+                                    [[NSFileManager defaultManager] removeItemAtPath: newFile error:NULL];
                             }
                         }
                     }
@@ -1639,7 +1639,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         
         [DicomFile setFilesAreFromCDMedia: NO];
         
-        //	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/dicomsr_osirix" handler: nil]; // nooooooo because other threads may be using it
+        //	[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/dicomsr_osirix" error:NULL]; // nooooooo because other threads may be using it
         
         if (addFailed)
         {
@@ -2130,7 +2130,7 @@ static BOOL protectionAgainstReentry = NO;
                                         if (local)	// Delete this file, it's already in the DB folder
                                         {
                                             if ([[image valueForKey:@"path"] isEqualToString: [newFile lastPathComponent]] == NO)
-                                                [[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+                                                [[NSFileManager defaultManager] removeItemAtPath: newFile error:NULL];
                                         }
                                         
                                         newObject = NO;
@@ -2144,7 +2144,7 @@ static BOOL protectionAgainstReentry = NO;
                                         if ([[image valueForKey:@"inDatabaseFolder"] boolValue] && [imPath isEqualToString: newFile] == NO)
                                         {
                                             if ([[NSFileManager defaultManager] fileExistsAtPath: imPath])
-                                                [[NSFileManager defaultManager] removeFileAtPath: imPath handler:nil];
+                                                [[NSFileManager defaultManager] removeItemAtPath: imPath error:NULL];
                                         }
                                     }
                                 }
@@ -2469,12 +2469,12 @@ static BOOL protectionAgainstReentry = NO;
                             
                             if ( DELETEFILELISTENER)
                             {
-                                [[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+                                [[NSFileManager defaultManager] removeItemAtPath: newFile error:NULL];
                             }
                             else
                             {
                                 if ([[NSFileManager defaultManager] moveItemAtPath: newFile toPath:[errorsDirPath stringByAppendingPathComponent: [newFile lastPathComponent]]  error:NULL] == NO)
-                                    [[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+                                    [[NSFileManager defaultManager] removeItemAtPath: newFile error:NULL];
                             }
                         }
                     }
@@ -2972,7 +2972,7 @@ static BOOL protectionAgainstReentry = NO;
                         }
                         
                         if (!dirContainsStuff)
-                            [[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
+                            [[NSFileManager defaultManager] removeItemAtPath:srcPath error:NULL];
                     }
                 }
                 else if ([[fattrs objectForKey:NSFileSize] longLongValue] > 0)
@@ -3073,7 +3073,7 @@ static BOOL protectionAgainstReentry = NO;
                             }
                         }
                         [file closeFile];
-                        if (dicomFileCreated)[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
+                        if (dicomFileCreated)[[NSFileManager defaultManager] removeItemAtPath:srcPath error:NULL];
                         
                     }
                     //===========================
@@ -3129,8 +3129,8 @@ static BOOL protectionAgainstReentry = NO;
                             
                             if (isAlias)
                             {
-                                result = [[NSFileManager defaultManager] copyPath:srcPath toPath: dstPath handler:nil];
-                                [[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
+                                result = [[NSFileManager defaultManager] copyPath:srcPath toPath: dstPath error:NULL];
+                                [[NSFileManager defaultManager] removeItemAtPath:originalPath error:NULL];
                             }
                             else
                             {
@@ -3148,7 +3148,7 @@ static BOOL protectionAgainstReentry = NO;
                                 [[NSFileManager defaultManager] removeItemAtPath:srcPath error:NULL];
                             else {
                                 if (![NSFileManager.defaultManager moveItemAtPath:srcPath toPath:[self.errorsDirPath stringByAppendingPathComponent:lastPathComponent] error:NULL])
-                                    [NSFileManager.defaultManager removeFileAtPath:srcPath handler:nil];
+                                    [NSFileManager.defaultManager removeItemAtPath:srcPath error:NULL];
                             }
                         }
                     }

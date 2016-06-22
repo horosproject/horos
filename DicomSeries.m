@@ -159,7 +159,7 @@
         
         for( id loopItem in files)
         {
-            [[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:nil];
+            [[NSFileManager defaultManager] removeItemAtPath:[loopItem stringByAppendingString:@".bak"] error:NULL];
         }
         
         
@@ -189,7 +189,7 @@
 				[XMLController modifyDicom: params encoding: encoding];
 				
 				for( id loopItem in files)
-					[[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
+					[[NSFileManager defaultManager] removeItemAtPath: [loopItem stringByAppendingString:@".bak"] error:NULL];
 			}
 			@catch (NSException * e)
 			{
@@ -404,7 +404,7 @@
                             frame = image.frameID.intValue;
                         
                         NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
-                        [[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
+                        [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error:NULL];
                         [[[[self.study objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
                         
                         NSImage *thumbnail = nil;
@@ -461,7 +461,7 @@
                             thumbnailData = [[thumbnail TIFFRepresentation] retain]; // autoreleased when returning
                         }
                         
-                        [[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
+                        [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error:NULL];
                     }
                 }
 
@@ -785,7 +785,7 @@
 #ifndef OSIRIX_LIGHT
             NSString *vrFile = [VRController getUniqueFilenameScissorStateFor: self];
             if( vrFile && [[NSFileManager defaultManager] fileExistsAtPath: vrFile])
-                [[NSFileManager defaultManager] removeFileAtPath: vrFile handler: nil];
+                [[NSFileManager defaultManager] removeItemAtPath: vrFile error:NULL];
 #endif
 
         }

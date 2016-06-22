@@ -121,6 +121,7 @@
 #import "DCMTKStudyQueryNode.h"
 #import "O2ViewerThumbnailsMatrix.h"
 #import "ToolBarNSWindow.h"
+#import "RemoteDicomDatabase.h"
 
 int delayedTileWindows = NO;
 
@@ -1161,7 +1162,7 @@ static ViewerController *cachedFrontMostDisplayed2DViewer = nil;
         if( [displayedViewers count] != [state count]) return;	//We will save the states ONLY if we can save the state of ALL DISPLAYED windows !:!:!:
         
         //	NSString	*tmp = [NSString stringWithFormat:@"/tmp/windowsState"];
-        //	[[NSFileManager defaultManager] removeFileAtPath: tmp handler:nil];
+        //	[[NSFileManager defaultManager] removeItemAtPath: tmp error:NULL];
         //	[state writeToFile: tmp atomically: YES];
         
         NSData *windowsState = [NSPropertyListSerialization dataFromPropertyList: state  format: NSPropertyListXMLFormat_v1_0 errorDescription: nil];
@@ -2826,7 +2827,7 @@ static volatile int numberOfThreadsForRelisce = 0;
             if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotFull)
             {
                 if( [curImage valueForKeyPath:@"series.study.dateOfBirth"])
-                    windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@) - %@", [curImage valueForKeyPath:@"series.study.name"], [BrowserController DateOfBirthFormat: bod], [curImage valueForKeyPath:@"series.study.yearOld"], seriesName];
+                    windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@) - %@", [curImage valueForKeyPath:@"series.study.name"], [[NSUserDefaults dateFormatter] stringFromDate:bod], [curImage valueForKeyPath:@"series.study.yearOld"], seriesName];
                 else
                     windowTitle = [NSString stringWithFormat: @"%@ - %@", [curImage valueForKeyPath:@"series.study.name"], seriesName];
             }
@@ -5704,7 +5705,10 @@ static ViewerController *draggedController = nil;
             if( [[vi window] windowController] != self) [self completeDragOperation: [[vi window] windowController]];
         }
     }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 	else if ([paste availableTypeFromArray:@[HorosPluginPboardUTI, pasteBoardHorosPlugin, OsirixPluginPboardUTI, pasteBoardOsiriXPlugin]])
+#pragma clang diagnostic pop
     {
         // in this case, the drag operation was performed from a plugin.
         id source = [sender draggingSource];
@@ -5719,7 +5723,7 @@ static ViewerController *draggedController = nil;
             return [source performPluginDragOperation:sender destination:self];
         }
     }
-    else if( [[paste availableTypeFromArray: [NSArray arrayWithObject: @"BrowserController.database.context.XIDs"]] isEqualToString: @"BrowserController.database.context.XIDs"])
+    else if ([paste availableTypeFromArray:@[@"BrowserController.database.context.XIDs"]])
     {
         NSArray* xids = [NSPropertyListSerialization propertyListFromData:[paste propertyListForType:@"BrowserController.database.context.XIDs"]
                                                          mutabilityOption:NSPropertyListImmutable
@@ -5819,7 +5823,8 @@ static ViewerController *draggedController = nil;
                                 [theNewROI setCanColorizeLayer: NO];
                                 [theNewROI setCanResizeLayer: YES];
                                 
-                                NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
+                                NSRect r = {[NSEvent mouseLocation], NSZeroSize};
+                                NSPoint eventLocation = [self.window convertRectFromScreen:r].origin;
                                 eventLocation = [imageView convertPoint:eventLocation fromView:nil];
                                 NSPoint imageLocation = [imageView ConvertFromNSView2GL:eventLocation];
                                 
@@ -9119,12 +9124,12 @@ static int avoidReentryRefreshDatabase = 0;
     
     @autoreleasepool
     {
-        int i, x;
+//        int i, x;
         BOOL compressed = NO;
         
         NSArray *pixListArray = [dict objectForKey: @"pixListArray"];
-        NSArray *fileListArray = [dict objectForKey: @"fileListArray"];
-        NSArray *volumeDataArray = [dict objectForKey: @"volumeDataArray"];
+//        NSArray *fileListArray = [dict objectForKey: @"fileListArray"];
+//        NSArray *volumeDataArray = [dict objectForKey: @"volumeDataArray"];
         ViewerController *viewer = [dict objectForKey: @"viewerController"];
         
         [NSThread currentThread].name = @"Load Image Data";
@@ -9231,7 +9236,9 @@ static int avoidReentryRefreshDatabase = 0;
                     
                     if (isExecuting)
                     {
-                        [queue addOperationWithBlock: ^ {[p CheckLoadFromThread:viewer->loadingThread];}];
+                        [queue addOperationWithBlock: ^{
+                            [p CheckLoadFromThread:viewer->loadingThread];
+                        }];
                     }
                 }
             }
@@ -13961,23 +13968,23 @@ static float oldsetww, oldsetwl;
 
 - (IBAction) roiLoadFromFiles: (id) sender
 {
-    long result;
+    NSOpenPanel *panel = [NSOpenPanel openPanel];
+    [panel setAllowsMultipleSelection:YES];
+    [panel setCanChooseDirectories:NO];
     
-    NSOpenPanel *oPanel = [NSOpenPanel openPanel];
-    [oPanel setAllowsMultipleSelection:YES];
-    [oPanel setCanChooseDirectories:NO];
+    panel.allowedFileTypes = @[@"roi", @"rois_series", @"xml"];
     
-    result = [oPanel runModalForDirectory:nil file:nil types:[NSArray arrayWithObjects:@"roi", @"rois_series", @"xml", nil]];
-    
-    if (result == NSOKButton)
-    {
-        if( [[[[oPanel filenames] lastObject] pathExtension] isEqualToString:@"xml"])
-            [imageView roiLoadFromXMLFiles: [oPanel filenames]];
-        else if( [[[[oPanel filenames] lastObject] pathExtension] isEqualToString:@"rois_series"])
-            [self roiLoadFromSeries: [[oPanel filenames] lastObject]];
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
+        if( [[panel.URLs.lastObject pathExtension] isEqualToString:@"xml"])
+            [imageView roiLoadFromXMLFiles:[panel.URLs valueForKeyPath:@"path"]];
+        else if( [[panel.URLs.lastObject pathExtension] isEqualToString:@"rois_series"])
+            [self roiLoadFromSeries:panel.URLs.lastObject.path];
         else
-            [imageView roiLoadFromFilesArray: [oPanel filenames]];
-    }
+            [imageView roiLoadFromFilesArray:[panel.URLs valueForKeyPath:@"path"]];
+    }];
 }
 
 - (IBAction) roiSaveSeries: (id) sender
@@ -14012,12 +14019,14 @@ static float oldsetww, oldsetwl;
     if( rois > 0)
     {
         [panel setCanSelectHiddenExtension:NO];
-        [panel setRequiredFileType:@"rois_series"];
+        [panel setAllowedFileTypes:@[@"rois_series"]];
+        panel.nameFieldStringValue = [[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.name"];
         
-        if( [panel runModalForDirectory:nil file: [[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.name"]] == NSFileHandlingPanelOKButton)
-        {
-            [NSArchiver archiveRootObject: roisPerMovies toFile :[panel filename]];
-        }
+        [panel beginWithCompletionHandler:^(NSInteger result) {
+            if (result != NSFileHandlingPanelOKButton)
+                return;
+            [NSArchiver archiveRootObject: roisPerMovies toFile :panel.URL.path];
+        }];
     }
     else
     {
@@ -15679,7 +15688,7 @@ static float oldsetww, oldsetwl;
     
     if( !found)
     {
-        PaletteController *palette = [[PaletteController alloc] initWithViewer: self];
+        /*PaletteController *palette = */[[PaletteController alloc] initWithViewer: self];
     }
     //	else [self setROIToolTag: tPlain];
 }
@@ -16364,11 +16373,11 @@ static float oldsetww, oldsetwl;
     }
     else //same action as endSetComments, but with composedMenuTitle
     {
-        [[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] setValue:composedMenuTitle forKeyPath:@"series.comment"];
+        [[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] setValue:composedMenuTitle forKeyPath:@"series.comment"];
         
         if([[BrowserController currentBrowser] isCurrentDatabaseBonjour])
         {
-            [[BrowserController currentBrowser] setBonjourDatabaseValue:[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] value:[CommentsEditField stringValue] forKey:@"series.comment"];
+            [(RemoteDicomDatabase *)[[BrowserController currentBrowser] database] object:[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] setValue:[CommentsEditField stringValue] forKey:@"series.comment"];
         }
         
         [[[BrowserController currentBrowser] databaseOutline] reloadData];
@@ -17235,7 +17244,7 @@ static float oldsetww, oldsetwl;
             
             ITKTransform * transform = [[ITKTransform alloc] initWithViewer:movingViewer];
             
-            ViewerController *newViewer = [transform computeAffineTransformWithParameters: matrix resampleOnViewer: self];
+            /*ViewerController *newViewer =*/ [transform computeAffineTransformWithParameters: matrix resampleOnViewer: self];
             
             [imageView sendSyncMessage: 0];
             [self adjustSlider];
@@ -17878,7 +17887,7 @@ static float oldsetww, oldsetwl;
         
         for( int x = 0; x < [pixList[ i] count]; x++)
         {
-            DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [[pixList[ i] objectAtIndex: x] sourceFile]  decodingPixelData:NO];
+            DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:[[pixList[i] objectAtIndex:x] srcFile] decodingPixelData:NO];
             
             DCMAttribute *attr = [dcmObject attributeForTag: [DCMAttributeTag tagWithGroup: gr element: el]];
             
@@ -18119,7 +18128,7 @@ static float oldsetww, oldsetwl;
     
     NSString	*tmpFolder = [NSString stringWithFormat:@"/tmp/print"];
     
-    [[NSFileManager defaultManager] removeFileAtPath: tmpFolder handler:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:tmpFolder error:NULL];
     
     [self restoreWindowsAfterPrint];
 }
@@ -18236,8 +18245,8 @@ static float oldsetww, oldsetwl;
         
         NSMutableArray	*files = [NSMutableArray array];
         NSString	*tmpFolder = [NSString stringWithFormat:@"/tmp/print"];
-        [[NSFileManager defaultManager] removeFileAtPath: tmpFolder handler:nil];
-        [[NSFileManager defaultManager] createDirectoryAtPath:tmpFolder attributes:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:tmpFolder error:NULL];
+        [[NSFileManager defaultManager] createDirectoryAtPath:tmpFolder withIntermediateDirectories:YES attributes:nil error:NULL];
         
         Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Preparing printing...", nil)];
         [splash setCancel: YES];
@@ -18537,7 +18546,7 @@ static float oldsetww, oldsetwl;
             [v.window orderOut: self];
     }
     
-    [NSApp beginSheet: printWindow modalForWindow:nil modalDelegate:self didEndSelector:nil contextInfo:nil];
+    [NSApp beginSheet: printWindow modalForWindow:self.window modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
 #ifndef OSIRIX_LIGHT
@@ -18724,7 +18733,7 @@ static float oldsetww, oldsetwl;
 {
     int no;
     
-    no = fabs( [quicktimeFrom intValue] - [quicktimeTo intValue]);
+    no = abs( [quicktimeFrom intValue] - [quicktimeTo intValue]);
     no ++;
     no /= [quicktimeInterval intValue];
     
@@ -18905,9 +18914,10 @@ static float oldsetww, oldsetwl;
         {
             NSRect	bounds = [[v imageView] bounds];
             NSPoint origin = [[v imageView] convertPoint: bounds.origin toView: nil];
-            bounds.origin = [[v window] convertBaseToScreen: origin];
+            NSRect r = {origin, NSZeroSize};
+            bounds.origin = [[v window] convertRectToScreen:r].origin;
             
-            bounds = NSIntegralRect( bounds);
+            bounds = NSIntegralRect(bounds);
             
             bounds.origin.x *= v.window.backingScaleFactor;
             bounds.origin.y *= v.window.backingScaleFactor;
@@ -19231,15 +19241,16 @@ static float oldsetww, oldsetwl;
 -(void) exportRAW:(id) sender
 {
     NSSavePanel     *panel = [NSSavePanel savePanel];
-    short           i;
     
     [panel setCanSelectHiddenExtension:NO];
     
-    if( [panel runModalForDirectory:nil file: [[fileList[ curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.name"]] == NSFileHandlingPanelOKButton)
-    {
-        [panel filename];
+    panel.nameFieldStringValue = [[fileList[ curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.name"];
+    
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
         
-        for( i = 0; i < [fileList[ curMovieIndex] count]; i++)
+        for(int i = 0; i < [fileList[ curMovieIndex] count]; i++)
         {
             DCMPix  *pix = [pixList[ curMovieIndex] objectAtIndex:i];
             
@@ -19257,11 +19268,11 @@ static float oldsetww, oldsetwl;
             
             NSData *data = [NSData dataWithBytesNoCopy:dst16.data length:[pix pwidth]*[pix pheight]*2 freeWhenDone:NO];
             
-            [data writeToFile:[NSString stringWithFormat:@"%@.%d",[panel filename],i] atomically:NO];
+            [data writeToFile:[NSString stringWithFormat:@"%@.%d", panel.URL.path, i] atomically:NO];
             
             free( dst16.data);
         }
-    }
+    }];
 }
 
 - (IBAction) setCurrentdcmExport:(id) sender

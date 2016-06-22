@@ -369,15 +369,19 @@ typedef struct _xyzArray
 	
 	switch( [sender tag])
 	{
-		case 1: [panel setRequiredFileType:@"rib"];	break;
-		case 2: [panel setRequiredFileType:@"wrl"];	break;
-		case 3: [panel setRequiredFileType:@"iv"];	break;
-		case 4: [panel setRequiredFileType:@"obj"];	break;
-		case 5: [panel setRequiredFileType:@"stl"];	break;
+        case 1: [panel setAllowedFileTypes:@[@"rib"]]; break;
+		case 2: [panel setAllowedFileTypes:@[@"wrl"]]; break;
+		case 3: [panel setAllowedFileTypes:@[@"iv"]]; break;
+		case 4: [panel setAllowedFileTypes:@[@"obj"]]; break;
+		case 5: [panel setAllowedFileTypes:@[@"stl"]]; break;
 	}
 	
-	if( [panel runModalForDirectory:nil file:@"3DFile"] == NSFileHandlingPanelOKButton)
-	{
+    panel.nameFieldStringValue = @"3DFile";
+    
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
 		BOOL orientationSwitch = NO;
 		
 		if( orientationWidget)
@@ -399,7 +403,7 @@ typedef struct _xyzArray
 				vtkRIBExporter  *exporter = vtkRIBExporter::New();
 				
 				exporter->SetInput( [self renderWindow]);
-				exporter->SetFilePrefix( [[[panel filename] stringByDeletingPathExtension] UTF8String]);
+                exporter->SetFilePrefix( [[panel.URL.path stringByDeletingPathExtension] UTF8String]);
 				exporter->Write();
 				
 				exporter->Delete();
@@ -411,7 +415,7 @@ typedef struct _xyzArray
 				vtkVRMLExporter  *exporter = vtkVRMLExporter::New();
 				
 				exporter->SetInput( [self renderWindow]);
-				exporter->SetFileName( [[panel filename] UTF8String]);
+				exporter->SetFileName( [panel.URL.path UTF8String]);
 				exporter->Write();
 				
 				exporter->Delete();
@@ -423,7 +427,7 @@ typedef struct _xyzArray
 				vtkIVExporter  *exporter = vtkIVExporter::New();
 				
 				exporter->SetInput( [self renderWindow]);
-				exporter->SetFileName( [[panel filename] UTF8String]);
+				exporter->SetFileName( [panel.URL.path UTF8String]);
 				exporter->Write();
 				
 				exporter->Delete();
@@ -435,7 +439,7 @@ typedef struct _xyzArray
 				vtkOBJExporter  *exporter = vtkOBJExporter::New();
 				
 				exporter->SetInput( [self renderWindow]);
-				exporter->SetFilePrefix( [[[panel filename] stringByDeletingPathExtension] UTF8String]);
+				exporter->SetFilePrefix( [[panel.URL.path stringByDeletingPathExtension] UTF8String]);
 				exporter->Write();
 				
 				exporter->Delete();
@@ -453,7 +457,7 @@ typedef struct _xyzArray
 				else
 					exporter->SetInputData( nil);
                 
-				exporter->SetFileName( [[panel filename] UTF8String]);
+				exporter->SetFileName( [panel.URL.path UTF8String]);
 				exporter->Write();
 				
 				exporter->Delete();
@@ -469,7 +473,7 @@ typedef struct _xyzArray
 			[self switchOrientationWidget: self];
 		}
 
-	}
+    }];
 }
 
 //-(IBAction) endQuicktimeVRSettings:(id) sender
@@ -505,7 +509,7 @@ typedef struct _xyzArray
 //			else
 //				newpath = [QuicktimeExport generateQTVR: path frames: numberOfFrames];
 //			
-//			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+//			[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
 //			[[NSFileManager defaultManager] movePath: newpath  toPath: path handler: nil];
 //			
 //			[[NSWorkspace sharedWorkspace] openFile: path withApplication: nil andDeactivate: YES];
@@ -2696,11 +2700,11 @@ typedef struct _xyzArray
 
     NSImage *im;
     
-    [pb declareTypes:[NSArray arrayWithObject:NSTIFFPboardType] owner:self];
+    [pb declareTypes:[NSArray arrayWithObject:NSPasteboardTypeTIFF] owner:self];
     
     im = [self nsimage:NO];
     
-    [pb setData: [im TIFFRepresentation] forType:NSTIFFPboardType];
+    [pb setData: [im TIFFRepresentation] forType:NSPasteboardTypeTIFF];
 }
 
 // joris' modifications for fly thru
@@ -3464,7 +3468,7 @@ typedef struct _xyzArray
 	if ([event modifierFlags] & NSAlternateKeyMask)
 		[ pbTypes addObject: NSFilesPromisePboardType];
 	else
-		[pbTypes addObject: NSTIFFPboardType];	
+		[pbTypes addObject: NSPasteboardTypeTIFF];	
 	
 
 	[pboard declareTypes:pbTypes  owner:self];
@@ -3487,7 +3491,7 @@ typedef struct _xyzArray
             event:event];
 	} 
 	else {		
-		[pboard setData: [[NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSTIFFPboardType];
+		[pboard setData: [[NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSPasteboardTypeTIFF];
 		
 		[ self dragImage:thumbnail
 			at:local_point

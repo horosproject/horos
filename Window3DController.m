@@ -43,6 +43,12 @@
 #import "NSUserDefaultsController+OsiriX.h"
 #import "DicomDatabase.h"
 
+@interface Window3DController (Dummy)
+
+- (void)noAction:(id)dummy;
+
+@end
+
 @implementation Window3DController
 
 #ifndef OSIRIX_LIGHT
@@ -168,7 +174,7 @@
 	
 	NSString	*tmpFolder = [NSString stringWithFormat:@"/tmp/print"];
 	
-	[[NSFileManager defaultManager] removeFileAtPath: tmpFolder handler:nil];
+	[[NSFileManager defaultManager] removeItemAtPath: tmpFolder error:NULL];
 }
 
 - (void) print:(id) sender
@@ -183,8 +189,8 @@
 	
 	NSMutableArray	*files = [NSMutableArray array];
 
-	[[NSFileManager defaultManager] removeFileAtPath: tmpFolder handler:nil];
-	[[NSFileManager defaultManager] createDirectoryAtPath:tmpFolder attributes:nil];
+	[[NSFileManager defaultManager] removeItemAtPath: tmpFolder error:NULL];
+	[[NSFileManager defaultManager] createDirectoryAtPath:tmpFolder withIntermediateDirectories:YES attributes:nil error:NULL];
 
 	NSImage *im = ( [[self view] respondsToSelector: @selector(nsimageQuicktime:)] ) ?
 		[(VRView*) [self view] nsimageQuicktime] : nil;

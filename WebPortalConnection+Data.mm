@@ -2651,7 +2651,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     
     response.data = [NSData dataWithContentsOfFile: tmpFile];
     
-    [[NSFileManager defaultManager] removeFileAtPath: tmpFile handler:nil];
+    [[NSFileManager defaultManager] removeItemAtPath: tmpFile error:NULL];
     
     //	NSString *reportType = [reportFilePath pathExtension];
     //
@@ -2676,7 +2676,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     //
     //		response.data = [NSData dataWithContentsOfFile: reportFilePath];
     //
-    //		[[NSFileManager defaultManager] removeFileAtPath:reportFilePath handler:nil];
+    //		[[NSFileManager defaultManager] removeItemAtPath:reportFilePath error:NULL];
     //	}
     //	else
     //	{

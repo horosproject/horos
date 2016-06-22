@@ -504,7 +504,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
         
         // remove destination directory
         if ([fileManager fileExistsAtPath: destPath])
-            [fileManager removeFileAtPath: destPath handler: nil];
+            [fileManager removeItemAtPath: destPath error:NULL];
         
         // create destination directory
         if ([fileManager fileExistsAtPath: destPath] || ![fileManager createDirectoryAtPath: destPath attributes: nil])
@@ -629,7 +629,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 		}
 
 		// remove temporary files
-		[[NSFileManager defaultManager] removeFileAtPath: [xmlPath stringByDeletingLastPathComponent] handler: nil];
+		[[NSFileManager defaultManager] removeItemAtPath: [xmlPath stringByDeletingLastPathComponent] error:NULL];
 		
 	}
 	@catch (NSException * e) 

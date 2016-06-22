@@ -1622,8 +1622,8 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                             <string key="keyEquivalent" base64-UTF8="YES">
-Gw
-</string>
+                                Gw
+                            </string>
                         </buttonCell>
                         <connections>
                             <action selector="endAddPreset:" target="-2" id="807"/>
@@ -1646,8 +1646,8 @@ Gw
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                             <string key="keyEquivalent" base64-UTF8="YES">
-DQ
-</string>
+                                DQ
+                            </string>
                         </buttonCell>
                         <connections>
                             <action selector="endAddPreset:" target="-2" id="808"/>
@@ -1717,8 +1717,8 @@ DQ
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                             <string key="keyEquivalent" base64-UTF8="YES">
-Gw
-</string>
+                                Gw
+                            </string>
                         </buttonCell>
                         <connections>
                             <action selector="endCreateAutoQRInstance:" target="-2" id="1147"/>
@@ -1741,8 +1741,8 @@ Gw
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                             <string key="keyEquivalent" base64-UTF8="YES">
-DQ
-</string>
+                                DQ
+                            </string>
                         </buttonCell>
                         <connections>
                             <action selector="endCreateAutoQRInstance:" target="-2" id="1146"/>
@@ -1789,8 +1789,8 @@ DQ
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                             <string key="keyEquivalent" base64-UTF8="YES">
-Gw
-</string>
+                                Gw
+                            </string>
                         </buttonCell>
                         <connections>
                             <action selector="cancel:" target="-2" id="893"/>
@@ -1805,8 +1805,8 @@ Gw
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                             <string key="keyEquivalent" base64-UTF8="YES">
-DQ
-</string>
+                                DQ
+                            </string>
                         </buttonCell>
                         <connections>
                             <action selector="ok:" target="-2" id="894"/>
@@ -1817,8 +1817,8 @@ DQ
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" id="855">
                             <font key="font" metaFont="smallSystem"/>
                             <string key="title">Each study displayed in the Query &amp; Retrieve list will be automatically retrieved to destination computer.
-
-Only 10 studies are retrieved each time. Next 10 studies will be retrieved during next 'refresh'.</string>
+                                
+                                Only 10 studies are retrieved each time. Next 10 studies will be retrieved during next 'refresh'.</string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>

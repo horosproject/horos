@@ -1621,11 +1621,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     {
         NSImage *im;
         
-        [pb declareTypes:[NSArray arrayWithObject:NSTIFFPboardType] owner:self];
+        [pb declareTypes:[NSArray arrayWithObject:NSPasteboardTypeTIFF] owner:self];
         
         im = [self nsimage: NO allViewers: [sender tag]];
         
-        [pb setData: [[NSBitmapImageRep imageRepWithData: [im TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSTIFFPboardType];
+        [pb setData: [[NSBitmapImageRep imageRepWithData: [im TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSPasteboardTypeTIFF];
     }
     else
     {
@@ -13397,12 +13397,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         NSPasteboardItem* pbi = [[[NSPasteboardItem alloc] init] autorelease];
         [pbi setPropertyList:@[path] forType:NSFilenamesPboardType];
         [pbi setData:[NSData dataWithBytes:&self length:sizeof(DCMView *)] forType:HorosPboardUTI];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        [pbi setData:[NSData dataWithBytes:&self length:sizeof(DCMView *)] forType:pasteBoardHoros];
-        [pbi setData:[NSData dataWithBytes:&self length:sizeof(DCMView *)] forType:pasteBoardOsiriX];
-#pragma clang diagnostic pop
-        [pbi setData:[image TIFFRepresentation] forType:NSTIFFPboardType];
+        [pbi setData:image.TIFFRepresentation forType:NSPasteboardTypeTIFF];
         
         NSDraggingItem* di = [[[NSDraggingItem alloc] initWithPasteboardWriter:pbi] autorelease];
         [di setDraggingFrame:NSMakeRect(local_point.x, local_point.y, thumbnail.size.width, thumbnail.size.height) contents:thumbnail];
