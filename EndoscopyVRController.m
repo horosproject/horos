@@ -38,7 +38,17 @@
 #import "ROI.h"
 #import "VRView.h"
 #import "BrowserController.h"
+#import "DicomDatabase.h"
 #import "Notifications.h"
+
+@interface EndoscopyVRController (Dummy)
+
+- (void)add3DPoint:(id)dummy;
+- (void)UpdateWLWWMenu:(id)dummy;
+- (void)updateVolumeData:(id)dummy;
+- (void)UpdateOpacityMenu:(id)dummy;
+
+@end
 
 @implementation EndoscopyVRController
 
@@ -230,13 +240,13 @@
 
 -(void) save3DState
 {
-	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+	NSString		*path = [[[BrowserController currentBrowser] database] stateDatabaseDirPath];
 	BOOL			isDir = YES;
 	
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 	{
-		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+		[[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:NULL];
 	}
 	NSString	*str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VRENDOSCOPY-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
 	
@@ -253,13 +263,13 @@
 -(void) load3DState
 {
 	NSLog (@"Load Endoscopy 3d State");
-	NSString		*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+	NSString		*path = [[[BrowserController currentBrowser] database] stateDatabaseDirPath];
 	BOOL			isDir = YES;
 	
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
 	{
-		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+		[[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:NULL];
 	}
 	NSString	*str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VRENDOSCOPY-%@", [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
 	

@@ -35,6 +35,7 @@
 #import "DCMView.h"
 #import "DCMPix.h"
 #import "BrowserController.h"
+#import "NSUserDefaults+OsiriX.h"
 
 @implementation printView
 
@@ -101,7 +102,7 @@
 			string2draw = [string2draw stringByAppendingFormat:@"Patient: "];
 			if([file valueForKeyPath:@"series.study.name"]) string2draw = [string2draw stringByAppendingFormat:@"%@", [file valueForKeyPath:@"series.study.name"]];
 			if([file valueForKeyPath:@"series.study.patientID"]) string2draw = [string2draw stringByAppendingFormat:@"  [%@]", [file valueForKeyPath:@"series.study.patientID"]];
-			if( [file valueForKeyPath:@"series.study.dateOfBirth"]) string2draw = [string2draw stringByAppendingFormat:@"  %@", [BrowserController DateOfBirthFormat: [file valueForKeyPath:@"series.study.dateOfBirth"]]];
+			if( [file valueForKeyPath:@"series.study.dateOfBirth"]) string2draw = [string2draw stringByAppendingFormat:@"  %@", [[NSUserDefaults dateFormatter] stringFromDate: [file valueForKeyPath:@"series.study.dateOfBirth"]]];
 			string2draw = [string2draw stringByAppendingFormat:@"\r"];
 		}	
 		
@@ -114,7 +115,7 @@
 			NSCalendarDate  *date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[file valueForKey:@"date"] timeIntervalSinceReferenceDate]];
 			if( date && [date yearOfCommonEra] != 3000)
 			{
-				NSString *tempString = [BrowserController DateOfBirthFormat: date];
+				NSString *tempString = [[NSUserDefaults dateFormatter] stringFromDate: date];
 				string2draw = [string2draw stringByAppendingFormat:@"%@", tempString];
 			
 				DCMPix *curDCM = [[viewer pixList] objectAtIndex: 0];

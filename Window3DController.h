@@ -42,10 +42,6 @@
 #import "OSIWindowController.h"
 
 
-#define DATABASEPATH				@"/DATABASE.noindex/"
-#define STATEDATABASE				@"/3DSTATE/"
-
-
 @class ROIVolume;
 @class ViewerController;
 @class DCMPix;

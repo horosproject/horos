@@ -164,6 +164,12 @@ void errmsg(const char* msg, ...)
     fprintf(stderr, "\n");
 }
 
+@interface DCMTKQueryRetrieveSCP (Dummy)
+
+- (void)displayUpdateMessage:(id)dummy;
+- (void)displayListenerError:(id)dummy;
+
+@end
 
 @implementation DCMTKQueryRetrieveSCP
 

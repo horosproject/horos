@@ -1,0 +1,46 @@
+/*============================================================================
+  KWSys - Kitware System Library
+  Copyright 2000-2009 Kitware, Inc., Insight Software Consortium
+
+  Distributed under the OSI-approved BSD License (the "License");
+  see accompanying file Copyright.txt for details.
+
+  This software is distributed WITHOUT ANY WARRANTY; without even the
+  implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the License for more information.
+============================================================================*/
+#ifndef itksys_ios_fstream
+#define itksys_ios_fstream
+
+#include <itksys/Configure.hxx>
+
+#ifdef _MSC_VER
+# pragma warning (push, 1)
+# pragma warning (disable: 4702)
+# pragma warning (disable: 4995) /* Old streams are deprecated.  */
+#endif
+
+#if itksys_IOS_USE_ANSI
+# include <fstream>
+#else
+# include <fstream.h>
+#endif
+
+#if !itksys_IOS_USE_SSTREAM
+namespace itksys_ios
+{
+  using itksys_ios_namespace::ostream;
+  using itksys_ios_namespace::istream;
+  using itksys_ios_namespace::ofstream;
+  using itksys_ios_namespace::ifstream;
+  using itksys_ios_namespace::ios;
+  using itksys_ios_namespace::endl;
+  using itksys_ios_namespace::flush;
+}
+#endif
+
+#ifdef _MSC_VER
+# pragma warning(pop)
+#endif
+
+#endif

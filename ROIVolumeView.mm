@@ -209,24 +209,29 @@
     NSSavePanel     *panel = [NSSavePanel savePanel];
 
 	[panel setCanSelectHiddenExtension:YES];
-	[panel setRequiredFileType:@"jpg"];
+	[panel setAllowedFileTypes:@[@"jpg"]];
 	
-	if( [panel runModalForDirectory:nil file:@"Volume Image"] == NSFileHandlingPanelOKButton)
-	{
-		NSImage *im = [self nsimage:NO];
-		
-		NSArray *representations;
-		NSData *bitmapData;
-		
-		representations = [im representations];
-		
-		bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-		
-		[bitmapData writeToFile:[panel filename] atomically:YES];
-		
-		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
-	}
+    panel.nameFieldStringValue = @"Volume Image";
+    
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+
+        NSImage *im = [self nsimage:NO];
+        
+        NSArray *representations;
+        NSData *bitmapData;
+        
+        representations = [im representations];
+        
+        bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+        
+        [bitmapData writeToFile:panel.URL.path atomically:YES];
+        
+        NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+            [ws openFile:panel.URL.path];
+    }];
 }
 
 -(IBAction) copy:(id) sender
@@ -257,11 +262,11 @@
 		ROIVolumeController *co = [[self window] windowController];
 		NSArray	*pixList = [[co viewer] pixList];
 		
-		[exportDCM setSourceFile: [[pixList objectAtIndex: 0] sourceFile]];
+		[exportDCM setSourceFile: [[pixList objectAtIndex: 0] srcFile]];
 		[exportDCM setSeriesDescription: [co.seriesName stringValue]];
 		[exportDCM setSeriesNumber: 8856];
-		[exportDCM setPixelData: dataPtr samplePerPixel:spp bitsPerPixel:bpp width: width height: height];
-		
+        [exportDCM setPixelData:dataPtr samplesPerPixel:spp bitsPerSample:bpp width:width height:height];
+
 		NSString *f = [exportDCM writeDCMFile: nil];
 		if( f == nil) NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		

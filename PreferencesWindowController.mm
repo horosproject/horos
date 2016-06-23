@@ -50,8 +50,6 @@
 
 //static NSMutableDictionary *paneBundles = nil;
 
-//#define DATAFILEPATH @"/Database.dat"
-
 @implementation PreferencesWindowContext
 
 @synthesize title = _title, parentBundle = _parentBundle, resourceName = _resourceName, pane = _pane;

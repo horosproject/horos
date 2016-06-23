@@ -91,14 +91,16 @@ static		NSDictionary				*_hotKeyDictionary = nil, *_hotKeyModifiersDictionary = 
 static		NSRecursiveLock				*drawLock = nil;
 static		NSMutableArray				*globalStringTextureCache = nil;
 
-NSString * const pasteBoardHoros = @"Horos pasteboard"; // deprecated
-NSString * const HorosPboardUTI = @"com.opensource.horos.uti";
-NSString * const pasteBoardHorosPlugin = @"HorosPluginDataType"; // deprecated
-NSString * const HorosPluginPboardUTI = @"com.opensource.horos.plugin.uti";
+NSString * const HorosPasteboardType = @"com.opensource.horos";
+NSString * const HorosPasteboardTypePlugin = @"com.opensource.horos.plugin";
 
 NSString * const pasteBoardOsiriX = @"OsiriX pasteboard"; // deprecated
 NSString * const pasteBoardOsiriXPlugin = @"OsiriXPluginDataType"; // deprecated
 NSString * const OsirixPluginPboardUTI = @"com.opensource.osirix.plugin.uti"; // deprecated
+NSString * const pasteBoardHoros = @"Horos pasteboard"; // deprecated
+NSString * const HorosPboardUTI = @"com.opensource.horos.uti"; // deprecated
+NSString * const pasteBoardHorosPlugin = @"HorosPluginDataType"; // deprecated
+NSString * const HorosPluginPboardUTI = @"com.opensource.horos.plugin.uti"; // deprecated
 
 // intersect3D_SegmentPlane(): intersect a segment and a plane
 //    Input:  S = a segment, and Pn = a plane = {Point V0; Vector n;}
@@ -1629,7 +1631,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     }
     else
     {
-        [pb declareTypes:[NSArray arrayWithObjects:@"ROIObject", NSStringPboardType, nil] owner:nil];
+        [pb declareTypes:[NSArray arrayWithObjects:@"ROIObject", NSPasteboardTypeString, nil] owner:nil];
         [pb setData: [NSArchiver archivedDataWithRootObject: roiSelectedArray] forType:@"ROIObject"];
         
         NSMutableString *r = [NSMutableString string];
@@ -1642,7 +1644,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 [r appendString:@"\r"];
         }
         
-        [pb setString: r  forType:NSStringPboardType];
+        [pb setString: r  forType:NSPasteboardTypeString];
     }
 }
 
@@ -3212,6 +3214,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             [m setNeedsDisplay: YES];
         }
     }
+}
+
+- (void)flagsChanged {
+    NSEvent *e = nil;
+    [self flagsChanged:e];
 }
 
 - (void) flagsChanged:(NSEvent *)event
@@ -13344,63 +13351,38 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 #pragma mark-  Drag and Drop
 
+static NSString * const O2PasteboardTypeEventModifierFlags = @"com.opensource.osirix.eventmodifierflags";
+
 - (void) startDrag:(NSTimer*)theTimer
 {
     @try {
         _dragInProgress = YES;
-        NSEvent *event = (NSEvent *)[theTimer userInfo];
+        NSEvent *event = [theTimer userInfo];
         
-        NSImage *image;
-        if ([event modifierFlags] & NSShiftKeyMask)
-            image = [self nsimage: YES];
-        else
-            image = [self nsimage: NO];
-        
-        // Thumbnail image and position
-        NSPoint event_location = [event locationInWindow];
-        NSPoint local_point = [self convertPoint:event_location fromView:nil];
-        local_point.x -= 35;
-        local_point.y -= 35;
+        NSImage *image = [self nsimage:(event.modifierFlags&NSShiftKeyMask)];
         
         NSSize originalSize = [image size];
-        
         float ratio = originalSize.width / originalSize.height;
-        
         NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize(100, 100/ratio)] autorelease];
-        if( [thumbnail size].width > 0 && [thumbnail size].height > 0)
-        {
+        if( [thumbnail size].width > 0 && [thumbnail size].height > 0) {
             [thumbnail lockFocus];
             [image drawInRect: NSMakeRect(0, 0, 100, 100/ratio) fromRect: NSMakeRect(0, 0, originalSize.width, originalSize.height) operation: NSCompositeSourceOver fraction: 1.0];
             [thumbnail unlockFocus];
         }
         
-        NSString *description = [[self dicomImage] valueForKeyPath:@"series.name"];
-        
-        if( description.length == 0)
-            description = [[self dicomImage] valueForKeyPath:@"series.seriesDescription"];
-        
-        NSString *path = [[NSFileManager defaultManager] tmpDirPath];
-        
-        if( description.length)
-            path = [path stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", [[self dicomImage] valueForKeyPath:@"series.study.name"], description]];
-        else
-            path = [path stringByAppendingPathComponent: [[self dicomImage] valueForKeyPath:@"series.study.name"]];
-        
-        path = [path stringByAppendingPathExtension: @"jpg"];
-        [[NSFileManager defaultManager] removeItemAtPath: path error: nil];
-        
-        NSData *data = [[NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-        [data writeToFile: path atomically:YES];
-        if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
-            N2LogStackTrace( @"file doesnt exist: %@", path);
-        
         NSPasteboardItem* pbi = [[[NSPasteboardItem alloc] init] autorelease];
-        [pbi setPropertyList:@[path] forType:NSFilenamesPboardType];
-        [pbi setData:[NSData dataWithBytes:&self length:sizeof(DCMView *)] forType:HorosPboardUTI];
+        for (NSString *pasteboardType in DCMView.PasteboardTypes)
+            if ([pasteboardType containsString:@"."])
+                [pbi setData:[NSData dataWithBytes:&self length:sizeof(DCMView *)] forType:pasteboardType];
         [pbi setData:image.TIFFRepresentation forType:NSPasteboardTypeTIFF];
-        
+        NSEventModifierFlags mf = event.modifierFlags;
+        [pbi setData:[NSData dataWithBytes:&mf length:sizeof(NSEventModifierFlags)] forType:O2PasteboardTypeEventModifierFlags];
+        [pbi setDataProvider:self forTypes:@[NSPasteboardTypeString, (NSString *)kPasteboardTypeFileURLPromise]];
+        [pbi setString:(id)kUTTypeImage forType:(id)kPasteboardTypeFilePromiseContent];
+
         NSDraggingItem* di = [[[NSDraggingItem alloc] initWithPasteboardWriter:pbi] autorelease];
-        [di setDraggingFrame:NSMakeRect(local_point.x, local_point.y, thumbnail.size.width, thumbnail.size.height) contents:thumbnail];
+        NSPoint p = [self convertPoint:event.locationInWindow fromView:nil];
+        [di setDraggingFrame:NSMakeRect(p.x-thumbnail.size.width/2, p.y-thumbnail.size.height/2, thumbnail.size.width, thumbnail.size.height) contents:thumbnail];
         
         NSDraggingSession* session = [self beginDraggingSessionWithItems:@[di] event:event source:self];
         session.animatesToStartingPositionsOnCancelOrFail = YES;
@@ -13416,6 +13398,50 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     return NSDragOperationGeneric;
 }
 
+- (void)pasteboard:(NSPasteboard *)pasteboard item:(NSPasteboardItem *)item provideDataForType:(NSString *)type {
+    if ([type isEqualToString:(id)kPasteboardTypeFileURLPromise]) {
+        PasteboardRef pboardRef = NULL;
+        PasteboardCreate((__bridge CFStringRef)[pasteboard name], &pboardRef);
+        if (!pboardRef)
+            return;
+
+        PasteboardSynchronize(pboardRef);
+        
+        CFURLRef urlRef = NULL;
+        PasteboardCopyPasteLocation(pboardRef, &urlRef);
+        
+        if (urlRef) {
+            NSString *description = self.dicomImage.series.name;
+            if (!description.length)
+                description = self.dicomImage.series.seriesDescription;
+
+            NSString *name = self.dicomImage.series.study.name;
+            if (description.length)
+                name = [name stringByAppendingFormat:@" - %@", description];
+            
+            if (!name.length)
+                name = @"Horos";
+
+            NSURL *url = [(NSURL *)urlRef URLByAppendingPathComponent:[name stringByAppendingPathExtension:@"jpg"]];
+            size_t i = 0;
+            while ([url checkResourceIsReachableAndReturnError:NULL])
+                url = [(NSURL *)urlRef URLByAppendingPathComponent:[name stringByAppendingFormat:@" (%lu).jpg", ++i]];
+
+            NSEventModifierFlags mf; [[item dataForType:O2PasteboardTypeEventModifierFlags] getBytes:&mf];
+            NSImage *image = [self nsimage:(mf&NSShiftKeyMask)];
+            
+            NSData *idata = [[NSBitmapImageRep imageRepWithData:image.TIFFRepresentation] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+            [idata writeToURL:url atomically:YES];
+
+            [item setString:[url absoluteString] forType:type];
+
+            CFRelease(urlRef);
+        }
+        
+        CFRelease(pboardRef);
+    }
+}
+
 - (void)deleteMouseDownTimer
 {
     [_mouseDownTimer invalidate];
@@ -13429,7 +13455,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     return NSDragOperationEvery;
 }
 
-- (id)dicomImage{
+- (DicomImage *)dicomImage{
     return [dcmFilesList objectAtIndex: curImage];
 }
 
@@ -13847,5 +13873,23 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //	if([[loupeController window] isVisible])
 //		[[loupeController window] orderOut:self];
 //}
+
++ (NSArray<NSString *> *)PasteboardTypes {
+    return @[HorosPasteboardType,
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+             HorosPboardUTI, pasteBoardHoros, pasteBoardOsiriX
+#pragma clang diagnostic pop
+             ];
+}
+
++ (NSArray<NSString *> *)PluginPasteboardTypes {
+    return @[HorosPasteboardTypePlugin,
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+             HorosPluginPboardUTI, pasteBoardHorosPlugin, OsirixPluginPboardUTI, pasteBoardOsiriXPlugin
+#pragma clang diagnostic pop
+             ];
+}
 
 @end

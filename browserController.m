@@ -149,14 +149,7 @@
 
 #define DISTANTSTUDYFONT @"Helvetica-BoldOblique"
 
-//#define USERDATABASEVERSION @"1.0"
-#define DATABASEVERSION @"2.5"
-#define DATABASEPATH @"/DATABASE.noindex/"
-#define DECOMPRESSIONPATH @"/DECOMPRESSION.noindex/"
-#define TOBEINDEXED @"/TOBEINDEXED.noindex/"
-#define ERRPATH @"/NOT READABLE/"
-#define DATABASEFPATH @"/DATABASE.noindex"
-#define DATAFILEPATH @"/Database.sql"
+//#define DATABASEVERSION @"2.5"
 
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreServices/CoreServices.h>
@@ -166,7 +159,9 @@
 #include <IOKit/storage/IODVDMedia.h>
 
 static BrowserController *browserWindow = nil;
-NSString* O2AlbumDragType = @"Osirix Album drag";
+NSString * const O2AlbumDragType = @"Osirix Album drag";
+NSString * const O2DatabaseXIDsDragType = @"BrowserController.database.context.XIDs";
+NSString * const O2PasteboardTypeDatabaseObjectXIDs = @"com.opensource.osirix.database.xids";
 static BOOL loadingIsOver = NO;//, isAutoCleanDatabaseRunning = NO;
 static NSMenu *contextual = nil;
 static NSMenu *contextualRT = nil;  // Alternate menus for RT objects (which often don't have images)
@@ -6892,18 +6887,21 @@ static NSConditionLock *threadLock = nil;
     return r;
 }
 
-- (BOOL)outlineView:(NSOutlineView *)olv writeItems:(NSArray*)pbItems toPasteboard:(NSPasteboard*)pboard
+- (BOOL)outlineView:(NSOutlineView *)olv writeItems:(NSArray *)pbItems toPasteboard:(NSPasteboard *)pboard
 {
     for( id item in pbItems)
     {
         if( [item isDistant])
             return NO;
     }
+
+    [pboard declareTypes:@[NSFilesPromisePboardType, NSPasteboardTypeString] owner:self];
+    [pboard setPropertyList:@[@"dcm"] forType:NSFilesPromisePboardType];
     
-    [pboard declareTypes: [NSArray arrayWithObjects: @"BrowserController.database.context.XIDs", O2AlbumDragType, NSFilesPromisePboardType, NSFilenamesPboardType, NSStringPboardType, nil] owner:self];
-    [pboard setPropertyList:nil forType:O2AlbumDragType];
-    [pboard setPropertyList:[NSArray arrayWithObject:@"dcm"] forType:NSFilesPromisePboardType];
-    [pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[pbItems valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL] forType:@"BrowserController.database.context.XIDs"];
+    id plist = [NSPropertyListSerialization dataFromPropertyList:[pbItems valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
+    for (NSString *pasteboardType in BrowserController.DatabaseObjectXIDsPasteboardTypes)
+        [pboard setPropertyList:plist forType:pasteboardType];
+    
     
     return YES;
 }
@@ -8756,7 +8754,7 @@ static NSConditionLock *threadLock = nil;
 {
     NSPasteboard *pb = [NSPasteboard generalPasteboard];
     
-    [pb declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:self];
+    [pb declareTypes:[NSArray arrayWithObject:NSPasteboardTypeString] owner:self];
     
     NSString *string;
     
@@ -8765,7 +8763,7 @@ static NSConditionLock *threadLock = nil;
     else
         string = [self exportDBListOnlySelected: YES];
     
-    [pb setString: string forType:NSStringPboardType];
+    [pb setString: string forType:NSPasteboardTypeString];
 }
 
 - (IBAction) saveDBListAs:(id) sender
@@ -11427,6 +11425,15 @@ constrainSplitPosition:(CGFloat)proposedPosition
     [pool release];
 }
 
++ (NSArray<NSString *> *)DatabaseObjectXIDsPasteboardTypes {
+    return @[O2PasteboardTypeDatabaseObjectXIDs,
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+             O2DatabaseXIDsDragType
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+             ];
+}
+
 - (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)operation
 {
     if ([tableView isEqual:albumTable])
@@ -11441,7 +11448,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
         DicomAlbum* album = [albumArray objectAtIndex:row];
         
         NSPasteboard* pb = [info draggingPasteboard];
-        NSArray* xids = [NSPropertyListSerialization propertyListFromData:[pb propertyListForType:@"BrowserController.database.context.XIDs"] mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
+        NSArray* xids = [NSPropertyListSerialization propertyListFromData:[pb propertyListForType:[pb availableTypeFromArray:BrowserController.DatabaseObjectXIDsPasteboardTypes]] mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
         NSMutableArray* items = [NSMutableArray array];
         for (NSString* xid in xids)
             [items addObject:[_database objectWithID:[NSManagedObject UidForXid:xid]]];
@@ -14173,7 +14180,7 @@ static NSArray*	openSubSeriesArray = nil;
             
             [databaseOutline setAction:@selector(databasePressed:)];
             [databaseOutline setDoubleAction:@selector(databaseDoublePressed:)];
-            [databaseOutline registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
+            [databaseOutline registerForDraggedTypes:@[NSFilenamesPboardType]];
             [databaseOutline setAllowsMultipleSelection:YES];
             [databaseOutline setAutosaveName: nil];
             [databaseOutline setAutosaveTableColumns: NO];
@@ -14195,8 +14202,13 @@ static NSArray*	openSubSeriesArray = nil;
             [cell setEditable:YES];
             [[albumTable tableColumnWithIdentifier:@"Source"] setDataCell:cell];
             [albumTable setDelegate:self];
-            [albumTable registerForDraggedTypes:[NSArray arrayWithObject:O2AlbumDragType]];
-            
+            [albumTable registerForDraggedTypes:[BrowserController.DatabaseObjectXIDsPasteboardTypes arrayByAddingObjectsFromArray:@[
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                                                  O2AlbumDragType // we still support the original, non-UTI type, in case some plugin uses this (very unlikely)
+#pragma clang diagnostic pop
+                                                  ]]];
+
             //		[customStart setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
             //		[customStart2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
             //		[customEnd setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];

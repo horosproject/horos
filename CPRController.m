@@ -59,10 +59,10 @@
 #import "DicomDatabase.h"
 #import <N2Debug.h>
 #import "PluginManager.h"
+#import "DicomDatabase.h"
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
-#define DATABASEPATH @"/DATABASE.noindex/"
 
 static NSString *MPRPlaneObservationContext = @"MPRPlaneObservationContext";
 
@@ -631,7 +631,7 @@ static float deg2rad = M_PI / 180.0;
     
     // Restore previous path, if it exists
     
-    NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+    NSString *path = [[[BrowserController currentBrowser] database] stateDatabaseDirPath];
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath: path])
 		[[NSFileManager defaultManager] createDirectoryAtPath: path attributes: nil];
@@ -3632,7 +3632,7 @@ static float deg2rad = M_PI / 180.0;
 	if( [notification object] == [self window])
 	{
         // Save current path for next time
-        NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+        NSString *path = [[[BrowserController currentBrowser] database] stateDatabaseDirPath];
         
         if (![[NSFileManager defaultManager] fileExistsAtPath:path])
             [[NSFileManager defaultManager] createDirectoryAtPath: path attributes:nil];

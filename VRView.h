@@ -205,7 +205,7 @@ typedef char* VTKStereoVRView;
 #define VTKView NSView
 #endif
 
-@interface VRView : VTKView
+@interface VRView : VTKView <NSDraggingSource, NSPasteboardItemDataProvider>
 {
 	NSTimer						*autoRotate, *startAutoRotate;
 	BOOL						isRotating, flyto;

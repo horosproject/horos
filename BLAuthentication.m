@@ -104,8 +104,10 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
 	/* printf ("Exec:\n%s", "/bin/sh"); for (i = 0; args[i] != 0; ++i) { printf (" \"%s\"", args[i]); } printf ("\n"); */
     
 	/* Execute command */
-	result = AuthorizationExecuteWithPrivileges( 
-                                                authorization, "/bin/sh",  options, args, &commPipe );
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+	result = AuthorizationExecuteWithPrivileges(authorization, "/bin/sh",  options, args, &commPipe );
+#pragma clang diagnostic pop
 	if (result != noErr) {
 		unlink (stderrpath);
         free( args);

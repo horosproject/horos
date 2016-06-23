@@ -42,6 +42,12 @@
 
 #import "ROI.h"
 
+@interface OrthogonalMPRController (Dummy)
+
+- (void)resizeWindow:(id)dummy;
+
+@end
+
 @implementation OrthogonalMPRController
 
 @synthesize orientationVector;

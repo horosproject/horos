@@ -2147,7 +2147,7 @@ static NSRecursiveLock *dbModifyLock = nil;
                 {
                     @try
                     {
-                        if( [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]])
+                        if (![[DicomDatabase databaseForContext:self.managedObjectContext] isLocal])
                         {
                             // Not modified on the 'bonjour client side'?
                             if( [[i valueForKey:@"inDatabaseFolder"] boolValue])
@@ -2186,7 +2186,7 @@ static NSRecursiveLock *dbModifyLock = nil;
             }
         }
         
-        if( [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]])
+        if(![[DicomDatabase databaseForContext:self.managedObjectContext] isLocal])
         {
             // Not modified on the 'bonjour client side'?
             if( [[[found lastObject] valueForKey:@"inDatabaseFolder"] boolValue])

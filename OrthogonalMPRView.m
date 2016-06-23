@@ -1075,7 +1075,7 @@
 			to = 0;
 		}
 		
-		if ( fabs( from-to ) >= 1) {
+		if ( abs((int)(from-to)) >= 1) {
 			[self scrollTool: from : to];
 		}
 	}

@@ -164,8 +164,8 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
     
     fistCTSlice = (higherCTSliceIndex < lowerCTSliceIndex)? higherCTSliceIndex : lowerCTSliceIndex ;
     fistPETSlice = (higherPETSliceIndex < lowerPETSliceIndex)? higherPETSliceIndex : lowerPETSliceIndex ;
-    sliceRangeCT = abs(higherCTSliceIndex - lowerCTSliceIndex)+1;
-    sliceRangePET = abs(higherPETSliceIndex - lowerPETSliceIndex)+1;
+    sliceRangeCT = abs((int)(higherCTSliceIndex - lowerCTSliceIndex))+1;
+    sliceRangePET = abs((int)(higherPETSliceIndex - lowerPETSliceIndex))+1;
     
     if( fistCTSlice < 0) fistCTSlice = 0;
     if( fistPETSlice < 0) fistPETSlice = 0;

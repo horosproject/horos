@@ -209,7 +209,7 @@ typedef struct renderSurface
 #endif
 
 /** \brief Surface Rendering View */
-@interface SRView : VTKView
+@interface SRView : VTKView <NSDraggingSource, NSPasteboardItemDataProvider>
 {
 	int							projectionMode;
     NSMutableArray				*blendingPixList;

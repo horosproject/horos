@@ -473,32 +473,28 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 
 + (NSString*) pathResolved:(NSString*) inPath
 {
-	CFStringRef resolvedPath = nil;
+	NSString *resolvedPath = nil;
 	CFURLRef	url = CFURLCreateWithFileSystemPath(NULL /*allocator*/, (CFStringRef)inPath, kCFURLPOSIXPathStyle, NO /*isDirectory*/);
 	if (url != NULL)
     {
-		FSRef fsRef;
-		if (CFURLGetFSRef(url, &fsRef))
-        {
-			Boolean targetIsFolder, wasAliased;
-			if (FSResolveAliasFile (&fsRef, true /*resolveAliasChains*/, &targetIsFolder, &wasAliased) == noErr && wasAliased)
-            {
-				CFURLRef resolvedurl = CFURLCreateFromFSRef(NULL /*allocator*/, &fsRef);
-				if (resolvedurl != NULL)
-                {
-					resolvedPath = CFURLCopyFileSystemPath(resolvedurl, kCFURLPOSIXPathStyle);
-					CFRelease(resolvedurl);
-				}
-			}
-		}
-		CFRelease(url);
+        CFDataRef bd = CFURLCreateBookmarkDataFromFile(NULL, url, NULL);
+        if (bd) {
+            CFURLRef r = CFURLCreateByResolvingBookmarkData(NULL, bd, kCFBookmarkResolutionWithoutUIMask, NULL, NULL, NULL, NULL);
+            if (r) {
+                resolvedPath = CFBridgingRelease(CFURLCopyPath(r));
+                CFRelease(r);
+            }
+            
+            CFRelease(bd);
+        }
+        
+        CFRelease(url);
 	}
 	
-	if( resolvedPath == nil) return inPath;
-	else return [(NSString *) resolvedPath autorelease];
+	if (resolvedPath == nil)
+        return inPath;
+    return resolvedPath;
 }
-
-
 
 + (void) releaseInstanciedObjectsOfClass: (Class) class
 {
@@ -829,7 +825,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
             @try {
                 NSArray* donotloadnames = nil;
                 if (![path isKindOfClass:[NSNull class]]) {
-                    donotloadnames = [[NSString stringWithContentsOfFile:[path stringByAppendingPathComponent:@"DoNotLoad.txt"]] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+                    donotloadnames = [[NSString stringWithContentsOfFile:[path stringByAppendingPathComponent:@"DoNotLoad.txt"] usedEncoding:NULL error:NULL] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
                     if ([donotloadnames containsObject:@"*"])
                         break;
                 }
@@ -837,7 +833,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                 NSEnumerator* e = nil;
                 if ([path isKindOfClass:[NSString class]])
                 {
-                    NSArray* pluginsInDir = [[NSFileManager defaultManager] directoryContentsAtPath:path];
+                    NSArray<NSString *>* pluginsInDir = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL];
                     e = [[pluginsInDir filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSString* plugin, NSDictionary* bindings) {
                         BOOL listed = [dontLoadOtherWithTheseNames containsObject:plugin];
                         if (listed)
@@ -1041,7 +1037,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	if([sourcePath isEqualToString:destinationPath]) return;
 	
 	if(![[NSFileManager defaultManager] fileExistsAtPath:[destinationPath stringByDeletingLastPathComponent]])
-		[[NSFileManager defaultManager] createDirectoryAtPath:[destinationPath stringByDeletingLastPathComponent] attributes:nil];
+		[[NSFileManager defaultManager] createDirectoryAtPath:[destinationPath stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:NULL];
 
     NSMutableArray *args = [NSMutableArray array];
 	[args addObject:@"-f"];
@@ -1076,7 +1072,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	for(inactivePath in inactivePaths)
 	{
 		activePath = [activePathEnum nextObject];
-		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:inactivePath] objectEnumerator];
+        NSEnumerator *e = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:inactivePath error:NULL] objectEnumerator];
 		NSString *name;
 		while(name = [e nextObject])
 		{
@@ -1110,7 +1106,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	for(activePath in activePaths)
 	{
 		inactivePath = [inactivePathEnum nextObject];
-		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:activePath] objectEnumerator];
+        NSEnumerator *e = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:activePath error:NULL] objectEnumerator];
 		NSString *name;
 		while(name = [e nextObject])
 		{
@@ -1156,7 +1152,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	
 	while((path = [pathEnum nextObject]) && !found)
 	{
-		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
+        NSEnumerator *e = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL] objectEnumerator];
 		NSString *name;
 		while((name = [e nextObject]) && !found)
 		{
@@ -1200,7 +1196,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	BOOL isDir = YES;
 	BOOL directoryCreated = NO;
 	if (![[NSFileManager defaultManager] fileExistsAtPath:directoryPath isDirectory:&isDir] && isDir)
-		directoryCreated = [[NSFileManager defaultManager] createDirectoryAtPath:directoryPath attributes:nil];
+		directoryCreated = [[NSFileManager defaultManager] createDirectoryAtPath:directoryPath withIntermediateDirectories:YES attributes:nil error:NULL];
 
 	if(!directoryCreated)
 	{
@@ -1336,7 +1332,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	
 	for(path in pluginsPaths)
 	{
-		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
+        NSEnumerator *e = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL] objectEnumerator];
 		NSString *name;
 		while(name = [e nextObject])
 		{
@@ -1428,7 +1424,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 		else if([path isEqualToString:userActivePath] || [path isEqualToString:userInactivePath])
 			availability = [[PluginManager availabilities] objectAtIndex:0];
 		
-		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
+        NSEnumerator *e = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL] objectEnumerator];
 		
         NSString *name = nil;
 		

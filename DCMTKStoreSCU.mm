@@ -712,7 +712,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     DcmDataset *statusDetail = NULL;
 	char outfname[ 4096];
 	
-	sprintf( outfname, "%s/%ld.dcm", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], seed++);
+	sprintf( outfname, "%s/%ld.dcm", [[DicomDatabase activeLocalDatabase] tempDirPathC], seed++);
 
     OFBool unsuccessfulStoreEncountered = OFTrue; // assumption
 	
@@ -1051,7 +1051,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 				
 				if (fileformat.getDataset()->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != nil)
 				{
-					NSArray	*c = [[NSString stringWithCString:string] componentsSeparatedByString:@"\\"];
+					NSArray	*c = [[NSString stringWithUTF8String:string] componentsSeparatedByString:@"\\"];
 
 					if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
 

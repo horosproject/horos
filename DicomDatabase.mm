@@ -445,7 +445,7 @@ static DicomDatabase* activeLocalDatabase = nil;
             // if a TOBEINDEXED dir exists, move it into INCOMING so we will import the data
             
             if ([NSFileManager.defaultManager fileExistsAtPath:self.toBeIndexedDirPath])
-                [NSFileManager.defaultManager moveItemAtPath:self.toBeIndexedDirPath toPath:[self.incomingDirPath stringByAppendingPathComponent:@"TOBEINDEXED.noindex"] error:NULL];
+                [NSFileManager.defaultManager moveItemAtPath:self.toBeIndexedDirPath toPath:[self.incomingDirPath stringByAppendingPathComponent:self.toBeIndexedDirPath.lastPathComponent] error:NULL];
             
             // report templates
 #ifndef MACAPPSTORE
@@ -547,7 +547,7 @@ static DicomDatabase* activeLocalDatabase = nil;
     
 #ifndef NDEBUG
     if( databasesDictionary.count > 50)
-        NSLog( @"******** WARNING databasesDictionary.count is very high = %d", databasesDictionary.count);
+        NSLog( @"******** WARNING databasesDictionary.count is very high = %lu", (unsigned long)databasesDictionary.count);
 #endif
     
     [databasesDictionaryLock unlock]; //We are locked from -(oneway void) release
@@ -797,6 +797,10 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 -(NSString*)htmlTemplatesDirPath {
     return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"HTML_TEMPLATES"]];
+}
+
+- (NSString *)stateDatabaseDirPath {
+    return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"3DSTATE"]];
 }
 
 -(NSString*)modelVersionFilePath {
@@ -1138,16 +1142,16 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     NSDate *start = [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]] timeIntervalSinceReferenceDate]];
     
     NSDictionary	*sub = [NSDictionary dictionaryWithObjectsAndKeys:	[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*1] timeIntervalSinceReferenceDate]],			@"$LASTHOUR",
-                            [NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*6] timeIntervalSinceReferenceDate]],			@"$LAST6HOURS",
-                            [NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*12] timeIntervalSinceReferenceDate]],			@"$LAST12HOURS",
+                            [NSString stringWithFormat:@"%lf", [[now dateByAddingTimeInterval:-60*60*6] timeIntervalSinceReferenceDate]],			@"$LAST6HOURS",
+                            [NSString stringWithFormat:@"%lf", [[now dateByAddingTimeInterval: -60*60*12] timeIntervalSinceReferenceDate]],			@"$LAST12HOURS",
                             [NSString stringWithFormat:@"%lf", [start timeIntervalSinceReferenceDate]],										@"$TODAY",
-                            [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24] timeIntervalSinceReferenceDate]],			@"$YESTERDAY",
-                            [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*2] timeIntervalSinceReferenceDate]],		@"$2DAYS",
-                            [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*7] timeIntervalSinceReferenceDate]],		@"$WEEK",
-                            [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31] timeIntervalSinceReferenceDate]],		@"$MONTH",
-                            [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31*2] timeIntervalSinceReferenceDate]],	@"$2MONTHS",
-                            [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31*3] timeIntervalSinceReferenceDate]],	@"$3MONTHS",
-                            [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*365] timeIntervalSinceReferenceDate]],		@"$YEAR",
+                            [NSString stringWithFormat:@"%lf", [[start dateByAddingTimeInterval: -60*60*24] timeIntervalSinceReferenceDate]],			@"$YESTERDAY",
+                            [NSString stringWithFormat:@"%lf", [[start dateByAddingTimeInterval: -60*60*24*2] timeIntervalSinceReferenceDate]],		@"$2DAYS",
+                            [NSString stringWithFormat:@"%lf", [[start dateByAddingTimeInterval: -60*60*24*7] timeIntervalSinceReferenceDate]],		@"$WEEK",
+                            [NSString stringWithFormat:@"%lf", [[start dateByAddingTimeInterval: -60*60*24*31] timeIntervalSinceReferenceDate]],		@"$MONTH",
+                            [NSString stringWithFormat:@"%lf", [[start dateByAddingTimeInterval: -60*60*24*31*2] timeIntervalSinceReferenceDate]],	@"$2MONTHS",
+                            [NSString stringWithFormat:@"%lf", [[start dateByAddingTimeInterval: -60*60*24*31*3] timeIntervalSinceReferenceDate]],	@"$3MONTHS",
+                            [NSString stringWithFormat:@"%lf", [[start dateByAddingTimeInterval: -60*60*24*365] timeIntervalSinceReferenceDate]],		@"$YEAR",
                             nil];
     
     NSEnumerator *enumerator = [sub keyEnumerator];
@@ -3129,7 +3133,7 @@ static BOOL protectionAgainstReentry = NO;
                             
                             if (isAlias)
                             {
-                                result = [[NSFileManager defaultManager] copyPath:srcPath toPath: dstPath error:NULL];
+                                result = [[NSFileManager defaultManager] copyPath:srcPath toPath: dstPath handler:NULL];
                                 [[NSFileManager defaultManager] removeItemAtPath:originalPath error:NULL];
                             }
                             else

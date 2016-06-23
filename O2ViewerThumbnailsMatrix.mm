@@ -40,8 +40,6 @@
 #import "ThumbnailsListPanel.h"
 #import "N2Debug.h"
 
-static NSString *dragType = @"Osirix Series Viewer Drag";
-
 @implementation O2ViewerThumbnailsMatrix // we overload NSMatrix, but this class isn't as capable as NSMatrix: we only support 1-column-wide matrixes! so, actually, this isn't a matrix, it's a list, but we still use NSMAtrix so we don't have to modify ViewerController
 
 - (NSRect*)computeCellRectsForCells:(NSArray*)cells maxIndex:(NSInteger)maxIndex {
@@ -100,13 +98,8 @@ static NSString *dragType = @"Osirix Series Viewer Drag";
             
             NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard];
             
-            [pboard declareTypes:[NSArray arrayWithObjects: @"BrowserController.database.context.XIDs", dragType, nil] owner:self]; //NSFilesPromisePboardType, NSFilenamesPboardType, NSStringPboardType
-            [pboard setPropertyList:nil forType:dragType];
-            
-            NSMutableArray* objects = [NSMutableArray array];
-            [objects addObject: [[[self selectedCell] representedObject] object]];
-            
-            [pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[objects valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL] forType:@"BrowserController.database.context.XIDs"];
+            [pboard declareTypes:@[NSFilesPromisePboardType, NSPasteboardTypeString] owner:self];
+            [pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[@[[[[self selectedCell] representedObject] object]] valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL] forType:O2PasteboardTypeDatabaseObjectXIDs];
             
             [self dragImage:thumbnail
                          at:local_point

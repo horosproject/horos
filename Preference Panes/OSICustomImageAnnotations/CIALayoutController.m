@@ -757,7 +757,7 @@
 - (NSArray *)tokenField:(NSTokenField *)tokenField readFromPasteboard:(NSPasteboard *)pboard
 {
 	// handles drag & drop of several tokens
-	return [[pboard stringForType:NSStringPboardType] componentsSeparatedByString:@", "];
+	return [[pboard stringForType:NSPasteboardTypeString] componentsSeparatedByString:@", "];
 }
 
 - (NSArray *)tokenField:(NSTokenField *)tokenField shouldAddObjects:(NSArray *)tokens atIndex:(NSUInteger)index

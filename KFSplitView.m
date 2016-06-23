@@ -127,7 +127,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
     // Each non-zero integer may be as much as 1 off of its "proper" floating point value due to roundoff,
     // so abs(targetTotal - total) might be as much as numNonZero.  We randomly choose integers to increment (or decrement)
     // to make up the gap, and we choose only from the non-zero values.
-    int gap = abs(targetTotal - total);
+    int gap = abs((int)targetTotal - total);
     int closeGapIncrement =  (targetTotal > total) ? 1 : -1;
     int numRemainingNonZeroInts = numNonZeroInts;
     for (i = 0; i < numInts && gap > 0; i++)
@@ -933,7 +933,7 @@ static BOOL kfScaleUInts(unsigned *integers, int numInts, unsigned targetTotal)
     {
         for (i = 0; i < numAutoRegNotifications; i++)
         {
-            methodSelector = sel_registerName([[delegateMethodNames objectAtIndex:i] cString]);
+            methodSelector = sel_registerName([[delegateMethodNames objectAtIndex:i] UTF8String]);
             if ([kfDelegate respondsToSelector:methodSelector])
             {
                 [kfNotificationCenter addObserver:kfDelegate

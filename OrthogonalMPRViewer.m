@@ -1351,11 +1351,12 @@ static SyncSeriesScope globalSyncSeriesScope;
     
     bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
     
-    [bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"] atomically:YES];
+    NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"OsiriX.jpg"];
+    [bitmapData writeToFile:path atomically:YES];
 				
     email = [[Mailer alloc] init];
     
-    [email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"]];
+    [email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image:path];
     
     [email release];
 }
@@ -1364,19 +1365,23 @@ static SyncSeriesScope globalSyncSeriesScope;
 {
     NSSavePanel     *panel = [NSSavePanel savePanel];
     BOOL			all = NO;
-    int             i;
     NSWorkspace		*ws = [NSWorkspace sharedWorkspace];
     
-    long deltaX, deltaY, x, y, oldX, oldY, max;
-    OrthogonalMPRView *view;
-    
-    deltaX = deltaY = x = y = oldX = oldY = max = 0;
     
     [panel setCanSelectHiddenExtension:YES];
-    [panel setRequiredFileType:@"jpg"];
+    [panel setAllowedFileTypes:@[@"jpg"]];
     
-    if( [panel runModalForDirectory:nil file:[[[controller originalDCMFilesList] objectAtIndex:0] valueForKeyPath:@"series.name"]] == NSFileHandlingPanelOKButton)
-    {
+    panel.nameFieldStringValue = [[[controller originalDCMFilesList] objectAtIndex:0] valueForKeyPath:@"series.name"];
+    
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
+        long deltaX, deltaY, x, y, oldX, oldY, max;
+        OrthogonalMPRView *view;
+        
+        deltaX = deltaY = x = y = oldX = oldY = max = 0;
+
         if( all)
         {
             if ([[self keyView] isEqualTo:[[[self keyView] controller] originalView]])
@@ -1413,7 +1418,7 @@ static SyncSeriesScope globalSyncSeriesScope;
                 max = [[view curDCM] pheight];
             }
             
-            for( i = 0; i < max; i++)
+            for(int i = 0; i < max; i++)
             {
                 NSDisableScreenUpdates();
                 [view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
@@ -1431,7 +1436,7 @@ static SyncSeriesScope globalSyncSeriesScope;
                 
                 bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
                 
-                [bitmapData writeToFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%d.jpg", i+1]] atomically:YES];
+                [bitmapData writeToFile:[[panel.URL.path stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%d.jpg", i+1]] atomically:YES];
             }
             [view setCrossPosition:oldX+0.5 :oldY+0.5];
             [view setNeedsDisplay:YES];
@@ -1439,7 +1444,7 @@ static SyncSeriesScope globalSyncSeriesScope;
             if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
             {
                 //[ws openFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%d.jpg", 1]]];
-                [ws openFile:[panel directory]];
+                [ws openURL:[panel.URL URLByDeletingLastPathComponent]];
             }
         }
         else
@@ -1455,11 +1460,11 @@ static SyncSeriesScope globalSyncSeriesScope;
             
             bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
             
-            [bitmapData writeToFile:[panel filename] atomically:YES];
+            [bitmapData writeToFile:panel.URL.path atomically:YES];
             
-            if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
+            if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:panel.URL.path];
         }
-    }
+    }];
 }
 
 - (void) observeValueForKeyPath:(NSString*)keyPath ofObject:(id)obj change:(NSDictionary*)change context:(void*)context
@@ -1509,7 +1514,8 @@ static SyncSeriesScope globalSyncSeriesScope;
         {
             NSRect bounds = [v bounds];
             NSPoint or = [v convertPoint: bounds.origin toView: nil];
-            bounds.origin = [[self window] convertBaseToScreen: or];
+            NSRect r = {or, NSZeroSize};
+            bounds.origin = [[self window] convertRectToScreen:r].origin;
             
             bounds.origin.x *= v.window.backingScaleFactor;
             bounds.origin.y *= v.window.backingScaleFactor;
@@ -1810,7 +1816,7 @@ static SyncSeriesScope globalSyncSeriesScope;
     [dcmInterval setIntValue:1];
     [dcmIntervalTextField setIntValue:1];
     
-    int count = fabs( [dcmFromTextField intValue] - [dcmToTextField intValue]);
+    int count = abs( [dcmFromTextField intValue] - [dcmToTextField intValue]);
     count++;
     if( [dcmIntervalTextField intValue])
         count /= [dcmIntervalTextField intValue];
@@ -1839,7 +1845,7 @@ static SyncSeriesScope globalSyncSeriesScope;
     else if([sender isEqualTo:dcmIntervalTextField]){[dcmInterval setIntValue:[sender intValue]];[dcmInterval display];}
     else if([sender isEqualTo:dcmInterval]){[dcmIntervalTextField setIntValue:[sender intValue]];[dcmIntervalTextField display];}
     
-    int count = fabs( [dcmFromTextField intValue] - [dcmToTextField intValue]);
+    int count = abs( [dcmFromTextField intValue] - [dcmToTextField intValue]);
     count++;
     count /= [dcmIntervalTextField intValue];
     [dcmCountTextField setStringValue: [NSString stringWithFormat:@"%d images", count]];

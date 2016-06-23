@@ -213,7 +213,7 @@
 			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"rtf"];
 			[[NSFileManager defaultManager] removeItemAtPath: destinationFile error: nil];
 			
-			[[NSFileManager defaultManager] copyPath:[BrowserController.currentBrowser.database.baseDirPath stringByAppendingFormat:@"/ReportTemplate.rtf"] toPath:destinationFile handler: nil];
+			[[NSFileManager defaultManager] copyItemAtPath:[BrowserController.currentBrowser.database.baseDirPath stringByAppendingFormat:@"/ReportTemplate.rtf"] toPath:destinationFile error:NULL];
 			
 			NSDictionary                *attr;
 			NSMutableAttributedString	*rtf = [[NSMutableAttributedString alloc] initWithRTF: [NSData dataWithContentsOfFile:destinationFile] documentAttributes:&attr];
@@ -323,7 +323,7 @@
 			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"odt"];
 			[[NSFileManager defaultManager] removeItemAtPath: destinationFile error: nil];
 			
-			[[NSFileManager defaultManager] copyPath:[BrowserController.currentBrowser.database.baseDirPath stringByAppendingFormat:@"/ReportTemplate.odt"] toPath:destinationFile handler: nil];
+			[[NSFileManager defaultManager] copyItemAtPath:[BrowserController.currentBrowser.database.baseDirPath stringByAppendingPathComponent:@"ReportTemplate.odt"] toPath:destinationFile error:NULL];
 			[self createNewOpenDocumentReportForStudy:study toDestinationPath:destinationFile];
 			
 		}
@@ -614,7 +614,7 @@
 	
 	NSMutableAttributedString	*rtf = [[[NSMutableAttributedString alloc] initWithString: file] autorelease];
 	
-	[[rtf RTFFromRange:rtf.range documentAttributes: nil] writeToFile: path atomically:YES]; // To support full encoding in MicroSoft Word
+	[[rtf RTFFromRange:rtf.range documentAttributes:@[]] writeToFile: path atomically:YES]; // To support full encoding in MicroSoft Word
 	
 	return path;
 }
@@ -792,7 +792,7 @@ static int Pages5orHigher = -1;
 	// Pages template
     NSString *defaultReport = [templatesDirPath stringByAppendingPathComponent:@"/Horos Basic Report.pages"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath: defaultReport] == NO)
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Horos Report.pages"] toPath:defaultReport handler:nil];
+        [[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Horos Report.pages"] toPath:defaultReport error:NULL];
 	
 #endif
 #endif

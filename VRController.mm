@@ -58,6 +58,7 @@
 #import "DicomImage.h"
 #import "N2Debug.h"
 #import "PluginManager.h"
+#import "DicomDatabase.h"
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
@@ -852,7 +853,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 + (NSString*) getUniqueFilenameScissorStateFor:(NSManagedObject*) obj
 {
-    NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+    NSString *path = [[[BrowserController currentBrowser] database] stateDatabaseDirPath];
     BOOL isDir = YES;
     
     if( ![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir])
@@ -874,7 +875,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 -(void) save3DState
 {
-    NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+    NSString *path = [[[BrowserController currentBrowser] database] stateDatabaseDirPath];
     BOOL isDir = YES;
     
     if( ![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir])
@@ -910,7 +911,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 -(void) load3DState
 {
     @try {
-        NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+        NSString *path = [[[BrowserController currentBrowser] database] stateDatabaseDirPath];
         BOOL isDir = YES;
         
         if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)

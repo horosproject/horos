@@ -53,7 +53,9 @@ enum simpleSearchType {PatientNameSearch, PatientIDSearch};
 enum queueStatus{QueueHasData, QueueEmpty};
 enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
-extern NSString* O2AlbumDragType;
+extern NSString * const __deprecated O2AlbumDragType; // was used to mark dragging pasteboards destinated to the Sources list in the Database window, we now make the list accept O2PasteboardTypeDatabaseObjectXIDs instead
+extern NSString * const __deprecated O2DatabaseXIDsDragType; // the original UTI used for XID drags, use O2PasteboardTypeDatabaseObjectXIDs instead
+extern NSString * const O2PasteboardTypeDatabaseObjectXIDs;
 
 @interface NSString (BrowserController)
 -(NSMutableString*)filenameString;
@@ -623,6 +625,8 @@ extern NSString* O2AlbumDragType;
  */
 
 +(NSInteger)_scrollerStyle:(NSScroller*)scroller;
+
++ (NSArray<NSString *> *)DatabaseObjectXIDsPasteboardTypes;
 
 #pragma mark Deprecated
 

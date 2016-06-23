@@ -82,9 +82,9 @@ extern const char *GetPrivateIP();
 {
     if ((self = [super init]))
     {
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingIsActiveDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingNameDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingPasswordFlagDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingIsPasswordProtectedDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingPasswordDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
     }
     return self;
@@ -92,9 +92,9 @@ extern const char *GetPrivateIP();
 
 - (void) dealloc
 {
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingIsActiveDefaultsKey];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingNameDefaultsKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingPasswordFlagDefaultsKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingIsPasswordProtectedDefaultsKey];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingPasswordDefaultsKey];
     
     [dicomSendLock release];
@@ -108,15 +108,15 @@ extern const char *GetPrivateIP();
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
     if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
         keyPath = [keyPath substringFromIndex:7];
-        if ([keyPath isEqualToString:OsirixBonjourSharingActiveFlagDefaultsKey]) {
-            [self toggleSharing:[NSUserDefaultsController IsBonjourSharingActive]];
+        if ([keyPath isEqualToString:OsirixBonjourSharingIsActiveDefaultsKey]) {
+            [self toggleSharing:NSUserDefaults.bonjourSharingIsActive];
             return;
         } else
             if ([keyPath isEqualToString:OsirixBonjourSharingNameDefaultsKey]) {
                 //	[self ];
                 return;
             } else
-                if ([keyPath isEqualToString:OsirixBonjourSharingPasswordFlagDefaultsKey]) {
+                if ([keyPath isEqualToString:OsirixBonjourSharingIsPasswordProtectedDefaultsKey]) {
                     return;
                 } else
                     if ([keyPath isEqualToString:OsirixBonjourSharingPasswordDefaultsKey]) {
@@ -417,7 +417,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
 
 - (void)_requireDataSize:(int)size {
     if (self.availableSize < size)
-        [NSException raise:O2NotEnoughData format:nil];
+        [NSException raise:O2NotEnoughData format:@""];
 }
 
 - (int)_readInt {
@@ -575,7 +575,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
         
         NSString *databasePath = [idatabase sqlFilePath];
         
-        NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: databasePath traverseLink: YES];
+        NSDictionary *fattrs = [[NSFileManager defaultManager] attributesOfItemAtPath:databasePath error:NULL];
         
         fileSize = [[fattrs objectForKey:NSFileSize] longLongValue];
     }
@@ -624,7 +624,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
 
 - (void)ISPWD {
     // is this database protected by a password
-    NSString* pswd = [NSUserDefaultsController BonjourSharingPassword];
+    NSString* pswd = NSUserDefaults.bonjourSharingPassword;
     
     int val = 0;
     if (pswd)
@@ -641,7 +641,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
     // We read the string
     int val = 0;
     
-    if (![NSUserDefaultsController BonjourSharingPassword] || [incomingPswd isEqualToString: [NSUserDefaultsController BonjourSharingPassword]])
+    if (!NSUserDefaults.bonjourSharingPassword || [incomingPswd isEqualToString: NSUserDefaults.bonjourSharingPassword])
     {
         val = NSSwapHostIntToBig(1);
     }
@@ -662,7 +662,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
         int fileSize = [self _stackReadInt];
         [self _requireDataSize:fileSize];
         
-        NSString* dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+        NSString* dstPath = [[[BrowserController currentBrowser] database] uniquePathForNewDataFileWithExtension:@"dcm"];
         
         [[self readData:fileSize] writeToFile:dstPath atomically:YES];
         
@@ -848,7 +848,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
             path = [[[DicomDatabase defaultDatabase] baseDirPath] stringByAppendingPathComponent: path];
     }
     
-    NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:YES];
+    NSDictionary *fattrs = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:NULL];
     
     NSData	*content = [[[fattrs objectForKey:NSFileModificationDate] description] dataUsingEncoding: NSUnicodeStringEncoding];
     
@@ -897,7 +897,7 @@ static NSString* const O2NotEnoughData = @"O2NotEnoughData";
     
     NSDictionary *todo = [NSDictionary dictionaryWithObjectsAndKeys: Address, @"Address", TransferSyntax, @"TransferSyntax", Port, @"Port", AETitle, @"AETitle", localPaths, @"Files", nil];
     
-    [NSThread detachNewThreadSelector:@selector(sendDICOMFilesToOsiriXNode:) toTarget:[BonjourPublisher currentPublisher] withObject: todo];
+    [NSThread detachNewThreadSelector:@selector(sendDICOMFilesToOsiriXNode:) toTarget:[[AppController sharedAppController] bonjourPublisher] withObject: todo];
     
     _mode = DONE;
 }

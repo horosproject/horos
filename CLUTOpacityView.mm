@@ -1255,9 +1255,9 @@ NSRect rect = drawingRect;
 						NSPoint shiftedPoint;
 						float alpha = 1.0;
 						if(firstPointSelected)
-							alpha = fabsf(pt.x - lastPoint.x) / d;
+							alpha = fabs(pt.x - lastPoint.x) / d;
 						else
-							alpha = fabsf(pt.x - firstPoint.x) / d;
+							alpha = fabs(pt.x - firstPoint.x) / d;
 						shiftedPoint = NSMakePoint(pt.x + alpha * shiftX, pt.y);
 						shiftedPoint = [transformView2Coordinate transformPoint:shiftedPoint];
 						[self replacePointAtIndex:j inCurveAtIndex:i withPoint:shiftedPoint];
@@ -1280,7 +1280,7 @@ NSRect rect = drawingRect;
 			NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
 			if( (int) controlPoint.x == (int) selectedPoint.x && (float) controlPoint.y == (float) selectedPoint.y)
 			{			
-				NSPoint newPointInView = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+//				NSPoint newPointInView = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 //				NSPoint newPoint = [transformView2Coordinate transformPoint:newPointInView];
 								
 				float shiftX = [theEvent deltaX];
@@ -1302,7 +1302,7 @@ NSRect rect = drawingRect;
 						
 						float alpha = 1.0;
 						if(j>0 && j<(long)[aCurve count]-1)
-							alpha = 2.0*fabsf(middlePointX - pt.x) / d;
+							alpha = 2.0*fabs(middlePointX - pt.x) / d;
 						if(pt.x<=controlPoint.x)
 							shiftedPoint = NSMakePoint(pt.x - alpha * shiftX, pt.y-shiftY);
 						else
