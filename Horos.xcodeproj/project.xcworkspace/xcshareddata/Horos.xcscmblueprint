@@ -1,0 +1,44 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "8F4DB4C47500790E3ABB23F9FF71196DF50C6B0E+++AF086BE",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "8F4DB4C47500790E3ABB23F9FF71196DF50C6B0E+++AF086BE" : 0,
+    "8F4DB4C47500790E3ABB23F9FF71196DF50C6B0E+++F43C757" : 0,
+    "900532B7E901BCF12B84E1C26A8435CC37B8DBFA+++A6FB4A6" : 0,
+    "8F4DB4C47500790E3ABB23F9FF71196DF50C6B0E+++7C2A9E3" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "79FBF727-B811-4E2E-9669-7AF0390FA6EB",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "8F4DB4C47500790E3ABB23F9FF71196DF50C6B0E+++AF086BE" : "Horos\/",
+    "8F4DB4C47500790E3ABB23F9FF71196DF50C6B0E+++F43C757" : "OsiriX\/",
+    "900532B7E901BCF12B84E1C26A8435CC37B8DBFA+++A6FB4A6" : "osirix-plugins\/",
+    "8F4DB4C47500790E3ABB23F9FF71196DF50C6B0E+++7C2A9E3" : "OsiriX\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Horos",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Horos.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:aglv\/Horos.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "8F4DB4C47500790E3ABB23F9FF71196DF50C6B0E+++7C2A9E3"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:aglv\/Horos.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "8F4DB4C47500790E3ABB23F9FF71196DF50C6B0E+++AF086BE"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:aglv\/OsiriX.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "8F4DB4C47500790E3ABB23F9FF71196DF50C6B0E+++F43C757"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/pixmeo\/osirixplugins.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "900532B7E901BCF12B84E1C26A8435CC37B8DBFA+++A6FB4A6"
+    }
+  ]
+}
