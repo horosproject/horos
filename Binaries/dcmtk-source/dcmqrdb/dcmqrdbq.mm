@@ -34,6 +34,7 @@
 
 #import "browserController.h"
 #import "DICOMToNSString.h"
+#import "DicomDatabase.h"
 #import "LogManager.h"
 #import "dicomFile.h"
 
@@ -408,7 +409,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
         for( int i = 0; i < 10; i++) encoding[ i] = 0;
         encoding[ 0] = NSISOLatin1StringEncoding;
         
-        NSArray	*c = [[NSString stringWithCString: specificCharacterSet] componentsSeparatedByString:@"\\"];
+        NSArray	*c = [[NSString stringWithUTF8String: specificCharacterSet] componentsSeparatedByString:@"\\"];
         
         if( [c count] < 10)
         {
@@ -1230,7 +1231,7 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::makeNewStoreFileName(
 	unsigned seedvalue = seed;
     newImageFileName[0] = 0; // return empty string in case of error
 	
-	if (! fnamecreator.makeFilename(seedvalue, [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], prefix, ".dcm", filename))
+	if (! fnamecreator.makeFilename(seedvalue, [[DicomDatabase activeLocalDatabase] tempDirPathC], prefix, ".dcm", filename))
 	{
 		return DcmQROsiriXDatabaseError;
 	}

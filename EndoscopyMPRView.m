@@ -498,7 +498,7 @@
 
 	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 
-    NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"OsiriX.jpg"];
+    NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"Horos.jpg"];
 	[bitmapData writeToFile:path atomically:YES];
 				
 	email = [[Mailer alloc] init];
@@ -511,7 +511,6 @@
 - (void) exportJPEG:(id) sender
 {
     NSSavePanel     *panel = [NSSavePanel savePanel];
-	NSWorkspace		*ws = [NSWorkspace sharedWorkspace];
 	
 	[panel setCanSelectHiddenExtension:YES];
 	[panel setAllowedFileTypes:@[@"jpg"]];
@@ -534,7 +533,7 @@
         [bitmapData writeToFile:panel.URL.path atomically:YES];
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
-            [ws openFile:panel.URL.path];
+            [[NSWorkspace sharedWorkspace] openURL:panel.URL];
     }];
 }
 

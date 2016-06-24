@@ -251,7 +251,7 @@ decode_mcu (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
       JBLOCKROW block = MCU_data[blkn];
       d_derived_tbl * dctbl = entropy->dc_cur_tbls[blkn];
       d_derived_tbl * actbl = entropy->ac_cur_tbls[blkn];
-      register int s, k, r;
+      int s, k, r;
 
       /* Decode a single block's worth of coefficients */
 

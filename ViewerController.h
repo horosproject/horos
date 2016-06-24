@@ -1143,6 +1143,6 @@ enum
 #pragma mark-
 
 - (IBAction)toggleComparativesVisibility:(id)sender;
-
+- (void) matrixPreviewPressed:(id) sender;
 
 @end

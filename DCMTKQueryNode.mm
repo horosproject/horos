@@ -647,7 +647,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         //	const char *queryLevel;
         //	if (dataset->findAndGetString(DCM_QueryRetrieveLevel, queryLevel).good())
         //	{
-        //		const char *string = [[NSString stringWithCString: queryLevel] cStringUsingEncoding: encoding];
+        //		const char *string = [[NSString stringWithUTF8String: queryLevel] cStringUsingEncoding: encoding];
         //		dataset->putAndInsertString(DCM_QueryRetrieveLevel, string);
         //	}
             

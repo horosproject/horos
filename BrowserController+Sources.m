@@ -1027,7 +1027,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
      err = PBHGetVolParmsSync(&hpbr);
      if (err != noErr) return;
      
-     NSString* bsdName = [NSString stringWithCString:(char*)gvpib.vMDeviceID];
+     NSString* bsdName = [NSString stringWithUTF8String:(char*)gvpib.vMDeviceID];
      NSLog(@"we are mounting %@ ||| %@", path, bsdName);
      
      CFDictionaryRef matchingDict = IOBSDNameMatching(kIOMasterPortDefault, 0, (const char*)gvpib.vMDeviceID);
@@ -1324,7 +1324,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         BOOL selectSource = NO;
         
         NSInteger mode = [NSUserDefaults.standardUserDefaults integerForKey:@"MOUNT"];
-        BOOL autoSelectSourceCDDVD = [[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"];
+//        BOOL autoSelectSourceCDDVD = [[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"];
         
 #ifdef OSIRIX_LIGHT
         mode = 0; //display the source
@@ -1389,7 +1389,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     MountedDatabaseNodeIdentifier* bs = [[self class] localDatabaseNodeIdentifierWithPath:path description:description dictionary:dictionary];
     bs.devicePath = devicePath;
     bs.mountType = type;
-    [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+    [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:NULL];
     
     if (scan)
         [bs initiateVolumeScan];

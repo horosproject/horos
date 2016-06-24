@@ -463,7 +463,7 @@ void DcmQueryRetrieveGetContext::getNextImage(DcmQueryRetrieveDatabaseStatus * d
 	char outfname[ 4096];
 	
 	strcpy( outfname, "");
-	sprintf( outfname, "%s/QR-CGET-%d-%d.dcm", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], seed++, getpid());
+	sprintf( outfname, "%s/QR-CGET-%d-%d.dcm", [[DicomDatabase activeLocalDatabase] tempDirPathC], seed++, getpid());
 	unlink( outfname);
 	
 	presId = ASC_findAcceptedPresentationContextID(origAssoc, subImgSOPClass);
@@ -483,7 +483,7 @@ void DcmQueryRetrieveGetContext::getNextImage(DcmQueryRetrieveDatabaseStatus * d
 		DcmXfer preferredXfer( xferSyntax);
 		OFBool status = YES;
 		
-		sprintf( outfname, "%s/QR-CGET-%d-%d.dcm", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], seed++, getpid());
+		sprintf( outfname, "%s/QR-CGET-%d-%d.dcm", [[DicomDatabase activeLocalDatabase] tempDirPathC], seed++, getpid());
 		unlink( outfname);
 		
 		if (filexfer.isNotEncapsulated() && preferredXfer.isNotEncapsulated())

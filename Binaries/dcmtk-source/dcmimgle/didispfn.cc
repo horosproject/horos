@@ -207,7 +207,7 @@ DiDisplayFunction::~DiDisplayFunction()
 {
     delete[] DDLValue;
     delete[] LODValue;
-    register int i;
+    int i;
     for (i = 0; i < MAX_NUMBER_OF_TABLES; ++i)
         delete LookupTable[i];
 }
@@ -279,7 +279,7 @@ int DiDisplayFunction::deleteLookupTable(const int bits)
     if (bits == 0)
     {
         /* delete all LUTs */
-        register int i;
+        int i;
         for (i = 0; i < MAX_NUMBER_OF_TABLES; ++i)
         {
             delete LookupTable[i];

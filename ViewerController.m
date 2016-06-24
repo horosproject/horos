@@ -1555,18 +1555,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
     NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
     
-    register int i = [[dict valueForKey:@"i"] intValue];
-    register int sign = [[dict valueForKey:@"sign"] intValue];
-    register int newX = [[dict valueForKey:@"newX"] intValue];
+    int i = [[dict valueForKey:@"i"] intValue];
+    int sign = [[dict valueForKey:@"sign"] intValue];
+    int newX = [[dict valueForKey:@"newX"] intValue];
     int newY = [[dict valueForKey:@"newY"] intValue];
     BOOL square = [[dict valueForKey:@"square"] boolValue];
     DCMPix *curPix = [dict valueForKey:@"curPix"];
     register float *restrict curPixFImage = [[dict valueForKey:@"curPix"] fImage];
-    register int rowBytes = [[dict valueForKey:@"rowBytes"] intValue] / 4;
-    register int j = [[dict valueForKey:@"curMovieIndex"] intValue];
+    int rowBytes = [[dict valueForKey:@"rowBytes"] intValue] / 4;
+    int j = [[dict valueForKey:@"curMovieIndex"] intValue];
     
     register float *restrict srcPtr, *restrict dstPtr, *restrict mainSrcPtr;
-    register int count = [pixList[ j] count];
+    int count = [pixList[ j] count];
     
     count /= 2;
     count *= 2;
@@ -1582,13 +1582,13 @@ static volatile int numberOfThreadsForRelisce = 0;
     
     if( sign > 0)
     {
-        register int x = count;
+        int x = count;
         while (x-->0)
         {
             srcPtr = mainSrcPtr - x*sliceSize;
             dstPtr = curPixFImage + x * newX;
             
-            register int y = newX;
+            int y = newX;
             while (y-->0)
             {
                 *dstPtr++ = *srcPtr;
@@ -1598,13 +1598,13 @@ static volatile int numberOfThreadsForRelisce = 0;
     }
     else
     {
-        register int x = count;
+        int x = count;
         while (x-->0)
         {
             srcPtr = mainSrcPtr + x*sliceSize;
             dstPtr = curPixFImage + x * newX;
             
-            register int y = newX;
+            int y = newX;
             while (y-->0)
             {
                 *dstPtr++ = *srcPtr;
@@ -19492,11 +19492,11 @@ static float oldsetww, oldsetwl;
     //
     //	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
     //
-    //	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"] atomically:YES];
+    //	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/Horos.jpg"] atomically:YES];
     //
     //	email = [[Mailer alloc] init];
     //
-    //	[email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"]];
+    //	[email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/Horos.jpg"]];
     //
     //	[email release];
 }
@@ -19784,7 +19784,6 @@ static float oldsetww, oldsetwl;
     
     NSSavePanel     *panel = [NSSavePanel savePanel];
     long			i;
-    NSWorkspace		*ws = [NSWorkspace sharedWorkspace];
     
     [panel setCanSelectHiddenExtension:YES];
     
@@ -20035,7 +20034,7 @@ static float oldsetww, oldsetwl;
                         NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
                     
                     else if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
-                        [ws openFile: filePath];
+                        [[NSWorkspace sharedWorkspace] openFile:filePath];
                 }
             }
         }
@@ -20051,7 +20050,7 @@ static float oldsetww, oldsetwl;
         //				{
         //					bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
         //					
-        //					NSString *jpegFile = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"];
+        //					NSString *jpegFile = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/Horos.jpg"];
         //					
         //					[bitmapData writeToFile: jpegFile atomically:YES];
         //					

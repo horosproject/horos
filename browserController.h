@@ -342,7 +342,7 @@ extern NSString * const O2PasteboardTypeDatabaseObjectXIDs;
 - (IBAction) clickBanner:(id) sender;
 - (IBAction) refreshPACSOnDemandResults:(id)sender;
 - (IBAction) drawerToggle: (id)sender;
-- (void) openDatabasePath: (NSString*) path __deprecated;
+- (void) openDatabasePath: (NSString*) path;
 - (NSArray*) albums;
 - (NSManagedObjectID*) currentAlbumID: (DicomDatabase*) d;
 - (DicomStudy*) selectedStudy;

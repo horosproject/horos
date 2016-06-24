@@ -98,7 +98,7 @@ int DiBaseLUT::compare(const DiBaseLUT *lut)
         result = 2;                                     // descriptor differs (2)
         if ((Count == lut->getCount()) && (FirstEntry == lut->getFirstEntry()) && (Bits == lut->getBits()))
         {                                               // special case: if Count == 0 LUT data is equal
-            register Uint32 i = Count;                  // ... but normally not Valid !
+            Uint32 i = Count;                  // ... but normally not Valid !
             if ((MinValue == lut->getMinValue()) && (MaxValue == lut->getMaxValue()))
             {                                           // additional check for better performance
                 const Uint16 *p = Data;

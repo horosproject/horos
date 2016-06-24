@@ -33,6 +33,7 @@
 
 #import "CLUTOpacityView.h"
 #import "BrowserController.h"
+#import "DicomDatabase.h"
 #import "Notifications.h"
 
 @implementation CLUTOpacityView
@@ -1340,7 +1341,7 @@ NSRect rect = drawingRect;
 	}
 	else
 	{
-		if(fabsf([theEvent deltaX])>fabsf([theEvent deltaY]))
+		if(fabs([theEvent deltaX])>fabs([theEvent deltaY]))
 		{
 			zoomFixedPoint -= [theEvent deltaX] / zoomFactor;
 		}
@@ -1550,7 +1551,7 @@ NSRect rect = drawingRect;
 - (IBAction)scroll:(id)sender;
 {
 //	zoomFixedPoint = [sender floatValue] / [sender maxValue] * [self bounds].size.width;
-zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.width;
+zoomFixedPoint = [sender floatValue] / [(NSSlider *)sender maxValue] * drawingRect.size.width;
 	[self updateView];
 }
 
@@ -1999,13 +2000,11 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	NSString *path = [[[BrowserController currentBrowser] database] clutsDirPath];
 	
 	BOOL isDir = YES;
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
-	{
-		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir) {
+		[[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:NULL];
 	}
 	
-	[path appendString:name];
-	[path appendString:@".plist"];
+	path = [path stringByAppendingPathComponent:[name stringByAppendingPathExtension:@"plist"]];
 	[clut writeToFile:path atomically:YES];
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixUpdateCLUTMenuNotification object:name userInfo:nil];
 	[[vrView controller] setCurCLUTMenu:name];
@@ -2262,7 +2261,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	for (i=0; i<[theCurve count]; i++)
 	{
 		pt = [[theCurve objectAtIndex:i] pointValue];
-		factor = fabsf(pt.x - middle) / half;
+		factor = fabs(pt.x - middle) / half;
 		if(factor<0.0) factor = 0.0;
 		pt.x += shiftWL;
 		if(i<[theCurve count]/2.0) pt.x -= shiftWW * factor;

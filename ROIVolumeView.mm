@@ -228,9 +228,8 @@
         
         [bitmapData writeToFile:panel.URL.path atomically:YES];
         
-        NSWorkspace *ws = [NSWorkspace sharedWorkspace];
         if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
-            [ws openFile:panel.URL.path];
+            [[NSWorkspace sharedWorkspace] openURL:panel.URL];
     }];
 }
 

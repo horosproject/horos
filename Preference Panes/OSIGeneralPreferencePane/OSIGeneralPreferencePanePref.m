@@ -90,7 +90,7 @@ static NSArray *languagesToMoveWhenQuitting = nil;
         }
         
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIGeneralPreferencePanePref" bundle: nil] autorelease];
-		[nib instantiateNibWithOwner:self topLevelObjects: nil];
+		[nib instantiateWithOwner:self topLevelObjects: nil];
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];

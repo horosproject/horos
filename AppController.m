@@ -101,6 +101,7 @@
 #import "SRAnnotation.h"
 #import "Reports.h"
 #import "WebPortalDatabase.h"
+#import "NSString+SymlinksAndAliases.h"
 #include <OpenGL/OpenGL.h>
 
 #include <kdu_OsiriXSupport.h>
@@ -982,7 +983,7 @@ void exceptionHandler(NSException *exception)
 		
 		NSString *pluginBundleName = [[path lastPathComponent] stringByDeletingPathExtension];
 		
-		NSURL *bundleURL = [NSURL fileURLWithPath: [PluginManager pathResolved:path]];
+		NSURL *bundleURL = [NSURL fileURLWithPath:path.stringByResolvingAlias];
 		CFDictionaryRef bundleInfoDict = CFBundleCopyInfoDictionaryInDirectory((CFURLRef)bundleURL);
 		
 		CFStringRef versionString = nil;
@@ -1061,7 +1062,7 @@ void exceptionHandler(NSException *exception)
 
 - (NSString*) privateIP
 {
-	return [NSString stringWithCString:GetPrivateIP() encoding:NSUTF8StringEncoding];
+	return [NSString stringWithUTF8String:GetPrivateIP()];
 }
 
 - (IBAction)cancelModal:(id)sender
@@ -1159,7 +1160,7 @@ void exceptionHandler(NSException *exception)
 {
 	char s[_POSIX_HOST_NAME_MAX+1];
 	gethostname(s,_POSIX_HOST_NAME_MAX);
-	NSString *c = [NSString stringWithCString:s encoding:NSUTF8StringEncoding];
+	NSString *c = [NSString stringWithUTF8String:s];
 	NSRange range = [c rangeOfString: @"."];
 	if( range.location != NSNotFound) c = [c substringToIndex: range.location];
 	
@@ -2752,7 +2753,7 @@ static BOOL firstCall = YES;
 #endif
         [[NSFileManager defaultManager] removeItemAtPath:[[NSFileManager defaultManager] tmpDirPath] error:NULL];
         
-        if ([[NSFileManager defaultManager] fileExistsAtPath:[[[[NSFileManager defaultManager] findSystemFolderOfType:kApplicationSupportFolderType forDomain:kLocalDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"]])
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[[[[[[NSFileManager defaultManager] URLsForDirectory:NSApplicationSupportDirectory inDomains:NSLocalDomainMask] firstObject] path] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"]])
             [N2Debug setActive:YES];
         
     //  NSLog(@"%@ -> %d", [[[[NSFileManager defaultManager] findSystemFolderOfType:kApplicationSupportFolderType forDomain:kLocalDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"], [N2Debug isActive]);

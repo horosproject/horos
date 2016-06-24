@@ -50,6 +50,12 @@
 
 //static NSMutableDictionary *paneBundles = nil;
 
+@interface PreferencesWindowController (Dummy)
+
+- (void)enableControls:(id)dummy;
+
+@end
+
 @implementation PreferencesWindowContext
 
 @synthesize title = _title, parentBundle = _parentBundle, resourceName = _resourceName, pane = _pane;
@@ -98,7 +104,7 @@ static NSMutableDictionary *prefPanes = nil;
         
 		if( builtinPrefPaneClass)
 		{
-			self.pane = [[[builtinPrefPaneClass alloc] initWithBundle:nil] autorelease];
+			self.pane = [[[builtinPrefPaneClass alloc] initWithBundle:[NSBundle mainBundle]] autorelease];
 		}
 		else
 		{

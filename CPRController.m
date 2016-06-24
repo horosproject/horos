@@ -121,7 +121,7 @@ static float deg2rad = M_PI / 180.0;
 	free( imagePtr);
 	
 	[emptyPix setImageObjectID: [oP imageObjectID]];
-	[emptyPix setSourceFile: [oP sourceFile]];
+	[emptyPix setSrcFile: [oP srcFile]];
 	[emptyPix setAnnotationsDictionary: [oP annotationsDictionary]];
 	
 	return [emptyPix autorelease];
@@ -631,7 +631,7 @@ static float deg2rad = M_PI / 180.0;
     NSString *path = [[[BrowserController currentBrowser] database] statesDirPath];
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath: path])
-		[[NSFileManager defaultManager] createDirectoryAtPath: path attributes: nil];
+		[[NSFileManager defaultManager] createDirectoryAtPath: path withIntermediateDirectories:YES attributes:nil error:NULL];
 	
     path = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"CPR-%@", [[[viewer2D fileList: 0] objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
 	
@@ -2382,9 +2382,9 @@ static float deg2rad = M_PI / 180.0;
             
             if (self.exportSliceIntervalSameAsVolumeSliceInterval)
 			{
-                sliceInterval = fabsf( [cprView.volumeData minPixelSpacing]);
+                sliceInterval = fabs([cprView.volumeData minPixelSpacing]);
             } else {
-                sliceInterval = fabsf( exportSliceInterval);
+                sliceInterval = fabs(exportSliceInterval);
             }
             
             return MAX(1, ceil(slabWidth / sliceInterval));
@@ -2477,7 +2477,7 @@ static float deg2rad = M_PI / 180.0;
         if (!isSame) {
             [self willChangeValueForKey:@"exportSequenceNumberOfFrames"];
         }
-        exportSliceInterval = fabsf( newExportSliceInterval);
+        exportSliceInterval = fabs( newExportSliceInterval);
         if (!isSame) {
             [self didChangeValueForKey:@"exportSequenceNumberOfFrames"];        
         }
@@ -2519,7 +2519,7 @@ static float deg2rad = M_PI / 180.0;
         [self willChangeValueForKey:@"exportSequenceNumberOfFrames"];
         exportSliceIntervalSameAsVolumeSliceInterval = newExportSliceIntervalSameAsVolumeSliceInterval;
         if (exportSliceIntervalSameAsVolumeSliceInterval) {
-            self.exportSliceInterval = fabsf( [cprView.volumeData minPixelSpacing]);
+            self.exportSliceInterval = fabs([cprView.volumeData minPixelSpacing]);
         }
 		
 		self.exportSeriesType = CPRSlabExportSeriesType;
@@ -2657,7 +2657,7 @@ static float deg2rad = M_PI / 180.0;
 		else
 			[dicomExport setModalityAsSource: YES];
 		
-        [dicomExport setSourceFile:[[pixList[0] lastObject] sourceFile]];
+        [dicomExport setSourceFile:[[pixList[0] lastObject] srcFile]];
         
 		if( self.viewsPosition == VerticalPosition)
         {
@@ -2725,7 +2725,8 @@ static float deg2rad = M_PI / 180.0;
 			{
 				NSRect bounds = [v bounds];
 				NSPoint or = [v convertPoint: bounds.origin toView: nil];
-				bounds.origin = [[self window] convertBaseToScreen: or];
+                NSRect r = {or, NSZeroSize};
+				bounds.origin = [[self window] convertRectToScreen: r].origin;
                 
                 bounds.origin.x *= v.window.backingScaleFactor;
                 bounds.origin.y *= v.window.backingScaleFactor;
@@ -2808,7 +2809,7 @@ static float deg2rad = M_PI / 180.0;
 			dicomExport = [[[DICOMExport alloc] init] autorelease];
 			[dicomExport setSeriesDescription: self.exportSeriesName];
 			[dicomExport setSeriesNumber:8930 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
-            [dicomExport setSourceFile:[[pixList[0] lastObject] sourceFile]];
+            [dicomExport setSourceFile:[[pixList[0] lastObject] srcFile]];
 			
 			if( self.exportImageFormat == CPR8BitRGBExportImageFormat)
 				[dicomExport setModalityAsSource: NO];
@@ -3185,13 +3186,13 @@ static float deg2rad = M_PI / 180.0;
 	curExportView = [self selectedView];
 	
 	if( quicktimeExportMode)
-		[NSApp beginSheet: quicktimeWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
+		[NSApp beginSheet:quicktimeWindow modalForWindow:self.window modalDelegate:self didEndSelector:nil contextInfo:NULL];
 	else
-		[NSApp beginSheet: dcmWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
+		[NSApp beginSheet:dcmWindow modalForWindow:self.window modalDelegate:self didEndSelector:nil contextInfo:NULL];
 	
-    self.exportSlabThickness = fabs( [self getClippingRangeThicknessInMm]);
-    self.exportSliceInterval = fabs( [cprView.volumeData minPixelSpacing]);
-    self.exportTransverseSliceInterval = fabs( [curvedPath transverseSectionSpacing]);
+    self.exportSlabThickness = fabs([self getClippingRangeThicknessInMm]);
+    self.exportSliceInterval = fabs([cprView.volumeData minPixelSpacing]);
+    self.exportTransverseSliceInterval = fabs([curvedPath transverseSectionSpacing]);
 	self.exportNumberOfRotationFrames = 50;
 	
 	if( clippingRangeThickness <= 3)
@@ -3411,27 +3412,30 @@ static float deg2rad = M_PI / 180.0;
     NSSavePanel     *panel = [NSSavePanel savePanel];
     
 	[panel setCanSelectHiddenExtension:YES];
-	[panel setRequiredFileType:@"jpg"];
-	
-	if( [panel runModalForDirectory:nil file: NSLocalizedString( @"Curved MPR Image", nil)] == NSFileHandlingPanelOKButton)
-	{
-		NSImage *im = [[self selectedViewOnlyMPRView: NO] nsimage:NO];
-		
-		NSArray *representations;
-		NSData *bitmapData;
-		
-		representations = [im representations];
-		
-		if( representations.count)
-		{
-			bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-		
-			[bitmapData writeToFile:[panel filename] atomically:YES];
-		
-			NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
-		}
-	}
+	[panel setAllowedFileTypes:@[@"jpg"]];
+    panel.nameFieldStringValue = NSLocalizedString(@"Curved MPR Image", nil);
+    
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
+        NSImage *im = [[self selectedViewOnlyMPRView: NO] nsimage:NO];
+        
+        NSArray *representations;
+        NSData *bitmapData;
+        
+        representations = [im representations];
+        
+        if( representations.count)
+        {
+            bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+            
+            [bitmapData writeToURL:panel.URL atomically:YES];
+            
+            if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+                [[NSWorkspace sharedWorkspace] openURL:panel.URL];
+        }
+    }];
 }
 
 -(void) export2iPhoto:(id) sender
@@ -3446,10 +3450,11 @@ static float deg2rad = M_PI / 180.0;
 	
 	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 	
-	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"] atomically:YES];
+    NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"Horos.jpg"];
+	[bitmapData writeToFile:path atomically:YES];
 	
 	ifoto = [[iPhoto alloc] init];
-	[ifoto importIniPhoto: [NSArray arrayWithObject:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"]]];
+	[ifoto importIniPhoto:@[path]];
 	[ifoto release];
 }
 
@@ -3458,17 +3463,20 @@ static float deg2rad = M_PI / 180.0;
     NSSavePanel     *panel = [NSSavePanel savePanel];
     
 	[panel setCanSelectHiddenExtension:YES];
-	[panel setRequiredFileType:@"tif"];
+	[panel setAllowedFileTypes:@[@"tif"]];
+    panel.nameFieldStringValue = @"3D MPR Image";
 	
-	if( [panel runModalForDirectory:nil file:@"3D MPR Image"] == NSFileHandlingPanelOKButton)
-	{
-		NSImage *im = [[self selectedView] nsimage:NO];
-		
-		[[im TIFFRepresentation] writeToFile:[panel filename] atomically:NO];
-		
-		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
-	}
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
+        NSImage *im = [[self selectedView] nsimage:NO];
+        
+        [[im TIFFRepresentation] writeToURL:panel.URL atomically:YES];
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+            [[NSWorkspace sharedWorkspace] openURL:panel.URL];
+    }];
 }
 
 //- (int)dcmBatchNumberOfFrames
@@ -3567,23 +3575,28 @@ static float deg2rad = M_PI / 180.0;
 - (IBAction) saveBezierPath: (id) sender
 {
     NSSavePanel *sPanel	= [NSSavePanel savePanel];
+    [sPanel setAllowedFileTypes:@[@"curvedPath"]];
+    sPanel.nameFieldStringValue = [[[viewer2D currentStudy] valueForKey: @"name"] stringByAppendingPathExtension: @"curvedPath"];
     
-    [sPanel setRequiredFileType: @"curvedPath"];
-    
-    if( [sPanel runModalForDirectory: nil file: [[[viewer2D currentStudy] valueForKey: @"name"] stringByAppendingPathExtension: @"curvedPath"]] == NSFileHandlingPanelOKButton)
-    {
-        [self saveBezierPathToFile: [sPanel filename]];
-    }
+    [sPanel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
+        [self saveBezierPathToFile:sPanel.URL.path];
+    }];
 }
 
 - (IBAction) loadBezierPath: (id) sender;
 {
     NSOpenPanel *oPanel = [NSOpenPanel openPanel];
-	
-	if ([oPanel runModalForDirectory: nil file:nil types:[NSArray arrayWithObject: @"curvedPath"]] == NSFileHandlingPanelOKButton)
-	{
-        [self loadBezierPathFromFile: [oPanel filename]];
-    }
+    [oPanel setAllowedFileTypes:@[@"curvedPath"]];
+
+    [oPanel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+       
+        [self loadBezierPathFromFile:oPanel.URL.path];
+    }];
 }
 
 -(void) saveBezierPathToFile: (NSString*) path
@@ -3632,7 +3645,7 @@ static float deg2rad = M_PI / 180.0;
         NSString *path = [[[BrowserController currentBrowser] database] statesDirPath];
         
         if (![[NSFileManager defaultManager] fileExistsAtPath:path])
-            [[NSFileManager defaultManager] createDirectoryAtPath: path attributes:nil];
+            [[NSFileManager defaultManager] createDirectoryAtPath: path withIntermediateDirectories:YES attributes:nil error:NULL];
         
         path = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"CPR-%@", [[[viewer2D fileList: 0] objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
         
@@ -4639,7 +4652,7 @@ static float deg2rad = M_PI / 180.0;
 	{
         [dicomExport setModalityAsSource:YES];
 		
-		[dicomExport setSourceFile:[[pixList[0] lastObject] sourceFile]];
+		[dicomExport setSourceFile:[[pixList[0] lastObject] srcFile]];
 		[dicomExport setSeriesDescription:self.exportSeriesName];
 		
 		[dicomExport setPixelData:dataPtr samplesPerPixel:1 bitsPerSample:16 width:width height:height];

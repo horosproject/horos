@@ -290,7 +290,7 @@ class DiMonoPixelTemplate
 #endif
                 }
                 const Uint32 threshvalue = OFstatic_cast(Uint32, thresh * OFstatic_cast(double, Count));
-                register Uint32 t = 0;
+                Uint32 t = 0;
                 i = 0;
                 while ((i < count) && (t < threshvalue))
                     t += quant[i++];
@@ -393,8 +393,8 @@ class DiMonoPixelTemplate
             {
                 T *p = Data;
                 T value;
-                register int firstmin = 1;
-                register int firstmax = 1;
+                int firstmin = 1;
+                int firstmax = 1;
                 unsigned int i;
                 for (i = Count; i != 0; --i)                    // could be optimized if necessary (see diinpxt.h) !
                 {

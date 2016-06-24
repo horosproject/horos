@@ -92,7 +92,7 @@
 	if( self = [super init])
 	{
 		NSNib *nib = [[NSNib alloc] initWithNibNamed: @"OSIWebSharingPreferencePanePref" bundle: nil];
-		[nib instantiateNibWithOwner:self topLevelObjects: nil];
+		[nib instantiateWithOwner:self topLevelObjects: nil];
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];

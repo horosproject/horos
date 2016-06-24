@@ -236,7 +236,7 @@ decode_mcus (j_decompress_ptr cinfo, JDIFFIMAGE diff_buf,
       /* Inner loop handles the samples in the MCU */
       for (sampn = 0; sampn < cinfo->data_units_in_MCU; sampn++) {
 	d_derived_tbl * dctbl = entropy->cur_tbls[sampn];
-	register int s, r;
+	int s, r;
 
 	/* Section H.2.2: decode the sample difference */
 	HUFF_DECODE(s, br_state, dctbl, return mcu_num, label1);

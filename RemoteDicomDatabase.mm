@@ -696,7 +696,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
     
     NSInteger size = 0, i = [images indexOfObject:image];
 	
-    if( 1) // Multiple files download
+//    if( 1) // Multiple files download
     {
         while (i < images.count)
         {
@@ -715,20 +715,20 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
                 break;
         }
     }
-    else
-    {
-        DicomImage* iImage = image;
-        NSString* iLocalPath = [self localPathForImage:iImage];
-        
-        if( [iLocalPath isEqualToString: localPath] == NO)
-            NSLog( @"( [iLocalPath isEqualToString: localPath] == NO)");
-        
-        if ([NSFileManager.defaultManager fileExistsAtPath:iLocalPath])
-            return localPath;
-
-        [localPaths addObject:iLocalPath];
-        [remotePaths addObject:iImage.path];
-	}
+//    else
+//    {
+//        DicomImage* iImage = image;
+//        NSString* iLocalPath = [self localPathForImage:iImage];
+//        
+//        if( [iLocalPath isEqualToString: localPath] == NO)
+//            NSLog( @"( [iLocalPath isEqualToString: localPath] == NO)");
+//        
+//        if ([NSFileManager.defaultManager fileExistsAtPath:iLocalPath])
+//            return localPath;
+//
+//        [localPaths addObject:iLocalPath];
+//        [remotePaths addObject:iImage.path];
+//	}
 	if (!localPaths.count)
 		return nil;
 	

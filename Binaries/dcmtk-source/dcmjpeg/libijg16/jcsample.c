@@ -89,7 +89,7 @@ expand_right_edge (JSAMPARRAY image_data, int num_rows,
 {
   register JSAMPROW ptr;
   register JSAMPLE pixval;
-  register int count;
+  int count;
   int row;
   int numcols = (int) (output_cols - input_cols);
 
@@ -216,7 +216,7 @@ h2v1_downsample (j_compress_ptr cinfo, jpeg_component_info * compptr,
   JDIMENSION outcol;
   JDIMENSION output_cols = compptr->width_in_data_units * cinfo->data_unit;
   register JSAMPROW inptr, outptr;
-  register int bias;
+  int bias;
 
   /* Expand input data enough to let all the output samples be generated
    * by the standard loop.  Special-casing padded output would be more
@@ -253,7 +253,7 @@ h2v2_downsample (j_compress_ptr cinfo, jpeg_component_info * compptr,
   JDIMENSION outcol;
   JDIMENSION output_cols = compptr->width_in_data_units * cinfo->data_unit;
   register JSAMPROW inptr0, inptr1, outptr;
-  register int bias;
+  int bias;
 
   /* Expand input data enough to let all the output samples be generated
    * by the standard loop.  Special-casing padded output would be more

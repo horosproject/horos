@@ -538,8 +538,8 @@ class DiInputPixelTemplate
 #endif
                 T2 value = 0;
                 Uint16 bits = 0;
-                register Uint32 skip = highBit + 1 - bitsStored;
-                register Uint32 times;
+                Uint32 skip = highBit + 1 - bitsStored;
+                Uint32 times;
                 T1 mask[bitsof_T1];
                 mask[0] = 1;
                 for (i = 1; i < bitsof_T1; ++i)

@@ -364,10 +364,10 @@ int DiGSDFunction::calculateGSDF()
         const double k =  1.2992634e-4;
         const double m =  1.3635334e-3;
         unsigned int i;
-        register double ln;
-        register double ln2;
-        register double ln3;
-        register double ln4;
+        double ln;
+        double ln2;
+        double ln3;
+        double ln4;
         for (i = 0; i < GSDFCount; ++i)
         {
             ln = log(OFstatic_cast(double, i + 1));

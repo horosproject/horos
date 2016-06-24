@@ -121,7 +121,7 @@ OFCondition DcmQuant::createPaletteColorImage(
     }
     DcmQuantIdent id(cols);
 
-    register OFBool isByteData = (numberOfColors <= 256);
+    OFBool isByteData = (numberOfColors <= 256);
 
     // compute size requirement for palette color pixel data in bytes
     unsigned int totalSize = cols * rows * frames;

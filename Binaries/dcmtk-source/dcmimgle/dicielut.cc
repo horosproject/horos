@@ -116,8 +116,8 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
         if (cielab != NULL)
         {
             unsigned int i;
-            register double llin = 0;
-            register double cub = 0;
+            double llin = 0;
+            double cub = 0;
             const double amb = getAmbientLightValue();
             /* check whether Lmin or Lmax is set */
             const double min = (lum_min < 0) ? val_min + amb : lum_min /*includes 'amb'*/;
@@ -142,7 +142,7 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                 /* check whether to apply the inverse transformation */
                 if (inverse)
                 {
-                    register double v;
+                    double v;
                     const double factor = OFstatic_cast(double, ddl_cnt - 1) / OFstatic_cast(double, Count - 1);
                     /* convert from DDL */
                     for (i = 0; i < Count; ++i)

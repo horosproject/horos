@@ -101,6 +101,8 @@
 - (long) prepareFilter:(ViewerController*) vC;
 @end
 
+@class WebPortalConnection, WebPortalUser;
+
 @interface PluginFilter (Optional)
 
 /** Called to pass the plugin all sorts of events sent to a DCMView.  */
@@ -115,4 +117,9 @@
 
 -(NSArray*)toolbarAllowedIdentifiersForBrowserController:(id)controller;
 -(NSToolbarItem*)toolbarItemForItemIdentifier:(NSString*) identifier forBrowserController:(id)controller;
+
+- (BOOL)isPasswordProtected:(NSString *)path forConnection:(WebPortalConnection *)wpc;
+- (NSData *)httpResponseForPath:(NSString *)path forConnection:(WebPortalConnection *)wpc;
+- (WebPortalUser *)authenticateConnection:(WebPortalConnection *)wpc parameters:(NSDictionary *)params;
+
 @end;

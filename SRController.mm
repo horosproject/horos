@@ -943,7 +943,7 @@ return YES;
 	
 	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 	
-    NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"OsiriX.jpg"];
+    NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"Horos.jpg"];
 	[bitmapData writeToFile:path atomically:YES];
 	
 	ifoto = [[iPhoto alloc] init];
@@ -974,9 +974,8 @@ return YES;
 		
 		[bitmapData writeToFile:panel.URL.path atomically:YES];
 		
-		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
-            [ws openFile:panel.URL.path];
+            [[NSWorkspace sharedWorkspace] openURL:panel.URL];
     }];
 }
 
@@ -996,9 +995,8 @@ return YES;
 		
 		[[im TIFFRepresentation] writeToFile:panel.URL.path atomically:NO];
 		
-		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
-            [ws openFile:panel.URL.path];
+            [[NSWorkspace sharedWorkspace] openURL:panel.URL];
     }];
 }
 

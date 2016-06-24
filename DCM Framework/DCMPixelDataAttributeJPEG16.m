@@ -80,7 +80,7 @@ typedef JPEG16ErrorStruct * JPEG16ErrorPtr;
 //	char buffer[JMSG_LENGTH_MAX]; 
 //	(*cinfo->err->format_message) (cinfo, buffer);
 //	NSLog(@"JPEG error %s", buffer);
-//	dcmException = [NSException exceptionWithName:@"DCM JPEG Encoding error" reason:[NSString stringWithCString:buffer] userInfo:nil];
+//	dcmException = [NSException exceptionWithName:@"DCM JPEG Encoding error" reason:[NSString stringWithUTF8String:buffer] userInfo:nil];
 //}
 //
 //METHODDEF(void) JPEG16OutputMessage(j_common_ptr cinfo)

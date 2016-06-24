@@ -245,7 +245,7 @@ emit_bits (working_state * state, unsigned int code, int size)
 {
   /* This routine is heavily used, so it's worth coding tightly. */
   register IJG_INT32 put_buffer = (IJG_INT32) code;
-  register int put_bits = state->cur.put_bits;
+  int put_bits = state->cur.put_bits;
 
   /* if size is 0, caller used an invalid Huffman table entry */
   if (size == 0)
@@ -351,8 +351,8 @@ encode_mcus_huff (j_compress_ptr cinfo, JDIFFIMAGE diff_buf,
 
     /* Inner loop handles the samples in the MCU */
     for (sampn = 0; sampn < cinfo->data_units_in_MCU; sampn++) {
-      register int temp, temp2 /* , temp3 */ ;
-      register int nbits;
+      int temp, temp2 /* , temp3 */ ;
+      int nbits;
       c_derived_tbl *dctbl = entropy->cur_tbls[sampn];
   
       /* Encode the difference per section H.1.2.2 */
@@ -493,8 +493,8 @@ encode_mcus_gather (j_compress_ptr cinfo, JDIFFIMAGE diff_buf,
 
     /* Inner loop handles the samples in the MCU */
     for (sampn = 0; sampn < cinfo->data_units_in_MCU; sampn++) {
-      register int temp;
-      register int nbits;
+      int temp;
+      int nbits;
       /* c_derived_tbl *dctbl = entropy->cur_tbls[sampn]; */
       long * counts = entropy->cur_counts[sampn];
   

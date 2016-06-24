@@ -131,7 +131,7 @@ class DiRGBPixelTemplate
             }
             else
             {
-                register int j;
+                int j;
                 unsigned int i;
                 for (i = 0; i < count; ++i)                         /* for all pixel ... */
                     for (j = 0; j < 3; ++j)

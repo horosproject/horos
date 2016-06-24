@@ -46,7 +46,7 @@
 
 @implementation AnonymizationTagsPopUpButton
 
-@synthesize selectedTag;
+@synthesize selectedDCMAttributeTag;
 
 NSInteger CompareDCMAttributeTagNames(id lsp, id rsp, void* context) {
 	return [[lsp name] caseInsensitiveCompare: [rsp name]];
@@ -163,14 +163,14 @@ NSInteger CompareDCMAttributeTagStringValues(id lsp, id rsp, void* context) {
 	extraItem.target = self;
 	[self.menu addItem:extraItem];
 	
-	self.selectedTag = NULL;
+	self.selectedDCMAttributeTag = NULL;
 	
 	return self;
 }
 
 -(void)customMenuItemAction:(id)sender {
 	AnonymizationCustomTagPanelController* panelController = [[AnonymizationCustomTagPanelController alloc] init];
-	[panelController setAttributeTag:self.selectedTag];
+	[panelController setAttributeTag:self.selectedDCMAttributeTag];
 	[NSApp beginSheet:panelController.window modalForWindow:self.window modalDelegate:self didEndSelector:@selector(addCustomTagPanelDidEnd:returnCode:contextInfo:) contextInfo:panelController];
 	[panelController.window orderFront:self];
 }
@@ -179,7 +179,7 @@ NSInteger CompareDCMAttributeTagStringValues(id lsp, id rsp, void* context) {
 	AnonymizationCustomTagPanelController* panelController = (id)contextInfo;
 	
 	if (returnCode == NSRunStoppedResponse) {
-		[self setSelectedTag:[panelController attributeTag]];
+		[self setSelectedDCMAttributeTag:[panelController attributeTag]];
 	}
 	
 	[panel close];
@@ -187,12 +187,12 @@ NSInteger CompareDCMAttributeTagStringValues(id lsp, id rsp, void* context) {
 }
 
 -(void)tagsMenuItemSelectedAction:(NSMenuItem*)menuItem {
-	[self setSelectedTag:menuItem.representedObject];
+	[self setSelectedDCMAttributeTag:menuItem.representedObject];
 }
 
--(void)setSelectedTag:(DCMAttributeTag*)tag {
-	[selectedTag release];
-	selectedTag = [tag retain];
+-(void)setSelectedDCMAttributeTag:(DCMAttributeTag*)tag {
+	[selectedDCMAttributeTag release];
+	selectedDCMAttributeTag = [tag retain];
 	
 	[self didChangeValueForKey:@"title"];
 
@@ -203,10 +203,10 @@ NSInteger CompareDCMAttributeTagStringValues(id lsp, id rsp, void* context) {
 				subitem.state = tag && [subitem.representedObject isEqual:tag];
 	}
 	
-	[self.cell setDisplayedTitle: selectedTag? (selectedTag.name? [NSString stringWithFormat:@"%@ - %@", selectedTag.name, selectedTag.stringValue] : selectedTag.stringValue) : NSLocalizedString(@"Select a DICOM tag...", NULL) ];
+	[self.cell setDisplayedTitle: selectedDCMAttributeTag? (selectedDCMAttributeTag.name? [NSString stringWithFormat:@"%@ - %@", selectedDCMAttributeTag.name, selectedDCMAttributeTag.stringValue] : selectedDCMAttributeTag.stringValue) : NSLocalizedString(@"Select a DICOM tag...", NULL) ];
 	[self setNeedsDisplay:YES];
 	
-	[self didChangeValueForKey:@"selectedTag"];
+	[self didChangeValueForKey:@"selectedDCMAttributeTag"];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem
@@ -231,6 +231,14 @@ NSInteger CompareDCMAttributeTagStringValues(id lsp, id rsp, void* context) {
 		[menuItem setState: NSOffState];
 	
 	return YES;
+}
+
+- (DCMAttributeTag *)selectedTag {
+    return self.selectedDCMAttributeTag;
+}
+
+- (void)setSelectedTag:(DCMAttributeTag *)tag {
+    [self setSelectedDCMAttributeTag:tag];
 }
 
 @end

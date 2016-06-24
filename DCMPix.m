@@ -6188,15 +6188,15 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     oData = calloc( oRows*oColumns, 1);
                     if( oData)
                     {
-                        register unsigned short *pixels = (unsigned short*) [data bytes];
-                        register unsigned char *oD = oData;
-                        register char mask = 1;
+                        unsigned short *pixels = (unsigned short*) [data bytes];
+                        unsigned char *oD = oData;
+                        char mask = 1;
                         long t = oColumns*oRows/16;
                         
                         while( t-->0)
                         {
-                            register unsigned short	octet = *pixels++;
-                            register int x = 16;
+                            unsigned short	octet = *pixels++;
+                            int x = 16;
                             while( x-->0)
                             {
                                 char v = octet & mask ? 1 : 0;
@@ -7103,7 +7103,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
                         // Only do it, if it failed: writing a file takes time... and slow down reading performances
                         
-                        NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
+                        NSString *recoveryPath = [[[[BrowserController currentBrowser] database] baseDirPath] stringByAppendingPathComponent:@"ThumbnailPath"];
                         
                         [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
                         

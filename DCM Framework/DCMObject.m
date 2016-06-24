@@ -292,7 +292,7 @@ static NSString* getMacAddressNumber( void)
 	if( [data length] < 132) return NO;
 	unsigned char *string = (unsigned char *)[data bytes];
 	//unsigned char *string2 = string + 128;
-	//NSLog(@"dicom at 128: %@" , [NSString  stringWithCString:string2 length:4]);
+	//NSLog(@"dicom at 128: %@" , [NSString  stringWithUTF8String:string2 length:4]);
 	if (string[128] == 'D' && string[129] == 'I'&& string[130] == 'C' && string[131] == 'M')
 		return YES;
 	return NO;

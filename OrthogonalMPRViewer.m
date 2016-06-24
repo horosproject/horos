@@ -1351,7 +1351,7 @@ static SyncSeriesScope globalSyncSeriesScope;
     
     bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
     
-    NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"OsiriX.jpg"];
+    NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"Horos.jpg"];
     [bitmapData writeToFile:path atomically:YES];
 				
     email = [[Mailer alloc] init];
@@ -1365,8 +1365,6 @@ static SyncSeriesScope globalSyncSeriesScope;
 {
     NSSavePanel     *panel = [NSSavePanel savePanel];
     BOOL			all = NO;
-    NSWorkspace		*ws = [NSWorkspace sharedWorkspace];
-    
     
     [panel setCanSelectHiddenExtension:YES];
     [panel setAllowedFileTypes:@[@"jpg"]];
@@ -1442,10 +1440,7 @@ static SyncSeriesScope globalSyncSeriesScope;
             [view setNeedsDisplay:YES];
             
             if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
-            {
-                //[ws openFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%d.jpg", 1]]];
-                [ws openURL:[panel.URL URLByDeletingLastPathComponent]];
-            }
+                [[NSWorkspace sharedWorkspace] openURL:[panel.URL URLByDeletingLastPathComponent]];
         }
         else
         {
@@ -1462,7 +1457,8 @@ static SyncSeriesScope globalSyncSeriesScope;
             
             [bitmapData writeToFile:panel.URL.path atomically:YES];
             
-            if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:panel.URL.path];
+            if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+                [[NSWorkspace sharedWorkspace] openURL:panel.URL];
         }
     }];
 }

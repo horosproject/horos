@@ -36,6 +36,7 @@
 #import "OsiriX/DCM.h"
 #import "BrowserController.h"
 #import "NSString+N2.h"
+#import "NSString+SymlinksAndAliases.h"
 #import "NSFileManager+N2.h"
 #import "NSAppleScript+N2.h"
 #import "DicomDatabase.h"
@@ -547,7 +548,7 @@
 }
 
 +(NSString*)resolvedDatabaseWordTemplatesDirPath {
-    return [[NSFileManager defaultManager] destinationOfAliasOrSymlinkAtPath:[self databaseWordTemplatesDirPath]];
+    return [[self databaseWordTemplatesDirPath] stringByResolvingSymlinksAndAliases];
 }
 
 + (NSMutableArray*)wordTemplatesList

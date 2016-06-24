@@ -528,8 +528,8 @@ static OFBool decompressFile(DcmFileFormat fileformat, const char *fname, char *
 	BOOL useDCMTKForJP2K = [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"];
 	if( useDCMTKForJP2K == NO && (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000))
 	{
-		NSString *path = [NSString stringWithCString: fname encoding: NSUTF8StringEncoding];
-		NSString *outpath = [NSString stringWithCString: outfname encoding: NSUTF8StringEncoding];
+		NSString *path = [NSString stringWithUTF8String:fname];
+		NSString *outpath = [NSString stringWithUTF8String:outfname];
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: path decodingPixelData: NO];
 		
 		unlink( outfname);
@@ -581,8 +581,8 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
         if( useDCMTKForJP2K == NO && opt_networkTransferSyntax == EXS_JPEG2000)
         {
             NSLog(@"SEND - Compress JPEG 2000 Lossy (%d) : %s", opt_Quality, fname);
-            NSString *path = [NSString stringWithCString:fname encoding:NSUTF8StringEncoding];
-            NSString *outpath = [NSString stringWithCString:outfname encoding:NSUTF8StringEncoding];
+            NSString *path = [NSString stringWithUTF8String:fname];
+            NSString *outpath = [NSString stringWithUTF8String:outfname];
             
             DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
             
@@ -604,8 +604,8 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
         {
             NSLog(@"SEND - Compress JPEG 2000 Lossless: %s", fname);
             
-            NSString *path = [NSString stringWithCString:fname encoding:NSUTF8StringEncoding];
-            NSString *outpath = [NSString stringWithCString:outfname encoding:NSUTF8StringEncoding];
+            NSString *path = [NSString stringWithUTF8String:fname];
+            NSString *outpath = [NSString stringWithUTF8String:outfname];
             
             DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
             

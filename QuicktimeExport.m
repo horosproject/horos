@@ -317,10 +317,7 @@
                 [pixelBufferAdaptor release];
                 
                 if( openIt && aborted == NO)
-                {
-                    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-                    [ws openFile:fileName];
-                }
+                    [[NSWorkspace sharedWorkspace] openFile:fileName];
             }
             
             [writer release];

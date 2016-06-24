@@ -78,7 +78,7 @@
 	if( self = [super init])
 	{
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIListenerPreferencePanePref" bundle: nil] autorelease];
-		[nib instantiateNibWithOwner:self topLevelObjects: nil];
+		[nib instantiateWithOwner:self topLevelObjects: nil];
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
@@ -140,7 +140,7 @@
 
 	//setup GUI
 	
-//	NSString *ip = [NSString stringWithCString:GetPrivateIP()];
+//	NSString *ip = [NSString stringWithUTF8String:GetPrivateIP()];
 	NSString *ip = [[self IPv4Address] componentsJoinedByString:@", "];
 	char hostname[ _POSIX_HOST_NAME_MAX+1];
 	gethostname(hostname, _POSIX_HOST_NAME_MAX);

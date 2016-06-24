@@ -35,6 +35,7 @@
 #import "N2MinMax.h"
 #import "N2Alignment.h"
 
+__deprecated
 @interface N2CellDescriptor : NSObject {
 	NSView* _view;
 	N2Alignment _alignment;
@@ -75,5 +76,6 @@
 
 @end
 
+__deprecated
 @interface N2ColumnDescriptor : N2CellDescriptor
 @end

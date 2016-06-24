@@ -836,7 +836,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 }
 
 -(NSString*)name {
-	return [NSString stringWithCString:DcmTag(_element->getTag()).getTagName() encoding:NSUTF8StringEncoding];
+	return [NSString stringWithUTF8String:DcmTag(_element->getTag()).getTagName()];
 }
 
 -(NSString*)stringValue {

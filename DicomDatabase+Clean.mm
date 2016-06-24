@@ -140,7 +140,7 @@
 		// Log cleaning
 		if ([self tryLock])
 			@try {
-				NSDate *producedDate = [[NSDate date] addTimeInterval: -[defaults integerForKey:@"LOGCLEANINGDAYS"]*60*60*24];
+				NSDate *producedDate = [[NSDate date] dateByAddingTimeInterval: -[defaults integerForKey:@"LOGCLEANINGDAYS"]*60*60*24];
 				NSPredicate *predicate = [NSPredicate predicateWithFormat: @"startTime <= CAST(%lf, \"NSDate\")", [producedDate timeIntervalSinceReferenceDate]];
 				for (id log in [self objectsForEntity:self.logEntryEntity predicate:predicate])
 					[self.managedObjectContext deleteObject:log];
@@ -156,8 +156,8 @@
 				@try {
 					NSArray				*studiesArray;
 					NSDate				*now = [NSDate date];
-					NSDate				*producedDate = [now addTimeInterval: -[[defaults stringForKey:@"AUTOCLEANINGDATEPRODUCEDDAYS"] intValue]*60*60*24];
-					NSDate				*openedDate = [now addTimeInterval: -[[defaults stringForKey:@"AUTOCLEANINGDATEOPENEDDAYS"] intValue]*60*60*24];
+					NSDate				*producedDate = [now dateByAddingTimeInterval: -[[defaults stringForKey:@"AUTOCLEANINGDATEPRODUCEDDAYS"] intValue]*60*60*24];
+					NSDate				*openedDate = [now dateByAddingTimeInterval: -[[defaults stringForKey:@"AUTOCLEANINGDATEOPENEDDAYS"] intValue]*60*60*24];
 					NSMutableArray		*toBeRemoved = [NSMutableArray array];
 					BOOL				dontDeleteStudiesWithComments = [[NSUserDefaults standardUserDefaults] boolForKey: @"dontDeleteStudiesWithComments"];
 					BOOL                dontDeleteStudiesIfInAlbum = [[NSUserDefaults standardUserDefaults] boolForKey:@"dontDeleteStudiesIfInAlbum"];
@@ -367,7 +367,7 @@ static BOOL _showingCleanForFreeSpaceWarning = NO;
         
         if( [NSUserDefaults.standardUserDefaults boolForKey:@"AUTOCLEANINGSPACE"])
 		{
-            NSDictionary* fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:self.dataBaseDirPath];
+            NSDictionary* fsattrs = [[NSFileManager defaultManager] attributesOfItemAtPath:self.dataBaseDirPath error:NULL];
             if (![fsattrs objectForKey:NSFileSystemSize]) {
                 NSLog(@"Error: database cleaning mechanism couldn't obtain filesystem size information for %@", self.dataBaseDirPath);
                 return;
@@ -461,7 +461,7 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
     [thread enterOperation];
     
 	@try {
-		NSDictionary* fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:self.dataBaseDirPath];
+        NSDictionary* fsattrs = [[NSFileManager defaultManager] attributesOfItemAtPath:self.dataBaseDirPath error:NULL];
 		if ([fsattrs objectForKey:NSFileSystemFreeSize] == nil) {
 			NSLog(@"Error: database cleaning mechanism couldn't obtain filesystem space information for %@", self.dataBaseDirPath);
 			return;
@@ -603,7 +603,7 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
                 
                 // did we free up enough space?
                 
-                NSDictionary* fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:self.dataBaseDirPath];
+                NSDictionary* fsattrs = [[NSFileManager defaultManager] attributesOfItemAtPath:self.dataBaseDirPath error:NULL];
                 free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue]/1024/1024;
                 if (free >= freeMemoryRequested) // if so, stop deleting studies
                     break;

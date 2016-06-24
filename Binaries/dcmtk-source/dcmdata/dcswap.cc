@@ -99,7 +99,7 @@ void swapBytes(void * value, const Uint32 byteLength,
     {
 	Uint8 * first = &OFstatic_cast(Uint8*, value)[0];
 	Uint8 * second = &OFstatic_cast(Uint8*, value)[1];
-	register Uint32 times = byteLength/2;
+	Uint32 times = byteLength/2;
 	while(times--)
 	{
 	    save = *first;
@@ -112,7 +112,7 @@ void swapBytes(void * value, const Uint32 byteLength,
     /* if valWidth is greater than 2, swap correspondingly */
     else if (valWidth > 2)
     {
-	register size_t i;
+	size_t i;
 	const size_t halfWidth = valWidth/2;
 	const size_t offset = valWidth-1;
 	Uint8 *start;

@@ -425,7 +425,7 @@ class DiMonoOutputPixelTemplate
                         }
 #endif
                         createDisplayLUT(dlut, disp, plut->getBits());
-                        register Uint32 value2;                                         // presentation LUT is always unsigned
+                        Uint32 value2;                                         // presentation LUT is always unsigned
                         const Uint32 pcnt = plut->getCount();
                         const double gradient1 = OFstatic_cast(double, pcnt) / OFstatic_cast(double, vlut->getAbsMaxRange());
                         const Uint32 firstvalue = OFstatic_cast(Uint32, OFstatic_cast(double, vlut->getFirstValue()) * gradient1);
@@ -676,7 +676,7 @@ class DiMonoOutputPixelTemplate
                     }
 #endif
                     createDisplayLUT(dlut, disp, plut->getBits());
-                    register Uint32 value;                                            // presentation LUT is always unsigned
+                    Uint32 value;                                            // presentation LUT is always unsigned
                     const double gradient1 = OFstatic_cast(double, plut->getCount()) / inter->getAbsMaxRange();
                     const double gradient2 = outrange / OFstatic_cast(double, plut->getAbsMaxRange());
                     if (initOptimizationLUT(lut, ocnt))
@@ -834,7 +834,7 @@ class DiMonoOutputPixelTemplate
                 const T1 *p = pixel + start;
                 T3 *q = Data;
                 unsigned int i;
-                register double value;
+                double value;
                 T3 *lut = NULL;
                 if ((plut != NULL) && (plut->isValid()))                              // has presentation LUT
                 {
@@ -846,7 +846,7 @@ class DiMonoOutputPixelTemplate
                     }
 #endif
                     createDisplayLUT(dlut, disp, plut->getBits());
-                    register Uint32 value2;                                           // presentation LUT is always unsigned
+                    Uint32 value2;                                           // presentation LUT is always unsigned
                     const Uint32 pcnt = plut->getCount();
                     const double plutmax_1 = OFstatic_cast(double, plut->getAbsMaxRange()) - 1;
                     const double gradient1 = (width_1 == 0) ? 0 : OFstatic_cast(double, pcnt - 1) / width_1;
@@ -1022,7 +1022,7 @@ class DiMonoOutputPixelTemplate
                 {
                     const signed int left_pos = overlays[j]->getLeft();
                     const signed int top_pos = overlays[j]->getTop();
-                    register DiOverlayPlane *plane;
+                    DiOverlayPlane *plane;
                     for (unsigned int i = 0; i < overlays[j]->getCount(); ++i)
                     {
                         plane = overlays[j]->getPlane(i);

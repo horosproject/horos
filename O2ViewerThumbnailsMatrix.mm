@@ -38,6 +38,9 @@
 #import "ViewerController.h"
 #import "AppController.h"
 #import "ThumbnailsListPanel.h"
+#import "NSThread+N2.h"
+#import "N2Stuff.h"
+#import "ThreadsManager.h"
 #import "N2Debug.h"
 
 @implementation O2ViewerThumbnailsMatrix // we overload NSMatrix, but this class isn't as capable as NSMatrix: we only support 1-column-wide matrixes! so, actually, this isn't a matrix, it's a list, but we still use NSMAtrix so we don't have to modify ViewerController
@@ -68,14 +71,6 @@
 {
 	@try
     {
-        NSSize dragOffset = NSMakeSize(0.0, 0.0);
-        
-        NSPoint event_location = [event locationInWindow];
-        NSPoint local_point = [self convertPoint:event_location fromView:nil];
-        
-        local_point.x -= 35;
-        local_point.y += 35;
-        
         if( [self selectedCell])
         {
             NSImage	*firstCell = [[self selectedCell] image];
@@ -96,23 +91,29 @@
                 [thumbnail unlockFocus];
             }
             
-            NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard];
+            NSPasteboardItem* pbi = [[[NSPasteboardItem alloc] init] autorelease];
+            [pbi setDataProvider:self forTypes:@[NSPasteboardTypeString]];
             
-            [pboard declareTypes:@[NSFilesPromisePboardType, NSPasteboardTypeString] owner:self];
-            [pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[@[[[[self selectedCell] representedObject] object]] valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL] forType:O2PasteboardTypeDatabaseObjectXIDs];
+            [pbi setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[@[[[[self selectedCell] representedObject] object]] valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL] forType:O2PasteboardTypeDatabaseObjectXIDs];
+
+            NSDraggingItem* di = [[[NSDraggingItem alloc] initWithPasteboardWriter:pbi] autorelease];
+            NSPoint p = [self convertPoint:event.locationInWindow fromView:nil];
+            [di setDraggingFrame:NSMakeRect(p.x-thumbnail.size.width/2, p.y-thumbnail.size.height/2, thumbnail.size.width, thumbnail.size.height) contents:thumbnail];
             
-            [self dragImage:thumbnail
-                         at:local_point
-                     offset:dragOffset
-                      event:event
-                 pasteboard:pboard
-                     source:self
-                  slideBack:NO];
+            NSDraggingSession* session = [self beginDraggingSessionWithItems:@[di] event:event source:self];
+            session.animatesToStartingPositionsOnCancelOrFail = YES;
         }
         
 	} @catch( NSException *localException) {
 		NSLog(@"Exception while dragging: %@", [localException description]);
 	}
+}
+
+- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
+    return NSDragOperationGeneric;
+}
+
+- (void)pasteboard:(NSPasteboard *)pasteboard item:(NSPasteboardItem *)item provideDataForType:(NSString *)type {
 }
 
 - (void)draggingSession:(NSDraggingSession *)session willBeginAtPoint:(NSPoint)screenPoint
@@ -153,11 +154,6 @@
     }
 }
 
-- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context
-{
-    return NSDragOperationEvery;
-}
-
 - (NSDragOperation) draggingSourceOperationMaskForLocal:(BOOL)isLocal
 {
 	return NSDragOperationEvery;
@@ -169,7 +165,7 @@
     {
         [[cell target] performSelector: [cell action] withObject: self];
         
-        if( [cell action] == @selector( matrixPreviewPressed:))
+        if( [cell action] == @selector(matrixPreviewPressed:))
         {
             ViewerController *v = [cell target];
             [v fullScreenMenu: self];

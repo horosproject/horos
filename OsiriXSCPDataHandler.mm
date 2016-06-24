@@ -257,7 +257,7 @@ extern BOOL forkedProcess;
 					char *pn;
 					if (dcelem->getString(pn).good() && pn != NULL)
 					{
-						NSString *patientNameString = [NSString stringWithCString:pn  DICOMEncoding:specificCharacterSet];
+						NSString *patientNameString = [NSString stringWithUTF8String:pn  DICOMEncoding:specificCharacterSet];
                         
                         predicate = [[BrowserController currentBrowser] patientsnamePredicate: patientNameString soundex: NO];
 					}
@@ -266,45 +266,45 @@ extern BOOL forkedProcess;
 				{
 					char *pid;
 					if (dcelem->getString(pid).good() && pid != NULL)
-						predicate = [self predicateWithString: [NSString stringWithCString:pid  DICOMEncoding:nil] forField: @"patientID"];
+						predicate = [self predicateWithString: [NSString stringWithUTF8String:pid  DICOMEncoding:nil] forField: @"patientID"];
 				}
 				else if (key == DCM_AccessionNumber)
 				{
 					char *pid;
 					if (dcelem->getString(pid).good() && pid != NULL)
-						predicate = [self predicateWithString: [NSString stringWithCString:pid  DICOMEncoding:nil] forField: @"accessionNumber"];
+						predicate = [self predicateWithString: [NSString stringWithUTF8String:pid  DICOMEncoding:nil] forField: @"accessionNumber"];
 				}
 				else if (key == DCM_StudyInstanceUID)
 				{
 					char *suid;
 					if (dcelem->getString(suid).good() && suid != NULL)
-						predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [NSString stringWithCString:suid  DICOMEncoding:nil]];
+						predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", [NSString stringWithUTF8String:suid  DICOMEncoding:nil]];
 				}
 				else if (key == DCM_StudyID)
 				{
 					char *sid;
 					if (dcelem->getString(sid).good() && sid != NULL)
-						predicate = [NSPredicate predicateWithFormat:@"id == %@", [NSString stringWithCString:sid  DICOMEncoding:nil]];
+						predicate = [NSPredicate predicateWithFormat:@"id == %@", [NSString stringWithUTF8String:sid  DICOMEncoding:nil]];
 				}
 				else if (key ==  DCM_StudyDescription)
 				{
 					char *sd;
 					if (dcelem->getString(sd).good() && sd != NULL)
-						predicate = [self predicateWithString: [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet] forField: @"studyName"];
+						predicate = [self predicateWithString: [NSString stringWithUTF8String:sd  DICOMEncoding:specificCharacterSet] forField: @"studyName"];
 				}
                 else if (key ==  DCM_InterpretationStatusID)
 				{
 					char *sd;
 					if (dcelem->getString(sd).good() && sd != NULL)
-						predicate = [NSPredicate predicateWithFormat:@"stateText == %@", [NSString stringWithCString:sd  DICOMEncoding:nil]];
+						predicate = [NSPredicate predicateWithFormat:@"stateText == %@", [NSString stringWithUTF8String:sd  DICOMEncoding:nil]];
 				}
 				else if (key ==  DCM_ImageComments || key ==  DCM_StudyComments)
 				{
 					char *sd;
 					if (dcelem->getString(sd).good() && sd != NULL)
 					{
-						NSPredicate *p1 = [self predicateWithString: [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet] forField: @"comment"];
-						NSPredicate *p2 = [self predicateWithString: [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet] forField: @"series.comment" any: YES];
+						NSPredicate *p1 = [self predicateWithString: [NSString stringWithUTF8String:sd  DICOMEncoding:specificCharacterSet] forField: @"comment"];
+						NSPredicate *p2 = [self predicateWithString: [NSString stringWithUTF8String:sd  DICOMEncoding:specificCharacterSet] forField: @"series.comment" any: YES];
 						
 						predicate = [NSCompoundPredicate orPredicateWithSubpredicates: [NSArray arrayWithObjects: p1, p2, nil]];
 					}
@@ -313,26 +313,26 @@ extern BOOL forkedProcess;
 				{
 					char *inn;
 					if (dcelem->getString(inn).good() && inn != NULL)
-						predicate = [self predicateWithString: [NSString stringWithCString:inn  DICOMEncoding:specificCharacterSet] forField: @"institutionName"];
+						predicate = [self predicateWithString: [NSString stringWithUTF8String:inn  DICOMEncoding:specificCharacterSet] forField: @"institutionName"];
 				}
 				else if (key == DCM_ReferringPhysiciansName)
 				{
 					char *rpn;
 					if (dcelem->getString(rpn).good() && rpn != NULL)
-						predicate = [self predicateWithString: [NSString stringWithCString:rpn  DICOMEncoding:specificCharacterSet] forField: @"referringPhysician"];
+						predicate = [self predicateWithString: [NSString stringWithUTF8String:rpn  DICOMEncoding:specificCharacterSet] forField: @"referringPhysician"];
 				}
 				else if (key ==  DCM_PerformingPhysiciansName)
 				{
 					char *ppn;
 					if (dcelem->getString(ppn).good() && ppn != NULL)
-						predicate = [self predicateWithString: [NSString stringWithCString:ppn  DICOMEncoding:specificCharacterSet] forField: @"performingPhysician"];
+						predicate = [self predicateWithString: [NSString stringWithUTF8String:ppn  DICOMEncoding:specificCharacterSet] forField: @"performingPhysician"];
 				}
 				else if (key ==  DCM_ModalitiesInStudy)
 				{
 					char *mis;
 					if (dcelem->getString(mis).good() && mis != NULL)
 					{
-                        NSArray *modalities = [[NSString stringWithCString:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"];
+                        NSArray *modalities = [[NSString stringWithUTF8String:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"];
                         
                         if( modalities.count <= 1)
                             predicate = [NSPredicate predicateWithFormat:@"(modality CONTAINS[cd] %@)", [modalities lastObject]];
@@ -345,7 +345,7 @@ extern BOOL forkedProcess;
 					char *mis;
 					if (dcelem->getString(mis).good() && mis != NULL)
 					{
-                        NSArray *modalities = [[NSString stringWithCString:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"];
+                        NSArray *modalities = [[NSString stringWithUTF8String:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"];
                         
                         if( modalities.count <= 1)
                             predicate = [NSPredicate predicateWithFormat:@"(modality CONTAINS[cd] %@)", [modalities lastObject]];
@@ -359,7 +359,7 @@ extern BOOL forkedProcess;
 					DCMCalendarDate *value = nil;
 					if (dcelem->getString(aDate).good() && aDate != NULL)
 					{
-						NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
+						NSString *dateString = [NSString stringWithUTF8String:aDate DICOMEncoding:nil];
 						value = [DCMCalendarDate dicomDate:dateString];
 					}
 					
@@ -406,7 +406,7 @@ extern BOOL forkedProcess;
 					DCMCalendarDate *value = nil;
 					if (dcelem->getString(aDate).good() && aDate != NULL)
 					{
-						NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
+						NSString *dateString = [NSString stringWithUTF8String:aDate DICOMEncoding:nil];
 						value = [DCMCalendarDate dicomDate:dateString];
 					}
 					
@@ -451,7 +451,7 @@ extern BOOL forkedProcess;
 					DCMCalendarDate *value = nil;
 					if (dcelem->getString(aDate).good() && aDate != NULL)
 					{
-						NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
+						NSString *dateString = [NSString stringWithUTF8String:aDate DICOMEncoding:nil];
 						value = [DCMCalendarDate dicomTime:dateString];
 					}
 	  
@@ -503,14 +503,14 @@ extern BOOL forkedProcess;
 				{
 					char *string;
 					if (dcelem->getString(string).good() && string != NULL)
-						predicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
+						predicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [NSString stringWithUTF8String:string  DICOMEncoding:nil]];
 				}
 				else if (key == DCM_SeriesInstanceUID)
 				{
 					char *string;
 					if (dcelem->getString(string).good() && string != NULL)
 					{
-						NSString *u = [NSString stringWithCString:string  DICOMEncoding:nil];
+						NSString *u = [NSString stringWithUTF8String:string  DICOMEncoding:nil];
 						NSArray *uids = [u componentsSeparatedByString:@"\\"];
 						NSArray *predicateArray = [NSArray array];
 						
@@ -529,19 +529,19 @@ extern BOOL forkedProcess;
 				{
 					char *string;
 					if (dcelem->getString(string).good() && string != NULL)
-						predicate = [self predicateWithString:[NSString stringWithCString:string  DICOMEncoding:specificCharacterSet] forField:@"name"];
+						predicate = [self predicateWithString:[NSString stringWithUTF8String:string  DICOMEncoding:specificCharacterSet] forField:@"name"];
 				}
 				else if (key == DCM_SeriesNumber)
 				{
 					char *string;
 					if (dcelem->getString(string).good() && string != NULL)
-						predicate = [NSPredicate predicateWithFormat:@"id == %@", [NSString stringWithCString:string  DICOMEncoding:specificCharacterSet]];
+						predicate = [NSPredicate predicateWithFormat:@"id == %@", [NSString stringWithUTF8String:string  DICOMEncoding:specificCharacterSet]];
 				}
 				else if (key ==  DCM_Modality)
 				{
 					char *mis;
 					if (dcelem->getString(mis).good() && mis != NULL)
-						predicate = [NSPredicate predicateWithFormat:@"study.modality CONTAINS[cd] %@", [NSString stringWithCString:mis  DICOMEncoding:nil]];
+						predicate = [NSPredicate predicateWithFormat:@"study.modality CONTAINS[cd] %@", [NSString stringWithUTF8String:mis  DICOMEncoding:nil]];
 				}
 				
 				else if (key == DCM_SeriesDate)
@@ -550,7 +550,7 @@ extern BOOL forkedProcess;
 					DCMCalendarDate *value = nil;
 					if (dcelem->getString(aDate).good() && aDate != NULL)
 					{
-						NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
+						NSString *dateString = [NSString stringWithUTF8String:aDate DICOMEncoding:nil];
 						value = [DCMCalendarDate dicomDate:dateString];
 					}
 	  
@@ -595,7 +595,7 @@ extern BOOL forkedProcess;
 					DCMCalendarDate *value = nil;
 					if (dcelem->getString(aDate).good() && aDate != NULL)
 					{
-						NSString *dateString = [NSString stringWithCString:aDate DICOMEncoding:nil];
+						NSString *dateString = [NSString stringWithUTF8String:aDate DICOMEncoding:nil];
 						value = [DCMCalendarDate dicomTime:dateString];
 					}
 	  
@@ -647,7 +647,7 @@ extern BOOL forkedProcess;
 					char *string;
 					if (dcelem->getString(string).good() && string != NULL)
 					{
-						predicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
+						predicate = [NSPredicate predicateWithFormat:@"study.studyInstanceUID == %@", [NSString stringWithUTF8String:string  DICOMEncoding:nil]];
 					
 						if( seriesLevelPredicate == nil)
 							seriesLevelPredicate = predicate;
@@ -664,7 +664,7 @@ extern BOOL forkedProcess;
 					char *string;
 					if (dcelem->getString(string).good() && string != NULL)
 					{
-						predicate = [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", [NSString stringWithCString:string  DICOMEncoding:nil]];
+						predicate = [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", [NSString stringWithUTF8String:string  DICOMEncoding:nil]];
 						
 						if( seriesLevelPredicate == nil)
 							seriesLevelPredicate = predicate;
@@ -682,7 +682,7 @@ extern BOOL forkedProcess;
 					
 					if (dcelem->getString(string).good() && string != NULL)
 					{
-						NSArray *uids = [[NSString stringWithCString:string  DICOMEncoding:nil] componentsSeparatedByString:@"\\"];
+						NSArray *uids = [[NSString stringWithUTF8String:string  DICOMEncoding:nil] componentsSeparatedByString:@"\\"];
 						NSArray *predicateArray = [NSArray array];
 						
 						for(int x = 0; x < [uids count]; x++)
@@ -699,13 +699,13 @@ extern BOOL forkedProcess;
 				{
 					char *string;
 					if (dcelem->getString(string).good() && string != NULL)
-						predicate = [NSPredicate predicateWithFormat:@"instanceNumber == %d", [[NSString stringWithCString:string  DICOMEncoding:nil] intValue]];
+						predicate = [NSPredicate predicateWithFormat:@"instanceNumber == %d", [[NSString stringWithUTF8String:string  DICOMEncoding:nil] intValue]];
 				}
 				else if (key == DCM_NumberOfFrames)
 				{
 					char *string;
 					if (dcelem->getString(string).good() && string != NULL)
-						predicate = [NSPredicate predicateWithFormat:@"numberOfFrames == %d", [[NSString stringWithCString:string  DICOMEncoding:nil] intValue]];
+						predicate = [NSPredicate predicateWithFormat:@"numberOfFrames == %d", [[NSString stringWithUTF8String:string  DICOMEncoding:nil] intValue]];
 				}
                 else
                 {

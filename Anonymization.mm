@@ -52,6 +52,7 @@
 #import "XMLControllerDCMTKCategory.h"
 #import "N2Debug.h"
 #import "libGDCM.h"
+#import "NSUserDefaultsController+N2.h"
 
 static NSString *templateDicomFile = nil;
 

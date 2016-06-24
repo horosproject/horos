@@ -170,7 +170,7 @@
             case 'v':
                 return nil;
             case '*':
-                return [NSString stringWithCString:*(char**)r encoding:NSUTF8StringEncoding];
+                return [NSString stringWithUTF8String:*(char**)r];
             default:
                 return [NSValue valueWithBytes:r objCType:returnType];
         }

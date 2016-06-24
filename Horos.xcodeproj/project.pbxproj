@@ -6843,6 +6843,25 @@
 			name = Ming;
 			sourceTree = "<group>";
 		};
+		7152C52D1D1D2922005526D8 /* Deprecated N2Layout (devs should use NSStackView instead) */ = {
+			isa = PBXGroup;
+			children = (
+				AB10FAE31129338A009EB238 /* N2View.h */,
+				AB10FAE41129338A009EB238 /* N2View.mm */,
+				AB10FAE51129338A009EB238 /* N2Panel.h */,
+				AB10FAE61129338A009EB238 /* N2Panel.mm */,
+				AB10FAE71129338A009EB238 /* N2Window.h */,
+				AB10FAE81129338A009EB238 /* N2Window.mm */,
+				AB10FAE91129338A009EB238 /* N2Layout.h */,
+				AB10FAEA1129338A009EB238 /* N2Layout.mm */,
+				AB10FAEB1129338A009EB238 /* N2ColumnLayout.h */,
+				AB10FAEC1129338A009EB238 /* N2ColumnLayout.mm */,
+				AB10FAED1129338A009EB238 /* N2CellDescriptor.h */,
+				AB10FAEE1129338A009EB238 /* N2CellDescriptor.mm */,
+			);
+			name = "Deprecated N2Layout (devs should use NSStackView instead)";
+			sourceTree = "<group>";
+		};
 		71AA5A201611F1EB006A6A5F /* JSON */ = {
 			isa = PBXGroup;
 			children = (
@@ -7327,20 +7346,9 @@
 		AB10FAE21129338A009EB238 /* Layout */ = {
 			isa = PBXGroup;
 			children = (
-				AB10FAE31129338A009EB238 /* N2View.h */,
-				AB10FAE41129338A009EB238 /* N2View.mm */,
-				AB10FAE51129338A009EB238 /* N2Panel.h */,
-				AB10FAE61129338A009EB238 /* N2Panel.mm */,
-				AB10FAE71129338A009EB238 /* N2Window.h */,
-				AB10FAE81129338A009EB238 /* N2Window.mm */,
 				84281FFD13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h */,
 				84281FFC13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m */,
-				AB10FAE91129338A009EB238 /* N2Layout.h */,
-				AB10FAEA1129338A009EB238 /* N2Layout.mm */,
-				AB10FAEB1129338A009EB238 /* N2ColumnLayout.h */,
-				AB10FAEC1129338A009EB238 /* N2ColumnLayout.mm */,
-				AB10FAED1129338A009EB238 /* N2CellDescriptor.h */,
-				AB10FAEE1129338A009EB238 /* N2CellDescriptor.mm */,
+				7152C52D1D1D2922005526D8 /* Deprecated N2Layout (devs should use NSStackView instead) */,
 			);
 			name = Layout;
 			sourceTree = "<group>";

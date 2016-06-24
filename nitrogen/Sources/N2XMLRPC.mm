@@ -98,7 +98,7 @@
 	[NSException raise:NSGenericException format:@"unhandled XMLRPC data type: %@", [e name]]; return NULL;
 }
 
-+(NSString*)FormatElement:(NSObject*)o options:(NSUInteger)options {
++(NSString*)FormatElement:(id)o options:(NSUInteger)options {
 	if (!o)
 		return @"<nil/>";
 	

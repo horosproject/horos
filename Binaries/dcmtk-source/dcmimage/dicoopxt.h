@@ -192,7 +192,7 @@ class DiColorOutputPixelTemplate
         {
             T2 *p = Data;
             unsigned int i;
-            register int j;
+            int j;
             for (i = FrameSize; i != 0; --i)
                 for (j = 3; j != 0; --j)
                     stream << OFstatic_cast(unsigned int, *(p++)) << " ";     // typecast to resolve problems with 'char'
@@ -213,7 +213,7 @@ class DiColorOutputPixelTemplate
         {
             T2 *p = Data;
             unsigned int i;
-            register int j;
+            int j;
             for (i = FrameSize; i != 0; --i)
                 for (j = 3; j != 0; --j)
                     fprintf(stream, "%u ", OFstatic_cast(unsigned int, *(p++)));
@@ -342,7 +342,7 @@ class DiColorOutputPixelTemplate
                 }
                 else /* not planar */
                 {
-                    register int j;
+                    int j;
                     if (bits1 == bits2)
                     {
                         /* invert output data */

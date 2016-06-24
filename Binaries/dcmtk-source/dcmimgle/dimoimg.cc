@@ -1700,7 +1700,7 @@ unsigned int DiMonoImage::createDIB(void *&data,
                         Uint8 value;
                         Uint16 x;
                         Uint16 y;
-                        register int j;
+                        int j;
                         for (y = Rows; y != 0; --y)
                         {
                             for (x = Columns; x != 0; --x)
@@ -1725,8 +1725,8 @@ unsigned int DiMonoImage::createDIB(void *&data,
                         data = new Uint32[count];               // allocated memory buffer
                     if (data != NULL)
                     {
-                        register Uint32 *q = OFstatic_cast(Uint32 *, data);
-                        register Uint32 value;
+                        Uint32 *q = OFstatic_cast(Uint32 *, data);
+                        Uint32 value;
                         Uint16 x;
                         Uint16 y;
                         for (y = Rows; y != 0; --y)
@@ -1781,8 +1781,8 @@ unsigned int DiMonoImage::createAWTBitmap(void *&data,
             if (data != NULL)
             {
                 const Uint8 *p = OFstatic_cast(const Uint8 *, OutputData->getData());
-                register Uint32 *q = OFstatic_cast(Uint32 *, data);
-                register Uint32 value;
+                Uint32 *q = OFstatic_cast(Uint32 *, data);
+                Uint32 value;
                 unsigned int i;
                 for (i = count; i != 0; --i)
                 {

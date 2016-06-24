@@ -339,7 +339,7 @@ class DiColorPixelTemplate
                         data = new Uint32[count];
                     if (data != NULL)
                     {
-                        register Uint32 *q = OFstatic_cast(Uint32 *, data);
+                        Uint32 *q = OFstatic_cast(Uint32 *, data);
                         if (fromBits == toBits)
                         {
                             /* copy pixel data as is */
@@ -442,7 +442,7 @@ class DiColorPixelTemplate
                 const T *r = Data[0] + start;
                 const T *g = Data[1] + start;
                 const T *b = Data[2] + start;
-                register Uint32 *q = OFstatic_cast(Uint32 *, data);
+                Uint32 *q = OFstatic_cast(Uint32 *, data);
                 unsigned int i;
                 if (fromBits == toBits)
                 {

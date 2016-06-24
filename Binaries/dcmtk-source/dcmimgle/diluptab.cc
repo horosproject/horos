@@ -391,7 +391,7 @@ int DiLookupTable::invertTable(const int flag)
     int result = 0;
     if ((Data != NULL) && (Count > 0) && (flag & 0x3))
     {
-        register Uint32 i;
+        Uint32 i;
         if (flag & 0x2)
         {
             if (OriginalData != NULL)
@@ -453,7 +453,7 @@ int DiLookupTable::mirrorTable(const int flag)
     int result = 0;
     if ((Data != NULL) && (Count > 0) && (flag & 0x3))
     {
-        register Uint32 i;
+        Uint32 i;
         if (flag & 0x2)
         {
             if (OriginalData != NULL)
@@ -542,7 +542,7 @@ DiLookupTable *DiLookupTable::createInverseLUT() const
         if ((data != NULL) && (valid != NULL))
         {
             OFBitmanipTemplate<Uint8>::zeroMem(valid, count);   // initialize array
-            register Uint32 i;
+            Uint32 i;
             for (i = 0; i < Count; ++i)                         // 'copy' values to new array
             {
                 if (!valid[Data[i]])
@@ -557,7 +557,7 @@ DiLookupTable *DiLookupTable::createInverseLUT() const
                     last = i;
                 else
                 {
-                    register Uint32 j = i + 1;
+                    Uint32 j = i + 1;
                     while ((j < count) && !valid[j])            // find next valid value
                         ++j;
                     if (valid[last])                            // check for starting conditions

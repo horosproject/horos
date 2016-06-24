@@ -74,10 +74,10 @@
 }
 
 -(void)addButtonAction:(NSButton*)sender {
-	[anonymizationViewController addTag:dcmTagsPopUpButton.selectedTag];
-	[[anonymizationViewController.tagsView checkBoxForObject:dcmTagsPopUpButton.selectedTag] setState:NSOnState];
-	[self.window makeFirstResponder:[anonymizationViewController.tagsView textFieldForObject:dcmTagsPopUpButton.selectedTag]];
-	[dcmTagsPopUpButton setSelectedTag:NULL];
+	[anonymizationViewController addTag:dcmTagsPopUpButton.selectedDCMAttributeTag];
+	[[anonymizationViewController.tagsView checkBoxForObject:dcmTagsPopUpButton.selectedDCMAttributeTag] setState:NSOnState];
+	[self.window makeFirstResponder:[anonymizationViewController.tagsView textFieldForObject:dcmTagsPopUpButton.selectedDCMAttributeTag]];
+	[dcmTagsPopUpButton setSelectedDCMAttributeTag:NULL];
 }
 
 -(void)rmButtonAction:(NSButton*)sender {

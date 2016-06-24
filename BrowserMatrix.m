@@ -38,6 +38,7 @@
 #import "NSThread+N2.h"
 #import "N2Stuff.h"
 #import "N2Debug.h"
+#import "DicomImage.h"
 
 static NSString *albumDragType = @"Osirix Album drag";
 
@@ -205,51 +206,70 @@ static NSString *albumDragType = @"Osirix Album drag";
         if (urlRef) {
             NSURL *dropDestination = (id)urlRef;
             
-            if( avoidRecursive == NO)
-            {
-                avoidRecursive = YES;
-                
-                @try
+            // this method provides data for drags initiated both from startDrag: and startDragOriginalFrame:
+            // to distinguish, we know that only the startDrag: initiated drags provide a value for O2PasteboardTypeDatabaseObjectXIDs
+            
+            if ([item availableTypeFromArray:@[O2PasteboardTypeDatabaseObjectXIDs]]) { // this is from startDrag:
+                if( avoidRecursive == NO)
                 {
-                    if( [[[dropDestination path] lastPathComponent] isEqualToString:@".Trash"])
+                    avoidRecursive = YES;
+                    
+                    @try
                     {
-                        [[BrowserController currentBrowser] delItem: [[[[BrowserController currentBrowser] oMatrix] menu] itemAtIndex: 0]];
-                    }
-                    else
-                    {
-                        NSMutableArray *dicomFiles2Export = [NSMutableArray array];
-                        NSMutableArray *filesToExport = [[BrowserController currentBrowser] filesForDatabaseMatrixSelection: dicomFiles2Export];
-                        
-                        //				r = [[BrowserController currentBrowser] exportDICOMFileInt: [dropDestination path] files: filesToExport objects: dicomFiles2Export];
-                        
-                        NSMutableDictionary *d = [NSMutableDictionary dictionaryWithObjectsAndKeys: [dropDestination path], @"location", filesToExport, @"filesToExport", [dicomFiles2Export valueForKey: @"objectID"], @"dicomFiles2Export", nil];
-                        
-                        NSThread* t = [[[NSThread alloc] initWithTarget:[BrowserController currentBrowser] selector:@selector(exportDICOMFileInt: ) object: d] autorelease];
-                        t.name = NSLocalizedString( @"Exporting...", nil);
-                        t.supportsCancel = YES;
-                        t.status = N2LocalizedSingularPluralCount( [filesToExport count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
-                        
-                        [[ThreadsManager defaultManager] addThreadAndStart: t];
-                        
-                        NSTimeInterval fourSeconds = [NSDate timeIntervalSinceReferenceDate] + 4.0;
-                        while( [[d objectForKey: @"result"] count] == 0 && [NSDate timeIntervalSinceReferenceDate] < fourSeconds)
-                            [NSThread sleepForTimeInterval: 0.1];
-                        
-                        @synchronized( d)
+                        if( [[[dropDestination path] lastPathComponent] isEqualToString:@".Trash"])
                         {
-                            if ([[d objectForKey:@"result"] count]) {
-                                [item setPropertyList:[[NSSet setWithArray:[d objectForKey:@"result"]] allObjects] forType:type];
+                            [[BrowserController currentBrowser] delItem: [[[[BrowserController currentBrowser] oMatrix] menu] itemAtIndex: 0]];
+                        }
+                        else
+                        {
+                            NSMutableArray *dicomFiles2Export = [NSMutableArray array];
+                            NSMutableArray *filesToExport = [[BrowserController currentBrowser] filesForDatabaseMatrixSelection: dicomFiles2Export];
+                            
+                            //				r = [[BrowserController currentBrowser] exportDICOMFileInt: [dropDestination path] files: filesToExport objects: dicomFiles2Export];
+                            
+                            NSMutableDictionary *d = [NSMutableDictionary dictionaryWithObjectsAndKeys: [dropDestination path], @"location", filesToExport, @"filesToExport", [dicomFiles2Export valueForKey: @"objectID"], @"dicomFiles2Export", nil];
+                            
+                            NSThread* t = [[[NSThread alloc] initWithTarget:[BrowserController currentBrowser] selector:@selector(exportDICOMFileInt: ) object: d] autorelease];
+                            t.name = NSLocalizedString( @"Exporting...", nil);
+                            t.supportsCancel = YES;
+                            t.status = N2LocalizedSingularPluralCount( [filesToExport count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
+                            
+                            [[ThreadsManager defaultManager] addThreadAndStart: t];
+                            
+                            NSTimeInterval fourSeconds = [NSDate timeIntervalSinceReferenceDate] + 4.0;
+                            while( [[d objectForKey: @"result"] count] == 0 && [NSDate timeIntervalSinceReferenceDate] < fourSeconds)
+                                [NSThread sleepForTimeInterval: 0.1];
+                            
+                            @synchronized( d)
+                            {
+                                if ([[d objectForKey:@"result"] count]) {
+                                    [item setPropertyList:[[NSSet setWithArray:[d objectForKey:@"result"]] allObjects] forType:type];
+                                }
                             }
                         }
-                        
-//                        [item setString:[url absoluteString] forType:type];
                     }
+                    @catch ( NSException * e)
+                    {
+                        N2LogException( e);
+                    }
+                    avoidRecursive = NO;
                 }
-                @catch ( NSException * e)
-                {
-                    N2LogException( e);
-                }
-                avoidRecursive = NO;
+            }
+            else { // this is from startDragOriginalFrame:
+                NSButtonCell *selectedButtonCell = [[self selectedCells] objectAtIndex: 0];
+                DicomImage *selectedObject = [[[BrowserController currentBrowser] matrixViewArray] objectAtIndex: [selectedButtonCell tag]];
+                DCMPix *previewPix = [[BrowserController currentBrowser] previewPix:[selectedButtonCell tag]];
+                
+                NSURL *url = [dropDestination URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.%d.jpg", selectedObject.completePath.lastPathComponent, previewPix.imageObj.frameID.intValue]];
+                size_t i = 0;
+                while ([url checkResourceIsReachableAndReturnError:NULL])
+                    url = [dropDestination URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.%d (%lu).jpg", selectedObject.completePath.lastPathComponent, previewPix.imageObj.frameID.intValue, i]];
+
+                NSArray *representations = [[previewPix image] representations];
+                NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+                [bitmapData writeToURL:url atomically:YES];
+                
+                [item setString:[url absoluteString] forType:type];
             }
             
             CFRelease(urlRef);
@@ -268,44 +288,28 @@ static NSString *albumDragType = @"Osirix Album drag";
 	if ([[selectedObject valueForKey:@"type"] isEqualToString:@"Image"])
 	{
 		@try {
+            NSImage *image = [selectedButtonCell image];
+            int	thumbnailWidth = [image size].width + 6;
+            NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( thumbnailWidth, 70+6)] autorelease];
+            if ([thumbnail size].width > 0 && [thumbnail size].height > 0) {
+                [thumbnail lockFocus];		
+                [[NSColor grayColor] set];
+                NSRectFill(NSMakeRect(0,0,thumbnailWidth, 70+6));		
+                NSRectFill( NSMakeRect( 3, 0, [image size].width, [image size].height));
+                [image drawAtPoint: NSMakePoint(3, 3) fromRect:NSMakeRect(0,0,[image size].width, [image size].height) operation: NSCompositeCopy fraction: 0.8];
+                [thumbnail unlockFocus];
+            }
 		
-		NSPoint event_location = [event locationInWindow];
-		NSPoint local_point = [self convertPoint:event_location fromView:nil];
-		local_point.x -= 35;
-		local_point.y += 35;    
-		
-		NSImage *selectedButtonCellImage = [selectedButtonCell image];
-		int	thumbnailWidth = [selectedButtonCellImage size].width + 6;		
-		NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( thumbnailWidth, 70+6)] autorelease];
-		if( [thumbnail size].width > 0 && [thumbnail size].height > 0)
-		{
-			[thumbnail lockFocus];		
-			[[NSColor grayColor] set];
-			NSRectFill(NSMakeRect(0,0,thumbnailWidth, 70+6));		
-			NSRectFill( NSMakeRect( 3, 0, [selectedButtonCellImage size].width, [selectedButtonCellImage size].height));			
-			[selectedButtonCellImage drawAtPoint: NSMakePoint(3, 3) fromRect:NSMakeRect(0,0,[selectedButtonCellImage size].width, [selectedButtonCellImage size].height) operation: NSCompositeCopy fraction: 0.8];
-			[thumbnail unlockFocus];
-		}
-		DCMPix *previewPix = [[BrowserController currentBrowser] previewPix:[selectedButtonCell tag]];
-		
-		NSString *jpgPath = [NSString stringWithFormat:@"/tmp/%@.%d.jpg",[[selectedObject valueForKeyPath:@"completePath"] lastPathComponent], [[[previewPix imageObj] valueForKey:@"frameID"] intValue]];
-		if (![[NSFileManager defaultManager] fileExistsAtPath:jpgPath])
-		{
-			NSArray *representations = [[previewPix image] representations];
-			NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-			[bitmapData writeToFile:jpgPath atomically:YES];
-		}
-		
-		NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
-		[pboard declareTypes:[NSArray arrayWithObject:NSFilenamesPboardType] owner:nil];
-		[pboard setPropertyList:[NSArray arrayWithObject:jpgPath] forType:NSFilenamesPboardType];
-		[self dragImage:thumbnail
-					 at:local_point
-				 offset:NSMakeSize(0.0, 0.0)
-				  event:event
-			 pasteboard:pboard
-				 source:self
-			  slideBack:YES];
+            NSPasteboardItem* pbi = [[[NSPasteboardItem alloc] init] autorelease];
+            [pbi setDataProvider:self forTypes:@[NSPasteboardTypeString, (NSString *)kPasteboardTypeFileURLPromise]];
+            [pbi setString:(id)kUTTypeImage forType:(id)kPasteboardTypeFilePromiseContent];
+            
+            NSDraggingItem* di = [[[NSDraggingItem alloc] initWithPasteboardWriter:pbi] autorelease];
+            NSPoint p = [self convertPoint:event.locationInWindow fromView:nil];
+            [di setDraggingFrame:NSMakeRect(p.x-thumbnail.size.width/2, p.y-thumbnail.size.height/2, thumbnail.size.width, thumbnail.size.height) contents:thumbnail];
+            
+            NSDraggingSession* session = [self beginDraggingSessionWithItems:@[di] event:event source:self];
+            session.animatesToStartingPositionsOnCancelOrFail = YES;
 		
 		} @catch( NSException *e) {
             N2LogException( e);
@@ -344,16 +348,8 @@ static NSString *albumDragType = @"Osirix Album drag";
 		do
 		{
 			ev = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSPeriodicMask];
-			
-			switch ([ev type])
-			{
-			case NSLeftMouseDragged:
+			if (ev.type == NSLeftMouseDragged || ev.type == NSLeftMouseUp)
 				keepOn = NO;
-				break;
-			case NSLeftMouseUp:
-				keepOn = NO;
-				break;
-			}
 		}while (keepOn && [start timeIntervalSinceNow] >= -1);
 		
 		if( keepOn)

@@ -39,10 +39,12 @@
 #import "PluginManagerController.h"
 #import "Notifications.h"
 #import "NSFileManager+N2.h"
+#import "NSString+SymlinksAndAliases.h"
 #import "NSMutableDictionary+N2.h"
 #import "PreferencesWindowController.h"
 #import "N2Debug.h"
 #import "url.h"
+#import "NSString+SymlinksAndAliases.h"
 
 static NSMutableDictionary		*plugins = nil, *pluginsDict = nil, *fileFormatPlugins = nil;
 static NSMutableDictionary		*reportPlugins = nil, *pluginsBundleDictionnary = nil;
@@ -469,31 +471,9 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	return self;
 }
 
-
-
 + (NSString*) pathResolved:(NSString*) inPath
 {
-	NSString *resolvedPath = nil;
-	CFURLRef	url = CFURLCreateWithFileSystemPath(NULL /*allocator*/, (CFStringRef)inPath, kCFURLPOSIXPathStyle, NO /*isDirectory*/);
-	if (url != NULL)
-    {
-        CFDataRef bd = CFURLCreateBookmarkDataFromFile(NULL, url, NULL);
-        if (bd) {
-            CFURLRef r = CFURLCreateByResolvingBookmarkData(NULL, bd, kCFBookmarkResolutionWithoutUIMask, NULL, NULL, NULL, NULL);
-            if (r) {
-                resolvedPath = CFBridgingRelease(CFURLCopyPath(r));
-                CFRelease(r);
-            }
-            
-            CFRelease(bd);
-        }
-        
-        CFRelease(url);
-	}
-	
-	if (resolvedPath == nil)
-        return inPath;
-    return resolvedPath;
+    return [inPath stringByResolvingAlias];
 }
 
 + (void) releaseInstanciedObjectsOfClass: (Class) class
@@ -601,7 +581,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
         
         @try
         {
-            NSString *pathResolved = [PluginManager pathResolved: [path stringByAppendingPathComponent: name]];
+            NSString *pathResolved = [[path stringByAppendingPathComponent:name] stringByResolvingAlias];
             
             [PluginManager startProtectForCrashWithPath: pathResolved];
             
@@ -858,7 +838,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                 NSString* name;
                 while (name = [e nextObject])
                     if ([donotloadnames containsObject:[name stringByDeletingPathExtension]] == NO)
-                        [pathsOfPluginsToLoad addObject:[NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[path stringByAppendingPathComponent: name]]];
+                        [pathsOfPluginsToLoad addObject:[[path stringByAppendingPathComponent:name] stringByResolvingSymlinksAndAliases]];
             } @catch (NSException* e) {
                 N2LogExceptionWithStackTrace(e);
             }
@@ -1455,7 +1435,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 					////////////////////////////////////
                     
 					// taking the "version" through NSBundle is a BAD idea: Cocoa keeps the NSBundle in cache... thus for a same path you'll always have the same version
-					NSURL *bundleURL = [NSURL fileURLWithPath:[PluginManager pathResolved:[path stringByAppendingPathComponent:name]]];
+					NSURL *bundleURL = [NSURL fileURLWithPath:[[path stringByAppendingPathComponent:name] stringByResolvingAlias]];
 					CFDictionaryRef bundleInfoDict = CFBundleCopyInfoDictionaryInDirectory((CFURLRef) bundleURL);
 								
 					//////////////

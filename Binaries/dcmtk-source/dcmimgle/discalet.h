@@ -74,7 +74,7 @@ static inline void setScaleValues(Uint16 data[],
         ++step1;
     const double count = OFstatic_cast(double, min) / (OFstatic_cast(double, remainder) + 1);
     Uint16 i;
-    register double c = count;
+    double c = count;
     for (i = 0; i < min; ++i)
     {
         if ((i >= OFstatic_cast(Uint16, c)) && (remainder > 0))
@@ -575,7 +575,7 @@ class DiScaleTemplate
                         xvalue[x] = HALFSCALE_FACTOR;
                     unsigned int yfill = SCALE_FACTOR;
                     unsigned int yleft = syscale;
-                    register int yneed = 1;
+                     int yneed = 1;
                     int ysrc = 0;
                     for (y = 0; y < this->Dest_Y; ++y)
                     {
@@ -611,7 +611,7 @@ class DiScaleTemplate
                             }
                             for (x = 0, p = sp, q = xtemp; x < this->Src_X; ++x)
                             {
-                                register signed int v = xvalue[x] + yfill * OFstatic_cast(signed int, *(p++));
+                                 signed int v = xvalue[x] + yfill * OFstatic_cast(signed int, *(p++));
                                 v /= SCALE_FACTOR;
                                 *(q++) = OFstatic_cast(T, (v > maxvalue) ? maxvalue : v);
                                 xvalue[x] = HALFSCALE_FACTOR;
@@ -632,10 +632,10 @@ class DiScaleTemplate
                         }
                         else
                         {
-                            register signed int v = HALFSCALE_FACTOR;
+                            signed int v = HALFSCALE_FACTOR;
                             unsigned int xfill = SCALE_FACTOR;
                             unsigned int xleft;
-                            register int xneed = 0;
+                            int xneed = 0;
                             q = sq;
                             for (x = 0, p = xtemp; x < this->Src_X; ++x, ++p)
                             {
@@ -712,8 +712,8 @@ class DiScaleTemplate
         double x_part, y_part;
         double l_factor, r_factor;
         double t_factor, b_factor;
-        register int xi;
-        register int yi;
+        int xi;
+        int yi;
         Uint16 x;
         Uint16 y;
         const T *p;
@@ -815,8 +815,8 @@ class DiScaleTemplate
         double value, sum;
         double l_factor, r_factor;
         double t_factor, b_factor;
-        register int xi;
-        register int yi;
+        int xi;
+        int yi;
         Uint16 x;
         Uint16 y;
         const T *p;

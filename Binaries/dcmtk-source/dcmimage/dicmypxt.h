@@ -139,7 +139,7 @@ class DiCMYKPixelTemplate
             else
             {
                 T1 k;
-                register int j;
+                int j;
                 unsigned int i;
                 for (i = 0; i < count; ++i)
                 {

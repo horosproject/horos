@@ -126,9 +126,9 @@ class DiYBRPixelTemplate
                         gcr_tab[l] = OFstatic_cast(Sint16, 0.7141 * OFstatic_cast(double, l) - g_const);
                         bcb_tab[l] = OFstatic_cast(Sint16, 1.7720 * OFstatic_cast(double, l) - b_const);
                     }
-                    register Sint32 sr;
-                    register Sint32 sg;
-                    register Sint32 sb;
+                    Sint32 sr;
+                    Sint32 sg;
+                    Sint32 sb;
                     if (this->PlanarConfiguration)
                     {
 /*
@@ -269,7 +269,7 @@ class DiYBRPixelTemplate
                 }
                 else
                 {
-                    register int j;
+                    int j;
                     unsigned int i;
                     for (i = 0; i < count; ++i)                         /* for all pixel ... */
                         for (j = 0; j < 3; ++j)

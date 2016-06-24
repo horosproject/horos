@@ -33,7 +33,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface O2ViewerThumbnailsMatrix : NSMatrix {
+@interface O2ViewerThumbnailsMatrix : NSMatrix <NSDraggingSource, NSPasteboardItemDataProvider> {
     BOOL avoidRecursive;
     NSPoint draggingStartingPoint;
     NSTimeInterval doubleClick;

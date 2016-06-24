@@ -1911,7 +1911,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void)DrawCStringGL:(char*)cstrOut :(GLuint)fontL :(long)x :(long)y align:(DCMViewTextAlign)align useStringTexture:(BOOL)stringTex;
 {
-    [self DrawNSStringGL:[NSString stringWithCString:cstrOut encoding:NSUTF8StringEncoding] :fontL :x :y align:align useStringTexture:stringTex];
+    [self DrawNSStringGL:[NSString stringWithUTF8String:cstrOut] :fontL :x :y align:align useStringTexture:stringTex];
 }
 
 - (void) DrawCStringGL: (char *) cstrOut :(GLuint) fontL :(long) x :(long) y
@@ -10631,9 +10631,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 #if __BIG_ENDIAN__
                     glReadPixels( smartCroppedRect.origin.x, drawingFrameRect.size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
                     
-                    register int ii = *width * *height;
-                    register unsigned char	*t_argb = buf;
-                    register unsigned char	*t_rgb = buf;
+                    int ii = *width * *height;
+                    unsigned char	*t_argb = buf;
+                    unsigned char	*t_rgb = buf;
                     while( ii-->0)
                     {
                         *((int*) t_rgb) = *((int*) t_argb);
@@ -10643,9 +10643,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 #else
                     glReadPixels(  smartCroppedRect.origin.x, drawingFrameRect.size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
                     
-                    register int ii = *width * *height;
-                    register unsigned char	*t_argb = buf;
-                    register unsigned char	*t_rgb = buf;
+                    int ii = *width * *height;
+                    unsigned char	*t_argb = buf;
+                    unsigned char	*t_rgb = buf;
                     while( ii-->0 ) {
                         *((int*) t_rgb) = *((int*) t_argb);
                         t_argb+=4;

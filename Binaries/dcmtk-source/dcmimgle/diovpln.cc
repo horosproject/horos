@@ -361,7 +361,7 @@ void *DiOverlayPlane::getData(const unsigned int frame,
                     Uint16 y;
                     Uint8 value = 0;
                     Uint8 *q = data;
-                    register int bit = 0;
+                    int bit = 0;
                     if (reset(frame + ImageFrameOrigin))
                     {
                         for (y = ymin; y < ymax; ++y)
@@ -478,7 +478,7 @@ unsigned int DiOverlayPlane::create6xxx3000Data(Uint8 *&buffer,
             Uint16 y;
             Uint8 value = 0;
             Uint8 *q = buffer;
-            register int bit = 0;
+            int bit = 0;
             for (unsigned int f = 0; f < NumberOfFrames; ++f)
             {
                 if (reset(f + ImageFrameOrigin))

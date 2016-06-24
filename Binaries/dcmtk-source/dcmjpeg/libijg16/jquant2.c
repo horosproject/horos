@@ -275,7 +275,7 @@ find_biggest_color_pop (boxptr boxlist, int numboxes)
 /* Returns NULL if no splittable boxes remain */
 {
   register boxptr boxp;
-  register int i;
+  int i;
   long maxc = 0;
   boxptr which = NULL;
   
@@ -295,7 +295,7 @@ find_biggest_volume (boxptr boxlist, int numboxes)
 /* Returns NULL if no splittable boxes remain */
 {
   register boxptr boxp;
-  register int i;
+  int i;
   register IJG_INT32 maxv = 0;
   boxptr which = NULL;
   
@@ -920,7 +920,7 @@ pass2_no_dither (j_decompress_ptr cinfo,
   hist3d histogram = cquantize->histogram;
   register JSAMPROW inptr, outptr;
   register histptr cachep;
-  register int c0, c1, c2;
+  int c0, c1, c2;
   int row;
   JDIMENSION col;
   JDIMENSION width = cinfo->output_width;
@@ -1030,7 +1030,7 @@ pass2_fs_dither (j_decompress_ptr cinfo,
       if (*cachep == 0)
 	fill_inverse_cmap(cinfo, (int)(cur0>>C0_SHIFT),(int)(cur1>>C1_SHIFT),(int)(cur2>>C2_SHIFT));
       /* Now emit the colormap index for this cell */
-      { register int pixcode = *cachep - 1;
+      { int pixcode = *cachep - 1;
 	*outptr = (JSAMPLE) pixcode;
 	/* Compute representation error for this pixel */
 	cur0 -= GETJSAMPLE(colormap0[pixcode]);

@@ -2218,8 +2218,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         
         [bitmapData writeToURL:panel.URL atomically:YES];
         
-        NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openURL:panel.URL];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+            [[NSWorkspace sharedWorkspace] openURL:panel.URL];
     }];
 }
 
@@ -2236,7 +2236,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     
     bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
     
-    NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"OsiriX.jpg"];
+    NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"Horos.jpg"];
     [bitmapData writeToFile:path atomically:YES];
     
     ifoto = [[iPhoto alloc] init];

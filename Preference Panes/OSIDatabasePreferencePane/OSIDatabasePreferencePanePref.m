@@ -51,7 +51,7 @@
 	if( self = [super init])
 	{
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIDatabasePreferencePanePref" bundle: nil] autorelease];
-		[nib instantiateNibWithOwner:self topLevelObjects: nil];
+		[nib instantiateWithOwner:self topLevelObjects: nil];
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
@@ -504,45 +504,45 @@
 	//NSLog(@"setLocation URL");
 		
 	NSOpenPanel         *oPanel = [NSOpenPanel openPanel];
-	long				result;
 	
     [oPanel setCanChooseFiles:NO];
     [oPanel setCanChooseDirectories:YES];
-	
-	result = [oPanel runModalForDirectory:0L file:nil types: 0L];
     
-    if (result == NSOKButton)
-	{
-		NSString	*location = [oPanel directory];
-		
-		if( [[location lastPathComponent] isEqualToString:@"Horos Data"])
-		{
-			NSLog( @"%@", [location lastPathComponent]);
-			location = [location stringByDeletingLastPathComponent];
-		}
-		
-		if( [[location lastPathComponent] isEqualToString:@"DATABASE"] && [[[location stringByDeletingLastPathComponent] lastPathComponent] isEqualToString:@"Horos Data"])
-		{
-			NSLog( @"%@", [location lastPathComponent]);
-			location = [[location stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
-		}
-		
-		[locationPathField setURL: [NSURL fileURLWithPath: location]];
-		[[NSUserDefaults standardUserDefaults] setObject:location forKey:@"DEFAULT_DATABASELOCATIONURL"];
-		[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"];
-		[locationMatrix selectCellWithTag:1];
-	}	
-	else 
-	{
-		[locationPathField setURL: 0L];
-		[[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"DEFAULT_DATABASELOCATIONURL"];
-		[[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"DEFAULT_DATABASELOCATION"];
-		[locationMatrix selectCellWithTag:0];
-	}
-	
-	[[[[self mainView] window] windowController] reopenDatabase];
-	
-	[[[self mainView] window] makeKeyAndOrderFront: self];
+    [oPanel beginWithCompletionHandler:^(NSInteger result) {
+        if (result == NSFileHandlingPanelOKButton)
+        {
+            NSString	*location = oPanel.URL.path;
+            
+            if( [[location lastPathComponent] isEqualToString:@"Horos Data"])
+            {
+                NSLog( @"%@", [location lastPathComponent]);
+                location = [location stringByDeletingLastPathComponent];
+            }
+            
+            if( [[location lastPathComponent] isEqualToString:@"DATABASE"] && [[[location stringByDeletingLastPathComponent] lastPathComponent] isEqualToString:@"Horos Data"])
+            {
+                NSLog( @"%@", [location lastPathComponent]);
+                location = [[location stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
+            }
+            
+            [locationPathField setURL: [NSURL fileURLWithPath: location]];
+            [[NSUserDefaults standardUserDefaults] setObject:location forKey:@"DEFAULT_DATABASELOCATIONURL"];
+            [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"];
+            [locationMatrix selectCellWithTag:1];
+        }
+        else
+        {
+            [locationPathField setURL: 0L];
+            [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:@"DEFAULT_DATABASELOCATIONURL"];
+            [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"DEFAULT_DATABASELOCATION"];
+            [locationMatrix selectCellWithTag:0];
+        }
+        
+        [[[[self mainView] window] windowController] reopenDatabase];
+        
+        [[[self mainView] window] makeKeyAndOrderFront: self];
+    }];
+    
 }
 
 - (BOOL)useSeriesDescription{

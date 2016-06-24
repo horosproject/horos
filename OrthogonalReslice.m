@@ -67,14 +67,14 @@
         float *Ycache = [[dict objectForKey: @"Ycache"] pointerValue];
         
         int	z;
-        const register int maxY = [fPix pheight];
-        const register int maxX = [fPix pwidth];
+        const int maxY = [fPix pheight];
+        const int maxX = [fPix pwidth];
         
         z = [[dict objectForKey:@"zValue"] intValue];
         
         register float *basedstPtr = Ycache + z*maxY*maxX;
         register float *basesrcPtr = [[originalDCMPixList objectAtIndex: z] fImage];
-        register int x = maxX;
+        int x = maxX;
         while (x-->0)
         {
             register float *dstPtr = basedstPtr;
@@ -83,7 +83,7 @@
             basedstPtr += maxY;
             basesrcPtr++;
             
-            register int yy = maxY;
+            int yy = maxY;
             while (yy-->0)
             {
                 *dstPtr++ = *srcPtr;
