@@ -48,6 +48,6 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wincompatible-property-type"
 @property(retain,nonatomic) DCMAttributeTag* selectedTag NS_UNAVAILABLE;
-#pragma clang diagnostv pop
+#pragma clang diagnostic pop
 
 @end
