@@ -240,7 +240,7 @@
 
 -(void) save3DState
 {
-	NSString		*path = [[[BrowserController currentBrowser] database] stateDatabaseDirPath];
+	NSString		*path = [[[BrowserController currentBrowser] database] statesDirPath];
 	BOOL			isDir = YES;
 	
 	
@@ -263,7 +263,7 @@
 -(void) load3DState
 {
 	NSLog (@"Load Endoscopy 3d State");
-	NSString		*path = [[[BrowserController currentBrowser] database] stateDatabaseDirPath];
+	NSString		*path = [[[BrowserController currentBrowser] database] statesDirPath];
 	BOOL			isDir = YES;
 	
 	

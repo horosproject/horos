@@ -113,8 +113,6 @@ static NSString *albumDragType = @"Osirix Album drag";
 {
 	@try {
 	
-	NSSize dragOffset = NSMakeSize(0.0, 0.0);
-    
 	NSPoint event_location = [event locationInWindow];
 	NSPoint local_point = [self convertPoint:event_location fromView:nil];
 	

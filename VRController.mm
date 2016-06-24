@@ -60,9 +60,6 @@
 #import "PluginManager.h"
 #import "DicomDatabase.h"
 
-#define PRESETS_DIRECTORY @"/3DPRESETS/"
-#define CLUTDATABASE @"/CLUTs/"
-
 static NSString* 	VRStandardToolbarIdentifier = @"VR Toolbar Identifier";
 static NSString* 	VRPanelToolbarIdentifier = @"VRPanel Toolbar Identifier";
 
@@ -853,11 +850,11 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 + (NSString*) getUniqueFilenameScissorStateFor:(NSManagedObject*) obj
 {
-    NSString *path = [[[BrowserController currentBrowser] database] stateDatabaseDirPath];
+    NSString *path = [[[BrowserController currentBrowser] database] statesDirPath];
     BOOL isDir = YES;
     
     if( ![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir])
-        [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:@{}];
+        [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:NULL];
     
     DicomSeries *series = nil;
     
@@ -875,11 +872,11 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 -(void) save3DState
 {
-    NSString *path = [[[BrowserController currentBrowser] database] stateDatabaseDirPath];
+    NSString *path = [[[BrowserController currentBrowser] database] statesDirPath];
     BOOL isDir = YES;
     
     if( ![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir])
-        [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:@{}];
+        [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:NULL];
     
     NSString *str;
     
@@ -911,12 +908,12 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 -(void) load3DState
 {
     @try {
-        NSString *path = [[[BrowserController currentBrowser] database] stateDatabaseDirPath];
+        NSString *path = [[[BrowserController currentBrowser] database] statesDirPath];
         BOOL isDir = YES;
         
         if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
         {
-            [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:@{}];
+            [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:NULL];
         }
         
         NSString *str;
@@ -2204,10 +2201,14 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     NSImage *im = [view nsimage:NO];
     
     [panel setCanSelectHiddenExtension:YES];
-    [panel setRequiredFileType:@"jpg"];
+    [panel setAllowedFileTypes:@[@"jpg"]];
     
-    if( [panel runModalForDirectory:nil file: NSLocalizedString( @"3D VR Image", nil)] == NSFileHandlingPanelOKButton)
-    {
+    panel.nameFieldStringValue = NSLocalizedString( @"3D VR Image", nil);
+    
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
         NSArray *representations;
         NSData *bitmapData;
         
@@ -2215,11 +2216,11 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         
         bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
         
-        [bitmapData writeToFile:[panel filename] atomically:YES];
+        [bitmapData writeToURL:panel.URL atomically:YES];
         
         NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
-    }
+        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openURL:panel.URL];
+    }];
 }
 
 
@@ -2235,10 +2236,11 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     
     bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
     
-    [bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"] atomically:YES];
+    NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"OsiriX.jpg"];
+    [bitmapData writeToFile:path atomically:YES];
     
     ifoto = [[iPhoto alloc] init];
-    [ifoto importIniPhoto: [NSArray arrayWithObject:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"]]];
+    [ifoto importIniPhoto:@[path]];
     [ifoto release];
 }
 
@@ -2248,15 +2250,17 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     NSImage *im = [view nsimage:NO];
     
     [panel setCanSelectHiddenExtension:YES];
-    [panel setRequiredFileType:@"tif"];
+    [panel setAllowedFileTypes:@[@"tif"]];
+    panel.nameFieldStringValue = NSLocalizedString( @"3D VR Image", nil);
     
-    if( [panel runModalForDirectory:nil file: NSLocalizedString( @"3D VR Image", nil)] == NSFileHandlingPanelOKButton)
-    {
-        [[im TIFFRepresentation] writeToFile:[panel filename] atomically:NO];
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
         
-        NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
-    }
+        [[im TIFFRepresentation] writeToURL:panel.URL atomically:NO];
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [[NSWorkspace sharedWorkspace] openURL:panel.URL];
+    }];
 }
 
 - (void) exportDICOMFile:(id) sender
@@ -2799,11 +2803,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     [super UpdateCLUTMenu:note];
     
     // path 1 : /Horos Data/CLUTs/
-    NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
-    [path appendString: CLUTDATABASE];
+    NSString *path = [[[BrowserController currentBrowser] database] clutsDirPath];
     // path 2 : /resources_bundle_path/CLUTs/
-    NSMutableString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
-    [bundlePath appendString: CLUTDATABASE];
+    NSString *bundlePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:path.lastPathComponent];
     
     NSMutableArray *paths = [NSMutableArray arrayWithObjects:path, bundlePath, nil];
     
@@ -2814,7 +2816,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     {
         if([[NSFileManager defaultManager] fileExistsAtPath:[paths objectAtIndex:j] isDirectory:&isDir] && isDir)
         {
-            NSArray *content = [[NSFileManager defaultManager] directoryContentsAtPath:[paths objectAtIndex:j]];
+            NSArray *content = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[paths objectAtIndex:j] error:NULL];
             for (NSUInteger i=0; i<[content count]; i++)
             {
                 if( [[content objectAtIndex:i] length] > 0)
@@ -2860,8 +2862,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 {
     if (returnCode==1 && ![view isRGB])
     {
-        NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
-        [path appendString: CLUTDATABASE];
+        NSMutableString *path = [NSMutableString stringWithString:[[[BrowserController currentBrowser] database] clutsDirPath]];
         [path appendString:(id)contextInfo];
         [path appendString:@".plist"];
         
@@ -3099,15 +3100,12 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     [settings setObject:name forKey:@"name"];
     [settings setObject:groupName forKey:@"groupName"];
     
-    // Path of the file to create
-    NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
-    [path appendString:PRESETS_DIRECTORY];
+    NSString *path = [[[BrowserController currentBrowser] database] presetsDirPath];
     BOOL isDir = YES;
     if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
-        [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:@{}];
-    [path appendString:name];
-    [path appendString:@".plist"];
+        [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:NULL];
     
+    path = [path stringByAppendingPathComponent:[name stringByAppendingPathExtension:@"plist"]];
     [settings writeToFile:path atomically:YES];
 }
 
@@ -3116,13 +3114,11 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 - (NSArray*)find3DSettingsGroups;
 {
     // path 1 : /OsirirX Data/CLUTs/
-    NSMutableString *path1 = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
-    [path1 appendString:PRESETS_DIRECTORY];
+    NSString *path1 = [[[BrowserController currentBrowser] database] presetsDirPath];
     // path 2 : /resources_bundle_path/CLUTs/
-    NSMutableString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
-    [bundlePath appendString:PRESETS_DIRECTORY];
+    NSString *bundlePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:path1.lastPathComponent];
     
-    NSMutableArray *paths = [NSMutableArray arrayWithObjects:path1, bundlePath, nil];
+    NSArray *paths = @[path1, bundlePath];
     
     NSMutableArray *settingsGroups = [NSMutableArray array];
     
@@ -3137,10 +3133,10 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
             
             for(NSUInteger i=0; i<[settingsFiles count]; i++)
             {
-                NSString *filePath = [NSString stringWithFormat:@"%@%@", path, [settingsFiles objectAtIndex:i]];
+                NSString *filePath = [path stringByAppendingPathComponent:[settingsFiles objectAtIndex:i]];
                 if([[filePath pathExtension] isEqualToString:@"plist"])
                 {
-                    NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", path, [settingsFiles objectAtIndex:i]]];
+                    NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:[path stringByAppendingPathComponent:[settingsFiles objectAtIndex:i]]];
                     if(settings)
                     {
                         if([[settings allKeys] containsObject:@"groupName"])
@@ -3166,13 +3162,11 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 - (NSArray*)find3DSettingsForGroupName:(NSString*)groupName;
 {
     // path 1 : /OsirirX Data/CLUTs/
-    NSMutableString *path1 = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
-    [path1 appendString:PRESETS_DIRECTORY];
+    NSString *path1 = [[[BrowserController currentBrowser] database] presetsDirPath];
     // path 2 : /resources_bundle_path/CLUTs/
-    NSMutableString *bundlePath = [NSMutableString stringWithString:[[NSBundle mainBundle] resourcePath]];
-    [bundlePath appendString:PRESETS_DIRECTORY];
+    NSString *bundlePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:path1.lastPathComponent];
     
-    NSMutableArray *paths = [NSMutableArray arrayWithObjects:path1, bundlePath, nil];
+    NSArray *paths = @[path1, bundlePath];
     
     NSMutableArray *settingsList = [NSMutableArray array];
     
@@ -3188,7 +3182,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
             int i;
             for(i=0; i<[settingsFiles count]; i++)
             {
-                NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/%@", path, [settingsFiles objectAtIndex:i]]];
+                NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:[path stringByAppendingPathComponent:[settingsFiles objectAtIndex:i]]];
                 if(settings)
                 {
                     if([[settings allKeys] containsObject:@"groupName"])
@@ -3502,9 +3496,8 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
     else
     {
         // read the 16-bit CLUT in the file
-        NSMutableString *path = [NSMutableString stringWithString:[[BrowserController currentBrowser] documentsDirectory]];
-        [path appendString:CLUTDATABASE];
-        [path appendString:aClutName];
+        NSString *CLUTsPath = [[[BrowserController currentBrowser] database] clutsDirPath];
+        NSString *path = [CLUTsPath stringByAppendingPathComponent:aClutName];
         
         NSMutableArray *curves = nil, *pointColors = nil;
         
@@ -3519,7 +3512,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
         }
         else
         {
-            [path appendString:@".plist"];
+            path = [path stringByAppendingPathExtension:@"plist"];
             if([[NSFileManager defaultManager] fileExistsAtPath:path])
             {
                 NSDictionary *clut = [NSDictionary dictionaryWithContentsOfFile:path];
@@ -3534,10 +3527,8 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
             else
             {
                 // look in the resources bundle path
-                [path setString:[[NSBundle mainBundle] resourcePath]];
-                [path appendString:CLUTDATABASE];
-                [path appendString:aClutName];
-                [path appendString:@".plist"];
+                NSString *bpath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:CLUTsPath.lastPathComponent];
+                path = [bpath stringByAppendingPathComponent:[aClutName stringByAppendingPathExtension:@"plist"]];
                 if([[NSFileManager defaultManager] fileExistsAtPath:path])
                 {
                     NSDictionary *clut = [NSDictionary dictionaryWithContentsOfFile:path];

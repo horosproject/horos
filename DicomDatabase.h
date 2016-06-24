@@ -123,7 +123,9 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 -(NSString*)dumpDirPath;
 -(NSString*)pagesDirPath;
 -(NSString*)htmlTemplatesDirPath;
-- (NSString *)stateDatabaseDirPath;
+- (NSString *)statesDirPath;
+- (NSString *)clutsDirPath;
+- (NSString *)presetsDirPath;
 // these paths are used from the DICOM listener
 -(const char*)baseDirPathC;
 -(const char*)incomingDirPathC;

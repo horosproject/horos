@@ -614,7 +614,7 @@
 	
 	NSMutableAttributedString	*rtf = [[[NSMutableAttributedString alloc] initWithString: file] autorelease];
 	
-	[[rtf RTFFromRange:rtf.range documentAttributes:@[]] writeToFile: path atomically:YES]; // To support full encoding in MicroSoft Word
+    [[rtf RTFFromRange:rtf.range documentAttributes:@{}] writeToFile: path atomically:YES]; // To support full encoding in MicroSoft Word
 	
 	return path;
 }

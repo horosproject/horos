@@ -799,8 +799,16 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"HTML_TEMPLATES"]];
 }
 
-- (NSString *)stateDatabaseDirPath {
+- (NSString *)statesDirPath {
     return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"3DSTATE"]];
+}
+
+- (NSString *)clutsDirPath {
+    return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"CLUTs"]];
+}
+
+- (NSString *)presetsDirPath {
+    return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"3DPRESETS"]];
 }
 
 -(NSString*)modelVersionFilePath {

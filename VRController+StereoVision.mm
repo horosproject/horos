@@ -55,9 +55,6 @@
 #import "Notifications.h"
 #import "OSIWindow.h"
 
-#define PRESETS_DIRECTORY @"/3DPRESETS/"
-#define CLUTDATABASE @"/CLUTs/"
-
 static NSString* 	VRStandardToolbarIdentifier = @"VR Toolbar Identifier";
 static NSString* 	VRPanelToolbarIdentifier = @"VRPanel Toolbar Identifier";
 

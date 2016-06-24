@@ -1961,8 +1961,6 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 #pragma mark -
 #pragma mark Saving (as plist)
 
-#define CLUTDATABASE @"/CLUTs/"
-
 - (void)chooseNameAndSave:(id)sender;
 {
 	if(isSaveButtonHighlighted)
@@ -1998,8 +1996,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	[clut setObject:[self convertCurvesForPlist] forKey:@"curves"];
 	[clut setObject:[self convertPointColorsForPlist] forKey:@"colors"];
 	
-	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
-	[path appendString:CLUTDATABASE];
+	NSString *path = [[[BrowserController currentBrowser] database] clutsDirPath];
 	
 	BOOL isDir = YES;
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
@@ -2016,9 +2013,8 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 
 + (NSDictionary*)presetFromFileWithName:(NSString*)name;
 {
-	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
-	[path appendString:CLUTDATABASE];
-	[path appendString:name];
+    NSString *CLUTsPath = [[[BrowserController currentBrowser] database] clutsDirPath];
+    NSString *path = [CLUTsPath stringByAppendingPathComponent:name];
 	
 	if([[NSFileManager defaultManager] fileExistsAtPath:path])
 	{
@@ -2032,7 +2028,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	}
 	else
 	{
-		[path appendString:@".plist"];
+		path = [path stringByAppendingPathExtension:@"plist"];
 		if([[NSFileManager defaultManager] fileExistsAtPath:path])
 		{
 			NSMutableDictionary *clutFromFile = [NSMutableDictionary dictionaryWithContentsOfFile:path];
@@ -2050,10 +2046,8 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 		else
 		{
 			// look in the resources bundle path
-			[path setString:[[NSBundle mainBundle] resourcePath]];
-			[path appendString:CLUTDATABASE];
-			[path appendString:name];
-			[path appendString:@".plist"];
+            path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:CLUTsPath.lastPathComponent];
+            path = [path stringByAppendingPathComponent:[name stringByAppendingPathExtension:@"plist"]];
 			if([[NSFileManager defaultManager] fileExistsAtPath:path])
 			{
 				NSMutableDictionary *clutFromFile = [NSMutableDictionary dictionaryWithContentsOfFile:path];
