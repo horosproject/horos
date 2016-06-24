@@ -15196,7 +15196,7 @@ static NSArray*	openSubSeriesArray = nil;
     [helpMenu addItemWithTitle: NSLocalizedString(@"Horos Discussion Group", nil) action: @selector(openHorosDiscussion:) keyEquivalent: @""];
     [helpMenu addItem: [NSMenuItem separatorItem]];
     [helpMenu addItemWithTitle: NSLocalizedString(@"Horos Help Web Site ", nil) action: @selector(help:) keyEquivalent: @""];
-    [helpMenu addItemWithTitle: NSLocalizedString(@"Report A Bug", nil) action: @selector(userManual:) keyEquivalent: @""];
+    [helpMenu addItemWithTitle: NSLocalizedString(@"Report a Bug", nil) action: @selector(userManual:) keyEquivalent: @""];
     
     [helpMenu release];
 }
