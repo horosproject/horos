@@ -715,10 +715,6 @@
 		992DD7721BCB095700369C09 /* libgdcmMSFF.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75A1BCB095700369C09 /* libgdcmMSFF.a */; };
 		992DD7741BCB095700369C09 /* libgdcmopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75B1BCB095700369C09 /* libgdcmopenjpeg.a */; };
 		992DD7761BCB095700369C09 /* libgdcmuuid.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75C1BCB095700369C09 /* libgdcmuuid.a */; };
-		9932BC6D1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9932BC6B1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		9932BC6E1CC7C8EB0062BB0B /* libssl.0.9.8.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9932BC6C1CC7C8EB0062BB0B /* libssl.0.9.8.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		9932BC6F1CC7C9120062BB0B /* libcrypto.0.9.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9932BC6B1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib */; };
-		9932BC701CC7C9120062BB0B /* libssl.0.9.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9932BC6C1CC7C8EB0062BB0B /* libssl.0.9.8.dylib */; };
 		9939F7A91BCB0BF8009FEB69 /* FVTiff.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FC808F44724002A395F /* FVTiff.m */; };
 		993DB4A01C0243D50084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
 		993DB4A11C0244430084218A /* FeedbackReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -3338,8 +3334,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				9932BC6D1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib in Copy Frameworks */,
-				9932BC6E1CC7C8EB0062BB0B /* libssl.0.9.8.dylib in Copy Frameworks */,
 				993DB4A11C0244430084218A /* FeedbackReporter.framework in Copy Frameworks */,
 				999901A41B52B24200921EA1 /* libdcmprintscu.dylib in Copy Frameworks */,
 				999901A51B52B24200921EA1 /* libxerces-c.27.dylib in Copy Frameworks */,
@@ -4033,8 +4027,6 @@
 		992DD75A1BCB095700369C09 /* libgdcmMSFF.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmMSFF.a; sourceTree = "<group>"; };
 		992DD75B1BCB095700369C09 /* libgdcmopenjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmopenjpeg.a; sourceTree = "<group>"; };
 		992DD75C1BCB095700369C09 /* libgdcmuuid.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmuuid.a; sourceTree = "<group>"; };
-		9932BC6B1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.0.9.8.dylib; path = Binaries/openssl/libraries/libcrypto.0.9.8.dylib; sourceTree = "<group>"; };
-		9932BC6C1CC7C8EB0062BB0B /* libssl.0.9.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.0.9.8.dylib; path = Binaries/openssl/libraries/libssl.0.9.8.dylib; sourceTree = "<group>"; };
 		993DB49F1C0243D50084218A /* FeedbackReporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FeedbackReporter.framework; path = Binaries/FeedbackReporter.framework; sourceTree = "<group>"; };
 		994FABED1CEBF25800980A15 /* OnOffSwitchControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnOffSwitchControl.h; sourceTree = "<group>"; };
 		994FABEE1CEBF25800980A15 /* OnOffSwitchControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnOffSwitchControl.m; sourceTree = "<group>"; };
@@ -5966,8 +5958,6 @@
 				994FAC021CED3E1000980A15 /* libgdcmMEXD.a in Frameworks */,
 				994FAC031CED3E1000980A15 /* libgdcmMSFF.a in Frameworks */,
 				994FAC051CED3E1000980A15 /* libgdcmuuid.a in Frameworks */,
-				9932BC6F1CC7C9120062BB0B /* libcrypto.0.9.8.dylib in Frameworks */,
-				9932BC701CC7C9120062BB0B /* libssl.0.9.8.dylib in Frameworks */,
 				9966A1AB1AE09D7C00F2D81A /* Quartz.framework in Frameworks */,
 				9966A1A91AE09D6800F2D81A /* InstantMessage.framework in Frameworks */,
 				9966A1A71AE09D5D00F2D81A /* DiskArbitration.framework in Frameworks */,
@@ -6530,8 +6520,6 @@
 				999901A31B52B24200921EA1 /* libxerces-c.27.dylib */,
 				436217891A2F3741006FA27A /* libjpeg.a */,
 				431BCC3F1A24AC94002B36FB /* libtiff.a */,
-				9932BC6B1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib */,
-				9932BC6C1CC7C8EB0062BB0B /* libssl.0.9.8.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -14016,7 +14004,6 @@
 					"$(PROJECT_DIR)/Binaries/CharLS",
 					"$(PROJECT_DIR)/AYDicomPrint",
 					"$(PROJECT_DIR)/Binaries/GDCMLibs",
-					"$(PROJECT_DIR)/Binaries/openssl/libraries",
 					"$(PROJECT_DIR)/Binaries/openjpeg",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
@@ -14411,7 +14398,6 @@
 					"$(PROJECT_DIR)/Binaries/CharLS",
 					"$(PROJECT_DIR)/AYDicomPrint",
 					"$(PROJECT_DIR)/Binaries/GDCMLibs",
-					"$(PROJECT_DIR)/Binaries/openssl/libraries",
 					"$(PROJECT_DIR)/Binaries/openjpeg",
 				);
 				OTHER_CPLUSPLUSFLAGS = (

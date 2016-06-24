@@ -2118,7 +2118,8 @@ static float deg2rad = M_PI/180.0;
 			{
 				NSRect bounds = [v bounds];
 				NSPoint or = [v convertPoint: bounds.origin toView: nil];
-				bounds.origin = [[self window] convertBaseToScreen: or];
+                NSRect r = {or,NSZeroSize};
+				bounds.origin = [[self window] convertRectToScreen:r].origin;
                 
                 bounds.origin.x *= v.window.backingScaleFactor;
                 bounds.origin.y *= v.window.backingScaleFactor;
@@ -2470,9 +2471,9 @@ static float deg2rad = M_PI/180.0;
 	curExportView = [self selectedView];
 	
 	if( quicktimeExportMode)
-		[NSApp beginSheet: quicktimeWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
+		[NSApp beginSheet: quicktimeWindow modalForWindow:self.window modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 	else
-		[NSApp beginSheet: dcmWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
+		[NSApp beginSheet: dcmWindow modalForWindow:self.window modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 	
 	if( [self selectedView] != mprView1) mprView1.displayCrossLines = YES;
 	if( [self selectedView] != mprView2) mprView2.displayCrossLines = YES;

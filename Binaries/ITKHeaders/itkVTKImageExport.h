@@ -84,32 +84,32 @@ public:
 protected:
   VTKImageExport();
   ~VTKImageExport() {}
-  void PrintSelf(std::ostream & os, Indent indent) const;
+  void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
 
   typedef typename InputImageType::Pointer    InputImagePointer;
   typedef typename InputImageType::RegionType InputRegionType;
   typedef typename InputRegionType::SizeType  InputSizeType;
   typedef typename InputRegionType::IndexType InputIndexType;
 
-  int * WholeExtentCallback();
+  int * WholeExtentCallback() ITK_OVERRIDE;
 
-  double * SpacingCallback();
+  double * SpacingCallback() ITK_OVERRIDE;
 
-  double * OriginCallback();
+  double * OriginCallback() ITK_OVERRIDE;
 
-  float * FloatSpacingCallback();
+  float * FloatSpacingCallback() ITK_OVERRIDE;
 
-  float * FloatOriginCallback();
+  float * FloatOriginCallback() ITK_OVERRIDE;
 
-  const char * ScalarTypeCallback();
+  const char * ScalarTypeCallback() ITK_OVERRIDE;
 
-  int NumberOfComponentsCallback();
+  int NumberOfComponentsCallback() ITK_OVERRIDE;
 
-  void PropagateUpdateExtentCallback(int *);
+  void PropagateUpdateExtentCallback(int *) ITK_OVERRIDE;
 
-  int * DataExtentCallback();
+  int * DataExtentCallback() ITK_OVERRIDE;
 
-  void * BufferPointerCallback();
+  void * BufferPointerCallback() ITK_OVERRIDE;
 
 private:
   VTKImageExport(const Self &); //purposely not implemented

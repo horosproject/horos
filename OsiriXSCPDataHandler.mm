@@ -207,12 +207,12 @@ extern BOOL forkedProcess;
 			
 			@try
 			{
-				c = [[NSString stringWithCString: scs] componentsSeparatedByString:@"\\"];
+				c = [[NSString stringWithUTF8String:scs] componentsSeparatedByString:@"\\"];
 			
 				if( [c count] > 0)
 					specificCharacterSet = [[c objectAtIndex: 0] retain];
 				else
-					specificCharacterSet = [[NSString alloc] initWithCString: scs];
+					specificCharacterSet = [[NSString alloc] initWithUTF8String:scs];
 			}
 			@catch (NSException * e)
 			{
@@ -968,7 +968,7 @@ extern BOOL forkedProcess;
                         
                         for( NSString *m in [[fetchedObject valueForKeyPath:@"series.modality"] allObjects])
                         {
-                            if( [modalities containsString: m] == NO)
+                            if( [modalities containsObject: m] == NO)
                             {
                                 if( [m isEqualToString:@"SR"]) SR = YES;
                                 else if( [m isEqualToString:@"SC"]) SC = YES;
@@ -1176,7 +1176,7 @@ extern BOOL forkedProcess;
                         
                         for( NSString *m in [[study valueForKeyPath:@"modality"] allObjects])
                         {
-                            if( [modalities containsString: m] == NO)
+                            if( [modalities containsObject: m] == NO)
                             {
                                 if( [m isEqualToString:@"SR"]) SR = YES;
                                 else if( [m isEqualToString:@"SC"]) SC = YES;
@@ -1424,7 +1424,7 @@ extern BOOL forkedProcess;
                         
                         for( NSString *m in [[study valueForKeyPath:@"series.modality"] allObjects])
                         {
-                            if( [modalities containsString: m] == NO)
+                            if( [modalities containsObject: m] == NO)
                             {
                                 if( [m isEqualToString:@"SR"]) SR = YES;
                                 else if( [m isEqualToString:@"SC"]) SC = YES;
@@ -1670,7 +1670,7 @@ extern BOOL forkedProcess;
         logDictionary = [NSMutableDictionary new];
     
     NSString *fromTo = nil;
-	if ( currentDestinationMoveAET == nil || strcmp( currentDestinationMoveAET, [callingAET UTF8String]) == 0 || strlen( currentDestinationMoveAET) == 0)
+	if (!currentDestinationMoveAET[0] || !strcmp(currentDestinationMoveAET, [callingAET UTF8String]))
 		fromTo = [NSString stringWithFormat: @"%@", callingAET];
 	else
         fromTo = [NSString stringWithFormat: @"%@ / %s", callingAET, currentDestinationMoveAET];

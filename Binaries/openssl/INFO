@@ -1,0 +1,6 @@
+These headers come from OpenSSL 1.0.2:
+	cd ...
+	git clone git://git.openssl.org/openssl.git --branch OpenSSL_1_0_2-stable openssl-temp
+	cd openssl-temp
+	./config
+	cp -L include/openssl/* ...
