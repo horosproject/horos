@@ -92,7 +92,6 @@
             }
             
             NSPasteboardItem* pbi = [[[NSPasteboardItem alloc] init] autorelease];
-            [pbi setDataProvider:self forTypes:@[NSPasteboardTypeString]];
             
             [pbi setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[@[[[[self selectedCell] representedObject] object]] valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL] forType:O2PasteboardTypeDatabaseObjectXIDs];
 
@@ -111,9 +110,6 @@
 
 - (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
     return NSDragOperationGeneric;
-}
-
-- (void)pasteboard:(NSPasteboard *)pasteboard item:(NSPasteboardItem *)item provideDataForType:(NSString *)type {
 }
 
 - (void)draggingSession:(NSDraggingSession *)session willBeginAtPoint:(NSPoint)screenPoint
