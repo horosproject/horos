@@ -36,8 +36,8 @@
 #import "QueryFilter.h"
 #import "AppController.h"
 #import "ImageAndTextCell.h"
-#import <OsiriX/DCMCalendarDate.h>
-#import <OsiriX/DCMNetServiceDelegate.h>
+#import "DCMCalendarDate.h"
+#import "DCMNetServiceDelegate.h"
 #import "QueryArrayController.h"
 //#import "AdvancedQuerySubview.h"
 #import "DCMTKRootQueryNode.h"

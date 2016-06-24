@@ -32,7 +32,7 @@
  ============================================================================*/
 #import "DCMTKRootQueryNode.h"
 #import "DCMTKStudyQueryNode.h"
-#import <OsiriX/DCMCalendarDate.h>
+#import "DCMCalendarDate.h"
 #import "dicomFile.h"
 
 #include "dcdeftag.h"

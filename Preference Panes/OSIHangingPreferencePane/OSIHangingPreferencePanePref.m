@@ -34,7 +34,7 @@
 #import "WindowLayoutManager.h"
 #import "OSIHangingPreferencePanePref.h"
 #import "NSArray+N2.h"
-#import <HorosAPI/NSPreferencePane+OsiriX.h>
+#import "NSPreferencePane+OsiriX.h"
 #import "Notifications.h"
 #import "AppController.h"
 

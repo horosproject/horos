@@ -50,7 +50,7 @@
 #import "SplashScreen.h"
 #import "NSFont_OpenGL.h"
 #import "DicomFile.h"
-#import <OsiriX/DCM.h>
+#import "DCM.h"
 #import "PluginManager.h"
 #import "DCMTKQueryRetrieveSCP.h"
 #import "BLAuthentication.h"

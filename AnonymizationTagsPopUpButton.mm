@@ -40,8 +40,8 @@
 #import "AnonymizationViewController.h"
 #import "AnonymizationSavePanelController.h"
 #import "DicomFile.h"
-#import <OsiriX/DCMObject.h>
-#import <OsiriX/DCMAttribute.h>
+#import "DCMObject.h"
+#import "DCMAttribute.h"
 #import "N2Debug.h"
 
 @implementation AnonymizationTagsPopUpButton

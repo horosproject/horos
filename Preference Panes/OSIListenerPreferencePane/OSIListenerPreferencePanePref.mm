@@ -32,13 +32,13 @@
  ============================================================================*/
 
 #import "OSIListenerPreferencePanePref.h"
-#import <HorosAPI/DefaultsOsiriX.h>
-#import <HorosAPI/BrowserController.h>
-#import <HorosAPI/NSUserDefaultsController+OsiriX.h>
+#import "DefaultsOsiriX.h"
+#import "BrowserController.h"
+#import "NSUserDefaultsController+OsiriX.h"
 //#import "DDKeychain.h"
 #import <SecurityInterface/SFChooseIdentityPanel.h>
-#import <HorosAPI/WebPortal.h>
-#import <HorosAPI/WebPortalDatabase.h>
+#import "WebPortal.h"
+#import "WebPortalDatabase.h"
 #import "NSAppleScript+N2.h"
 
 #include <netdb.h>

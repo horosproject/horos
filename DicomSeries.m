@@ -35,8 +35,8 @@
 #import "DicomStudy.h"
 #import "DicomImage.h"
 #import "DicomDatabase.h"
-#import <OsiriX/DCMAbstractSyntaxUID.h>
-#import <OsiriX/DCM.h>
+#import "DCMAbstractSyntaxUID.h"
+#import "DCM.h"
 #import "NSImage+OsiriX.h"
 #import "DCMPix.h"
 #import "BrowserController.h"

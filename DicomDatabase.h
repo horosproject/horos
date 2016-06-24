@@ -190,4 +190,6 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 -(BOOL)allowAutoroutingWithPostNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems;
 -(void)alertToApplyRoutingRules:(NSArray*)routingRules toImages:(NSArray*)images;
 
+-(void)copyFilesThread:(NSDictionary*)dict;
+
 @end

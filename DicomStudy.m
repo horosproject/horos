@@ -36,8 +36,8 @@
 #import "DicomSeries.h"
 #import "DicomImage.h"
 #import "DicomAlbum.h"
-#import <OsiriX/DCMAbstractSyntaxUID.h>
-#import <OsiriX/DCM.h>
+#import "DCMAbstractSyntaxUID.h"
+#import "DCM.h"
 #import "MutableArrayCategory.h"
 #import "SRAnnotation.h"
 #import "DicomDatabase.h"

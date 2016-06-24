@@ -37,8 +37,8 @@
 #import "DicomStudy.h"
 
 #import <AVFoundation/AVFoundation.h>
-#import <OsiriX/DCM.h>
-#import <OsiriX/DCMAbstractSyntaxUID.h>
+#import "DCM.h"
+#import "DCMAbstractSyntaxUID.h"
 #import "BrowserController.h"
 #import "BrowserControllerDCMTKCategory.h"
 #import "PluginManager.h"

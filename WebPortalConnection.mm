@@ -60,7 +60,7 @@
 #import "N2Debug.h"
 #import "NSString+N2.h"
 #import "NSUserDefaultsController+N2.h"
-#import <OsiriX/DCMAbstractSyntaxUID.h>
+#import "DCMAbstractSyntaxUID.h"
 #import "NSString+N2.h"
 #import "DDData.h"
 #import "NSData+N2.h"

@@ -32,7 +32,7 @@
  ============================================================================*/
 
 #import "DicomFileDCMTKCategory.h"
-#import <OsiriX/DCMAbstractSyntaxUID.h>
+#import "DCMAbstractSyntaxUID.h"
 #import "DICOMToNSString.h"
 #import "MutableArrayCategory.h"
 #import "DicomStudy.h"

@@ -32,7 +32,7 @@
  ============================================================================*/
 
 #import "DICOMExport.h"
-#import <OsiriX/DCM.h>
+#import "DCM.h"
 #import "BrowserController.h"
 #import "dicomFile.h"
 #import "DCMView.h"

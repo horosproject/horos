@@ -46,9 +46,9 @@
 #import "dicomFile.h"
 #import "ViewerController.h"
 #import "PluginFileFormatDecoder.h"
-#import <OsiriX/DCMCalendarDate.h>
-#import <OsiriX/DCMAbstractSyntaxUID.h>
-#import <OsiriX/DCMSequenceAttribute.h>
+#import "DCMCalendarDate.h"
+#import "DCMAbstractSyntaxUID.h"
+#import "DCMSequenceAttribute.h"
 #import "DICOMToNSString.h"
 #import "DefaultsOsiriX.h"
 

@@ -105,9 +105,9 @@ END_EXTERN_C
 
 #include "browserController.h"
 #import "DICOMToNSString.h"
-#import <OsiriX/DCMObject.h>
-#import <OsiriX/DCM.h>
-#import <OsiriX/DCMTransferSyntax.h>
+#import "DCMObject.h"
+#import "DCM.h"
+#import "DCMTransferSyntax.h"
 #import "SendController.h"
 
 #import "OpenGLScreenReader.h"

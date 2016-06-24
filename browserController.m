@@ -78,10 +78,10 @@
 #import "DCMAttributeTag.h"
 #import "DCMPixelDataAttribute.h"
 #import "DCMCalendarDate.h"
-#import <OsiriX/DCM.h>
-#import <OsiriX/DCMObject.h>
-#import <OsiriX/DCMAbstractSyntaxUID.h>
-#import <OsiriX/DCMNetServiceDelegate.h>
+#import "DCM.h"
+#import "DCMObject.h"
+#import "DCMAbstractSyntaxUID.h"
+#import "DCMNetServiceDelegate.h"
 #import "LogWindowController.h"
 #import "stringAdditions.h"
 #import "SendController.h"

@@ -32,7 +32,7 @@
  ============================================================================*/
 
 #import "OSICustomImageAnnotations.h"
-#import <HorosAPI/NSPreferencePane+OsiriX.h>
+#import "NSPreferencePane+OsiriX.h"
 
 NSComparisonResult  compareViewTags(id firstView, id secondView, void * context);
 NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)

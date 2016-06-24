@@ -32,11 +32,11 @@
  ============================================================================*/
 
 #import <Foundation/Foundation.h>
-//#import <OsiriX/DCMObject.h>
-//#import <OsiriX/DCM.h>
-//#import <OsiriX/DCMTransferSyntax.h>
-//#import <OsiriX/DCMPixelDataAttribute.h>
-//#import <OsiriX/DCMAbstractSyntaxUID.h>
+//#import "DCMObject.h"
+//#import "DCM.h"
+//#import "DCMTransferSyntax.h"
+//#import "DCMPixelDataAttribute.h"
+//#import "DCMAbstractSyntaxUID.h"
 #import "DefaultsOsiriX.h"
 #import "AppController.h"
 #import "QTKit/QTMovie.h"

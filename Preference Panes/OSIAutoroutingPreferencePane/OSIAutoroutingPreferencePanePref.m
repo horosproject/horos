@@ -31,10 +31,10 @@
      PURPOSE.
  ============================================================================*/
 
-#import <OsiriX/DCMObject.h>
+#import "DCMObject.h"
 #import "OSIAutoroutingPreferencePanePref.h"
-#import <HorosAPI/NSPreferencePane+OsiriX.h>
-#import <HorosAPI/AppController.h>
+#import "NSPreferencePane+OsiriX.h"
+#import "AppController.h"
 
 #define CURRENTVERSION 1
 

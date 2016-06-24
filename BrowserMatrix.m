@@ -40,8 +40,6 @@
 #import "N2Debug.h"
 #import "DicomImage.h"
 
-static NSString *albumDragType = @"Osirix Album drag";
-
 @implementation BrowserMatrix
 
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent

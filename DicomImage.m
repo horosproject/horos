@@ -35,8 +35,8 @@
 #import "DicomSeries.h"
 #import "DicomStudy.h"
 #import "DicomFileDCMTKCategory.h"
-#import <OsiriX/DCM.h>
-#import <OsiriX/DCMAbstractSyntaxUID.h>
+#import "DCM.h"
+#import "DCMAbstractSyntaxUID.h"
 #import "DCMObjectPixelDataImport.h"
 #import "DCMView.h"
 #import "MutableArrayCategory.h"
