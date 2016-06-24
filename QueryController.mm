@@ -3365,8 +3365,10 @@ extern "C"
             {
                 int i = 0;
                 
-                for( NSDictionary *QRInstance in autoQRInstances)
+                for(int QRInstanceIndex = 0; i < [autoQRInstances count]; i++)
                 {
+                    NSDictionary *QRInstance = [[autoQRInstances objectAtIndex:QRInstanceIndex] retain];
+                    
                     if( [[QRInstance objectForKey: @"autoRefreshQueryResults"] intValue] != 0)
                     {
                         if( --autoQueryRemainingSecs[ i] <= 0)
@@ -3374,7 +3376,15 @@ extern "C"
                             if( [autoQueryLock tryLock])
                             {
                                 if( i == currentAutoQR)
+                                {
                                     [self saveSettings];
+                                    
+                                    if (QRInstance != [autoQRInstances objectAtIndex:QRInstanceIndex])
+                                    {
+                                        [QRInstance release];
+                                        QRInstance = [[autoQRInstances objectAtIndex:QRInstanceIndex] retain];
+                                    }
+                                }
                                 
                                 [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Query", nil) description: NSLocalizedString( @"Refreshing...", nil) name: @"autoquery"];
                                 
@@ -3399,6 +3409,8 @@ extern "C"
                         }
                     }
                     i++;
+                    
+                    [QRInstance release];
                 }
             }
         }
@@ -3810,6 +3822,8 @@ extern "C"
 			[dictionary setObject: [[[object valueForKey:@"hostname"] copy] autorelease] forKey:@"hostname"];
 			[dictionary setObject: [[[object valueForKey:@"port"] copy] autorelease] forKey:@"port"];
 			[dictionary setObject: [[[object valueForKey:@"transferSyntax"] copy] autorelease] forKey:@"transferSyntax"];
+            
+            [dictionary setObject: [[NSUserDefaults defaultAETitle] copy] forKey: @"moveDestination"];
 			
 			NSDictionary *dstDict = nil;
 			

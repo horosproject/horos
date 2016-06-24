@@ -1286,11 +1286,6 @@
                                                 </buttonCell>
                                                 <connections>
                                                     <action selector="switchAutoRetrieving:" target="-2" id="842"/>
-                                                    <binding destination="-2" name="hidden" keyPath="autoQuery" previousBinding="926" id="927">
-                                                        <dictionary key="options">
-                                                            <string key="NSValueTransformerName">NSNegateBoolean</string>
-                                                        </dictionary>
-                                                    </binding>
                                                     <binding destination="-2" name="enabled" keyPath="autoRefreshQueryResults" id="925"/>
                                                     <binding destination="832" name="value" keyPath="values.autoRetrieving" id="843"/>
                                                     <binding destination="832" name="enabled2" keyPath="values.dontAuthorizeAutoRetrieve" previousBinding="925" id="926">
@@ -1312,11 +1307,6 @@
                                                 </buttonCell>
                                                 <connections>
                                                     <action selector="autoRetrieveSettings:" target="-2" id="942"/>
-                                                    <binding destination="-2" name="hidden" keyPath="autoQuery" previousBinding="947" id="948">
-                                                        <dictionary key="options">
-                                                            <string key="NSValueTransformerName">NSNegateBoolean</string>
-                                                        </dictionary>
-                                                    </binding>
                                                     <binding destination="-2" name="enabled" keyPath="autoRefreshQueryResults" id="943"/>
                                                     <binding destination="832" name="enabled2" keyPath="values.dontAuthorizeAutoRetrieve" previousBinding="943" id="947">
                                                         <dictionary key="options">
