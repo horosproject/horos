@@ -38,6 +38,9 @@
 static NSMutableDictionary *lockedFiles = nil;
 static NSRecursiveLock *lockFile = nil;
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
 /*
  * Function: SSLSecPolicyCopy
  * Purpose:
@@ -571,7 +574,7 @@ SecPolicySearchCreate:
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	if([fileManager fileExistsAtPath:appTempDir] == NO)
 	{
-		[fileManager createDirectoryAtPath:appTempDir attributes:nil];
+		[fileManager createDirectoryAtPath:appTempDir withIntermediateDirectories:YES attributes:nil error:NULL];
 	}
 	
 	return appTempDir;
@@ -709,10 +712,10 @@ SecPolicySearchCreate:
     
     for(int i = 0; i < CFArrayGetCount(arrayRef); i++) {
         NSDictionary * attr = (__bridge NSDictionary *)(CFArrayGetValueAtIndex(arrayRef, i));
-        NSString * label = (NSString *)[attr objectForKey:kSecAttrLabel];
+        /*NSString * label = (NSString *)[attr objectForKey:(id)kSecAttrLabel];*/
         
         if (YES)  {
-            SecIdentityRef identityRef = (__bridge SecIdentityRef)([attr objectForKey:kSecValueRef]);
+            SecIdentityRef identityRef = (__bridge SecIdentityRef)([attr objectForKey:(id)kSecValueRef]);
             SecCertificateRef certRef;
             err = SecIdentityCopyCertificate(identityRef, &certRef);
             if (err != errSecSuccess) {
@@ -1201,5 +1204,7 @@ SecPolicySearchCreate:
 	//NSString *cmd = [NSString stringWithFormat:@"rm %@* %@*", TLS_PRIVATE_KEY_FILE, TLS_CERTIFICATE_FILE];
 	//system([cmd cStringUsingEncoding:NSUTF8StringEncoding]);
 }
+
+#pragma clang diagnostic pop
 
 @end

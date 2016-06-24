@@ -1024,7 +1024,7 @@ void signal_EXC(int sig_num)
 			flipVR[1] = vrChars[0];
 			flipVR[2] = 0;
 			
-			NSString *newVR = [NSString stringWithUTF8String:flipVR encoding: NSASCIIStringEncoding];
+			NSString *newVR = [NSString stringWithCString:flipVR encoding: NSASCIIStringEncoding];
 			if ([DCMValueRepresentation isValidVR:newVR])
 			{
 				[transferSyntaxForDataset release];
