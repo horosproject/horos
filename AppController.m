@@ -660,7 +660,7 @@ void exceptionHandler(NSException *exception)
 +(BOOL) hasMacOSX1083
 {
     NSOperatingSystemVersion v = [[NSProcessInfo processInfo] operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 8 && v.patchVersion == 3);
+    return (v.majorVersion == 10 && v.minorVersion == 8 && v.patchVersion == 3);
 }
 
 
