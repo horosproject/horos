@@ -828,7 +828,7 @@ OFCondition DJLSEncoderBase::losslessCookedEncode(
       // compress frame
 //      DCMJPLS_DEBUG("JPEG-LS encoder processes frame " << (i+1) << " of " << frameCount);
       result = compressCookedFrame(pixelSequence, dimage,
-          photometricInterpretation, offsetList, compressedFrameSize, djcp, (unsigned int)i, nearLosslessDeviation);
+          photometricInterpretation, offsetList, compressedFrameSize, djcp, (Uint32)i, nearLosslessDeviation);
 
       compressedSize += compressedFrameSize;
     }
@@ -1101,7 +1101,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   {
     // 'compressed_buffer_size' now contains the size of the compressed data in buffer
     compressedSize = compressed_buffer_size;
-    result = pixelSequence->storeCompressedFrame(offsetList, compressed_buffer, (unsigned int)compressed_buffer_size, fragmentSize);
+    result = pixelSequence->storeCompressedFrame(offsetList, compressed_buffer, (Uint32)compressed_buffer_size, fragmentSize);
   }
 
   delete[] buffer;

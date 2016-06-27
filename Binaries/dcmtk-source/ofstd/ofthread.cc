@@ -233,7 +233,7 @@ unsigned int OFThread::self()
   return OFstatic_cast(unsigned int, GetCurrentThreadId());
 #elif defined(POSIX_INTERFACE)
 #ifdef HAVE_POINTER_TYPE_PTHREAD_T
-  return (int)OFreinterpret_cast(unsigned long, pthread_self());
+  return (unsigned int)OFreinterpret_cast(unsigned long, pthread_self());
 #else
   return OFstatic_cast(unsigned int, pthread_self());
 #endif

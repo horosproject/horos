@@ -87,11 +87,6 @@
 	return self;
 }
 
-- (NSManagedObjectContext*) managedObjectContext
-{
-	return WebPortal.defaultWebPortal.database.managedObjectContext;
-}
-
 -(NSArray*)IPv4Address;
 {
 	NSEnumerator* e = [[[DefaultsOsiriX currentHost] addresses] objectEnumerator];
