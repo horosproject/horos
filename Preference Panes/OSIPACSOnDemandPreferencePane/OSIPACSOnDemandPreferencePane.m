@@ -170,7 +170,7 @@ static NSMatrix *gDateMatrix = nil;
 		
 		[self setMainView: [mainWindow contentView]];
         
-        gDateMatrix = dateMatrix;
+        gDateMatrix = [dateMatrix retain];
         
 		[self mainViewDidLoad];
 	}
@@ -231,6 +231,9 @@ static NSMatrix *gDateMatrix = nil;
     [sourcesArray release];
     [smartAlbumsArray release];
     [albumDBArray release];
+    
+    [gDateMatrix release]; gDateMatrix = nil;
+    
     
 	[super dealloc];
 }
