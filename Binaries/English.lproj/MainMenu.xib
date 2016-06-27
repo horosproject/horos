@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="101100" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
         <capability name="box content view" minToolsVersion="7.0"/>
     </dependencies>
     <objects>
@@ -2306,12 +2306,12 @@ Gw
             </subviews>
         </customView>
         <customView id="11581" userLabel="SearchView">
-            <rect key="frame" x="0.0" y="0.0" width="199" height="46"/>
+            <rect key="frame" x="0.0" y="0.0" width="196" height="46"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <searchField wantsLayer="YES" verticalHuggingPriority="750" id="11582">
                     <rect key="frame" x="5" y="20" width="185" height="22"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" placeholderString="Search" bezelStyle="round" id="13362">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -2328,7 +2328,7 @@ Gw
                 </searchField>
                 <button horizontalCompressionResistancePriority="1000" id="13824">
                     <rect key="frame" x="6" y="4" width="60" height="18"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <buttonCell key="cell" type="check" title="Soundex" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="mini" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="13825">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="miniSystem"/>
@@ -2340,7 +2340,7 @@ Gw
                 </button>
                 <button verticalHuggingPriority="750" horizontalCompressionResistancePriority="900" id="14821">
                     <rect key="frame" x="79" y="2" width="111" height="17"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <buttonCell key="cell" type="recessed" title="45 results in entire DB" bezelStyle="recessed" alignment="center" controlSize="mini" scrollable="YES" lineBreakMode="clipping" state="on" borderStyle="border" inset="2" id="14822">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="miniSystem"/>
@@ -2350,6 +2350,7 @@ Gw
                     </connections>
                 </button>
             </subviews>
+            <point key="canvasLocation" x="512" y="693"/>
         </customView>
         <menu title="Menu" id="11583" userLabel="searchMenu">
             <items>
@@ -4750,10 +4751,11 @@ Gw
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <customView id="14635" userLabel="Thumbs View">
+                                                                <rect key="frame" x="0.0" y="0.0" width="0.0" height="1"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <subviews>
                                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" id="14751">
-                                                                        <rect key="frame" x="8" y="-197" width="370" height="21"/>
+                                                                        <rect key="frame" x="8" y="-196" width="370" height="21"/>
                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                         <textFieldCell key="cell" controlSize="mini" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="center" title="Multiline Label" id="14752">
                                                                             <font key="font" metaFont="system" size="20"/>
@@ -4765,14 +4767,14 @@ Gw
                                                                         </connections>
                                                                     </textField>
                                                                     <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" verticalScrollElasticity="none" id="12410">
-                                                                        <rect key="frame" x="2" y="0.0" width="384" height="0.0"/>
+                                                                        <rect key="frame" x="2" y="0.0" width="384" height="1"/>
                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         <clipView key="contentView" id="mpo-d1-Wrk">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="384" height="0.0"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="384" height="1"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             <subviews>
                                                                                 <matrix verticalHuggingPriority="750" mode="list" allowsEmptySelection="NO" autosizesCells="NO" id="12411" customClass="BrowserMatrix">
-                                                                                    <rect key="frame" x="0.0" y="-371" width="424" height="432"/>
+                                                                                    <rect key="frame" x="0.0" y="-370" width="424" height="432"/>
                                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                                                     <size key="cellSize" width="106" height="108"/>
@@ -4862,8 +4864,8 @@ Gw
                                                                             <rect key="frame" x="-100" y="-100" width="470" height="15"/>
                                                                             <autoresizingMask key="autoresizingMask"/>
                                                                         </scroller>
-                                                                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="0.0023148148148148147" horizontal="NO" id="13470">
-                                                                            <rect key="frame" x="368" y="0.0" width="16" height="0.0"/>
+                                                                        <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="13470">
+                                                                            <rect key="frame" x="368" y="0.0" width="16" height="1"/>
                                                                             <autoresizingMask key="autoresizingMask"/>
                                                                         </scroller>
                                                                     </scrollView>
