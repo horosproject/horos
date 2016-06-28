@@ -113,7 +113,7 @@
 	if (lstat([[NSFileManager defaultManager]
 		fileSystemRepresentationWithPath:path], &fileInfo) < 0)
 	{
-		return nil;
+		return self;
 	}
 
 	//
