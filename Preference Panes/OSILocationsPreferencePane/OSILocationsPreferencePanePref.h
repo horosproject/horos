@@ -68,6 +68,8 @@
 	
 	IBOutlet NSWindow						*mainWindow;
     BOOL                            testingNodes;
+    
+    id _tlos;
 }
 
 @property int WADOhttps, WADOPort, WADOTransferSyntax;

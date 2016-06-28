@@ -64,7 +64,9 @@
 	IBOutlet NSButton *addCustomDICOMFieldButton, *addDICOMFieldButton, *addDatabaseFieldButton, *addSpecialFieldButton;
 	IBOutlet NSPopUpButton *DICOMFieldsPopUpButton, *databaseFieldsPopUpButton, *specialFieldsPopUpButton;
 	IBOutlet NSBox *contentBox;
-	IBOutlet NSWindow *mainWindow;
+    IBOutlet NSWindow *mainWindow;
+    
+    id _tlos;
 }
 
 - (IBAction)addAnnotation:(id)sender;

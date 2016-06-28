@@ -51,7 +51,7 @@
 	if( self = [super init])
 	{
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIDatabasePreferencePanePref" bundle: nil] autorelease];
-		[nib instantiateWithOwner:self topLevelObjects: nil];
+		[nib instantiateWithOwner:self topLevelObjects:&_tlos];
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
@@ -122,7 +122,9 @@
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self forKeyPath: @"values.eraseEntireDBAtStartup"];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self forKeyPath: @"values.dbFontSize"];
     
-	[DICOMFieldsArray release];
+    [DICOMFieldsArray release];
+    
+    [_tlos release]; _tlos = nil;
 	
 	[super dealloc];
 }

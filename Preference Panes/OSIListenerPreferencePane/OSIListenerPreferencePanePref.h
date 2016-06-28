@@ -62,7 +62,9 @@
 	IBOutlet NSTextField *TLSPortTextField;
 	IBOutlet NSTextField *TLSPreferredSyntaxTextField;
 	
-	IBOutlet NSWindow *mainWindow;
+    IBOutlet NSWindow *mainWindow;
+    
+    id _tlos;
 }
 
 @property (retain) NSString *TLSAuthenticationCertificate, *TLSStoreSCPAETITLE;

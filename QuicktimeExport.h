@@ -48,7 +48,9 @@
 	NSArray					*exportTypes;
 	
 	IBOutlet NSView			*view;
-	IBOutlet NSPopUpButton	*type;
+    IBOutlet NSPopUpButton	*type;
+    
+    id _tlos;
 }
 
 + (CVPixelBufferRef) CVPixelBufferFromNSImage:(NSImage *)image;

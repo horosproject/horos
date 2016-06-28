@@ -71,7 +71,7 @@
 	if( self = [super init])
 	{
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSILocationsPreferencePanePref" bundle: nil] autorelease];
-		[nib instantiateWithOwner:self topLevelObjects: nil];
+		[nib instantiateWithOwner:self topLevelObjects:&_tlos];
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
@@ -372,7 +372,9 @@
 	
 	[TLSDHParameterFileURL release];
 	[TLSSupportedCipherSuite release];
-	[TLSAuthenticationCertificate release];
+    [TLSAuthenticationCertificate release];
+    
+    [_tlos release]; _tlos = nil;
 	
 	[super dealloc];
 }

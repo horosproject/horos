@@ -40,7 +40,7 @@
 	if( self = [super init])
 	{
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIPETPreferencePanePref" bundle: nil] autorelease];
-		[nib instantiateWithOwner:self topLevelObjects: nil];
+		[nib instantiateWithOwner:self topLevelObjects:&_tlos];
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
@@ -62,7 +62,9 @@
 
 - (void) dealloc
 {
-	NSLog(@"dealloc OSIPETPreferencePane");
+    NSLog(@"dealloc OSIPETPreferencePane");
+    
+    [_tlos release]; _tlos = nil;
 	
 	[super dealloc];
 }

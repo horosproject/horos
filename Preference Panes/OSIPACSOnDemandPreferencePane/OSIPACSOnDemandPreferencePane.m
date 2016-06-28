@@ -166,8 +166,9 @@ static NSMatrix *gDateMatrix = nil;
 	if( self = [super init])
 	{
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIPACSOnDemand" bundle: nil] autorelease];
-		[nib instantiateWithOwner:self topLevelObjects: nil];
-		
+		[nib instantiateWithOwner:self topLevelObjects:&_tlos];
+        [_tlos retain];
+        
 		[self setMainView: [mainWindow contentView]];
         
         gDateMatrix = [dateMatrix retain];
@@ -234,6 +235,7 @@ static NSMatrix *gDateMatrix = nil;
     
     [gDateMatrix release]; gDateMatrix = nil;
     
+    [_tlos release]; _tlos = nil;
     
 	[super dealloc];
 }

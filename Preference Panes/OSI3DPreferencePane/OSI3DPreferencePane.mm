@@ -46,7 +46,7 @@
 	if( self = [super init])
 	{
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSI3DPreferencePanePref" bundle: nil] autorelease];
-		[nib instantiateWithOwner:self topLevelObjects: nil];
+		[nib instantiateWithOwner:self topLevelObjects:&_tlos];
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
@@ -85,6 +85,8 @@
 	NSLog(@"dealloc OSI3DPreferencePanePref");
 	
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath: @"values.MAPPERMODEVR"];
+    
+    [_tlos release]; _tlos = nil;
     
 	[super dealloc];
 }

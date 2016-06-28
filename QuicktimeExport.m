@@ -48,7 +48,7 @@
 {
     self = [super init];
     
-    [[NSBundle bundleForClass:self.class] loadNibNamed:@"QuicktimeExport" owner:self topLevelObjects:NULL];
+    [[NSBundle bundleForClass:self.class] loadNibNamed:@"QuicktimeExport" owner:self topLevelObjects:&_tlos];
     
     object = [o retain];
     selector = s;
@@ -60,6 +60,8 @@
 - (void) dealloc
 {
     [object release];
+    
+    [_tlos release]; _tlos = nil;
     
     [super dealloc];
 }
