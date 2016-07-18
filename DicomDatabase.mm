@@ -1269,7 +1269,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     NSTimeInterval currentTime = NSDate.timeIntervalSinceReferenceDate;
     if (currentTime-_timeOfLastIsFileSystemFreeSizeLimitReachedVerification > 20) {
         // refresh _isFileSystemFreeSizeLimitReached
-        NSDictionary* dataBasePathAttrs = [[NSFileManager defaultManager] attributesOfItemAtPath:self.dataBaseDirPath error:NULL];
+        NSDictionary* dataBasePathAttrs = [[NSFileManager defaultManager] attributesOfFileSystemForPath:self.dataBaseDirPath error:NULL];
         NSNumber* dataBasePathSize = [dataBasePathAttrs objectForKey:NSFileSystemSize];
         NSNumber* dataBasePathFreeSize = [dataBasePathAttrs objectForKey:NSFileSystemFreeSize];
         if (dataBasePathFreeSize && dataBasePathSize) {
