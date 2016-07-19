@@ -2957,7 +2957,7 @@ static BOOL protectionAgainstReentry = NO;
                 continue; // don't handle this file, it's probably a busy file
             }
             
-            NSString * originalSrcPath;
+            NSString * originalSrcPath = srcPath;
             srcPath = [srcPath stringByResolvingSymlinksAndAliases];
             BOOL isAlias = ![srcPath isEqualToString:originalSrcPath];
             
