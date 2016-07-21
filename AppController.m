@@ -657,54 +657,69 @@ void exceptionHandler(NSException *exception)
 @synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, recentStudiesMenu, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
 @synthesize bonjourPublisher = _bonjourPublisher;
 
++ (NSOperatingSystemVersion)operatingSystemVersion {
+//    NSProcessInfo *info = [NSProcessInfo processInfo];
+//    if ([info respondsToSelector:@selector(operatingSystemVersion)])
+//        return [info operatingSystemVersion];
+    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    SInt32 major = 0, minor = 0, patch = 0;
+    Gestalt(gestaltSystemVersionMajor, &major);
+    Gestalt(gestaltSystemVersionMinor, &minor);
+    Gestalt(gestaltSystemVersionBugFix, &patch);
+#pragma clang diagnostic pop
+    
+    NSOperatingSystemVersion version = {major, minor, patch};
+    return version;
+}
+
 +(BOOL) hasMacOSX1083
 {
-    NSOperatingSystemVersion v = [[NSProcessInfo processInfo] operatingSystemVersion];
+    NSOperatingSystemVersion v = [self.class operatingSystemVersion];
     return (v.majorVersion == 10 && v.minorVersion == 8 && v.patchVersion == 3);
 }
 
-
 +(BOOL) hasMacOSXElCapitan
 {
-    NSOperatingSystemVersion v = [[NSProcessInfo processInfo] operatingSystemVersion];
+    NSOperatingSystemVersion v = [self.class operatingSystemVersion];
     return (v.majorVersion >= 10 && v.minorVersion >= 11);
 }
 
 
 +(BOOL) hasMacOSXYosemite
 {
-    NSOperatingSystemVersion v = [[NSProcessInfo processInfo] operatingSystemVersion];
+    NSOperatingSystemVersion v = [self.class operatingSystemVersion];
     return (v.majorVersion >= 10 && v.minorVersion >= 10);
 }
 
 +(BOOL) hasMacOSXMaverick
 {
-    NSOperatingSystemVersion v = [[NSProcessInfo processInfo] operatingSystemVersion];
+    NSOperatingSystemVersion v = [self.class operatingSystemVersion];
     return (v.majorVersion >= 10 && v.minorVersion >= 9);
 }
 
 +(BOOL) hasMacOSXMountainLion
 {
-    NSOperatingSystemVersion v = [[NSProcessInfo processInfo] operatingSystemVersion];
+    NSOperatingSystemVersion v = [self.class operatingSystemVersion];
     return (v.majorVersion >= 10 && v.minorVersion >= 8);
 }
 
 +(BOOL) hasMacOSXLion
 {
-    NSOperatingSystemVersion v = [[NSProcessInfo processInfo] operatingSystemVersion];
+    NSOperatingSystemVersion v = [self.class operatingSystemVersion];
     return (v.majorVersion >= 10 && v.minorVersion >= 7);
 }
 
-
 +(BOOL) hasMacOSXSnowLeopard
 {
-    NSOperatingSystemVersion v = [[NSProcessInfo processInfo] operatingSystemVersion];
+    NSOperatingSystemVersion v = [self.class operatingSystemVersion];
     return (v.majorVersion >= 10 && v.minorVersion >= 6);
 }
 
 +(BOOL) hasMacOSXLeopard
 {
-    NSOperatingSystemVersion v = [[NSProcessInfo processInfo] operatingSystemVersion];
+    NSOperatingSystemVersion v = [self.class operatingSystemVersion];
     return (v.majorVersion >= 10 && v.minorVersion >= 5);
 }
 
