@@ -658,9 +658,9 @@ void exceptionHandler(NSException *exception)
 @synthesize bonjourPublisher = _bonjourPublisher;
 
 + (NSOperatingSystemVersion)operatingSystemVersion {
-//    NSProcessInfo *info = [NSProcessInfo processInfo];
-//    if ([info respondsToSelector:@selector(operatingSystemVersion)])
-//        return [info operatingSystemVersion];
+    NSProcessInfo *info = [NSProcessInfo processInfo];
+    if ([info respondsToSelector:@selector(operatingSystemVersion)])
+        return [info operatingSystemVersion];
     
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"

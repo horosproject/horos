@@ -920,7 +920,7 @@ static NSConditionLock *threadLock = nil;
                                                 
                                                 static int uniqueZipFolder = 1;
                                                 NSString *uniqueFolder = [NSString stringWithFormat: @"unzip_folder_A%d", uniqueZipFolder++];
-                                                [[NSFileManager defaultManager] moveItemAtPath: unzipPath toPath: [[self INCOMINGPATH] stringByAppendingPathComponent: uniqueFolder] error: nil];
+                                                [[NSFileManager defaultManager] moveItemAtPath: unzipPath toPath: [self.database.incomingDirPath stringByAppendingPathComponent: uniqueFolder] error: nil];
                                             }
                                             else if( [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] || [[[itemPath lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."])
                                                 [self addDICOMDIR: itemPath : filesArray];
@@ -967,7 +967,7 @@ static NSConditionLock *threadLock = nil;
                             
                             static int uniqueZipFolder = 1;
                             NSString *uniqueFolder = [NSString stringWithFormat: @"unzip_folder_B%d", uniqueZipFolder++];
-                            [[NSFileManager defaultManager] moveItemAtPath: unzipPath toPath: [[self INCOMINGPATH] stringByAppendingPathComponent: uniqueFolder] error: nil];
+                            [[NSFileManager defaultManager] moveItemAtPath: unzipPath toPath: [self.database.incomingDirPath stringByAppendingPathComponent: uniqueFolder] error: nil];
                         }
                         else if( [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR"] || [[[filename lastPathComponent] uppercaseString] isEqualToString:@"DICOMDIR."])
                             [self addDICOMDIR: filename :filesArray];
@@ -1517,7 +1517,7 @@ static NSConditionLock *threadLock = nil;
         
         [filenamesWithoutPlugins removeObjectsInArray: pluginsArray];
         
-        [self.database addFilesAtPaths:filenamesWithoutPlugins];
+        [self addFilesAndFolderToDatabase: filenamesWithoutPlugins];
         
         if( [pluginsArray count] > 0)
         {

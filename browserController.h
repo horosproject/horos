@@ -484,7 +484,7 @@ extern NSString * const O2PasteboardTypeDatabaseObjectXIDs;
 - (IBAction) regenerateAutoComments:(id) sender;
 - (DCMPix *)previewPix:(int)i;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray __deprecated;
-- (void) addFilesAndFolderToDatabase:(NSArray*) filenames __deprecated;
+- (void) addFilesAndFolderToDatabase:(NSArray*) filenames; // asks what to do with files
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles __deprecated;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject __deprecated;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder __deprecated;
