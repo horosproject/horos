@@ -303,7 +303,7 @@
 		}
 		else
 		{
-			[[[BrowserController currentBrowser] database] addFilesAtPaths:fileArray];
+			[[BrowserController currentBrowser] addFilesAndFolderToDatabase:fileArray];
 		}
 	}
 }
