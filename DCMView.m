@@ -4871,7 +4871,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         }
         else
         {
-            NSLog(@"DeltaY = %f , DeltaX = %f",deltaY,deltaX);
+            //NSLog(@"DeltaY = %f , DeltaX = %f",deltaY,deltaX);
             
             if( fabs(deltaY) * 2.0f >  fabs( deltaX) )
             {
