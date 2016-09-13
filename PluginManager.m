@@ -1482,7 +1482,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
                             }
                         }
                         
-                        [pluginDescription setObject:[[NSNumber numberWithBool:NO] boolValue]?@"YES":@"NO" forKey:@"HorosCompatiblePlugin"];
+                        [pluginDescription setObject:[horosCompatible boolValue]?@"YES":@"NO" forKey:@"HorosCompatiblePlugin"];
                     }
                     
                     //////////////
