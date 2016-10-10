@@ -2148,8 +2148,8 @@
 		BFAFEE9508F2220B002AD789 /* PluginFileFormatDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAFEE9308F2220B002AD789 /* PluginFileFormatDecoder.m */; };
 		BFBCD8A709E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */; };
 		BFBCD8A809E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFBCD8A609E4C2E40078ABB6 /* DCMTKServiceClassUser.mm */; };
-		BFBF3AA109B681F500545F5E /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9D09B681F500545F5E /* libcrypto.dylib */; };
-		BFBF3AA209B681F500545F5E /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9E09B681F500545F5E /* libssl.dylib */; };
+		BFBF3AA109B681F500545F5E /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9D09B681F500545F5E /* libcrypto.a */; };
+		BFBF3AA209B681F500545F5E /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9E09B681F500545F5E /* libssl.a */; };
 		BFBF3AA309B681F500545F5E /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9F09B681F500545F5E /* libxml2.dylib */; };
 		BFBF3AA409B681F500545F5E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3AA009B681F500545F5E /* libz.dylib */; };
 		BFBF3E6E09B6828D00545F5E /* cfunix.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3AB809B6827D00545F5E /* cfunix.h */; };
@@ -4697,8 +4697,8 @@
 		BFAFEE9308F2220B002AD789 /* PluginFileFormatDecoder.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginFileFormatDecoder.m; sourceTree = "<group>"; };
 		BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKServiceClassUser.h; sourceTree = "<group>"; };
 		BFBCD8A609E4C2E40078ABB6 /* DCMTKServiceClassUser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKServiceClassUser.mm; sourceTree = "<group>"; };
-		BFBF3A9D09B681F500545F5E /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = /usr/lib/libcrypto.dylib; sourceTree = "<absolute>"; };
-		BFBF3A9E09B681F500545F5E /* libssl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.dylib; path = /usr/lib/libssl.dylib; sourceTree = "<absolute>"; };
+		BFBF3A9D09B681F500545F5E /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = /Users/ale/Work/Horos/Binaries/openssl/libs/libcrypto.a; sourceTree = "<absolute>"; };
+		BFBF3A9E09B681F500545F5E /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = /Users/ale/Work/Horos/Binaries/openssl/libs/libssl.a; sourceTree = "<absolute>"; };
 		BFBF3A9F09B681F500545F5E /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = /usr/lib/libxml2.dylib; sourceTree = "<absolute>"; };
 		BFBF3AA009B681F500545F5E /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		BFBF3AB809B6827D00545F5E /* cfunix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cfunix.h; sourceTree = "<group>"; };
@@ -6034,7 +6034,7 @@
 				436218531A2F375D006FA27A /* libvtkRenderingLabel-6.2.a in Frameworks */,
 				436217FA1A2F375C006FA27A /* libvtkCommonDataModel-6.2.a in Frameworks */,
 				436218241A2F375C006FA27A /* libvtkImagingMorphological-6.2.a in Frameworks */,
-				BFBF3AA109B681F500545F5E /* libcrypto.dylib in Frameworks */,
+				BFBF3AA109B681F500545F5E /* libcrypto.a in Frameworks */,
 				436218041A2F375C006FA27A /* libvtkFiltersAMR-6.2.a in Frameworks */,
 				4362181B1A2F375C006FA27A /* libvtkgl2ps-6.2.a in Frameworks */,
 				436217501A2F3730006FA27A /* libITKIOBMP-4.7.a in Frameworks */,
@@ -6055,7 +6055,7 @@
 				4362174F1A2F3730006FA27A /* libITKIOBioRad-4.7.a in Frameworks */,
 				436218231A2F375C006FA27A /* libvtkImagingMath-6.2.a in Frameworks */,
 				436217401A2F3730006FA27A /* libitkdouble-conversion-4.7.a in Frameworks */,
-				BFBF3AA209B681F500545F5E /* libssl.dylib in Frameworks */,
+				BFBF3AA209B681F500545F5E /* libssl.a in Frameworks */,
 				4362182E1A2F375C006FA27A /* libvtkIOCore-6.2.a in Frameworks */,
 				436218151A2F375C006FA27A /* libvtkFiltersStatistics-6.2.a in Frameworks */,
 				BFBF3AA309B681F500545F5E /* libxml2.dylib in Frameworks */,
@@ -6278,8 +6278,8 @@
 				7E54303C07A05E7100500ABB /* DiscRecordingUI.framework */,
 				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
 				AB6D320C05B3159D0002F793 /* IOKit.framework */,
-				BFBF3A9D09B681F500545F5E /* libcrypto.dylib */,
-				BFBF3A9E09B681F500545F5E /* libssl.dylib */,
+				BFBF3A9D09B681F500545F5E /* libcrypto.a */,
+				BFBF3A9E09B681F500545F5E /* libssl.a */,
 				BFBF3A9F09B681F500545F5E /* libxml2.dylib */,
 				BFBF3AA009B681F500545F5E /* libz.dylib */,
 				AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */,
@@ -11015,7 +11015,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = NO;
 				LastTestingUpgradeCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "The Horos Project";
 				TargetAttributes = {
 					59BDEC2C117C92B2007F1F2C = {
@@ -13928,12 +13928,15 @@
 		43E98D191A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -14013,6 +14016,7 @@
 					"$(PROJECT_DIR)/AYDicomPrint",
 					"$(PROJECT_DIR)/Binaries/GDCMLibs",
 					"$(PROJECT_DIR)/Binaries/openjpeg",
+					Binaries/openssl/libs,
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -14031,6 +14035,7 @@
 					Info.plist,
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.horosproject.horos;
 				PRODUCT_NAME = Horos;
 				STRIP_STYLE = debugging;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/GDCMHeaders $(SRCROOT)/Binaries/ITKHeaders $(SRCROOT)/Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff $(SRCROOT)/Binaries/openssl/include";
@@ -14057,6 +14062,7 @@
 					"-framework",
 					AppKit,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.horosproject.horos-launcher";
 				PRODUCT_NAME = "Horos Launcher";
 				SKIP_INSTALL = YES;
 			};
@@ -14099,6 +14105,7 @@
 					0x20000000,
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.dcmframework;
 				PRODUCT_NAME = HorosDCM;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				SKIP_INSTALL = YES;
@@ -14292,6 +14299,7 @@
 					"-framework",
 					AppKit,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.horosproject.$(PRODUCT_NAME:identifier)";
 				PRODUCT_NAME = HorosAPI;
 				SKIP_INSTALL = YES;
 			};
@@ -14316,6 +14324,7 @@
 					"-framework",
 					AppKit,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.horosproject.horos-launcher";
 				PRODUCT_NAME = "Horos Launcher";
 				SKIP_INSTALL = YES;
 			};
@@ -14357,6 +14366,7 @@
 					0x20000000,
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.dcmframework;
 				PRODUCT_NAME = HorosDCM;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				SKIP_INSTALL = YES;
@@ -14407,6 +14417,7 @@
 					"$(PROJECT_DIR)/AYDicomPrint",
 					"$(PROJECT_DIR)/Binaries/GDCMLibs",
 					"$(PROJECT_DIR)/Binaries/openjpeg",
+					Binaries/openssl/libs,
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -14425,6 +14436,7 @@
 					Info.plist,
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.horosproject.horos;
 				PRODUCT_NAME = Horos;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/GDCMHeaders $(SRCROOT)/Binaries/ITKHeaders $(SRCROOT)/Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff $(SRCROOT)/Binaries/openssl/include";
 				WARNING_CFLAGS = "-no-pedantic";
@@ -14468,18 +14480,22 @@
 		7E76BED9085757B70073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/Binaries",
@@ -14507,6 +14523,7 @@
 				);
 				IBC_FLATTEN_NIBS = NO;
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-fvisibility=default";
 				SDKROOT = macosx;
 			};
@@ -14537,6 +14554,7 @@
 					"-framework",
 					AppKit,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.osirix.$(PRODUCT_NAME:identifier)";
 				PRODUCT_NAME = OsiriXAPI;
 				SKIP_INSTALL = YES;
 			};
@@ -14567,6 +14585,7 @@
 					"-framework",
 					AppKit,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.osirix.$(PRODUCT_NAME:identifier)";
 				PRODUCT_NAME = OsiriXAPI;
 				SKIP_INSTALL = YES;
 			};
@@ -14607,6 +14626,7 @@
 					"-seg1addr",
 					0x20000000,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.dcmframework;
 				PRODUCT_NAME = OsiriX;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				SECTORDER_FLAGS = "";
@@ -14651,6 +14671,7 @@
 					"-seg1addr",
 					0x20000000,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.dcmframework;
 				PRODUCT_NAME = OsiriX;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				SECTORDER_FLAGS = "";
@@ -14687,6 +14708,7 @@
 					"-framework",
 					AppKit,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.horosproject.$(PRODUCT_NAME:identifier)";
 				PRODUCT_NAME = HorosAPI;
 				SKIP_INSTALL = YES;
 			};
@@ -14767,6 +14789,7 @@
 					Binaries/LibTiff,
 					AYDicomPrint,
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,

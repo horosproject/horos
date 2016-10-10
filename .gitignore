@@ -33,6 +33,7 @@ Binaries/libPapyrusToolkit.a
 Binaries/LibTiff/
 Binaries/Ming/
 Binaries/openjpeg/
+Binaries/openssl
 Binaries/OsiriX Report.template
 Binaries/PAGES/
 Binaries/ReportsToPDF/odt2pdf/build/odt2pdf
