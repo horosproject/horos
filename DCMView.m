@@ -4825,8 +4825,24 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
     float reverseScrollWheel;
     
+    float deltaX = [theEvent deltaX];
+    float deltaY = [theEvent scrollingDeltaY];
+    
     if( [NSEvent pressedMouseButtons])
         return;
+    
+    static BOOL handling = NO;
+    if (fabs(deltaY) <= 3.0f && [theEvent momentumPhase] == NSEventPhaseNone)
+    {
+        @synchronized ([self class])
+        {
+            if (handling == YES)
+                return;
+            
+            handling = YES;
+        }
+    }
+    
     
     if( curImage < 0) return;
     if( !drawing) return;
@@ -4855,7 +4871,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             [[self window] makeKeyAndOrderFront: self];
     }
     
-    float deltaX = [theEvent deltaX];
     
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ZoomWithHorizonScroll"] == NO) deltaX = 0;
     
@@ -4866,7 +4881,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     
     if( flippedData) reverseScrollWheel *= -1.0;
     
-    if( dcmPixList )
+    if( dcmPixList)
     {
         short inc = 0;
         
@@ -4876,13 +4891,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         }
         else
         {
-            if( fabs( [theEvent deltaY]) * 2.0f >  fabs( deltaX) )
+            //NSLog(@"DeltaY = %f , DeltaX = %f",deltaY,deltaX);
+            
+            if( fabs(deltaY) * 2.0f >  fabs( deltaX) )
             {
                 if( [theEvent modifierFlags]  & NSCommandKeyMask)
                 {
                     if( [self is2DViewer] && blendingView)
                     {
-                        float change = [theEvent deltaY] / -0.2f;
+                        float change = deltaY / -0.2f;
                         
                         blendingFactor += change;
                         [self setBlendingFactor: blendingFactor];
@@ -4893,7 +4910,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                     if( [self is2DViewer] && [[self windowController] maxMovieIndex] > 1)
                     {
                         // 4D Direction scroll - Cardiac CT eg
-                        float change = [theEvent deltaY] / -2.5f;
+                        float change = deltaY / -2.5f;
                         
                         if( change >= 0)
                         {
@@ -4917,7 +4934,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 }
                 else if( [theEvent modifierFlags]  & NSShiftKeyMask)
                 {
-                    float change = reverseScrollWheel * [theEvent deltaY] / 2.5f;
+                    float change = reverseScrollWheel * deltaY / 2.5f;
                     
                     if( change >= 0)
                     {
@@ -4938,7 +4955,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 }
                 else
                 {
-                    float change = reverseScrollWheel * [theEvent deltaY] / 2.5f;
+                    float change = reverseScrollWheel * deltaY / 2.5f;
                     
                     if( change > 0)
                     {
@@ -5013,6 +5030,23 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             [self displayIfNeeded];
         }
     }
+    
+
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(void){
+        
+        
+        if (fabs(deltaY) <= 3.0f && [theEvent momentumPhase] == NSEventPhaseNone)
+        {
+            if (fabs(deltaY) <= 1.0f)
+                [NSThread sleepForTimeInterval:0.3f];
+            else if (fabs(deltaY) <= 2.0f)
+                [NSThread sleepForTimeInterval:0.15f];
+            else if (fabs(deltaY) <= 3.0f)
+                [NSThread sleepForTimeInterval:0.05f];
+            
+            handling = NO;
+        }
+    });
 }
 
 - (void) otherMouseDown:(NSEvent *)event
