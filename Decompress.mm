@@ -39,7 +39,7 @@
 //#import "DCMAbstractSyntaxUID.h"
 #import "DefaultsOsiriX.h"
 #import "AppController.h"
-#import "QTKit/QTMovie.h"
+//#import "QTKit/QTMovie.h"
 #import "DCMPix.h"
 #import <WebKit/WebKit.h>
 #include <mingpp.h>
