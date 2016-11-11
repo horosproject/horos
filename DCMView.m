@@ -4806,22 +4806,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     float reverseScrollWheel;
     
     float deltaX = [theEvent deltaX];
-    float deltaY = [theEvent scrollingDeltaY];
+    float deltaY = [theEvent deltaY];
+    
+#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_7
+    if (![theEvent hasPreciseScrollingDeltas])
+    {
+        deltaX = [theEvent scrollingDeltaX];
+        deltaY = [theEvent scrollingDeltaY];
+    }
+#endif
     
     if( [NSEvent pressedMouseButtons])
         return;
-    
-    static BOOL handling = NO;
-    if (fabs(deltaY) <= 3.0f && [theEvent momentumPhase] == NSEventPhaseNone)
-    {
-        @synchronized ([self class])
-        {
-            if (handling == YES)
-                return;
-            
-            handling = YES;
-        }
-    }
     
     
     if( curImage < 0) return;
@@ -5010,23 +5006,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             [self displayIfNeeded];
         }
     }
-    
-
-    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(void){
-        
-        
-        if (fabs(deltaY) <= 3.0f && [theEvent momentumPhase] == NSEventPhaseNone)
-        {
-            if (fabs(deltaY) <= 1.0f)
-                [NSThread sleepForTimeInterval:0.3f];
-            else if (fabs(deltaY) <= 2.0f)
-                [NSThread sleepForTimeInterval:0.15f];
-            else if (fabs(deltaY) <= 3.0f)
-                [NSThread sleepForTimeInterval:0.05f];
-            
-            handling = NO;
-        }
-    });
 }
 
 - (void) otherMouseDown:(NSEvent *)event
