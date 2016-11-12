@@ -359,9 +359,6 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[panesListView setButtonActionTarget:self];
 	[panesListView setButtonActionSelector:@selector(setCurrentContext:)];
 	
-	[scrollView setBackgroundColor:[NSColor colorWithCalibratedWhite:237./255 alpha:1]];
-	[scrollView setDrawsBackground:YES];
-	
 	NSBundle* bundle = [NSBundle mainBundle];
 	NSString* name;
 	
@@ -405,6 +402,21 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
         if ([window.windowController isKindOfClass:[PluginManagerController class]])
             [window close];
     }
+    
+    scrollView = [[NSScrollView alloc] initWithFrame:[[[self window] contentView] frame]];
+    
+    // configure the scroll view
+    [scrollView setBorderType:NSNoBorder];
+    [scrollView setHasVerticalScroller:YES];
+    [scrollView setHasHorizontalScroller:NO];
+    
+    [scrollView setBackgroundColor:[NSColor colorWithCalibratedWhite:237./255 alpha:1]];
+    [scrollView setDrawsBackground:YES];
+    
+    scrollView.horizontalScrollElasticity = NSScrollElasticityNone;
+    scrollView.verticalScrollElasticity = NSScrollElasticityNone;
+    
+    // embed your custom view in the scroll view
 }
 
 
@@ -493,9 +505,22 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		
 		[context.pane willSelect];
         
-        NSSize newSize = [view frame].size;
+       
         
-        [[self window] setContentView:view];
+        CGFloat maxHeight = [self window].screen.visibleFrame.size.height - [self toolbarHeight];
+        if ([view frame].size.height > maxHeight)
+        {
+            NSRect newframe = [view frame];
+            newframe.size.height = maxHeight;
+            [view setFrame:newframe];
+        }
+        
+        [scrollView setDocumentView:view];
+        [[self window] setContentView:scrollView];
+        
+        
+        
+        NSSize newSize = [view frame].size;
         
 		[context.pane didSelect];
 

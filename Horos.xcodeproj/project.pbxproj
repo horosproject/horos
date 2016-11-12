@@ -14040,13 +14040,12 @@
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				KEEP_PRIVATE_EXTERNS = YES;
 				LIBRARY_SEARCH_PATHS = (
+					AYDicomPrint,
 					"$(SRCROOT)/Binaries/VTKLibs",
 					"$(SRCROOT)/Binaries/ITKLibs",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/CharLS\"",
 					"$(SRCROOT)/Binaries/openjpeg",
-					AYDicomPrint,
-					/usr/local/lib,
 					"$(PROJECT_DIR)/Binaries/LibTiff",
 					"$(PROJECT_DIR)/Binaries/ITKLibs",
 					"$(PROJECT_DIR)/Binaries/VTKLibs",
@@ -14054,6 +14053,7 @@
 					"$(PROJECT_DIR)/AYDicomPrint",
 					"$(PROJECT_DIR)/Binaries/GDCMLibs",
 					"$(PROJECT_DIR)/Binaries/openssl/libraries",
+					/usr/local/lib,
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -14567,13 +14567,12 @@
 				INFOPLIST_FILE = "Deployment-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_SEARCH_PATHS = (
+					AYDicomPrint,
 					"$(SRCROOT)/Binaries/VTKLibs",
 					"$(SRCROOT)/Binaries/ITKLibs",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/CharLS\"",
 					"$(SRCROOT)/Binaries/openjpeg",
-					AYDicomPrint,
-					/usr/local/lib,
 					"$(PROJECT_DIR)/Binaries/LibTiff",
 					"$(PROJECT_DIR)/Binaries/ITKLibs",
 					"$(PROJECT_DIR)/Binaries/VTKLibs",
@@ -14581,6 +14580,7 @@
 					"$(PROJECT_DIR)/AYDicomPrint",
 					"$(PROJECT_DIR)/Binaries/GDCMLibs",
 					"$(PROJECT_DIR)/Binaries/openssl/libraries",
+					/usr/local/lib,
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
