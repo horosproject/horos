@@ -507,15 +507,8 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
         
        
         
-        CGFloat maxHeight = [self window].screen.visibleFrame.size.height - [self toolbarHeight];
-        if ([view frame].size.height > maxHeight)
-        {
-            NSRect newframe = [view frame];
-            newframe.size.height = maxHeight;
-            [view setFrame:newframe];
-        }
-        
         [scrollView setDocumentView:view];
+        
         [[self window] setContentView:scrollView];
         
         
@@ -567,19 +560,35 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
 -(void) synchronizeSizeWithContent:(NSSize) newSize
 {
-    CGFloat newHeight = newSize.height + [self toolbarHeight];
+    CGFloat maxHeight = [self window].screen.visibleFrame.size.height;
+    
+    CGFloat newHeight = newSize.height + [self toolbarHeight] + 33;
+    
+    if (newHeight > maxHeight)
+    {
+        newHeight = maxHeight;
+    }
+    
     CGFloat newWidth = newSize.width;
     
     NSRect aFrame = [[[self window] class] contentRectForFrameRect:[[self window] frame]
                                                          styleMask:[[self window] styleMask]];
     
-    aFrame.origin.y += aFrame.size.height;
-    aFrame.origin.y -= newHeight;
+    if (newHeight > aFrame.size.height)
+    {
+        aFrame.origin.y -= aFrame.size.height;
+        aFrame.origin.y += newHeight;
+    }
+    else
+    {
+        aFrame.origin.y += aFrame.size.height;
+        aFrame.origin.y -= newHeight;
+    }
     aFrame.size.height = newHeight;
     aFrame.size.width = newWidth;
     
-    aFrame = [[[self window] class] frameRectForContentRect:aFrame
-                                                  styleMask:[[self window]styleMask]];
+    //aFrame = [[[self window] class] frameRectForContentRect:aFrame
+    //                                            styleMask:[[self window]styleMask]];
     
     [[self  window] setFrame:aFrame display:YES animate:YES];
 }
