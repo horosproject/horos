@@ -729,8 +729,6 @@
 		992DD7721BCB095700369C09 /* libgdcmMSFF.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75A1BCB095700369C09 /* libgdcmMSFF.a */; };
 		992DD7741BCB095700369C09 /* libgdcmopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75B1BCB095700369C09 /* libgdcmopenjpeg.a */; };
 		992DD7761BCB095700369C09 /* libgdcmuuid.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75C1BCB095700369C09 /* libgdcmuuid.a */; };
-		9932BC6D1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9932BC6B1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		9932BC6E1CC7C8EB0062BB0B /* libssl.0.9.8.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9932BC6C1CC7C8EB0062BB0B /* libssl.0.9.8.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		9932BC6F1CC7C9120062BB0B /* libcrypto.0.9.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9932BC6B1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib */; };
 		9932BC701CC7C9120062BB0B /* libssl.0.9.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9932BC6C1CC7C8EB0062BB0B /* libssl.0.9.8.dylib */; };
 		9939F7A91BCB0BF8009FEB69 /* FVTiff.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FC808F44724002A395F /* FVTiff.m */; };
@@ -868,6 +866,8 @@
 		999B0B651BB70F0800AF018A /* O2HMigrationAssistant.xib in Resources */ = {isa = PBXBuildFile; fileRef = 999B0B621BB70F0800AF018A /* O2HMigrationAssistant.xib */; };
 		999B0B671BB711ED00AF018A /* CurvedArrowGrayLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = 999B0B661BB711ED00AF018A /* CurvedArrowGrayLeft.png */; };
 		999B0B681BB7309200AF018A /* Osirix.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9966A1AF1AE09FFE00F2D81A /* Osirix.icns */; };
+		99BCCAC21DD900D800FDBD04 /* libcrypto.0.9.8.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 99BCCAC01DD900D800FDBD04 /* libcrypto.0.9.8.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		99BCCAC31DD900D900FDBD04 /* libssl.0.9.8.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 99BCCAC11DD900D800FDBD04 /* libssl.0.9.8.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		99C32EEF1CFF78E7001E71F3 /* PluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = AB2C24E10677861300A08910 /* PluginFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		99CDC0F51ADF0D0900F34F19 /* libCharLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB451802149F464B006674BF /* libCharLS.a */; };
 		A0344496143DE4AA003E1AFA /* DCMUSRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = A085E104141E53210072BF0D /* DCMUSRegion.m */; };
@@ -3359,8 +3359,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				9932BC6D1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib in Copy Frameworks */,
-				9932BC6E1CC7C8EB0062BB0B /* libssl.0.9.8.dylib in Copy Frameworks */,
+				99BCCAC21DD900D800FDBD04 /* libcrypto.0.9.8.dylib in Copy Frameworks */,
+				99BCCAC31DD900D900FDBD04 /* libssl.0.9.8.dylib in Copy Frameworks */,
 				993DB4A11C0244430084218A /* FeedbackReporter.framework in Copy Frameworks */,
 				999901A41B52B24200921EA1 /* libdcmprintscu.dylib in Copy Frameworks */,
 				999901A51B52B24200921EA1 /* libxerces-c.27.dylib in Copy Frameworks */,
@@ -4094,6 +4094,8 @@
 		999B0B611BB70F0800AF018A /* O2HMigrationAssistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = O2HMigrationAssistant.m; path = Horos.xcodeproj/../O2HMigrationAssistant.m; sourceTree = "<group>"; };
 		999B0B621BB70F0800AF018A /* O2HMigrationAssistant.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = O2HMigrationAssistant.xib; path = Horos.xcodeproj/../O2HMigrationAssistant.xib; sourceTree = "<group>"; };
 		999B0B661BB711ED00AF018A /* CurvedArrowGrayLeft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CurvedArrowGrayLeft.png; sourceTree = "<group>"; };
+		99BCCAC01DD900D800FDBD04 /* libcrypto.0.9.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.0.9.8.dylib; path = Binaries/openssl/libraries/libcrypto.0.9.8.dylib; sourceTree = "<group>"; };
+		99BCCAC11DD900D800FDBD04 /* libssl.0.9.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.0.9.8.dylib; path = Binaries/openssl/libraries/libssl.0.9.8.dylib; sourceTree = "<group>"; };
 		A085E103141E53210072BF0D /* DCMUSRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMUSRegion.h; sourceTree = "<group>"; };
 		A085E104141E53210072BF0D /* DCMUSRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMUSRegion.m; sourceTree = "<group>"; };
 		A90202BA0B980CD60001A00B /* PluginManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManagerController.h; sourceTree = "<group>"; };
@@ -4726,8 +4728,6 @@
 		BFAFEE9308F2220B002AD789 /* PluginFileFormatDecoder.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginFileFormatDecoder.m; sourceTree = "<group>"; };
 		BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKServiceClassUser.h; sourceTree = "<group>"; };
 		BFBCD8A609E4C2E40078ABB6 /* DCMTKServiceClassUser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKServiceClassUser.mm; sourceTree = "<group>"; };
-		BFBF3A9D09B681F500545F5E /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = /usr/lib/libcrypto.dylib; sourceTree = "<absolute>"; };
-		BFBF3A9E09B681F500545F5E /* libssl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.dylib; path = /usr/lib/libssl.dylib; sourceTree = "<absolute>"; };
 		BFBF3A9F09B681F500545F5E /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = /usr/lib/libxml2.dylib; sourceTree = "<absolute>"; };
 		BFBF3AA009B681F500545F5E /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		BFBF3AB809B6827D00545F5E /* cfunix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cfunix.h; sourceTree = "<group>"; };
@@ -6308,8 +6308,6 @@
 				7E54303C07A05E7100500ABB /* DiscRecordingUI.framework */,
 				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
 				AB6D320C05B3159D0002F793 /* IOKit.framework */,
-				BFBF3A9D09B681F500545F5E /* libcrypto.dylib */,
-				BFBF3A9E09B681F500545F5E /* libssl.dylib */,
 				BFBF3A9F09B681F500545F5E /* libxml2.dylib */,
 				BFBF3AA009B681F500545F5E /* libz.dylib */,
 				AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */,
@@ -6384,6 +6382,7 @@
 		29B97314FDCFA39411CA2CEA /* OsiriX */ = {
 			isa = PBXGroup;
 			children = (
+				99BCCAC41DD900E200FDBD04 /* OpenSSL */,
 				434B461A1A19F4E4008CF8CF /* OpenJPEG */,
 				AB451801149F44DD006674BF /* JPEG-LS (CharLS) */,
 				84A9D44712F7F8BE00DA1F99 /* KDU SDK */,
@@ -7156,6 +7155,15 @@
 				999B0B621BB70F0800AF018A /* O2HMigrationAssistant.xib */,
 			);
 			name = MigrationAssitant;
+			sourceTree = "<group>";
+		};
+		99BCCAC41DD900E200FDBD04 /* OpenSSL */ = {
+			isa = PBXGroup;
+			children = (
+				99BCCAC01DD900D800FDBD04 /* libcrypto.0.9.8.dylib */,
+				99BCCAC11DD900D800FDBD04 /* libssl.0.9.8.dylib */,
+			);
+			name = OpenSSL;
 			sourceTree = "<group>";
 		};
 		A90C722016E4D8AE0060302F /* Data */ = {
@@ -14031,8 +14039,8 @@
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
 					AYDicomPrint,
+					/usr/include/libxml2,
 					/usr/local/include,
 				);
 				IBC_FLATTEN_NIBS = YES;
@@ -14043,8 +14051,8 @@
 					AYDicomPrint,
 					"$(SRCROOT)/Binaries/VTKLibs",
 					"$(SRCROOT)/Binaries/ITKLibs",
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/Binaries/CharLS\"",
+					"$(SRCROOT)/Binaries",
+					"$(SRCROOT)/Binaries/CharLS",
 					"$(SRCROOT)/Binaries/openjpeg",
 					"$(PROJECT_DIR)/Binaries/LibTiff",
 					"$(PROJECT_DIR)/Binaries/ITKLibs",
@@ -14559,8 +14567,8 @@
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
 					AYDicomPrint,
+					/usr/include/libxml2,
 					/usr/local/include,
 				);
 				IBC_FLATTEN_NIBS = NO;
@@ -14570,8 +14578,8 @@
 					AYDicomPrint,
 					"$(SRCROOT)/Binaries/VTKLibs",
 					"$(SRCROOT)/Binaries/ITKLibs",
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/Binaries/CharLS\"",
+					"$(SRCROOT)/Binaries",
+					"$(SRCROOT)/Binaries/CharLS",
 					"$(SRCROOT)/Binaries/openjpeg",
 					"$(PROJECT_DIR)/Binaries/LibTiff",
 					"$(PROJECT_DIR)/Binaries/ITKLibs",
