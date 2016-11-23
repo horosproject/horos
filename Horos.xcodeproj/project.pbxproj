@@ -520,6 +520,9 @@
 		7154B80F14ED5402000EF7E4 /* N2Stuff.h in Headers */ = {isa = PBXBuildFile; fileRef = 7154B80E14ED5402000EF7E4 /* N2Stuff.h */; };
 		716DBDBD173920AF00BDB1E4 /* ViewerController+CPP.h in Headers */ = {isa = PBXBuildFile; fileRef = 716DBDBB173920AF00BDB1E4 /* ViewerController+CPP.h */; };
 		716DBDBF173920AF00BDB1E4 /* ViewerController+CPP.mm in Sources */ = {isa = PBXBuildFile; fileRef = 716DBDBC173920AF00BDB1E4 /* ViewerController+CPP.mm */; };
+		716DFABA1DE5AA0A00440401 /* OsiriXDCMFrameworkHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 716DFAB81DE5A9F700440401 /* OsiriXDCMFrameworkHeaders.mm */; };
+		716DFABC1DE5AAB800440401 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 716DFABB1DE5AAB800440401 /* Cocoa.framework */; };
+		716DFABD1DE5AAC200440401 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 716DFABB1DE5AAB800440401 /* Cocoa.framework */; };
 		718416071654022400180467 /* DownArrowGreyRev.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 718416061654022400180467 /* DownArrowGreyRev.pdf */; };
 		7188E85616301A61006105BE /* KBPopUpToolbarItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7188E85416301A61006105BE /* KBPopUpToolbarItem.h */; };
 		7188E85816301A61006105BE /* KBPopUpToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7188E85516301A61006105BE /* KBPopUpToolbarItem.m */; };
@@ -560,7 +563,6 @@
 		71EB83D116DCB9AE00D48646 /* N2PopUpMenu.mm in Sources */ = {isa = PBXBuildFile; fileRef = 71EB83CF16DCB9AE00D48646 /* N2PopUpMenu.mm */; };
 		71EB83D416DD0F1800D48646 /* dicom3tools-libsrc-standard-strval-base.tpl in Resources */ = {isa = PBXBuildFile; fileRef = 71EB83D216DD0F1800D48646 /* dicom3tools-libsrc-standard-strval-base.tpl */; };
 		71EB83D516DD0F1800D48646 /* osirix-complementary.tpl in Resources */ = {isa = PBXBuildFile; fileRef = 71EB83D316DD0F1800D48646 /* osirix-complementary.tpl */; };
-		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
 		7E0B3A4D0675273500908593 /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E0B3A530675273600908593 /* DCMAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A14067526A600908593 /* DCMAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E0B3A590675273B00908593 /* DCMAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0B3A15067526A600908593 /* DCMAttribute.m */; };
@@ -744,8 +746,6 @@
 		9953FE521BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 9953FE4E1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx */; };
 		9953FE531BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 9953FE4F1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h */; };
 		9963031B1BCACF26009CE3E5 /* libGDCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 9963031A1BCACF26009CE3E5 /* libGDCM.h */; };
-		9966A1901AE099A400F2D81A /* ViewerController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE17661056D2659009C93B5 /* ViewerController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1911AE099A400F2D81A /* options.h in Headers */ = {isa = PBXBuildFile; fileRef = 434B46151A19F2A3008CF8CF /* options.h */; };
 		9966A19F1AE09B6F00F2D81A /* OsiriXHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9966A19E1AE09B6F00F2D81A /* OsiriXHeaders.mm */; };
 		9966A1A11AE09D3F00F2D81A /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A01AE09D3F00F2D81A /* AddressBook.framework */; };
 		9966A1A31AE09D4800F2D81A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A21AE09D4800F2D81A /* AVFoundation.framework */; };
@@ -758,80 +758,6 @@
 		9966A1AE1AE09DE200F2D81A /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1AA1AE09D7C00F2D81A /* Quartz.framework */; };
 		9966A1B41AE0AC7400F2D81A /* OsiriXAPI.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A19A1AE099A400F2D81A /* OsiriXAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9966A1B51AE0B6EE00F2D81A /* HorosDCM.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		9966A1BB1AE0B7E000F2D81A /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1BC1AE0B7E000F2D81A /* DCMAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A14067526A600908593 /* DCMAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1BD1AE0B7E000F2D81A /* DCMAttributeTag.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A16067526A600908593 /* DCMAttributeTag.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1BE1AE0B7E000F2D81A /* DCMDataContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A18067526A600908593 /* DCMDataContainer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1BF1AE0B7E000F2D81A /* DCMObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A1A067526A600908593 /* DCMObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C01AE0B7E000F2D81A /* DCMValueRepresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A1C067526A600908593 /* DCMValueRepresentation.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C11AE0B7E000F2D81A /* DCMTagDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEB76370677FDA700F242F3 /* DCMTagDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C21AE0B7E000F2D81A /* DCMTagForNameDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEB76390677FDA700F242F3 /* DCMTagForNameDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C31AE0B7E000F2D81A /* DCMUIDs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEB767E0678071400F242F3 /* DCMUIDs.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C41AE0B7E000F2D81A /* DCMTransferSyntax.h in Headers */ = {isa = PBXBuildFile; fileRef = BF3BB37E067808D5004F6E91 /* DCMTransferSyntax.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C51AE0B7E000F2D81A /* DCMCharacterSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE0DC00067A48A3003E745F /* DCMCharacterSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C61AE0B7E000F2D81A /* DCMSequenceAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE0DC3C067A5138003E745F /* DCMSequenceAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C71AE0B7E000F2D81A /* DCMPixelDataAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ECBB8210683A68D00FF3FF4 /* DCMPixelDataAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C81AE0B7E000F2D81A /* DCMCalendarDate.h in Headers */ = {isa = PBXBuildFile; fileRef = BF61E58C06A5BB9E001C0B29 /* DCMCalendarDate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C91AE0B7E000F2D81A /* jpegdatasrc.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E2269C406BEF624003B09E5 /* jpegdatasrc.h */; };
-		9966A1CA1AE0B7E000F2D81A /* DCMPixelDataAttributeJPEG8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB3F606BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1CB1AE0B7E000F2D81A /* DCMPixelDataAttributeJPEG12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB40606BF3BEE00C7EF1E /* DCMPixelDataAttributeJPEG12.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1CC1AE0B7E000F2D81A /* DCMPixelDataAttributeJPEG16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB41606BF3BFA00C7EF1E /* DCMPixelDataAttributeJPEG16.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1CD1AE0B7E000F2D81A /* DCMNetServiceDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EBB31070887269B00BF6B39 /* DCMNetServiceDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1CE1AE0B7E000F2D81A /* DCMLimitedObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E82C63D08D9FF35000BAFF9 /* DCMLimitedObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1CF1AE0B7E000F2D81A /* DCMPresentationState.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E8340D908E9F7C500E41C5E /* DCMPresentationState.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1D01AE0B7E000F2D81A /* DCMEncapsulatedPDF.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDE5BF091717F80033317B /* DCMEncapsulatedPDF.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1D11AE0B7E000F2D81A /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1D21AE0B7E000F2D81A /* jchuff12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C1D09B6828200545F5E /* jchuff12.h */; };
-		9966A1D31AE0B7E000F2D81A /* jconfig12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C2709B6828200545F5E /* jconfig12.h */; };
-		9966A1D41AE0B7E000F2D81A /* jdct12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C3709B6828200545F5E /* jdct12.h */; };
-		9966A1D51AE0B7E000F2D81A /* jdhuff12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C3B09B6828200545F5E /* jdhuff12.h */; };
-		9966A1D61AE0B7E000F2D81A /* jerror12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C4C09B6828200545F5E /* jerror12.h */; };
-		9966A1D71AE0B7E000F2D81A /* jinclude12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5409B6828300545F5E /* jinclude12.h */; };
-		9966A1D81AE0B7E000F2D81A /* jlossls12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5509B6828300545F5E /* jlossls12.h */; };
-		9966A1D91AE0B7E000F2D81A /* jlossy12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5609B6828300545F5E /* jlossy12.h */; };
-		9966A1DA1AE0B7E000F2D81A /* jmemsys12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5909B6828300545F5E /* jmemsys12.h */; };
-		9966A1DB1AE0B7E000F2D81A /* jmorecfg12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5A09B6828300545F5E /* jmorecfg12.h */; };
-		9966A1DC1AE0B7E000F2D81A /* jpegint12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5B09B6828300545F5E /* jpegint12.h */; };
-		9966A1DD1AE0B7E000F2D81A /* jpeglib12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5C09B6828300545F5E /* jpeglib12.h */; };
-		9966A1DE1AE0B7E000F2D81A /* jversion12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C6009B6828300545F5E /* jversion12.h */; };
-		9966A1DF1AE0B7E000F2D81A /* jchuff16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C6B09B6828300545F5E /* jchuff16.h */; };
-		9966A1E01AE0B7E000F2D81A /* jconfig16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C7509B6828300545F5E /* jconfig16.h */; };
-		9966A1E11AE0B7E000F2D81A /* jdct16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C8509B6828300545F5E /* jdct16.h */; };
-		9966A1E21AE0B7E000F2D81A /* jdhuff16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C8909B6828300545F5E /* jdhuff16.h */; };
-		9966A1E31AE0B7E000F2D81A /* jerror16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C9A09B6828400545F5E /* jerror16.h */; };
-		9966A1E41AE0B7E000F2D81A /* jinclude16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CA209B6828400545F5E /* jinclude16.h */; };
-		9966A1E51AE0B7E000F2D81A /* jlossls16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CA309B6828400545F5E /* jlossls16.h */; };
-		9966A1E61AE0B7E000F2D81A /* options.h in Headers */ = {isa = PBXBuildFile; fileRef = 434B46151A19F2A3008CF8CF /* options.h */; };
-		9966A1E71AE0B7E000F2D81A /* jlossy16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CA409B6828400545F5E /* jlossy16.h */; };
-		9966A1E81AE0B7E000F2D81A /* jmemsys16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CA709B6828400545F5E /* jmemsys16.h */; };
-		9966A1E91AE0B7E000F2D81A /* jmorecfg16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CA809B6828400545F5E /* jmorecfg16.h */; };
-		9966A1EA1AE0B7E000F2D81A /* jpegint16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CA909B6828400545F5E /* jpegint16.h */; };
-		9966A1EB1AE0B7E000F2D81A /* jpeglib16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CAA09B6828400545F5E /* jpeglib16.h */; };
-		9966A1EC1AE0B7E000F2D81A /* jversion16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CAE09B6828400545F5E /* jversion16.h */; };
-		9966A1ED1AE0B7E000F2D81A /* jchuff8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CB909B6828400545F5E /* jchuff8.h */; };
-		9966A1EE1AE0B7E000F2D81A /* jconfig8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CC309B6828400545F5E /* jconfig8.h */; };
-		9966A1EF1AE0B7E000F2D81A /* jdct8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CD309B6828500545F5E /* jdct8.h */; };
-		9966A1F01AE0B7E000F2D81A /* jdhuff8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CD709B6828500545F5E /* jdhuff8.h */; };
-		9966A1F11AE0B7E000F2D81A /* jerror8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CE809B6828500545F5E /* jerror8.h */; };
-		9966A1F21AE0B7E000F2D81A /* jinclude8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF009B6828500545F5E /* jinclude8.h */; };
-		9966A1F31AE0B7E000F2D81A /* jlossls8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF109B6828500545F5E /* jlossls8.h */; };
-		9966A1F41AE0B7E000F2D81A /* jlossy8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF209B6828500545F5E /* jlossy8.h */; };
-		9966A1F51AE0B7E000F2D81A /* jmemsys8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF509B6828500545F5E /* jmemsys8.h */; };
-		9966A1F61AE0B7E000F2D81A /* jmorecfg8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF609B6828500545F5E /* jmorecfg8.h */; };
-		9966A1F71AE0B7E000F2D81A /* jpegint8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF709B6828500545F5E /* jpegint8.h */; };
-		9966A1F81AE0B7E000F2D81A /* jpeglib8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF809B6828500545F5E /* jpeglib8.h */; };
-		9966A1F91AE0B7E000F2D81A /* jversion8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CFC09B6828500545F5E /* jversion8.h */; };
-		9966A1FA1AE0B7E000F2D81A /* kdu_OsiriXSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A9D49312F7F90700DA1F99 /* kdu_OsiriXSupport.h */; };
-		9966A1FC1AE0B7E000F2D81A /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
-		9966A1FD1AE0B7E000F2D81A /* version.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A21067526A600908593 /* version.plist */; };
-		9966A1FE1AE0B7E000F2D81A /* nameDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFEB763B0677FDA700F242F3 /* nameDictionary.plist */; };
-		9966A1FF1AE0B7E000F2D81A /* tagDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFEB763C0677FDA700F242F3 /* tagDictionary.plist */; };
-		9966A2D91AE0B7E000F2D81A /* libCharLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB451802149F464B006674BF /* libCharLS.a */; };
-		9966A2DA1AE0B7E000F2D81A /* libopenjp2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 434B47AB1A1A1AD4008CF8CF /* libopenjp2.a */; };
-		9966A2DB1AE0B7E000F2D81A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		9966A2DC1AE0B7E000F2D81A /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB5E1A300595697700C48BEB /* Accelerate.framework */; };
-		9966A2DD1AE0B7E000F2D81A /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6D320C05B3159D0002F793 /* IOKit.framework */; };
-		9966A2E61AE0B9A200F2D81A /* OsiriXDCMFrameworkHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9966A2E51AE0B9A200F2D81A /* OsiriXDCMFrameworkHeaders.mm */; };
 		9966A2E71AE0C55600F2D81A /* HorosDCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */; };
 		9966BCB51CEB5BA50086A8D7 /* osirixplugin.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9966BCB41CEB5BA50086A8D7 /* osirixplugin.icns */; };
 		99676F211BF43C22007C7531 /* format_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 99676F1D1BF43C22007C7531 /* format_defs.h */; };
@@ -3834,6 +3760,8 @@
 		7154B80E14ED5402000EF7E4 /* N2Stuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2Stuff.h; path = nitrogen/Sources/N2Stuff.h; sourceTree = "<group>"; };
 		716DBDBB173920AF00BDB1E4 /* ViewerController+CPP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ViewerController+CPP.h"; sourceTree = "<group>"; };
 		716DBDBC173920AF00BDB1E4 /* ViewerController+CPP.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "ViewerController+CPP.mm"; sourceTree = "<group>"; };
+		716DFAB81DE5A9F700440401 /* OsiriXDCMFrameworkHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXDCMFrameworkHeaders.mm; sourceTree = "<group>"; };
+		716DFABB1DE5AAB800440401 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		7183153D1610651E0098576F /* weasis-ext-config.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = "weasis-ext-config.properties"; path = "Binaries/weasis-ext-config.properties"; sourceTree = "<group>"; };
 		718416061654022400180467 /* DownArrowGreyRev.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = DownArrowGreyRev.pdf; sourceTree = "<group>"; };
 		7188E85416301A61006105BE /* KBPopUpToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KBPopUpToolbarItem.h; path = nitrogen/Sources/KBPopUpToolbarItem.h; sourceTree = "<group>"; };
@@ -4050,7 +3978,6 @@
 		9966A1B11AE0A47600F2D81A /* HorosAPI-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "HorosAPI-Info.plist"; sourceTree = "<group>"; };
 		9966A1B21AE0A66C00F2D81A /* OsiriXAPI-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "OsiriXAPI-Info.plist"; sourceTree = "<group>"; };
 		9966A2E11AE0B7E000F2D81A /* OsiriX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		9966A2E51AE0B9A200F2D81A /* OsiriXDCMFrameworkHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXDCMFrameworkHeaders.mm; sourceTree = "<group>"; };
 		9966BCB41CEB5BA50086A8D7 /* osirixplugin.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = osirixplugin.icns; sourceTree = "<group>"; };
 		99676F1D1BF43C22007C7531 /* format_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = format_defs.h; path = Binaries/openjpeg/format_defs.h; sourceTree = "<group>"; };
 		99676F1E1BF43C22007C7531 /* openjpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = openjpeg.h; path = Binaries/openjpeg/openjpeg.h; sourceTree = "<group>"; };
@@ -5920,6 +5847,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				716DFABD1DE5AAC200440401 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5927,11 +5855,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9966A2D91AE0B7E000F2D81A /* libCharLS.a in Frameworks */,
-				9966A2DA1AE0B7E000F2D81A /* libopenjp2.a in Frameworks */,
-				9966A2DB1AE0B7E000F2D81A /* Cocoa.framework in Frameworks */,
-				9966A2DC1AE0B7E000F2D81A /* Accelerate.framework in Frameworks */,
-				9966A2DD1AE0B7E000F2D81A /* IOKit.framework in Frameworks */,
+				716DFABC1DE5AAB800440401 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6386,7 +6310,7 @@
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				59F1A4C7104BA5BE009E3215 /* HorosHeaders.mm */,
 				9966A19E1AE09B6F00F2D81A /* OsiriXHeaders.mm */,
-				9966A2E51AE0B9A200F2D81A /* OsiriXDCMFrameworkHeaders.mm */,
+				716DFAB81DE5A9F700440401 /* OsiriXDCMFrameworkHeaders.mm */,
 				32E422140C97301600E193CA /* altivecFunctions.h */,
 				434B46151A19F2A3008CF8CF /* options.h */,
 			);
@@ -6510,6 +6434,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				716DFABB1DE5AAB800440401 /* Cocoa.framework */,
 				59FB64331230EE2F00EBA136 /* Ming */,
 				CE11138608EDD5E2005B15E1 /* ITKLibs */,
 				CE11138108EDD5CE005B15E1 /* VTKLibs */,
@@ -9895,86 +9820,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9966A18F1AE099A400F2D81A /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9966A1901AE099A400F2D81A /* ViewerController.h in Headers */,
-				9966A1911AE099A400F2D81A /* options.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9966A1BA1AE0B7E000F2D81A /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9966A1BB1AE0B7E000F2D81A /* DCM.h in Headers */,
-				9966A1BC1AE0B7E000F2D81A /* DCMAttribute.h in Headers */,
-				9966A1BD1AE0B7E000F2D81A /* DCMAttributeTag.h in Headers */,
-				9966A1BE1AE0B7E000F2D81A /* DCMDataContainer.h in Headers */,
-				9966A1BF1AE0B7E000F2D81A /* DCMObject.h in Headers */,
-				9966A1C01AE0B7E000F2D81A /* DCMValueRepresentation.h in Headers */,
-				9966A1C11AE0B7E000F2D81A /* DCMTagDictionary.h in Headers */,
-				9966A1C21AE0B7E000F2D81A /* DCMTagForNameDictionary.h in Headers */,
-				9966A1C31AE0B7E000F2D81A /* DCMUIDs.h in Headers */,
-				9966A1C41AE0B7E000F2D81A /* DCMTransferSyntax.h in Headers */,
-				9966A1C51AE0B7E000F2D81A /* DCMCharacterSet.h in Headers */,
-				9966A1C61AE0B7E000F2D81A /* DCMSequenceAttribute.h in Headers */,
-				9966A1C71AE0B7E000F2D81A /* DCMPixelDataAttribute.h in Headers */,
-				9966A1C81AE0B7E000F2D81A /* DCMCalendarDate.h in Headers */,
-				9966A1C91AE0B7E000F2D81A /* jpegdatasrc.h in Headers */,
-				9966A1CA1AE0B7E000F2D81A /* DCMPixelDataAttributeJPEG8.h in Headers */,
-				9966A1CB1AE0B7E000F2D81A /* DCMPixelDataAttributeJPEG12.h in Headers */,
-				9966A1CC1AE0B7E000F2D81A /* DCMPixelDataAttributeJPEG16.h in Headers */,
-				9966A1CD1AE0B7E000F2D81A /* DCMNetServiceDelegate.h in Headers */,
-				9966A1CE1AE0B7E000F2D81A /* DCMLimitedObject.h in Headers */,
-				9966A1CF1AE0B7E000F2D81A /* DCMPresentationState.h in Headers */,
-				9966A1D01AE0B7E000F2D81A /* DCMEncapsulatedPDF.h in Headers */,
-				9966A1D11AE0B7E000F2D81A /* DCMAbstractSyntaxUID.h in Headers */,
-				9966A1D21AE0B7E000F2D81A /* jchuff12.h in Headers */,
-				9966A1D31AE0B7E000F2D81A /* jconfig12.h in Headers */,
-				9966A1D41AE0B7E000F2D81A /* jdct12.h in Headers */,
-				9966A1D51AE0B7E000F2D81A /* jdhuff12.h in Headers */,
-				9966A1D61AE0B7E000F2D81A /* jerror12.h in Headers */,
-				9966A1D71AE0B7E000F2D81A /* jinclude12.h in Headers */,
-				9966A1D81AE0B7E000F2D81A /* jlossls12.h in Headers */,
-				9966A1D91AE0B7E000F2D81A /* jlossy12.h in Headers */,
-				9966A1DA1AE0B7E000F2D81A /* jmemsys12.h in Headers */,
-				9966A1DB1AE0B7E000F2D81A /* jmorecfg12.h in Headers */,
-				9966A1DC1AE0B7E000F2D81A /* jpegint12.h in Headers */,
-				9966A1DD1AE0B7E000F2D81A /* jpeglib12.h in Headers */,
-				9966A1DE1AE0B7E000F2D81A /* jversion12.h in Headers */,
-				9966A1DF1AE0B7E000F2D81A /* jchuff16.h in Headers */,
-				9966A1E01AE0B7E000F2D81A /* jconfig16.h in Headers */,
-				9966A1E11AE0B7E000F2D81A /* jdct16.h in Headers */,
-				9966A1E21AE0B7E000F2D81A /* jdhuff16.h in Headers */,
-				9966A1E31AE0B7E000F2D81A /* jerror16.h in Headers */,
-				9966A1E41AE0B7E000F2D81A /* jinclude16.h in Headers */,
-				9966A1E51AE0B7E000F2D81A /* jlossls16.h in Headers */,
-				9966A1E61AE0B7E000F2D81A /* options.h in Headers */,
-				9966A1E71AE0B7E000F2D81A /* jlossy16.h in Headers */,
-				9966A1E81AE0B7E000F2D81A /* jmemsys16.h in Headers */,
-				9966A1E91AE0B7E000F2D81A /* jmorecfg16.h in Headers */,
-				9966A1EA1AE0B7E000F2D81A /* jpegint16.h in Headers */,
-				9966A1EB1AE0B7E000F2D81A /* jpeglib16.h in Headers */,
-				9966A1EC1AE0B7E000F2D81A /* jversion16.h in Headers */,
-				9966A1ED1AE0B7E000F2D81A /* jchuff8.h in Headers */,
-				9966A1EE1AE0B7E000F2D81A /* jconfig8.h in Headers */,
-				9966A1EF1AE0B7E000F2D81A /* jdct8.h in Headers */,
-				9966A1F01AE0B7E000F2D81A /* jdhuff8.h in Headers */,
-				9966A1F11AE0B7E000F2D81A /* jerror8.h in Headers */,
-				9966A1F21AE0B7E000F2D81A /* jinclude8.h in Headers */,
-				9966A1F31AE0B7E000F2D81A /* jlossls8.h in Headers */,
-				9966A1F41AE0B7E000F2D81A /* jlossy8.h in Headers */,
-				9966A1F51AE0B7E000F2D81A /* jmemsys8.h in Headers */,
-				9966A1F61AE0B7E000F2D81A /* jmorecfg8.h in Headers */,
-				9966A1F71AE0B7E000F2D81A /* jpegint8.h in Headers */,
-				9966A1F81AE0B7E000F2D81A /* jpeglib8.h in Headers */,
-				9966A1F91AE0B7E000F2D81A /* jversion8.h in Headers */,
-				9966A1FA1AE0B7E000F2D81A /* kdu_OsiriXSupport.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		AB28B42A05B7921E00A9906C /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -10889,11 +10734,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9966A1971AE099A400F2D81A /* Build configuration list for PBXNativeTarget "OsiriX API (Legacy)" */;
 			buildPhases = (
-				9966A18F1AE099A400F2D81A /* Headers */,
 				9966A1921AE099A400F2D81A /* Sources */,
 				9966A1941AE099A400F2D81A /* Frameworks */,
-				9966A1951AE099A400F2D81A /* Copy Headers and Create Horos.h */,
-				9966A1961AE099A400F2D81A /* Code Signing */,
 			);
 			buildRules = (
 			);
@@ -10908,8 +10750,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9966A2DE1AE0B7E000F2D81A /* Build configuration list for PBXNativeTarget "OsiriX DCM Framework (Legacy)" */;
 			buildPhases = (
-				9966A1BA1AE0B7E000F2D81A /* Headers */,
-				9966A1FB1AE0B7E000F2D81A /* Resources */,
 				9966A2001AE0B7E000F2D81A /* Sources */,
 				9966A2D81AE0B7E000F2D81A /* Frameworks */,
 			);
@@ -11015,7 +10855,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = NO;
 				LastTestingUpgradeCheck = 0730;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = "The Horos Project";
 				TargetAttributes = {
 					59BDEC2C117C92B2007F1F2C = {
@@ -11082,21 +10922,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */,
 				7E0B3AA00675274500908593 /* version.plist in Resources */,
 				BFEB76410677FDA700F242F3 /* nameDictionary.plist in Resources */,
 				BFEB76420677FDA700F242F3 /* tagDictionary.plist in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9966A1FB1AE0B7E000F2D81A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9966A1FC1AE0B7E000F2D81A /* DCM Framework_Prefix.pch in Resources */,
-				9966A1FD1AE0B7E000F2D81A /* version.plist in Resources */,
-				9966A1FE1AE0B7E000F2D81A /* nameDictionary.plist in Resources */,
-				9966A1FF1AE0B7E000F2D81A /* tagDictionary.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11636,34 +11464,6 @@
 			shellPath = /bin/sh;
 			shellScript = "mkdir -p \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources Disabled/\"\nexit 0";
 		};
-		9966A1951AE099A400F2D81A /* Copy Headers and Create Horos.h */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Headers and Create Horos.h";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /usr/bin/perl;
-			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen OsiriX_h, \">\", \"$destination/OsiriX.h\" or die $!;\n\nprint OsiriX_h \"#ifndef __OsiriX_API\\n#define __OsiriX_API\\n\\n\";\n\n\n# TODO TODO TODO\n# -------------------------------------------------------------------------------------------------- #\n\n# \"$ENV{PROJECT_DIR}/cocoahttpserver\",\n# \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/config\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmsr\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmdata\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/ofstd\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmnet,\n\n# -------------------------------------------------------------------------------------------------- #\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/nitrogen/Sources\", \"$ENV{PROJECT_DIR}/nitrogen/Sources/JSON\", $ENV{PROJECT_DIR} );\n\nforeach my $root (@fromdirs) {\n    opendir(DIR, $root);\n    \n    my @files = readdir(DIR);\n    foreach (@files) {\n        my $filename = $_;\n        next unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n        my @args = ( \"cp\", \"-fp\", \"$root/$filename\", \"$destination/\".(basename $filename) );\n        system(@args) == 0 or die \"Copy failed: $?\";\n        print OsiriX_h \"#include <OsiriXAPI/$filename>\\n\";\n    }\n    \n    closedir(DIR);\n}\n\nprint OsiriX_h \"\\n#endif\\n\";\nclose OsiriX_h;\n\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/Binaries/VTKHeaders\" );\n\nforeach my $root (@fromdirs) {\n    my @args = ( \"cp\", \"-Rfp\", \"$root\", \"$destination/\" );\n    system(@args) == 0 or die \"Copy failed: $?\";\n}\n\n\n\nchdir \"$ENV{TARGET_BUILD_DIR}/$ENV{FULL_PRODUCT_NAME}\";\nsymlink \"Versions/Current/Headers\", \"Headers\";\n\nexit 0;";
-		};
-		9966A1961AE099A400F2D81A /* Code Signing */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Code Signing";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "#test with codesign -vvv\nif [[ ${CONFIGURATION} == \"Release\" ]]; then\n# -f means force to re-sign even if already signed\ncodesign -f -s \"Developer ID Application\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\necho \"code signed\"\nfi";
-		};
 		AB0F3A3F1046BE51004129DD /* Copy Headers and Create Horos.h */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -11676,7 +11476,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /usr/bin/perl;
-			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen Horos_h, \">\", \"$destination/Horos.h\" or die $!;\n\nprint Horos_h \"#ifndef __Horos_API\\n#define __Horos_API\\n\\n\";\n\n\n# TODO TODO TODO\n# -------------------------------------------------------------------------------------------------- #\n\n# \"$ENV{PROJECT_DIR}/cocoahttpserver\",\n# \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/config\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmsr\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmdata\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/ofstd\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmnet,\n\n# -------------------------------------------------------------------------------------------------- #\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/nitrogen/Sources\", \"$ENV{PROJECT_DIR}/nitrogen/Sources/JSON\", $ENV{PROJECT_DIR} );\n\nforeach my $root (@fromdirs) {\n\topendir(DIR, $root);\n    \n\tmy @files = readdir(DIR);\n\tforeach (@files) {\n\t\tmy $filename = $_;\n\t\tnext unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n\t\tmy @args = ( \"cp\", \"-fp\", \"$root/$filename\", \"$destination/\".(basename $filename) );\n\t\tsystem(@args) == 0 or die \"Copy failed: $?\";\n\t\tprint Horos_h \"#include <HorosAPI/$filename>\\n\";\n\t}\n\t\n\tclosedir(DIR);\n}\n\nprint Horos_h \"\\n#endif\\n\";\nclose Horos_h;\n\n\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/Binaries/VTKHeaders\" );\n\nforeach my $root (@fromdirs) {\n    my @args = ( \"cp\", \"-Rfp\", \"$root\", \"$destination/\" );\n    system(@args) == 0 or die \"Copy failed: $?\";\n}\n\n\n\n\nchdir \"$ENV{TARGET_BUILD_DIR}/$ENV{FULL_PRODUCT_NAME}\";\nsymlink \"Versions/Current/Headers\", \"Headers\";\n\nexit 0;\n\n";
+			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen Horos_h, \">\", \"$destination/Horos.h\" or die $!;\n\nprint Horos_h \"#ifndef __Horos_API\\n#define __Horos_API\\n\\n\";\n\n\n# TODO TODO TODO\n# -------------------------------------------------------------------------------------------------- #\n\n# \"$ENV{PROJECT_DIR}/cocoahttpserver\",\n# \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/config\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmsr\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmdata\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/ofstd\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmnet,\n\n# -------------------------------------------------------------------------------------------------- #\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/nitrogen/Sources\", \"$ENV{PROJECT_DIR}/nitrogen/Sources/JSON\", $ENV{PROJECT_DIR} );\n\nforeach my $root (@fromdirs) {\n    opendir(DIR, $root);\n    \n    my @files = readdir(DIR);\n    foreach (@files) {\n        my $filename = $_;\n        next unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n        my @args = ( \"cp\", \"-fp\", \"$root/$filename\", \"$destination/\".(basename $filename) );\n        system(@args) == 0 or die \"Copy failed: $?\";\n        print Horos_h \"#include <HorosAPI/$filename>\\n\";\n    }\n    \n    closedir(DIR);\n}\n\nprint Horos_h \"\\n#endif\\n\";\nclose Horos_h;\n\n\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/Binaries/VTKHeaders\" );\n\nforeach my $root (@fromdirs) {\n    my @args = ( \"cp\", \"-Rfp\", \"$root\", \"$destination/\" );\n    system(@args) == 0 or die \"Copy failed: $?\";\n}\n\n\n\n\nchdir \"$ENV{TARGET_BUILD_DIR}/$ENV{FULL_PRODUCT_NAME}\";\nsymlink \"Versions/Current/Headers\", \"Headers\";\n\nexit 0;\n";
 		};
 		ABF307FB1443330100BBC96A /* Copy odt2pdf script */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -11994,7 +11794,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9966A2E61AE0B9A200F2D81A /* OsiriXDCMFrameworkHeaders.mm in Sources */,
+				716DFABA1DE5AA0A00440401 /* OsiriXDCMFrameworkHeaders.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13895,7 +13695,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_ALTIVEC_EXTENSIONS = YES;
@@ -13967,6 +13767,11 @@
 					AYDicomPrint,
 				);
 				IBC_FLATTEN_NIBS = NO;
+				LIBRARY_SEARCH_PATHS = (
+					AYDicomPrint,
+					Binaries/CharLS,
+					Binaries/openjpeg,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				OTHER_CFLAGS = "-fvisibility=default";
 				SDKROOT = macosx;
@@ -14000,6 +13805,14 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				KEEP_PRIVATE_EXTERNS = YES;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					Binaries/GDCMLibs,
+					Binaries/ITKLibs,
+					Binaries/VTKLibs,
+					Binaries/LibTiff,
+					Binaries/openssl/libs,
+				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-no-pedantic",
@@ -14089,7 +13902,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_ALTIVEC_EXTENSIONS = YES;
@@ -14124,7 +13937,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_ALTIVEC_EXTENSIONS = YES;
@@ -14159,7 +13972,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -14185,6 +13998,11 @@
 				GCC_PREFIX_HEADER = Decompres_Prefix.pch;
 				GCC_UNROLL_LOOPS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					Binaries/GDCMLibs,
+					Binaries/Ming,
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -14232,7 +14050,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -14343,6 +14161,14 @@
 				IBC_FLATTEN_NIBS = NO;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(USER_APPS_DIR)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					Binaries/GDCMLibs,
+					Binaries/ITKLibs,
+					Binaries/VTKLibs,
+					Binaries/LibTiff,
+					Binaries/openssl/libs,
+				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-no-pedantic",
@@ -14371,7 +14197,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_ALTIVEC_EXTENSIONS = YES;
@@ -14448,6 +14274,11 @@
 					AYDicomPrint,
 				);
 				IBC_FLATTEN_NIBS = NO;
+				LIBRARY_SEARCH_PATHS = (
+					AYDicomPrint,
+					Binaries/CharLS,
+					Binaries/openjpeg,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-fvisibility=default";
@@ -14460,7 +14291,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -14492,7 +14323,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -14589,7 +14420,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -14630,6 +14461,11 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREFIX_HEADER = Decompres_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					Binaries/GDCMLibs,
+					Binaries/Ming,
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -14649,7 +14485,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
