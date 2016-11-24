@@ -680,6 +680,12 @@ void exceptionHandler(NSException *exception)
     return (v.majorVersion == 10 && v.minorVersion == 8 && v.patchVersion == 3);
 }
 
++ (BOOL)hasMacOSXSierra
+{
+    NSOperatingSystemVersion v = [self.class operatingSystemVersion];
+    return (v.majorVersion >= 10 && v.minorVersion >= 12);
+}
+
 +(BOOL) hasMacOSXElCapitan
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
@@ -2843,9 +2849,9 @@ static BOOL initialized = NO;
 				//		exit(0);
 				//	}
 				
-				if ([AppController hasMacOSXSnowLeopard] == NO)
+				if ([AppController hasMacOSXElCapitan] == NO)
 				{
-					NSRunCriticalAlertPanel(NSLocalizedString(@"Mac OS X", nil), NSLocalizedString(@"This application requires Mac OS X 10.6 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"Quit", nil), nil, nil);
+					NSRunCriticalAlertPanel(NSLocalizedString(@"macOS", nil), NSLocalizedString(@"This application requires macOS 10.11 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"Quit", nil), nil, nil);
 					exit(0);
 				}
                 
@@ -2873,12 +2879,6 @@ static BOOL initialized = NO;
 				#else
 				NSLog( @"**** DEBUG MODE ****");
 				#endif
-				
-			//	if( hasMacOSXVersion() == NO)
-			//	{
-			//		NSRunCriticalAlertPanel(@"Software Error", @"This application requires MacOS X 10.3 or higher. Please upgrade your operating system.", @"OK", nil, nil);
-			//		exit(0);
-			//	}
 				
 			//	if( [[NSCalendarDate dateWithYear:2006 month:6 day:2 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] < 0)
 			//	{
@@ -3587,9 +3587,9 @@ static BOOL initialized = NO;
 #endif // NDEBUG
 #endif // OSIRIX_LIGHT
     
-    if( [AppController hasMacOSXLion] == NO)
+    if( [AppController hasMacOSXElCapitan] == NO)
     {
-        NSRunCriticalAlertPanel( NSLocalizedString( @"MacOS Version", nil), NSLocalizedString( @"Horos requires MacOS 10.7.5 or higher. Please update your OS: Apple Menu - Software Update...", nil), NSLocalizedString( @"Quit", nil) , nil, nil);
+        NSRunCriticalAlertPanel( NSLocalizedString( @"macOS Version", nil), NSLocalizedString( @"Horos requires macOS 10.11 or higher. Please update your OS: Apple Menu - Software Update...", nil), NSLocalizedString( @"Quit", nil) , nil, nil);
         exit( 0);
     }
     

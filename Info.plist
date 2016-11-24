@@ -248,7 +248,7 @@
 	<key>LSCanProvideIMVideoDataSource</key>
 	<string>Yes</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.12</string>
+	<string>10.11</string>
 	<key>LSRequiresNativeExecution</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -259,7 +259,7 @@
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Your account will be used for the built-in iChat sharing service. If you don't allow access, you cannot use the iChat functions.</string>
+	<string>Your account will be used for the built-in iChat sharing service. If you don&apos;t allow access, you cannot use the iChat functions.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright 2016, The Horos Project</string>
 	<key>NSMainNibFile</key>
