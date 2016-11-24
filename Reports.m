@@ -33,7 +33,7 @@
 
 #import "Reports.h"
 #import "DicomFile.h"
-#import "OsiriX/DCM.h"
+#import "DCM.h"
 #import "BrowserController.h"
 #import "NSString+N2.h"
 #import "NSString+SymlinksAndAliases.h"

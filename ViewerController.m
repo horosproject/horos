@@ -84,7 +84,7 @@
 #import "ThreadsManager.h"
 #import "NSThread+N2.h"
 #import "ITKBrushROIFilter.h"
-#import "OsiriX/DCMAbstractSyntaxUID.h"
+#import "DCMAbstractSyntaxUID.h"
 #import "printView.h"
 #import "ITKTransform.h"
 #import "NSManagedObject+N2.h"

@@ -34,7 +34,7 @@
 #import "DefaultsOsiriX.h"
 #import "PluginManager.h"
 #import "NSUserDefaults+OsiriX.h"
-#import "OsiriX/DCMAbstractSyntaxUID.h"
+#import "DCMAbstractSyntaxUID.h"
 #import <AVFoundation/AVFoundation.h>
 
 #ifdef OSIRIX_VIEWER

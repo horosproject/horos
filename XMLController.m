@@ -51,9 +51,9 @@
 #import "DicomStudy.h"
 #import "DicomSeries.h"
 #import "DicomImage.h"
-#import "OsiriX/DCMObject.h"
-#import "OsiriX/DCMAttribute.h"
-#import "OsiriX/DCMAttributeTag.h"
+#import "DCMObject.h"
+#import "DCMAttribute.h"
+#import "DCMAttributeTag.h"
 #import "DicomDatabase.h"
 #import "PluginManager.h"
 

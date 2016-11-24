@@ -31,8 +31,8 @@
      PURPOSE.
  ============================================================================*/
 
-#import "OsiriX/DCMAbstractSyntaxUID.h"
-#import <DCMView.h>
+#import "DCMAbstractSyntaxUID.h"
+#import "DCMView.h"
 #import "StringTexture.h"
 #import "DCMPix.h"
 #import "ROI.h"
