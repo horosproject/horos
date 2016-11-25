@@ -63,7 +63,7 @@
 	panel.message = NSLocalizedString(@"Select the location where to export the DICOM files:", NULL);
 	panel.prompt = NSLocalizedString(@"Choose", NULL);
 	// TODO: save and reuse location
-    [panel beginSheet:self.window completionHandler:^(NSModalResponse returnCode) {
+    [self.window beginSheet:panel completionHandler:^(NSModalResponse returnCode) {
         if (returnCode != NSFileHandlingPanelOKButton)
             return;
         
