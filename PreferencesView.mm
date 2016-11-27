@@ -280,7 +280,7 @@ static const NSUInteger colWidth = 80, colSeparator = 1, rowHeight = 101, titleH
 		}
 	}
     
-    [super layout];
+    //[super layout]; //Not necessary in 10.12
 }
 
 @end
