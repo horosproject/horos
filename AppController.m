@@ -487,17 +487,31 @@ short HasAltiVec ( )
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-SInt32 osVersion()
+SInt32 macOS_Version()
 {
-	OSErr						err;       
-	SInt32						osVersion;
-	
-	err = Gestalt ( gestaltSystemVersion, &osVersion );       
-	if ( err == noErr)       
-	{
-		return osVersion;
-	}
-	return 0;                   
+    SInt32	osVersion = 0;
+    
+    if ([[NSProcessInfo processInfo] respondsToSelector:@selector(operatingSystemVersion)])
+    {
+        NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
+        
+        osVersion = version.patchVersion;
+        osVersion = ((SInt32) version.minorVersion << 8 );
+        osVersion = ((SInt32) version.majorVersion << 16);
+    }
+    else
+    {
+        OSErr err = 0;
+        
+        err = Gestalt ( gestaltSystemVersion, &osVersion );
+        if ( err == noErr)
+        {
+            osVersion = 0;
+        }
+    }
+    
+    return osVersion;
+
 }
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -647,133 +661,42 @@ void exceptionHandler(NSException *exception)
 
 +(BOOL) hasMacOSX1083
 {
-	OSErr err;
-	SInt32 osVersion;
-	
-	err = Gestalt ( gestaltSystemVersion, &osVersion );
-	if ( err == noErr)
-	{
-		if( osVersion < 0x1083UL || osVersion >= 0x1084UL)
-		{
-			return NO;
-		}
-	}
-	return YES;
+    return NO;
 }
-
 
 +(BOOL) hasMacOSXElCapitan
 {
-    SInt32 OSXversionMajor, OSXversionMinor;
-    if(Gestalt(gestaltSystemVersionMajor, &OSXversionMajor) == noErr &&
-       Gestalt(gestaltSystemVersionMinor, &OSXversionMinor) == noErr)
-    {
-        if(OSXversionMajor == 10 &&
-           OSXversionMinor >= 11)
-        {
-            return YES;
-        }
-    }
-    
-    return NO;
+    return YES;
 }
-
 
 +(BOOL) hasMacOSXYosemite
 {
-    SInt32 OSXversionMajor, OSXversionMinor;
-    if(Gestalt(gestaltSystemVersionMajor, &OSXversionMajor) == noErr &&
-       Gestalt(gestaltSystemVersionMinor, &OSXversionMinor) == noErr)
-    {
-        if(OSXversionMajor == 10 &&
-           OSXversionMinor >= 10)
-        {
-            return YES;
-        }
-    }
-    
-    return NO;
+    return YES;
 }
 
 +(BOOL) hasMacOSXMaverick
 {
-	OSErr err;
-	SInt32 osVersion;
-	
-	err = Gestalt ( gestaltSystemVersion, &osVersion );
-	if ( err == noErr)
-	{
-		if ( osVersion < 0x1090UL )
-		{
-			return NO;
-		}
-	}
-	return YES;
+    return YES;
 }
 
 +(BOOL) hasMacOSXMountainLion
 {
-	OSErr err;
-	SInt32 osVersion;
-	
-	err = Gestalt ( gestaltSystemVersion, &osVersion );
-	if ( err == noErr)
-	{
-		if ( osVersion < 0x1080UL )
-		{
-			return NO;
-		}
-	}
-	return YES;
+    return NO;
 }
 
 +(BOOL) hasMacOSXLion
 {
-	OSErr err;       
-	SInt32 osVersion;
-	
-	err = Gestalt ( gestaltSystemVersion, &osVersion );       
-	if ( err == noErr)       
-	{
-		if ( osVersion < 0x1075UL )
-		{
-			return NO;
-		}
-	}
-	return YES;                   
+    return YES;
 }
-
 
 +(BOOL) hasMacOSXSnowLeopard
 {
-	OSErr err;
-	SInt32 osVersion;
-	
-	err = Gestalt ( gestaltSystemVersion, &osVersion );       
-	if ( err == noErr)       
-	{
-		if ( osVersion < 0x1060UL )
-		{
-			return NO;
-		}
-	}
-	return YES;                   
+    return YES;
 }
 
 +(BOOL) hasMacOSXLeopard
 {
-	OSErr err;       
-	SInt32 osVersion;
-	
-	err = Gestalt ( gestaltSystemVersion, &osVersion );       
-	if ( err == noErr)       
-	{
-		if ( osVersion < 0x1050UL )
-		{
-			return NO;
-		}
-	}
-	return YES;                   
+    return YES;
 }
 
 + (void) createNoIndexDirectoryIfNecessary:(NSString*) path { // __deprecated
@@ -2896,11 +2819,11 @@ static BOOL initialized = NO;
 				//		exit(0);
 				//	}
 				
-				if ([AppController hasMacOSXSnowLeopard] == NO)
-				{
-					NSRunCriticalAlertPanel(NSLocalizedString(@"Mac OS X", nil), NSLocalizedString(@"This application requires Mac OS X 10.6 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"Quit", nil), nil, nil);
-					exit(0);
-				}
+				//if ([AppController hasMacOSXSnowLeopard] == NO)
+				//{
+				//	NSRunCriticalAlertPanel(NSLocalizedString(@"Mac OS X", nil), NSLocalizedString(@"This application requires Mac OS X 10.6 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"Quit", nil), nil, nil);
+				//	exit(0);
+				//}
                 
                 int processors;
                 int mib[2] = {CTL_HW, HW_NCPU};
