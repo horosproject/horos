@@ -856,8 +856,12 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                 
                 NSString* name;
                 while (name = [e nextObject])
-                    if ([donotloadnames containsObject:[name stringByDeletingPathExtension]] == NO)
-                        [pathsOfPluginsToLoad addObject:[NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[path stringByAppendingPathComponent: name]]];
+                    if ([donotloadnames containsObject:[name stringByDeletingPathExtension]] == NO) {
+                        NSString *ppath = [path stringByAppendingPathComponent:name];
+                        NSString *rpath = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:ppath];
+                        NSURL *url = [NSURL fileURLWithPath:rpath relativeToURL:[NSURL fileURLWithPath:ppath isDirectory:NO]];
+                        [pathsOfPluginsToLoad addObject:url.path];
+                    }
             } @catch (NSException* e) {
                 N2LogExceptionWithStackTrace(e);
             }
