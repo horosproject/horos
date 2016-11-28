@@ -7814,7 +7814,7 @@ static NSConditionLock *threadLock = nil;
                     
                     [self closeWaitWindowIfNecessary];
                     
-                    windowsStateApplied = YES;
+                    //windowsStateApplied = YES; // Hanging Protocol has to prevail over window state when open studies
                     
                     for( ViewerController *v in [[displayedViewers reverseObjectEnumerator] allObjects])
                     {
