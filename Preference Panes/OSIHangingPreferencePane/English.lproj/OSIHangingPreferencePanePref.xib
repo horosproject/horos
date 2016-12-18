@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="16B2555" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="101100" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="OSIHangingPreferencePanePref">
@@ -22,15 +23,15 @@
         <window title="&lt;&lt; do not localize &gt;&gt;" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="81" y="393" width="991" height="581"/>
+            <rect key="contentRect" x="81" y="393" width="991" height="604"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
             <value key="minSize" type="size" width="224.66300000000001" height="10"/>
-            <view key="contentView" horizontalCompressionResistancePriority="1000" id="6">
-                <rect key="frame" x="0.0" y="0.0" width="991" height="581"/>
+            <view key="contentView" horizontalCompressionResistancePriority="1000" misplaced="YES" id="6">
+                <rect key="frame" x="0.0" y="0.0" width="991" height="604"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <popUpButton verticalHuggingPriority="750" id="99">
-                        <rect key="frame" x="86" y="535" width="55" height="26"/>
+                        <rect key="frame" x="86" y="558" width="55" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="CR" bezelStyle="rounded" alignment="left" lineBreakMode="clipping" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="274" id="248">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -58,7 +59,7 @@
                         </connections>
                     </popUpButton>
                     <scrollView autohidesScrollers="YES" horizontalLineScroll="26" horizontalPageScroll="10" verticalLineScroll="26" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="107">
-                        <rect key="frame" x="20" y="243" width="951" height="284"/>
+                        <rect key="frame" x="20" y="266" width="951" height="284"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <clipView key="contentView" id="dm9-H1-37F">
                             <rect key="frame" x="1" y="0.0" width="949" height="283"/>
@@ -71,7 +72,7 @@
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
-                                        <tableColumn identifier="Study Description" width="219" minWidth="180" maxWidth="220" id="101">
+                                        <tableColumn identifier="Study Description" width="219.5" minWidth="180" maxWidth="220" id="101">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Study Description (0008,1030)">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -91,7 +92,7 @@
                                                 </binding>
                                             </connections>
                                         </tableColumn>
-                                        <tableColumn identifier="WindowsTiling" width="119" minWidth="100" maxWidth="120" id="102">
+                                        <tableColumn identifier="WindowsTiling" width="119.5" minWidth="100" maxWidth="120" id="102">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Windows Tiling">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -111,7 +112,7 @@
                                                 </binding>
                                             </connections>
                                         </tableColumn>
-                                        <tableColumn identifier="ImageTiling" width="120" minWidth="100" maxWidth="120" id="104">
+                                        <tableColumn identifier="ImageTiling" width="119.5" minWidth="100" maxWidth="120" id="104">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Image Tiling">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -135,7 +136,7 @@
                                                 </binding>
                                             </connections>
                                         </tableColumn>
-                                        <tableColumn identifier="Comparative" width="120" minWidth="100" maxWidth="120" id="291">
+                                        <tableColumn identifier="Comparative" width="119.5" minWidth="100" maxWidth="120" id="291">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Previous Study">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -222,7 +223,6 @@
                                     </connections>
                                 </tableView>
                             </subviews>
-                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </clipView>
                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="261">
                             <rect key="frame" x="1" y="267" width="789" height="16"/>
@@ -238,7 +238,7 @@
                         </tableHeaderView>
                     </scrollView>
                     <button verticalHuggingPriority="750" id="108">
-                        <rect key="frame" x="910" y="530" width="67" height="32"/>
+                        <rect key="frame" x="910" y="553" width="67" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="New" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="249">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -249,7 +249,7 @@
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" id="135">
-                        <rect key="frame" x="18" y="541" width="66" height="17"/>
+                        <rect key="frame" x="18" y="564" width="66" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Modality:" id="250">
                             <font key="font" metaFont="systemBold"/>
@@ -258,7 +258,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" id="294">
-                        <rect key="frame" x="51" y="191" width="100" height="17"/>
+                        <rect key="frame" x="51" y="214" width="100" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Previous Study:" id="295">
                             <font key="font" metaFont="system"/>
@@ -267,7 +267,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" id="5qP-63-Wyl">
-                        <rect key="frame" x="87" y="212" width="64" height="17"/>
+                        <rect key="frame" x="87" y="235" width="64" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Windows:" id="T9W-wp-PJS">
                             <font key="font" metaFont="system"/>
@@ -276,7 +276,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" id="T6w-wp-eIt">
-                        <rect key="frame" x="66" y="75" width="85" height="17"/>
+                        <rect key="frame" x="66" y="98" width="85" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Series Order:" id="k9Q-Hb-NOa">
                             <font key="font" metaFont="system"/>
@@ -285,7 +285,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" id="Gv0-hx-c3e">
-                        <rect key="frame" x="21" y="29" width="130" height="44"/>
+                        <rect key="frame" x="21" y="52" width="130" height="44"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" alignment="right" id="Ije-5a-hxH">
                             <font key="font" metaFont="miniSystem"/>
@@ -296,7 +296,7 @@ Use commas to separate terms.</string>
                         </textFieldCell>
                     </textField>
                     <button id="296">
-                        <rect key="frame" x="165" y="190" width="114" height="18"/>
+                        <rect key="frame" x="165" y="213" width="114" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Same Modality" bezelStyle="regularSquare" imagePosition="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="297">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -308,7 +308,7 @@ Use commas to separate terms.</string>
                         </connections>
                     </button>
                     <button id="cLy-b3-d59">
-                        <rect key="frame" x="165" y="210" width="386" height="18"/>
+                        <rect key="frame" x="165" y="233" width="386" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="If not enough series for number of windows, repeat series" bezelStyle="regularSquare" imagePosition="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="F3i-NS-cfp">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -319,7 +319,7 @@ Use commas to separate terms.</string>
                         </connections>
                     </button>
                     <button id="298">
-                        <rect key="frame" x="165" y="170" width="132" height="18"/>
+                        <rect key="frame" x="165" y="193" width="132" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="Same Description" bezelStyle="regularSquare" imagePosition="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="299">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -331,7 +331,7 @@ Use commas to separate terms.</string>
                         </connections>
                     </button>
                     <popUpButton verticalHuggingPriority="750" id="380">
-                        <rect key="frame" x="165" y="140" width="263" height="26"/>
+                        <rect key="frame" x="165" y="163" width="263" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Display last study, if possible" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="383" id="381">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -350,7 +350,7 @@ Use commas to separate terms.</string>
                         </connections>
                     </popUpButton>
                     <popUpButton verticalHuggingPriority="750" id="BMb-oH-JR6">
-                        <rect key="frame" x="165" y="109" width="252" height="26"/>
+                        <rect key="frame" x="165" y="132" width="252" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Display 1 series per previous study" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="ew2-hP-L3n" id="Skm-0N-d3N">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -370,7 +370,7 @@ Use commas to separate terms.</string>
                         </connections>
                     </popUpButton>
                     <textField verticalHuggingPriority="750" id="i8E-fc-XW9">
-                        <rect key="frame" x="167" y="19" width="804" height="73"/>
+                        <rect key="frame" x="167" y="42" width="804" height="73"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="Scb-aD-fhE">
                             <font key="font" metaFont="system"/>
@@ -385,8 +385,20 @@ Use commas to separate terms.</string>
                             </binding>
                         </connections>
                     </textField>
+                    <button misplaced="YES" id="IiZ-Fu-a1O">
+                        <rect key="frame" x="165" y="18" width="157" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="Ignore case sensitivity" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="5be-NY-5WY">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <binding destination="331" name="value" keyPath="selection.SeriesOrderIgnoreCase" id="0cf-uR-N5k"/>
+                        </connections>
+                    </button>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="138.5" y="173"/>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="147" userLabel="Shared Defaults"/>
         <arrayController id="331" userLabel="currentHangingProtocol">

@@ -7127,6 +7127,9 @@ static NSConditionLock *threadLock = nil;
         {
             NSMutableArray *newSeriesArray = [NSMutableArray array];
             
+            NSNumber* caseSensitivityValue = [currentHangingProtocol valueForKey: @"SeriesOrderIgnoreCase"];
+            BOOL ignoreCase = [caseSensitivityValue boolValue];
+            
             for( NSString *term in [[currentHangingProtocol valueForKey: @"SeriesOrder"] componentsSeparatedByString: @","])
             {
                 term = [term stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -7136,8 +7139,22 @@ static NSConditionLock *threadLock = nil;
                 {
                     DicomSeries *s = [seriesArray objectAtIndex: i];
                     
-                    if( [s.description contains: term])
-                        index = i;
+                    if (ignoreCase)
+                    {
+                        NSRange rangeValue = [s.description rangeOfString:term options:NSCaseInsensitiveSearch];
+                        
+                        if (rangeValue.length > 0)
+                        {
+                            index = i;
+                        }
+                    }
+                    else
+                    {
+                        if( [s.description contains: term])
+                        {
+                            index = i;
+                        }
+                    }
                 }
                 
                 if( index != -1)
@@ -7317,6 +7334,9 @@ static NSConditionLock *threadLock = nil;
                 {
                     NSMutableArray *newSeriesArray = [NSMutableArray array];
                     
+                    NSNumber* caseSensitivityValue = [currentHangingProtocol valueForKey: @"SeriesOrderIgnoreCase"];
+                    BOOL ignoreCase = [caseSensitivityValue boolValue];
+                    
                     for( NSString *term in [[currentHangingProtocol valueForKey: @"SeriesOrder"] componentsSeparatedByString: @","])
                     {
                         term = [term stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -7326,8 +7346,22 @@ static NSConditionLock *threadLock = nil;
                         {
                             DicomSeries *s = [series objectAtIndex: i];
                             
-                            if( [s.description contains: term])
-                                index = i;
+                            if (ignoreCase)
+                            {
+                                NSRange rangeValue = [s.description rangeOfString:term options:NSCaseInsensitiveSearch];
+                                
+                                if (rangeValue.length > 0)
+                                {
+                                    index = i;
+                                }
+                            }
+                            else
+                            {
+                                if( [s.description contains: term])
+                                {
+                                    index = i;
+                                }
+                            }
                         }
                         
                         if( index != -1)
@@ -7814,7 +7848,7 @@ static NSConditionLock *threadLock = nil;
                     
                     [self closeWaitWindowIfNecessary];
                     
-                    //windowsStateApplied = YES; // Hanging Protocol has to prevail over window state when open studies
+                    //windowsStateApplied = YES; // Hanging Protocol has to prevail over window state when opening studies
                     
                     for( ViewerController *v in [[displayedViewers reverseObjectEnumerator] allObjects])
                     {
@@ -7833,11 +7867,12 @@ static NSConditionLock *threadLock = nil;
         
         if( windowsStateApplied == NO)
         {
-            [[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:[currentStudy valueForKey:@"modality"] description:[currentStudy valueForKey:@"studyName"]];
+            [[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:[currentStudy valueForKey:@"modality"]
+                                                                                      description:[currentStudy valueForKey:@"studyName"]];
             
             NSDictionary *currentHangingProtocol = [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
             
-            [self databaseOpenStudy: currentStudy withProtocol: currentHangingProtocol];
+            [self databaseOpenStudy:currentStudy withProtocol:currentHangingProtocol];
         }
     }
 }
