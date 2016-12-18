@@ -2125,7 +2125,9 @@ static BOOL protectionAgainstReentry = NO;
                                 if( image)
                                 {
                                     // Does this image contain a valid image path? If not replace it, with the new one
-                                    if ([[NSFileManager defaultManager] fileExistsAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory:self.dataBaseDirPath]] == YES && inParseExistingObject == NO)
+                                    if ([[NSFileManager defaultManager] fileExistsAtPath:[DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory:self.dataBaseDirPath]] == YES &&
+                                        inParseExistingObject == NO &&
+                                        ![NSUserDefaults.standardUserDefaults boolForKey:@"REPLACE_WITH_NEW_INCOMING_FILE"])
                                     {
                                         if (local)	// Delete this file, it's already in the DB folder
                                         {
