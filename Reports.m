@@ -879,10 +879,26 @@ static int Pages5orHigher = -1;
 	NSString *indexFilePath = [aPath stringByAppendingPathComponent:@"index.xml"];
     if( [[NSFileManager defaultManager] fileExistsAtPath:indexFilePath] == NO)
     {
+        /*
         NSString* path = [[NSBundle mainBundle] pathForResource:@"pages2pages09" ofType:@"applescript"];
-        [[self class] _runAppleScript: [NSString stringWithContentsOfFile: path encoding:NSUTF8StringEncoding error:nil] withArguments:[NSArray arrayWithObjects: templatePath, [templatePath stringByAppendingString: @"09.pages"], nil]];
+        @try
+        {
+            [[self class] _runAppleScript: [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil]
+                            withArguments:[NSArray arrayWithObjects:templatePath, [templatePath stringByAppendingString: @"09.pages"], nil]];
+        }
+        @catch(NSException* ex)
+        {
+            NSLog(@"%@",ex);
+        }
         
         NSLog( @"-- Try to convert to Pages 09: %@", templateName);
+        */
+        
+        NSString* path = [[NSBundle mainBundle] pathForResource:@"OsiriX Report.pages09" ofType:@"pages"];
+        if( [[NSFileManager defaultManager] fileExistsAtPath:path] == YES)
+        {
+            [[NSFileManager defaultManager] copyItemAtPath:path toPath:[templatePath stringByAppendingString: @"09.pages"] byReplacingExisting:YES error: nil];
+        }
         
         if( [[NSFileManager defaultManager] fileExistsAtPath: [templatePath stringByAppendingString: @"09.pages"]])
         {
@@ -896,7 +912,7 @@ static int Pages5orHigher = -1;
         
         if( [[NSFileManager defaultManager] fileExistsAtPath:indexFilePath] == NO)
         {
-            NSRunCriticalAlertPanel( NSLocalizedString( @"Pages", nil),  NSLocalizedString(@"OsiriX requires templates files in Pages '09 format. Open your template in Pages, select File menu and Export to Pages '09 format.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+            NSRunCriticalAlertPanel( NSLocalizedString( @"Pages", nil),  NSLocalizedString(@"Horos requires templates files in Pages '09 format. Open your template in Pages, select File menu and Export to Pages '09 format.", nil), NSLocalizedString(@"OK", nil), nil, nil);
             return NO;
         }
     }

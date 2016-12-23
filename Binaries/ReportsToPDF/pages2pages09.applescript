@@ -1,9 +1,12 @@
 on run argv
 	set inFilePathUnix to (item 1 of argv)
-	set outFilePathUnix to (item 2 of argv)
-	set inFilePath to POSIX file inFilePathUnix
-	set outFilePath to POSIX file outFilePathUnix
+    set inFilePath to POSIX file inFilePathUnix
+    set inFilePath to inFilePath as text
 	
+    set outFilePathUnix to (item 2 of argv)
+    set outFilePath to POSIX file outFilePathUnix
+    set outFilePath to outFilePath as text
+
 	tell application "Finder"
 		if exists outFilePath then
 			delete outFilePath
@@ -11,7 +14,7 @@ on run argv
 	end tell
 	
 	tell application "Pages"
-		run
+		activate
 		
 		-- determine if the file is already open
 		set fileWasOpen to false
@@ -27,7 +30,7 @@ on run argv
 		
 		open inFilePath
 		
-		export front document to outFilePath as Classic
+		export front document to outFilePath as Pages 09
 		
 		if not fileWasOpen then
 			close document 1
