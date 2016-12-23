@@ -652,7 +652,7 @@
                                 <button id="332">
                                     <rect key="frame" x="15" y="54" width="399" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="check" title="Activate the &quot;osirix://&quot; URL support and HTTP XML-RPC Server on port:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="333">
+                                    <buttonCell key="cell" type="check" title="Activate the URL support and HTTP XML-RPC Server on port:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="333">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -660,23 +660,6 @@
                                         <binding destination="296" name="value" keyPath="values.httpXMLRPCServer" id="340"/>
                                     </connections>
                                 </button>
-                                <textField verticalHuggingPriority="750" id="336">
-                                    <rect key="frame" x="423" y="54" width="96" height="19"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="337">
-                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="1029">
-                                            <real key="minimum" value="1"/>
-                                            <real key="maximum" value="131072"/>
-                                        </numberFormatter>
-                                        <font key="font" metaFont="smallSystem"/>
-                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    </textFieldCell>
-                                    <connections>
-                                        <binding destination="296" name="value" keyPath="values.httpXMLRPCServerPort" id="341"/>
-                                        <outlet property="nextKeyView" destination="870" id="1004"/>
-                                    </connections>
-                                </textField>
                                 <textField verticalHuggingPriority="750" id="971">
                                     <rect key="frame" x="201" y="168" width="100" height="19"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -759,9 +742,9 @@
                                     </connections>
                                 </button>
                                 <button id="1056">
-                                    <rect key="frame" x="31" y="35" width="460" height="18"/>
+                                    <rect key="frame" x="31" y="35" width="511" height="18"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="check" title="Also search on PACS-On-Demand servers for &quot;osirix://&quot; URLs and XML-RPC orders" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="1057">
+                                    <buttonCell key="cell" type="check" title="Also search on PACS-On-Demand servers for [ horos:// , osirix:// ] URLs and XML-RPC orders" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" inset="2" id="1057">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -782,6 +765,23 @@
                                         <binding destination="296" name="enabled" keyPath="values.httpXMLRPCServer" id="PzW-gj-n3h"/>
                                     </connections>
                                 </button>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="336">
+                                    <rect key="frame" x="361" y="53" width="96" height="19"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="337">
+                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#" negativeFormat="#" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="42" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="1029">
+                                            <real key="minimum" value="1"/>
+                                            <real key="maximum" value="131072"/>
+                                        </numberFormatter>
+                                        <font key="font" metaFont="smallSystem"/>
+                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                    <connections>
+                                        <binding destination="296" name="value" keyPath="values.httpXMLRPCServerPort" id="341"/>
+                                        <outlet property="nextKeyView" destination="870" id="1004"/>
+                                    </connections>
+                                </textField>
                             </subviews>
                         </view>
                     </box>
