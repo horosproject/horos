@@ -4755,8 +4755,8 @@ Gw
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             <subviews>
                                                                                 <matrix verticalHuggingPriority="750" mode="list" allowsEmptySelection="NO" autosizesCells="NO" id="12411" customClass="BrowserMatrix">
-                                                                                    <rect key="frame" x="0.0" y="-371" width="424" height="432"/>
-                                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
+                                                                                    <rect key="frame" x="0.0" y="0.0" width="424" height="438"/>
+                                                                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                                                     <size key="cellSize" width="106" height="108"/>
                                                                                     <buttonCell key="prototype" type="square" bezelStyle="shadowlessSquare" imagePosition="below" alignment="center" state="on" borderStyle="border" tag="-1" imageScaling="proportionallyDown" inset="2" id="13433">
@@ -4845,7 +4845,7 @@ Gw
                                                                             <rect key="frame" x="-100" y="-100" width="470" height="15"/>
                                                                             <autoresizingMask key="autoresizingMask"/>
                                                                         </scroller>
-                                                                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="0.0023148148148148147" horizontal="NO" id="13470">
+                                                                        <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="13470">
                                                                             <rect key="frame" x="368" y="0.0" width="16" height="0.0"/>
                                                                             <autoresizingMask key="autoresizingMask"/>
                                                                         </scroller>
