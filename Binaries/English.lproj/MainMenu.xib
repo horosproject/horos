@@ -4733,10 +4733,11 @@ Gw
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <customView id="14635" userLabel="Thumbs View">
+                                                                <rect key="frame" x="0.0" y="0.0" width="0.0" height="1"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <subviews>
                                                                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" id="14751">
-                                                                        <rect key="frame" x="8" y="-197" width="370" height="21"/>
+                                                                        <rect key="frame" x="8" y="-196" width="370" height="21"/>
                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                         <textFieldCell key="cell" controlSize="mini" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="center" title="Multiline Label" id="14752">
                                                                             <font key="font" metaFont="system" size="20"/>
@@ -4748,14 +4749,14 @@ Gw
                                                                         </connections>
                                                                     </textField>
                                                                     <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" verticalScrollElasticity="none" id="12410">
-                                                                        <rect key="frame" x="2" y="0.0" width="384" height="0.0"/>
+                                                                        <rect key="frame" x="2" y="0.0" width="384" height="1"/>
                                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                         <clipView key="contentView" id="mpo-d1-Wrk">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="384" height="0.0"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="384" height="1"/>
                                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                             <subviews>
                                                                                 <matrix verticalHuggingPriority="750" mode="list" allowsEmptySelection="NO" autosizesCells="NO" id="12411" customClass="BrowserMatrix">
-                                                                                    <rect key="frame" x="0.0" y="0.0" width="424" height="438"/>
+                                                                                    <rect key="frame" x="0.0" y="0.0" width="424" height="439"/>
                                                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                                                     <size key="cellSize" width="106" height="108"/>
@@ -4846,19 +4847,14 @@ Gw
                                                                             <autoresizingMask key="autoresizingMask"/>
                                                                         </scroller>
                                                                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="13470">
-                                                                            <rect key="frame" x="368" y="0.0" width="16" height="0.0"/>
+                                                                            <rect key="frame" x="368" y="0.0" width="16" height="1"/>
                                                                             <autoresizingMask key="autoresizingMask"/>
                                                                         </scroller>
                                                                     </scrollView>
                                                                 </subviews>
                                                             </customView>
-                                                            <customView id="Btg-Tj-pxI" userLabel="Banner View">
-                                                                <rect key="frame" x="0.0" y="1" width="0.0" height="0.0"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                            </customView>
                                                         </subviews>
                                                         <holdingPriorities>
-                                                            <real value="250"/>
                                                             <real value="250"/>
                                                         </holdingPriorities>
                                                     </splitView>
