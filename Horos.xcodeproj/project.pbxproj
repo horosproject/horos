@@ -3283,6 +3283,10 @@
 		CEFFFE3D12868F5400D69BB8 /* djdijp2k.cc in Sources */ = {isa = PBXBuildFile; fileRef = CEFFFE3A12868F5400D69BB8 /* djdijp2k.cc */; };
 		DB5961380CAB447B00809190 /* OSIVoxel.h in Headers */ = {isa = PBXBuildFile; fileRef = DB5961360CAB447B00809190 /* OSIVoxel.h */; };
 		DB5961390CAB447B00809190 /* OSIVoxel.m in Sources */ = {isa = PBXBuildFile; fileRef = DB5961370CAB447B00809190 /* OSIVoxel.m */; };
+		E5FCD5CE1E2400A8003789ED /* PPU Viridis.plist in Resources */ = {isa = PBXBuildFile; fileRef = E5FCD5CD1E2400A8003789ED /* PPU Viridis.plist */; };
+		E5FCD5D01E2400D6003789ED /* PPU Plasma.plist in Resources */ = {isa = PBXBuildFile; fileRef = E5FCD5CF1E2400D6003789ED /* PPU Plasma.plist */; };
+		E5FCD5D21E24010F003789ED /* PPU Magma.plist in Resources */ = {isa = PBXBuildFile; fileRef = E5FCD5D11E24010F003789ED /* PPU Magma.plist */; };
+		E5FCD5D41E24011D003789ED /* PPU Inferno.plist in Resources */ = {isa = PBXBuildFile; fileRef = E5FCD5D31E24011D003789ED /* PPU Inferno.plist */; };
 		EC9BD81C11EDF349007421B2 /* FlyAssistant.h in Headers */ = {isa = PBXBuildFile; fileRef = EC9BD81A11EDF349007421B2 /* FlyAssistant.h */; };
 		EC9BD81D11EDF349007421B2 /* FlyAssistant.mm in Sources */ = {isa = PBXBuildFile; fileRef = EC9BD81B11EDF349007421B2 /* FlyAssistant.mm */; };
 /* End PBXBuildFile section */
@@ -5923,6 +5927,10 @@
 		CEFFFE3A12868F5400D69BB8 /* djdijp2k.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = djdijp2k.cc; sourceTree = "<group>"; };
 		DB5961360CAB447B00809190 /* OSIVoxel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIVoxel.h; sourceTree = "<group>"; };
 		DB5961370CAB447B00809190 /* OSIVoxel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIVoxel.m; sourceTree = "<group>"; };
+		E5FCD5CD1E2400A8003789ED /* PPU Viridis.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "PPU Viridis.plist"; sourceTree = "<group>"; };
+		E5FCD5CF1E2400D6003789ED /* PPU Plasma.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "PPU Plasma.plist"; sourceTree = "<group>"; };
+		E5FCD5D11E24010F003789ED /* PPU Magma.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "PPU Magma.plist"; sourceTree = "<group>"; };
+		E5FCD5D31E24011D003789ED /* PPU Inferno.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "PPU Inferno.plist"; sourceTree = "<group>"; };
 		EC9BD81A11EDF349007421B2 /* FlyAssistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlyAssistant.h; sourceTree = "<group>"; };
 		EC9BD81B11EDF349007421B2 /* FlyAssistant.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FlyAssistant.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -6524,6 +6532,10 @@
 				CE286C100964196C001A4573 /* Localizable.strings */,
 				ABD7BC4D063F00A900E24B0E /* NIH.plist */,
 				CE5EABBF0935E702006D85DD /* Rainbow.plist */,
+				E5FCD5CF1E2400D6003789ED /* PPU Plasma.plist */,
+				E5FCD5D31E24011D003789ED /* PPU Inferno.plist */,
+				E5FCD5D11E24010F003789ED /* PPU Magma.plist */,
+				E5FCD5CD1E2400A8003789ED /* PPU Viridis.plist */,
 				CE5EABBE0935E702006D85DD /* Rainbow2.plist */,
 				CE5EABBD0935E702006D85DD /* Rainbow3.plist */,
 				CE5EABBC0935E702006D85DD /* Ratio.plist */,
@@ -11176,6 +11188,7 @@
 				ABBB64DC063587B200D9531F /* XML.icns in Resources */,
 				ABBB64DE063587B200D9531F /* ZoomToFit.tif in Resources */,
 				ABDEBD6C063D693F005B99B4 /* add.tif in Resources */,
+				E5FCD5D01E2400D6003789ED /* PPU Plasma.plist in Resources */,
 				ABDEBD6D063D693F005B99B4 /* minus.tif in Resources */,
 				ABD7BC30063EFD8D00E24B0E /* BlackBody.plist in Resources */,
 				ABD7BC5A063F00A900E24B0E /* Flow.plist in Resources */,
@@ -11340,6 +11353,7 @@
 				A922F3BB0C631F3C0007AB98 /* CustomImageAnnotations.png in Resources */,
 				AB9723950C684B4E00DC727C /* OsiriXDB_Previous_DataModel1.1.mom in Resources */,
 				AB9723960C684B4E00DC727C /* OsiriXDB_Previous_DataModel1.5.mom in Resources */,
+				E5FCD5CE1E2400A8003789ED /* PPU Viridis.plist in Resources */,
 				AB9723970C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.0.mom in Resources */,
 				AB9723980C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.1.mom in Resources */,
 				AB9723990C684B4E00DC727C /* OsiriXDB_Previous_DataModel2.2.mom in Resources */,
@@ -11493,6 +11507,7 @@
 				71512E99152349E500B87012 /* DiscMountedAskTheUserDialog.xib in Resources */,
 				CE2BFE57153B177C00037546 /* iPad.png in Resources */,
 				71CE3C19157F489C00AC0112 /* List.pdf in Resources */,
+				E5FCD5D41E24011D003789ED /* PPU Inferno.plist in Resources */,
 				99529DF81E0DA8E70045981E /* OsiriX Report.pages09.pages in Resources */,
 				CEA4F07515AEA5FE009584C7 /* Cloud.png in Resources */,
 				CEA4F07D15AEA606009584C7 /* OSIPACSOnDemand.xib in Resources */,
@@ -11523,6 +11538,7 @@
 				A9701A9015C9587C0019EE55 /* burn_anim02.tif in Resources */,
 				A9701A9215C9587C0019EE55 /* burn_anim03.tif in Resources */,
 				A9701A9415C9587C0019EE55 /* burn_anim04.tif in Resources */,
+				E5FCD5D21E24010F003789ED /* PPU Magma.plist in Resources */,
 				A9701A9615C9587C0019EE55 /* burn_anim05.tif in Resources */,
 				A9701A9815C9587C0019EE55 /* burn_anim06.tif in Resources */,
 				A9701A9A15C9587C0019EE55 /* burn_anim07.tif in Resources */,
