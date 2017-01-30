@@ -68,7 +68,7 @@
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
-                                        <tableColumn identifier="Study Description" width="219" minWidth="180" maxWidth="220" id="101">
+                                        <tableColumn identifier="Study Description" width="219.5" minWidth="180" maxWidth="220" id="101">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Study Description (0008,1030)">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -88,7 +88,7 @@
                                                 </binding>
                                             </connections>
                                         </tableColumn>
-                                        <tableColumn identifier="WindowsTiling" width="119" minWidth="100" maxWidth="120" id="102">
+                                        <tableColumn identifier="WindowsTiling" width="119.5" minWidth="100" maxWidth="120" id="102">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Windows Tiling">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -108,7 +108,7 @@
                                                 </binding>
                                             </connections>
                                         </tableColumn>
-                                        <tableColumn identifier="ImageTiling" width="120" minWidth="100" maxWidth="120" id="104">
+                                        <tableColumn identifier="ImageTiling" width="119.5" minWidth="100" maxWidth="120" id="104">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Image Tiling">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -132,7 +132,7 @@
                                                 </binding>
                                             </connections>
                                         </tableColumn>
-                                        <tableColumn identifier="Comparative" width="120" minWidth="100" maxWidth="120" id="291">
+                                        <tableColumn identifier="Comparative" width="119.5" minWidth="100" maxWidth="120" id="291">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Previous Study">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -219,7 +219,6 @@
                                     </connections>
                                 </tableView>
                             </subviews>
-                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </clipView>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="600" id="7bp-uw-FSD"/>

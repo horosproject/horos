@@ -96,19 +96,30 @@ extern NSRecursiveLock *PapyrusLock;
             }
             else
             {
-                NSStringEncoding encoding =
-                [NSString encodingForDICOMCharacterSet:[[DicomFile getEncodingArrayForFile:[dicomFiles lastObject]] objectAtIndex: 0]];
+                NSStringEncoding encoding = [NSString defaultCStringEncoding];
+                
+                if ([dicomFiles lastObject] != nil)
+                {
+                    if ([[DicomFile getEncodingArrayForFile:[dicomFiles lastObject]] count] > 0)
+                    {
+                        encoding = [NSString encodingForDICOMCharacterSet:[[DicomFile getEncodingArrayForFile:[dicomFiles lastObject]] objectAtIndex: 0]];
+                    }
+                }
                 
                 std::vector< std::pair<gdcm::Tag, std::string> > replace_tags;
                 for (NSArray* replacingItem in tagAndValues)
                 {
                     std::string newValue = "";
                     
-                    DCMAttributeTag* tag = [replacingItem objectAtIndex:0];
-                    if ([replacingItem count] > 1)
-                        newValue = std::string( [[replacingItem objectAtIndex:1] cStringUsingEncoding:encoding] );
+                    DCMAttributeTag* tag = ([replacingItem count] > 0 ? [replacingItem objectAtIndex:0] : nil);
                     
-                    replace_tags.push_back( std::make_pair(gdcm::Tag(tag.group,tag.element),newValue) );
+                    if (tag)
+                    {
+                        if ([replacingItem count] >= 2)
+                            newValue = std::string( [[replacingItem objectAtIndex:1] cStringUsingEncoding:encoding] );
+                    
+                        replace_tags.push_back( std::make_pair(gdcm::Tag(tag.group,tag.element),newValue) );
+                    }
                 }
                 
                 /////////////////////////////
@@ -186,7 +197,12 @@ extern NSRecursiveLock *PapyrusLock;
 		char *argv[ argc];
 		
 		for( i = 0; i < argc; i++)
-			argv[ i] = (char*) [[params objectAtIndex: i] cStringUsingEncoding: encoding];
+        {
+            if ([params count] >= i+1)
+                argv[ i] = (char*) [[params objectAtIndex: i] cStringUsingEncoding: encoding];
+            else
+                argv[ i] = (char*) [@"" cStringUsingEncoding: encoding];
+        }
 		
 		MdfConsoleEngine engine( argc, argv,"dcmodify");
 		

@@ -452,6 +452,7 @@
         }
     }
     [[NSUserDefaults standardUserDefaults] setObject:hangingProtocols forKey:@"HANGINGPROTOCOLS"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 @end
 

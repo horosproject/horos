@@ -692,7 +692,6 @@ void exceptionHandler(NSException *exception)
     return (v.majorVersion >= 10 && v.minorVersion >= 11);
 }
 
-
 +(BOOL) hasMacOSXYosemite
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
@@ -2308,11 +2307,11 @@ void exceptionHandler(NSException *exception)
 	NSString *str = [[event paramDescriptorForKeyword:keyDirectObject] stringValue];
 	NSURL *url = [NSURL URLWithString: str];
 		
-	if( [[url scheme] isEqualToString: @"osirix"])
+	if( [[url scheme] isEqualToString: @"osirix"] || [[url scheme] isEqualToString: @"horos"] )
 	{
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"httpXMLRPCServer"] == NO)
 		{
-			int result = NSRunInformationalAlertPanel(NSLocalizedString(@"URL scheme", nil), NSLocalizedString(@"Horos URL scheme (osirix://) is currently not activated!\r\rShould I activate it now? Restart is necessary.", nil), NSLocalizedString(@"No",nil), NSLocalizedString(@"Activate & Restart",nil), nil);
+			int result = NSRunInformationalAlertPanel(NSLocalizedString(@"URL scheme", nil), NSLocalizedString(@"Horos URL scheme [horos:// , osirix://] is currently not activated!\r\rShould I activate it now? Restart is necessary.", nil), NSLocalizedString(@"No",nil), NSLocalizedString(@"Activate & Restart",nil), nil);
 			
 			if( result == NSAlertAlternateReturn)
 			{

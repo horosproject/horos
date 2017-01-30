@@ -4,6 +4,7 @@
         <deployment version="101100" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
         <capability name="box content view" minToolsVersion="7.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -2858,8 +2859,6 @@ update to OsiriX 64-bit:</string>
                                 </textField>
                             </subviews>
                         </view>
-                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <connections>
                             <binding destination="12279" name="hidden" keyPath="values.LP64bit" id="14542"/>
                         </connections>
@@ -3077,8 +3076,8 @@ update to OsiriX 64-bit:</string>
                         <rect key="frame" x="35" y="188" width="584" height="130"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <clipView key="contentView" id="x65-cS-UGw">
-                            <rect key="frame" x="1" y="1" width="585" height="128"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <rect key="frame" x="1" y="1" width="582" height="128"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" selectionByRect="NO" autosizesCells="NO" id="12805">
                                     <rect key="frame" x="0.0" y="0.0" width="111" height="113"/>
@@ -3158,8 +3157,8 @@ Gw
                         <rect key="frame" x="35" y="30" width="584" height="130"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <clipView key="contentView" id="q7Q-H8-RIB">
-                            <rect key="frame" x="1" y="1" width="585" height="128"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <rect key="frame" x="1" y="1" width="582" height="128"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" selectionByRect="NO" autosizesCells="NO" id="12937">
                                     <rect key="frame" x="0.0" y="0.0" width="111" height="113"/>
@@ -3472,10 +3471,10 @@ Gw
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <clipView key="contentView" id="M3f-Ie-25N">
                                         <rect key="frame" x="1" y="0.0" width="742" height="160"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" autosaveColumns="NO" autosaveName="emailNotificationTable" rowHeight="14" headerView="13882" id="13881">
-                                                <rect key="frame" x="0.0" y="0.0" width="742" height="16"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="742" height="137"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -3549,7 +3548,6 @@ Gw
                                                 </tableColumns>
                                             </tableView>
                                         </subviews>
-                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </clipView>
                                     <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="13880">
                                         <rect key="frame" x="1" y="145" width="727" height="15"/>
@@ -3607,8 +3605,6 @@ Gw
                                 </searchField>
                             </subviews>
                         </view>
-                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" id="13902">
                         <rect key="frame" x="17" y="425" width="618" height="17"/>
@@ -3766,10 +3762,10 @@ Gw
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <clipView key="contentView" id="nhs-LN-IpG">
                                         <rect key="frame" x="1" y="0.0" width="742" height="203"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" autosaveColumns="NO" autosaveName="emailNotificationTable" rowHeight="14" headerView="13942" id="13943">
-                                                <rect key="frame" x="0.0" y="0.0" width="742" height="16"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="742" height="180"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -3843,7 +3839,6 @@ Gw
                                                 </tableColumns>
                                             </tableView>
                                         </subviews>
-                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     </clipView>
                                     <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="13944">
                                         <rect key="frame" x="1" y="145" width="727" height="15"/>
@@ -3901,8 +3896,6 @@ Gw
                                 </searchField>
                             </subviews>
                         </view>
-                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" id="13931">
                         <rect key="frame" x="17" y="335" width="495" height="17"/>
@@ -4066,12 +4059,9 @@ Gw
                             </column>
                         </cells>
                     </matrix>
-                    <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="mx7-rd-lkR">
+                    <box verticalHuggingPriority="750" boxType="separator" id="mx7-rd-lkR">
                         <rect key="frame" x="0.0" y="99" width="544" height="5"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <font key="titleFont" metaFont="system"/>
                     </box>
                 </subviews>
             </view>
@@ -4092,7 +4082,7 @@ Gw
                                 <rect key="frame" x="0.0" y="0.0" width="0.0" height="671"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
-                                    <box title="Albums" borderType="none" titlePosition="noTitle" id="11696">
+                                    <box borderType="none" title="Albums" titlePosition="noTitle" id="11696">
                                         <rect key="frame" x="-3" y="-2" width="6" height="198"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <view key="contentView" id="QOb-bl-4eV">
@@ -4150,11 +4140,9 @@ Gw
                                                 </scrollView>
                                             </subviews>
                                         </view>
-                                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <font key="titleFont" size="12" name="LucidaGrande"/>
                                     </box>
-                                    <box title="Sources" borderType="none" titlePosition="noTitle" id="11698">
+                                    <box borderType="none" title="Sources" titlePosition="noTitle" id="11698">
                                         <rect key="frame" x="-3" y="191" width="6" height="381"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <view key="contentView" id="Y5m-5B-aBR">
@@ -4221,11 +4209,9 @@ Gw
                                                 </scrollView>
                                             </subviews>
                                         </view>
-                                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <font key="titleFont" size="12" name="LucidaGrande"/>
                                     </box>
-                                    <box title="Threads" borderType="none" titlePosition="noTitle" id="14167">
+                                    <box borderType="none" title="Threads" titlePosition="noTitle" id="14167">
                                         <rect key="frame" x="-3" y="567" width="6" height="108"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <view key="contentView" id="4XI-MM-5AN">
@@ -4279,8 +4265,6 @@ Gw
                                                 </scrollView>
                                             </subviews>
                                         </view>
-                                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <font key="titleFont" size="12" name="LucidaGrande"/>
                                     </box>
                                 </subviews>
@@ -4309,7 +4293,7 @@ Gw
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <outlineView focusRingType="exterior" verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" emptySelection="NO" autosaveColumns="NO" headerView="13469" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="958" id="966" customClass="MyOutlineView">
-                                                            <rect key="frame" x="0.0" y="0.0" width="2592" height="19"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="2592" height="645"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <size key="intercellSpacing" width="3" height="2"/>
                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -4665,7 +4649,6 @@ Gw
                                                             </connections>
                                                         </outlineView>
                                                     </subviews>
-                                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                 </clipView>
                                                 <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="13468">
                                                     <rect key="frame" x="0.0" y="652" width="837" height="16"/>
@@ -4871,13 +4854,8 @@ Gw
                                                                     </scrollView>
                                                                 </subviews>
                                                             </customView>
-                                                            <customView id="Btg-Tj-pxI" userLabel="Banner View">
-                                                                <rect key="frame" x="0.0" y="1" width="0.0" height="0.0"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                            </customView>
                                                         </subviews>
                                                         <holdingPriorities>
-                                                            <real value="250"/>
                                                             <real value="250"/>
                                                         </holdingPriorities>
                                                     </splitView>
