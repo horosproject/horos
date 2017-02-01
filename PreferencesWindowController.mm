@@ -56,6 +56,10 @@
 
 @end
 
+@interface PreferencesFlippedView : NSView
+
+@end
+
 @implementation PreferencesWindowContext
 
 @synthesize title = _title, parentBundle = _parentBundle, resourceName = _resourceName, pane = _pane;
@@ -406,21 +410,6 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
         if ([window.windowController isKindOfClass:[PluginManagerController class]])
             [window close];
     }
-    
-    scrollView = [[NSScrollView alloc] initWithFrame:[[[self window] contentView] frame]];
-    
-    // configure the scroll view
-    [scrollView setBorderType:NSNoBorder];
-    [scrollView setHasVerticalScroller:YES];
-    [scrollView setHasHorizontalScroller:NO];
-    
-    [scrollView setBackgroundColor:[NSColor colorWithCalibratedWhite:237./255 alpha:1]];
-    [scrollView setDrawsBackground:YES];
-    
-    scrollView.horizontalScrollElasticity = NSScrollElasticityNone;
-    scrollView.verticalScrollElasticity = NSScrollElasticityNone;
-    
-    // embed your custom view in the scroll view
 }
 
 
@@ -467,9 +456,11 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	
 	if (!currentContext || [currentContext.pane shouldUnselect])
     {
+        [self willChangeValueForKey:@"currentContext"];
+        
+        [self.window setContentView:[[[NSView alloc] initWithFrame:NSZeroRect] autorelease]];
+        
         // TODO: NSUnselectNow or NSUnselectLater?
-		[self willChangeValueForKey:@"currentContext"];
-		
 		if (context && !context.pane.mainView)
         {
 			@try
@@ -483,53 +474,64 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 			}
 		}
 		
-		
         // remove old view
 		[currentContext.pane willUnselect];
-        [currentContext.pane.mainView.window makeFirstResponder: nil];
+        [currentContext.pane.mainView.window makeFirstResponder:nil];
         
-		NSView* oldview = currentContext ? currentContext.pane.mainView : panesListView;
-		[oldview retain];
-
-		[self view:oldview recursiveUnBindEnableFromObject:self withKeyPath:@"isUnlocked"];
+        if (currentContext) {
+            [self view:currentContext.pane.mainView recursiveUnBindEnableFromObject:self withKeyPath:@"isUnlocked"];
+        }
         
         // add new view
-		[self view:context.pane.mainView recursiveBindEnableToObject:self withKeyPath:@"isUnlocked"];
-		
-		NSView* view = context ? context.pane.mainView : panesListView;
-		
+
         NSString* title = NSLocalizedString(@"Horos Preferences", NULL);
-        
-        if (context)
-        {
+        NSSize newSize;
+
+        if (!context) {
+            newSize = panesListView.frame.size;
+            [self.window setContentView:panesListView];
+        } else {
+            NSView *cview = context.pane.mainView;
             title = [title stringByAppendingFormat:@"%@%@", NSLocalizedString(@": ", @"Semicolon with space prefix and suffix (example: english ': ', french ' : ')"), context.title];
+
+            [context.pane willSelect];
+
+            [self view:cview recursiveBindEnableToObject:self withKeyPath:@"isUnlocked"];
+            
+            NSView *fview = [[[PreferencesFlippedView alloc] initWithFrame:cview.frame] autorelease];
+            fview.translatesAutoresizingMaskIntoConstraints = NO;
+            [fview addSubview:cview];
+            [fview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[cview]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(cview)]];
+            [fview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[cview]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(cview)]];
+            
+            NSScrollView *sv = [[NSScrollView alloc] initWithFrame:NSMakeRect(0, 0, fview.fittingSize.width, fview.fittingSize.height)];
+            sv.documentView = fview;
+            
+            sv.hasHorizontalScroller = NO;
+            sv.borderType = NSNoBorder;
+            sv.backgroundColor = [NSColor colorWithCalibratedWhite:237./255 alpha:1];
+            sv.drawsBackground = YES;
+            sv.horizontalScrollElasticity = NSScrollElasticityNone;
+            sv.verticalScrollElasticity = NSScrollElasticityNone;
+
+            [self.window setContentView:sv];
+//            [sv.superview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[sv]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(sv)]];
+//            [sv.superview addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[sv]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(sv)]];
+            
+            newSize = fview.fittingSize;
         }
 		
         [self.window setTitle:title];
-		
-		[context.pane willSelect];
         
-       
-        
-        [scrollView setDocumentView:view];
-        
-        [[self window] setContentView:scrollView];
-        
-        
-        
-        NSSize newSize = [view frame].size;
-        
-		[context.pane didSelect];
-
-		[currentContext.pane didUnselect];
-        
-		currentContext = context;
-		
-		[self didChangeValueForKey:@"currentContext"];
+        [currentContext.pane didUnselect];
+        currentContext = context;
+        [context.pane didSelect];
         
         [self synchronizeSizeWithContent:newSize];
+        
+        [self didChangeValueForKey:@"currentContext"];
 		
-		[oldview release];
+//		[oldview release];
 	}
 
 }
@@ -562,39 +564,19 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 }
 
 
--(void) synchronizeSizeWithContent:(NSSize) newSize
+- (void)synchronizeSizeWithContent:(NSSize)newContentSize
 {
-    CGFloat maxHeight = [self window].screen.visibleFrame.size.height;
+    NSSize newSize = [[self.window class] frameRectForContentRect:NSMakeRect(0, 0, newContentSize.width, newContentSize.height+self.window.toolbarHeight) styleMask:self.window.styleMask].size;
     
-    CGFloat newHeight = newSize.height + [self toolbarHeight] + 33;
+    CGFloat maxHeight = self.window.screen.visibleFrame.size.height;
+    if (newSize.height > maxHeight)
+        newSize.height = maxHeight;
+
+    NSRect frame = [self.window frame];
     
-    if (newHeight > maxHeight)
-    {
-        newHeight = maxHeight;
-    }
+    NSRect newFrame = NSMakeRect(frame.origin.x, frame.origin.y+(frame.size.height-newSize.height), newSize.width, newSize.height);
     
-    CGFloat newWidth = newSize.width;
-    
-    NSRect aFrame = [[[self window] class] contentRectForFrameRect:[[self window] frame]
-                                                         styleMask:[[self window] styleMask]];
-    
-    if (newHeight > aFrame.size.height)
-    {
-        aFrame.origin.y -= aFrame.size.height;
-        aFrame.origin.y += newHeight;
-    }
-    else
-    {
-        aFrame.origin.y += aFrame.size.height;
-        aFrame.origin.y -= newHeight;
-    }
-    aFrame.size.height = newHeight;
-    aFrame.size.width = newWidth;
-    
-    //aFrame = [[[self window] class] frameRectForContentRect:aFrame
-    //                                            styleMask:[[self window]styleMask]];
-    
-    [[self  window] setFrame:aFrame display:YES animate:YES];
+    [self.window setFrame:newFrame display:YES animate:YES];
 }
 
 
@@ -632,6 +614,14 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
 	[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
 	[[BrowserController currentBrowser] resetToLocalDatabase];
+}
+
+@end
+
+@implementation PreferencesFlippedView
+
+- (BOOL)isFlipped {
+    return YES;
 }
 
 @end
