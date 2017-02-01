@@ -43,7 +43,7 @@
 #import "SeriesView.h"
 #import "ViewerController.h"
 #import "ThickSlabController.h"
-#import "browserController.h"
+#import "BrowserController.h"
 #import "AppController.h"
 #import "MPR2DController.h"
 #import "MPR2DView.h"

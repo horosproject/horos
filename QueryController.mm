@@ -57,7 +57,7 @@
 #import "DicomStudy.h"
 #import "CIADICOMField.h"
 #import "N2Stuff.h"
-#import "DICOMFile.h"
+#import "DicomFile.h"
 #import "N2Debug.h"
 
 #include "osconfig.h"

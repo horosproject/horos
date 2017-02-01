@@ -49,7 +49,7 @@
 #include "ofstdinc.h"
 
 
-#import "dicomFile.h"
+#import "DicomFile.h"
 #import "DICOMToNSString.h"
 #import "DicomFileDCMTKCategory.h"
 #import "DCMAttributeTag.h"

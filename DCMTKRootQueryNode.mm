@@ -33,7 +33,7 @@
 #import "DCMTKRootQueryNode.h"
 #import "DCMTKStudyQueryNode.h"
 #import "DCMCalendarDate.h"
-#import "dicomFile.h"
+#import "DicomFile.h"
 
 #include "dcdeftag.h"
 

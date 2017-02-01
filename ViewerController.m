@@ -49,8 +49,8 @@
 #import "MPR2DController.h"
 #import "NSFullScreenWindow.h"
 #import "ViewerController.h"
-#import "browserController.h"
-#import "wait.h"
+#import "BrowserController.h"
+#import "Wait.h"
 #import "XMLController.h"
 #include <Accelerate/Accelerate.h>
 #import "WaitRendering.h"
@@ -108,7 +108,7 @@
 #import "ThreeDPositionController.h"
 #import "ThumbnailCell.h"
 #import "DicomSeries.h"
-#import "dicomFile.h"
+#import "DicomFile.h"
 #import "MPRController.h"
 #import "CPRController.h"
 #import "Notifications.h"
@@ -13761,7 +13761,7 @@ static float oldsetww, oldsetwl;
     float windowLevelMin = windowLevel - 0.5 * windowWidth;
     
     float value;
-    char imageValue;
+    unsigned char imageValue;
     
     int bytesPerRow = [bitmap bytesPerRow];
     

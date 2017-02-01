@@ -32,6 +32,7 @@
  ============================================================================*/
 
 #import "OSICustomImageAnnotations.h"
+#import "PreferencesWindowController+DCMTK.h"
 #import "NSPreferencePane+OsiriX.h"
 
 NSComparisonResult  compareViewTags(id firstView, id secondView, void * context);

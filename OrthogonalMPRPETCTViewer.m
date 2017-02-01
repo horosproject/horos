@@ -36,7 +36,7 @@
 #import "BrowserController.h"
 #import "Mailer.h"
 #import "DICOMExport.h"
-#import "wait.h"
+#import "Wait.h"
 #import "VRController.h"
 #import "Notifications.h"
 #import "NSUserDefaultsController+OsiriX.h"

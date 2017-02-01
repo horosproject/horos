@@ -34,7 +34,7 @@
 
 #import "PluginManager.h"
 #import "AppController.h"
-#import "browserController.h"
+#import "BrowserController.h"
 #import "BLAuthentication.h"
 #import "PluginManagerController.h"
 #import "Notifications.h"

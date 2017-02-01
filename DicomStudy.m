@@ -49,7 +49,7 @@
 #import "DCMView.h"
 #import "DCMPix.h"
 #import "VRController.h"
-#import "browserController.h"
+#import "BrowserController.h"
 #import "BonjourBrowser.h"
 #import "DicomFileDCMTKCategory.h"
 #import "DICOMToNSString.h"

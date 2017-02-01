@@ -35,7 +35,7 @@
 #import "NSString+N2.h"
 #import "N2Operators.h"
 #import "N2Debug.h"
-#import "browserController.h"
+#import "BrowserController.h"
 
 @implementation ComparativeCell
 

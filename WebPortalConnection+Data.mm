@@ -68,7 +68,7 @@
 #import <CoreMedia/CoreMedia.h>
 #import <AVFoundation/AVFoundation.h>
 #import "QuicktimeExport.h"
-#import "dicomFile.h"
+#import "DicomFile.h"
 #import "QueryController.h"
 #import "SRAnnotation.h"
 #import "BrowserController.h" // TODO: remove when badness solved

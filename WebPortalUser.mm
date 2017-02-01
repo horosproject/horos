@@ -41,7 +41,7 @@
 #import "NSError+OsiriX.h"
 #import "DDData.h"
 #import "NSData+N2.h"
-#import "browserController.h"
+#import "BrowserController.h"
 #import "QueryController.h"
 #import "DicomStudy.h"
 #import "DCMTKStudyQueryNode.h"

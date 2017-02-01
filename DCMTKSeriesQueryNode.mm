@@ -35,7 +35,7 @@
 #import "DCMCalendarDate.h"
 #import "DCMTKImageQueryNode.h"
 #import "DICOMToNSString.h"
-#import "dicomFile.h"
+#import "DicomFile.h"
 
 #undef verify
 #include "dcdeftag.h"

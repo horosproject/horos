@@ -33,7 +33,7 @@
 
 
 #import <Cocoa/Cocoa.h>
-#import "dicomFile.h"
+#import "DicomFile.h"
 
 /** \brief  C++ calls for DicomFile 
 *

@@ -376,7 +376,7 @@
 		597BB93212A7E0F200D0A172 /* NSUserDefaults+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 597BB93012A7E0F200D0A172 /* NSUserDefaults+OsiriX.mm */; };
 		597BB99912A9225700D0A172 /* NSUserDefaults+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 597BB93012A7E0F200D0A172 /* NSUserDefaults+OsiriX.mm */; };
 		597BB9E712A923FD00D0A172 /* N2Shell.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAAA11293378009EB238 /* N2Shell.mm */; };
-		599115F012D7224A00924B5C /* browserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 599115EF12D7224A00924B5C /* browserController.m */; };
+		599115F012D7224A00924B5C /* BrowserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 599115EF12D7224A00924B5C /* BrowserController.m */; };
 		5997895D11B7B3E9002DB107 /* Anonymization.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997894D11B7B3E9002DB107 /* Anonymization.h */; };
 		5997895E11B7B3E9002DB107 /* Anonymization.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997894E11B7B3E9002DB107 /* Anonymization.mm */; };
 		5997895F11B7B3E9002DB107 /* AnonymizationCustomTagPanelController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997894F11B7B3E9002DB107 /* AnonymizationCustomTagPanelController.h */; };
@@ -482,7 +482,7 @@
 		59E83A1412FC6556006B930A /* NSManagedObject+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E83A1212FC6556006B930A /* NSManagedObject+N2.mm */; };
 		59EBFDDC12BA5A1B00809C61 /* WebPortal+Email+Log.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */; };
 		59EBFDDD12BA5A1B00809C61 /* WebPortal+Email+Log.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */; };
-		59EBFEA412BB500C00809C61 /* browserController.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFEA212BB500C00809C61 /* browserController.h */; };
+		59EBFEA412BB500C00809C61 /* BrowserController.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFEA212BB500C00809C61 /* BrowserController.h */; };
 		59F1A4C8104BA5BE009E3215 /* HorosHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F1A4C7104BA5BE009E3215 /* HorosHeaders.mm */; };
 		59F1A515104BA8AE009E3215 /* HorosAPI.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* HorosAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		59F5F3F911F476030047A90D /* N2ImageButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F3F711F476030047A90D /* N2ImageButtonCell.h */; };
@@ -1090,18 +1090,18 @@
 		AB28B8E205B79D1F00A9906C /* Wait.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6F34FC0574081F00CDCA47 /* Wait.m */; };
 		AB28B8E305B79D1F00A9906C /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB142DFD05600D76008461A0 /* AppController.m */; };
 		AB28B8E505B79D2100A9906C /* QueryController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB425D73058FC58E00224020 /* QueryController.mm */; };
-		AB28B8E605B79D2100A9906C /* dicomData.h in Headers */ = {isa = PBXBuildFile; fileRef = ABFA7CD3056056F300963FF8 /* dicomData.h */; };
+		AB28B8E605B79D2100A9906C /* DicomData.h in Headers */ = {isa = PBXBuildFile; fileRef = ABFA7CD3056056F300963FF8 /* DicomData.h */; };
 		AB28B8E805B79D2300A9906C /* AppController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB142DFC05600D76008461A0 /* AppController.h */; };
 		AB28B8EA05B79D2400A9906C /* QueryController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB425D72058FC58E00224020 /* QueryController.h */; };
 		AB28B8EB05B79D2500A9906C /* Wait.h in Headers */ = {isa = PBXBuildFile; fileRef = AB6F34FB0574081F00CDCA47 /* Wait.h */; };
-		AB28B8ED05B79D2600A9906C /* dicomData.m in Sources */ = {isa = PBXBuildFile; fileRef = ABFA7CD2056056F300963FF8 /* dicomData.m */; };
+		AB28B8ED05B79D2600A9906C /* DicomData.m in Sources */ = {isa = PBXBuildFile; fileRef = ABFA7CD2056056F300963FF8 /* DicomData.m */; };
 		AB28B8EE05B79D2700A9906C /* NSSplitViewSave.m in Sources */ = {isa = PBXBuildFile; fileRef = AB08564C059211F9009962D7 /* NSSplitViewSave.m */; };
 		AB28B8F105B79D2900A9906C /* SplashScreen.h in Headers */ = {isa = PBXBuildFile; fileRef = AB4A6C9C056E81FA009E6C6E /* SplashScreen.h */; };
 		AB28B8F205B79D2900A9906C /* SplashScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4A6C9D056E81FA009E6C6E /* SplashScreen.m */; };
 		AB28B8F305B79D2A00A9906C /* ViewerController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE17662056D2659009C93B5 /* ViewerController.m */; };
-		AB28B8F705B79D2E00A9906C /* dicomFile.h in Headers */ = {isa = PBXBuildFile; fileRef = AB06EDF005635642006AFFB9 /* dicomFile.h */; };
+		AB28B8F705B79D2E00A9906C /* DicomFile.h in Headers */ = {isa = PBXBuildFile; fileRef = AB06EDF005635642006AFFB9 /* DicomFile.h */; };
 		AB28B8F805B79D2F00A9906C /* NSSplitViewSave.h in Headers */ = {isa = PBXBuildFile; fileRef = AB08564B059211F9009962D7 /* NSSplitViewSave.h */; };
-		AB28B8FC05B79D3400A9906C /* dicomFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB06EDEF05635642006AFFB9 /* dicomFile.mm */; };
+		AB28B8FC05B79D3400A9906C /* DicomFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB06EDEF05635642006AFFB9 /* DicomFile.mm */; };
 		AB28B8FF05B79D3600A9906C /* DicomDirParser.m in Sources */ = {isa = PBXBuildFile; fileRef = AB4E3CAF05ADDE13001411D1 /* DicomDirParser.m */; };
 		AB28B90005B79D3800A9906C /* DCMView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB59B18205697FD400B77AFC /* DCMView.m */; };
 		AB28B90205B79D3900A9906C /* MyOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0813D7057C698900A72813 /* MyOutlineView.m */; };
@@ -2624,7 +2624,7 @@
 		CE1335EA06B02DC000B7FC03 /* iChat.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE1335E806B02DC000B7FC03 /* iChat.icns */; };
 		CE1366B50B41D0F200944876 /* mpeg2.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE1366B40B41D0F200944876 /* mpeg2.tif */; };
 		CE142E7F1119DA53000F4A8C /* DCMPix.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0CB16F084A623C00C6385F /* DCMPix.m */; };
-		CE142ED71119DE4F000F4A8C /* dicomFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB06EDEF05635642006AFFB9 /* dicomFile.mm */; };
+		CE142ED71119DE4F000F4A8C /* DicomFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB06EDEF05635642006AFFB9 /* DicomFile.mm */; };
 		CE142ED81119DE4F000F4A8C /* DicomFileDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */; };
 		CE16066E0769EFE60036CAD3 /* VR Muscles-Bones.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE1606620769EFE60036CAD3 /* VR Muscles-Bones.plist */; };
 		CE1C4EF20FDA6F4600185561 /* nameDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFEB763B0677FDA700F242F3 /* nameDictionary.plist */; };
@@ -3617,7 +3617,7 @@
 		597BB90A12A7D3C000D0A172 /* WebPortal.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebPortal.mm; sourceTree = "<group>"; };
 		597BB92F12A7E0F200D0A172 /* NSUserDefaults+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+OsiriX.h"; sourceTree = "<group>"; };
 		597BB93012A7E0F200D0A172 /* NSUserDefaults+OsiriX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSUserDefaults+OsiriX.mm"; sourceTree = "<group>"; };
-		599115EF12D7224A00924B5C /* browserController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = browserController.m; sourceTree = "<group>"; };
+		599115EF12D7224A00924B5C /* BrowserController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrowserController.m; sourceTree = "<group>"; };
 		5997894D11B7B3E9002DB107 /* Anonymization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Anonymization.h; sourceTree = "<group>"; };
 		5997894E11B7B3E9002DB107 /* Anonymization.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Anonymization.mm; sourceTree = "<group>"; };
 		5997894F11B7B3E9002DB107 /* AnonymizationCustomTagPanelController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnonymizationCustomTagPanelController.h; sourceTree = "<group>"; };
@@ -3724,7 +3724,7 @@
 		59E83A1212FC6556006B930A /* NSManagedObject+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSManagedObject+N2.mm"; path = "nitrogen/Sources/NSManagedObject+N2.mm"; sourceTree = "<group>"; };
 		59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WebPortal+Email+Log.h"; sourceTree = "<group>"; };
 		59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "WebPortal+Email+Log.mm"; sourceTree = "<group>"; };
-		59EBFEA212BB500C00809C61 /* browserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = browserController.h; sourceTree = "<group>"; };
+		59EBFEA212BB500C00809C61 /* BrowserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserController.h; sourceTree = "<group>"; };
 		59F1A4C7104BA5BE009E3215 /* HorosHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = HorosHeaders.mm; sourceTree = "<group>"; };
 		59F5F3F711F476030047A90D /* N2ImageButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2ImageButtonCell.h; path = nitrogen/Sources/N2ImageButtonCell.h; sourceTree = "<group>"; };
 		59F5F3F811F476030047A90D /* N2ImageButtonCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2ImageButtonCell.mm; path = nitrogen/Sources/N2ImageButtonCell.mm; sourceTree = "<group>"; };
@@ -4205,8 +4205,8 @@
 		A9FEC13F0907EBA600B218BE /* orthogonalReslice.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = orthogonalReslice.tif; sourceTree = "<group>"; };
 		AB0128620635991400A74AA1 /* QuicktimeExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuicktimeExport.h; sourceTree = "<group>"; };
 		AB0128630635991400A74AA1 /* QuicktimeExport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuicktimeExport.m; sourceTree = "<group>"; };
-		AB06EDEF05635642006AFFB9 /* dicomFile.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = dicomFile.mm; sourceTree = "<group>"; };
-		AB06EDF005635642006AFFB9 /* dicomFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dicomFile.h; sourceTree = "<group>"; };
+		AB06EDEF05635642006AFFB9 /* DicomFile.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomFile.mm; sourceTree = "<group>"; };
+		AB06EDF005635642006AFFB9 /* DicomFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomFile.h; sourceTree = "<group>"; };
 		AB0813D6057C698900A72813 /* MyOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MyOutlineView.h; sourceTree = "<group>"; };
 		AB0813D7057C698900A72813 /* MyOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MyOutlineView.m; sourceTree = "<group>"; };
 		AB08564B059211F9009962D7 /* NSSplitViewSave.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSSplitViewSave.h; sourceTree = "<group>"; };
@@ -4543,8 +4543,8 @@
 		ABF09BB80642FD220044FE6C /* Stereo.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Stereo.icns; sourceTree = "<group>"; };
 		ABF68A40061DD18600FEED6D /* StringTexture.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = StringTexture.m; sourceTree = "<group>"; };
 		ABF68A41061DD18600FEED6D /* StringTexture.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = StringTexture.h; sourceTree = "<group>"; };
-		ABFA7CD2056056F300963FF8 /* dicomData.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = dicomData.m; sourceTree = "<group>"; };
-		ABFA7CD3056056F300963FF8 /* dicomData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dicomData.h; sourceTree = "<group>"; };
+		ABFA7CD2056056F300963FF8 /* DicomData.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DicomData.m; sourceTree = "<group>"; };
+		ABFA7CD3056056F300963FF8 /* DicomData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomData.h; sourceTree = "<group>"; };
 		ABFF0A95056D97800066794C /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		B78490F90B4BE86400BA93EF /* MenuDictionary.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MenuDictionary.h; sourceTree = "<group>"; };
 		B78490FA0B4BE86400BA93EF /* MenuDictionary.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MenuDictionary.m; sourceTree = "<group>"; };
@@ -7576,8 +7576,8 @@
 		AB8B8BDC05603E3A00CA4134 /* XML */ = {
 			isa = PBXGroup;
 			children = (
-				ABFA7CD2056056F300963FF8 /* dicomData.m */,
-				ABFA7CD3056056F300963FF8 /* dicomData.h */,
+				ABFA7CD2056056F300963FF8 /* DicomData.m */,
+				ABFA7CD3056056F300963FF8 /* DicomData.h */,
 				AB4A6DF3056EC14E009E6C6E /* XMLController.h */,
 				AB4A6DF4056EC14E009E6C6E /* XMLController.m */,
 				CE96D0DB0BEE6F9800C4E397 /* XMLControllerDCMTKCategory.h */,
@@ -8030,8 +8030,8 @@
 				AB142DFD05600D76008461A0 /* AppController.m */,
 				BF18A85709E0BF00005DEFB6 /* AppControllerDCMTKCategory.h */,
 				BF18A85809E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm */,
-				59EBFEA212BB500C00809C61 /* browserController.h */,
-				599115EF12D7224A00924B5C /* browserController.m */,
+				59EBFEA212BB500C00809C61 /* BrowserController.h */,
+				599115EF12D7224A00924B5C /* BrowserController.m */,
 				CE373AA8173FEBBB009F60AC /* WADOXML.h */,
 				CE373AA9173FEBBB009F60AC /* WADOXML.m */,
 				59DB271014515B5800E78E03 /* BrowserController+Sources.h */,
@@ -9370,8 +9370,8 @@
 				A085E104141E53210072BF0D /* DCMUSRegion.m */,
 				AB4E3CAE05ADDE13001411D1 /* DicomDirParser.h */,
 				AB4E3CAF05ADDE13001411D1 /* DicomDirParser.m */,
-				AB06EDF005635642006AFFB9 /* dicomFile.h */,
-				AB06EDEF05635642006AFFB9 /* dicomFile.mm */,
+				AB06EDF005635642006AFFB9 /* DicomFile.h */,
+				AB06EDEF05635642006AFFB9 /* DicomFile.mm */,
 				BF24254F0A51D39500D3D76B /* DicomFileDCMTKCategory.h */,
 				BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */,
 				CEE73FC708F44724002A395F /* FVTiff.h */,
@@ -9831,12 +9831,12 @@
 				AB28B8D705B79D1500A9906C /* NSFont_OpenGL.h in Headers */,
 				AB28B8E005B79D1D00A9906C /* NSFullScreenWindow.h in Headers */,
 				AB28B8E105B79D1E00A9906C /* XMLController.h in Headers */,
-				AB28B8E605B79D2100A9906C /* dicomData.h in Headers */,
+				AB28B8E605B79D2100A9906C /* DicomData.h in Headers */,
 				AB28B8E805B79D2300A9906C /* AppController.h in Headers */,
 				AB28B8EA05B79D2400A9906C /* QueryController.h in Headers */,
 				AB28B8EB05B79D2500A9906C /* Wait.h in Headers */,
 				AB28B8F105B79D2900A9906C /* SplashScreen.h in Headers */,
-				AB28B8F705B79D2E00A9906C /* dicomFile.h in Headers */,
+				AB28B8F705B79D2E00A9906C /* DicomFile.h in Headers */,
 				AB28B8F805B79D2F00A9906C /* NSSplitViewSave.h in Headers */,
 				AB28B90305B79D3A00A9906C /* DicomDirParser.h in Headers */,
 				AB28B90405B79D3B00A9906C /* DCMView.h in Headers */,
@@ -10521,7 +10521,7 @@
 				597BB93112A7E0F200D0A172 /* NSUserDefaults+OsiriX.h in Headers */,
 				590A3DCD12A92920004581C2 /* WebPortalDatabase.h in Headers */,
 				59EBFDDC12BA5A1B00809C61 /* WebPortal+Email+Log.h in Headers */,
-				59EBFEA412BB500C00809C61 /* browserController.h in Headers */,
+				59EBFEA412BB500C00809C61 /* BrowserController.h in Headers */,
 				59E52B3712C109B80094E668 /* DicomDatabase.h in Headers */,
 				5969033D12DDE30800379E41 /* WebPortalConnection+Data.h in Headers */,
 				5969034512DDE5EA00379E41 /* WebPortalResponse.h in Headers */,
@@ -10858,7 +10858,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = NO;
 				LastTestingUpgradeCheck = 0730;
-				LastUpgradeCheck = 0810;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = "The Horos Project";
 				TargetAttributes = {
 					59BDEC2C117C92B2007F1F2C = {
@@ -11820,11 +11820,11 @@
 				AB28B8E205B79D1F00A9906C /* Wait.m in Sources */,
 				AB28B8E305B79D1F00A9906C /* AppController.m in Sources */,
 				AB28B8E505B79D2100A9906C /* QueryController.mm in Sources */,
-				AB28B8ED05B79D2600A9906C /* dicomData.m in Sources */,
+				AB28B8ED05B79D2600A9906C /* DicomData.m in Sources */,
 				AB28B8EE05B79D2700A9906C /* NSSplitViewSave.m in Sources */,
 				AB28B8F205B79D2900A9906C /* SplashScreen.m in Sources */,
 				AB28B8F305B79D2A00A9906C /* ViewerController.m in Sources */,
-				AB28B8FC05B79D3400A9906C /* dicomFile.mm in Sources */,
+				AB28B8FC05B79D3400A9906C /* DicomFile.mm in Sources */,
 				AB28B8FF05B79D3600A9906C /* DicomDirParser.m in Sources */,
 				AB28B90005B79D3800A9906C /* DCMView.m in Sources */,
 				AB28B90205B79D3900A9906C /* MyOutlineView.m in Sources */,
@@ -12137,7 +12137,7 @@
 				59EBFDDD12BA5A1B00809C61 /* WebPortal+Email+Log.mm in Sources */,
 				59E5236012BF5E440094E668 /* N2Task.mm in Sources */,
 				59E52B3812C109B80094E668 /* DicomDatabase.mm in Sources */,
-				599115F012D7224A00924B5C /* browserController.m in Sources */,
+				599115F012D7224A00924B5C /* BrowserController.m in Sources */,
 				5969033E12DDE30800379E41 /* WebPortalConnection+Data.mm in Sources */,
 				5969034612DDE5EA00379E41 /* WebPortalResponse.mm in Sources */,
 				CE9054F612F5B64300263AB6 /* CPRClusterView.m in Sources */,
@@ -13101,7 +13101,7 @@
 				A98FFBEA0CA92B58000291C8 /* altivecFunctions.c in Sources */,
 				ABE59B850F494CA1004EBF28 /* DefaultsOsiriX.m in Sources */,
 				CE142E7F1119DA53000F4A8C /* DCMPix.m in Sources */,
-				CE142ED71119DE4F000F4A8C /* dicomFile.mm in Sources */,
+				CE142ED71119DE4F000F4A8C /* DicomFile.mm in Sources */,
 				CE142ED81119DE4F000F4A8C /* DicomFileDCMTKCategory.mm in Sources */,
 				CE111A631165CDA400EDD254 /* jcdiffct.c in Sources */,
 				CE111A641165CDC000EDD254 /* jcshuff.c in Sources */,
@@ -13780,6 +13780,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "-fvisibility=default";
+				OTHER_LDFLAGS = "-Wno-deprecated";
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -13819,11 +13820,10 @@
 					Binaries/LibTiff,
 					Binaries/openssl/libs,
 				);
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(OTHER_CFLAGS)",
-					"-no-pedantic",
-				);
+				OTHER_CFLAGS = "-fvisibility=default";
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-framework",
 					Foundation,
 					"-framework",
@@ -13834,13 +13834,11 @@
 					__TEXT,
 					__info_plist,
 					Info.plist,
-					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.horosproject.horos;
 				PRODUCT_NAME = Horos;
 				STRIP_STYLE = debugging;
 				USER_HEADER_SEARCH_PATHS = "Binaries/GDCMHeaders Binaries/ITKHeaders Binaries/VTKHeaders Binaries/openjpeg/** Binaries/LibTiff Binaries/openssl/include";
-				WARNING_CFLAGS = "-no-pedantic";
 			};
 			name = Release;
 		};
@@ -13860,6 +13858,7 @@
 				INFOPLIST_FILE = "Horos Launcher/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-framework",
 					Foundation,
 					"-framework",
@@ -13892,9 +13891,9 @@
 				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-seg1addr",
 					0x20000000,
-					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.dcmframework;
 				PRODUCT_NAME = HorosDCM;
@@ -14008,11 +14007,11 @@
 					Binaries/Ming,
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-framework",
 					Foundation,
 					"-framework",
 					AppKit,
-					"-lc++",
 				);
 				PRODUCT_NAME = Decompress;
 				SKIP_INSTALL = YES;
@@ -14036,6 +14035,7 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-framework",
 					Foundation,
 					"-framework",
@@ -14069,6 +14069,7 @@
 				INFOPLIST_FILE = "HorosAPI-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-framework",
 					Foundation,
 					"-framework",
@@ -14096,6 +14097,7 @@
 				INFOPLIST_FILE = "Horos Launcher/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-framework",
 					Foundation,
 					"-framework",
@@ -14127,9 +14129,9 @@
 				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-seg1addr",
 					0x20000000,
-					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.dcmframework;
 				PRODUCT_NAME = HorosDCM;
@@ -14171,11 +14173,10 @@
 					Binaries/LibTiff,
 					Binaries/openssl/libs,
 				);
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(OTHER_CFLAGS)",
-					"-no-pedantic",
-				);
+				OTHER_CFLAGS = "-fvisibility=default";
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-framework",
 					Foundation,
 					"-framework",
@@ -14186,12 +14187,10 @@
 					__TEXT,
 					__info_plist,
 					Info.plist,
-					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.horosproject.horos;
 				PRODUCT_NAME = Horos;
 				USER_HEADER_SEARCH_PATHS = "Binaries/GDCMHeaders Binaries/ITKHeaders Binaries/VTKHeaders Binaries/openjpeg/** Binaries/LibTiff Binaries/openssl/include";
-				WARNING_CFLAGS = "-no-pedantic";
 			};
 			name = Debug;
 		};
@@ -14286,6 +14285,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-fvisibility=default";
+				OTHER_LDFLAGS = "-Wno-deprecated";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -14440,6 +14440,7 @@
 				INFOPLIST_FILE = "HorosAPI-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-framework",
 					Foundation,
 					"-framework",
@@ -14470,11 +14471,11 @@
 					Binaries/Ming,
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-framework",
 					Foundation,
 					"-framework",
 					AppKit,
-					"-lc++",
 				);
 				PRODUCT_NAME = Decompress;
 				SKIP_INSTALL = YES;
@@ -14513,6 +14514,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-framework",
 					Foundation,
 					"-framework",

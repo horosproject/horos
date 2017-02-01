@@ -37,7 +37,7 @@
 #import "OsiriXSCPDataHandler.h"
 #import "DicomFile.h"
 #import "DicomFileDCMTKCategory.h"
-#import "browserController.h"
+#import "BrowserController.h"
 #import "AppController.h"
 #import "DicomImage.h"
 #import "DicomStudy.h"

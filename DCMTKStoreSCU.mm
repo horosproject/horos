@@ -34,7 +34,7 @@
 #import "LogManager.h"
 #import "AppController.h"
 #import "DCMTKStoreSCU.h"
-#import "browserController.h"
+#import "BrowserController.h"
 #import "DicomFile.h"
 #import "Notifications.h"
 #import "MutableArrayCategory.h"
@@ -103,7 +103,7 @@ END_EXTERN_C
 #include <zlib.h>          /* for zlibVersion() */
 #endif
 
-#include "browserController.h"
+#import "BrowserController.h"
 #import "DICOMToNSString.h"
 #import "DCMObject.h"
 #import "DCM.h"

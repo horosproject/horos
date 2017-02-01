@@ -45,14 +45,14 @@
 #import "DCMCursor.h"
 #import "DICOMExport.h"
 #import "Notifications.h"
-#import "wait.h"
+#import "Wait.h"
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/CGLCurrent.h>
 #include "math.h"
 #include "vtkImageFlip.h"
 #import "QuicktimeExport.h"
 #import "AppController.h"
-#import "browserController.h"
+#import "BrowserController.h"
 #import "DicomDatabase.h"
 #import "DicomStudy.h"
 #import "DicomSeries.h"

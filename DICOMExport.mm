@@ -34,7 +34,7 @@
 #import "DICOMExport.h"
 #import "DCM.h"
 #import "BrowserController.h"
-#import "dicomFile.h"
+#import "DicomFile.h"
 #import "DCMView.h"
 #import "DCMPix.h"
 #import "altivecFunctions.h"

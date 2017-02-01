@@ -37,7 +37,7 @@
 #import "DCMTKSeriesQueryNode.h"
 #import "DCMTKImageQueryNode.h"
 #import "DICOMToNSString.h"
-#import "dicomFile.h"
+#import "DicomFile.h"
 #import "DicomStudy.h"
 
 #undef verify

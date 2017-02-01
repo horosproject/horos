@@ -38,7 +38,7 @@
 #import "DCMAbstractSyntaxUID.h"
 #import "BrowserControllerDCMTKCategory.h"
 #import "DicomDatabase.h"
-#import "dicomFile.h"
+#import "DicomFile.h"
 #import "WaitRendering.h"
 
 @implementation OSIDatabasePreferencePanePref

@@ -43,7 +43,7 @@
 #import "MutableArrayCategory.h"
 #import "SRAnnotation.h"
 #import "SRAnnotation.h"
-#import "dicomFile.h"
+#import "DicomFile.h"
 #import "ViewerController.h"
 #import "PluginFileFormatDecoder.h"
 #import "DCMCalendarDate.h"

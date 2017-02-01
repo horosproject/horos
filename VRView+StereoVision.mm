@@ -64,7 +64,7 @@ dddd
 #include <OpenGL/CGLContext.h>
 #include <OpenGL/CGLMacro.h>
 #include "math.h"
-#import "wait.h"
+#import "Wait.h"
 #import "QuicktimeExport.h"
 #include "vtkImageResample.h"
 #import "VRController.h"

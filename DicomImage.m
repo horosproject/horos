@@ -53,7 +53,7 @@
 #import "DCMPix.h"
 #import "SRAnnotation.h"
 #import "VRController.h"
-#import "browserController.h"
+#import "BrowserController.h"
 #import "BonjourBrowser.h"
 #import "ThreadsManager.h"
 #import "DCMView.h"

@@ -32,11 +32,11 @@
  ============================================================================*/
 
 
-#import "browserController.h"
+#import "BrowserController.h"
 #import "DICOMToNSString.h"
 #import "DicomDatabase.h"
 #import "LogManager.h"
-#import "dicomFile.h"
+#import "DicomFile.h"
 
 #undef verify
 

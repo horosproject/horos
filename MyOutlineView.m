@@ -33,7 +33,7 @@
 
 
 #import "MyOutlineView.h"
-#import "browserController.h"
+#import "BrowserController.h"
 #import "DicomDatabase.h"
 #import "DicomStudy.h"
 #import "N2Debug.h"

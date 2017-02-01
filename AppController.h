@@ -226,6 +226,7 @@ extern AppController* OsiriX;
 - (IBAction) openHorosWebPage: (id) sender;  /**<  Open Horos web page */
 - (IBAction) openHorosDiscussion: (id) sender; /**< Open Horos discussion web page */
 - (IBAction) osirix64bit: (id) sender;
+- (IBAction)userManual:(id)sender;
 //---------------------------------------------
 - (IBAction) help: (id) sender;  /**< Open help window */
 //=============================================

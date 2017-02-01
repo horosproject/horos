@@ -34,7 +34,7 @@
 
 #import "DicomDatabase.h"
 #import "QueryLogController.h"
-#import "browserController.h"
+#import "BrowserController.h"
 
 @implementation QueryLogController
 

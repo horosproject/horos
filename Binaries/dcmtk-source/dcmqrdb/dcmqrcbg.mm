@@ -66,7 +66,7 @@
 #import <Cocoa/Cocoa.h>
 #import "DCMNetServiceDelegate.h"
 #import "SendController.h"
-#import "browserController.h"
+#import "BrowserController.h"
 #import "DCMObject.h"
 #import "DCM.h"
 #import "DCMTransferSyntax.h"

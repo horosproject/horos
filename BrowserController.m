@@ -58,12 +58,12 @@
 #import "DCMPix.h"
 #import "SRAnnotation.h"
 #import "AppController.h"
-#import "dicomData.h"
+#import "DicomData.h"
 #import "BrowserController.h"
-#import "viewerController.h"
+#import "ViewerController.h"
 #import "PluginFilter.h"
 #import "ReportPluginFilter.h"
-#import "dicomFile.h"
+#import "DicomFile.h"
 #import "DicomFileDCMTKCategory.h"
 #import "NSSplitViewSave.h"
 #import "DicomDirParser.h"
@@ -14436,7 +14436,7 @@ static NSArray*	openSubSeriesArray = nil;
         CGFloat position = bannerSplit.frame.size.height - (banner.image.size.height+3);
         [bannerSplit setPosition: position ofDividerAtIndex: 0];
 #else
-        [[[bannerSplit subviews] objectAtIndex:1] setHidden:YES];
+       // [[[bannerSplit subviews] objectAtIndex:1] setHidden:YES];
 #endif
         
         [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];

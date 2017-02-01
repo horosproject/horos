@@ -38,7 +38,7 @@
 #include <OpenGL/CGLContext.h>
 #import "Mailer.h"
 #import "DICOMExport.h"
-#import "wait.h"
+#import "Wait.h"
 #import "BrowserController.h"
 #import "Notifications.h"
 #import "NSUserDefaultsController+OsiriX.h"

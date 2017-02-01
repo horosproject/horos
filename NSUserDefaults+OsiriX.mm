@@ -34,7 +34,7 @@
 #import "NSUserDefaults+OsiriX.h"
 #import "N2Shell.h"
 #import <Foundation/Foundation.h>
-#import "browserController.h"
+#import "BrowserController.h"
 #import "NSScreen+N2.h"
 
 
