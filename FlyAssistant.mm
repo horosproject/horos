@@ -248,7 +248,6 @@
 		return; // todo{l'allouer à la place ?}    
 
     [self thresholdImage];
-    CFAbsoluteTime time = CFAbsoluteTimeGetCurrent ();
 	int its=0;	
 	
 //need OSX 10.6 sdk
