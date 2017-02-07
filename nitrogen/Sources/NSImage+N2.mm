@@ -72,7 +72,10 @@
 
 -(void)setSize:(NSSize)size {
 	NSSize oldSize = [self size];
-	if (![self scalesWhenResized])
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    if (![self scalesWhenResized])
+#pragma clang diagnostic pop
 		_inchSize = NSMakeSize(_inchSize.width/oldSize.width*size.width, _inchSize.height/oldSize.height*size.height);
 	[super setSize:size];
 }
@@ -87,8 +90,8 @@
 	N2Image* croppedImage = [[N2Image alloc] initWithSize:cropRect.size inches:NSMakeSize(_inchSize.width/size.width*cropRect.size.width, _inchSize.height/size.height*cropRect.size.height) portion:portion];
 	
 	[croppedImage lockFocus];
-	[self compositeToPoint:NSZeroPoint fromRect:cropRect operation:NSCompositeSourceOver fraction:0];
-	[croppedImage unlockFocus];
+    [self drawAtPoint:NSZeroPoint fromRect:cropRect operation:NSCompositeSourceOver fraction:0];
+    [croppedImage unlockFocus];
 	
 	return [croppedImage autorelease];
 }

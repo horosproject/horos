@@ -63,7 +63,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // We want our own Defaults plist saved in ~/Library/Preferences/
-// Make sure it matches "Bundle Identifier" in Deployment-Info.plist
+// Make sure it matches "Bundle Identifier" in Info.plist
 
 #define BUNDLE_IDENTIFIER_PREFIX    "com.horosproject"
 #define BUNDLE_IDENTIFIER           "com.horosproject.horos"

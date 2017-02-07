@@ -71,7 +71,7 @@
 	if( self = [super init])
 	{
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSILocationsPreferencePanePref" bundle: nil] autorelease];
-		[nib instantiateNibWithOwner:self topLevelObjects: nil];
+		[nib instantiateWithOwner:self topLevelObjects:&_tlos];
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
@@ -372,7 +372,9 @@
 	
 	[TLSDHParameterFileURL release];
 	[TLSSupportedCipherSuite release];
-	[TLSAuthenticationCertificate release];
+    [TLSAuthenticationCertificate release];
+    
+    [_tlos release]; _tlos = nil;
 	
 	[super dealloc];
 }
@@ -516,12 +518,15 @@
 {
 	NSSavePanel		*sPanel		= [NSSavePanel savePanel];
 
-	[sPanel setRequiredFileType:@"plist"];
+	[sPanel setAllowedFileTypes:@[@"plist"]];
+    sPanel.nameFieldStringValue = NSLocalizedString(@"OsiriXDB.plist", nil);
 	
-	if ([sPanel runModalForDirectory:0L file:NSLocalizedString(@"OsiriXDB.plist", nil)] == NSFileHandlingPanelOKButton)
-	{
-		[[osiriXServers arrangedObjects] writeToFile:[sPanel filename] atomically: YES];
-	}
+    [sPanel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
+        [[osiriXServers arrangedObjects] writeToURL:sPanel.URL atomically: YES];
+    }];
 }
 
 - (IBAction) refreshNodesOsiriXDB: (id) sender
@@ -551,11 +556,13 @@
 	
 	[self resetTest];
 	
-	[sPanel setRequiredFileType:@"plist"];
-	
-	if ([sPanel runModalForDirectory:0L file:nil types:[NSArray arrayWithObject:@"plist"]] == NSFileHandlingPanelOKButton)
-	{
-		NSArray	*r = [NSArray arrayWithContentsOfFile: [sPanel filename]];
+	[sPanel setAllowedFileTypes:@[@"plist"]];
+    
+    [sPanel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
+		NSArray	*r = [NSArray arrayWithContentsOfURL:sPanel.URL];
 		
 		if( r)
 		{
@@ -590,7 +597,7 @@
 				}
 			}
 		}
-	}
+    }];
 }
 
 
@@ -598,14 +605,18 @@
 {
 	NSSavePanel		*sPanel		= [NSSavePanel savePanel];
 
-	[sPanel setRequiredFileType:@"plist"];
+	[sPanel setAllowedFileTypes:@[@"plist"]];
 	
 	[self resetTest];
 	
-	if ([sPanel runModalForDirectory:0L file:NSLocalizedString(@"DICOMNodes.plist", nil)] == NSFileHandlingPanelOKButton)
-	{
-		[[dicomNodes arrangedObjects] writeToFile:[sPanel filename] atomically: YES];
-	}
+    sPanel.nameFieldStringValue = NSLocalizedString(@"DICOMNodes.plist", nil);
+    
+    [sPanel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
+        [[dicomNodes arrangedObjects] writeToURL:sPanel.URL atomically: YES];
+    }];
 }
 
 - (IBAction) refreshNodesListURL: (id) sender
@@ -640,11 +651,15 @@
 	
 	[self resetTest];
 	
-	[sPanel setRequiredFileType:@"plist"];
+	[sPanel setAllowedFileTypes:@[@"plist"]];
 	
-	if ([sPanel runModalForDirectory:0L file:nil types:[NSArray arrayWithObject:@"plist"]] == NSFileHandlingPanelOKButton)
-	{
-		NSArray	*r = [NSArray arrayWithContentsOfFile: [sPanel filename]];
+    [sPanel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton) {
+            [self resetTest];
+            return;
+        }
+        
+		NSArray	*r = [NSArray arrayWithContentsOfURL:sPanel.URL];
 		
 		if( r)
 		{
@@ -680,9 +695,9 @@
 				}
 			}
 		}
-	}
-	
-	[self resetTest];
+        
+        [self resetTest];
+    }];
 }
 
 - (void) testThread:(NSArray*) serverList
@@ -782,9 +797,13 @@
     [oPanel setCanChooseFiles:YES];
     [oPanel setCanChooseDirectories:YES];
 
-	if ([oPanel runModalForDirectory:0L file:nil types:[NSArray arrayWithObject:@"sql"]] == NSFileHandlingPanelOKButton)
-	{
-		NSString	*location = [oPanel filename];
+    oPanel.allowedFileTypes = @[@"sql"];
+    
+    [oPanel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
+		NSString	*location = oPanel.URL.path;
 		
 		if( [[location lastPathComponent] isEqualToString:@"Horos Data"])
 		{
@@ -811,9 +830,9 @@
 				[[localPaths tableView] scrollRowToVisible: [[localPaths tableView] selectedRow]];
 			}
 		}
-	}
-	
-	[[[self mainView] window] makeKeyAndOrderFront: self];
+
+        [[[self mainView] window] makeKeyAndOrderFront: self];
+    }];
 }
 
 #pragma mark DICOM TLS Support

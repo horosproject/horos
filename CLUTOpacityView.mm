@@ -33,6 +33,7 @@
 
 #import "CLUTOpacityView.h"
 #import "BrowserController.h"
+#import "DicomDatabase.h"
 #import "Notifications.h"
 
 @implementation CLUTOpacityView
@@ -1255,9 +1256,9 @@ NSRect rect = drawingRect;
 						NSPoint shiftedPoint;
 						float alpha = 1.0;
 						if(firstPointSelected)
-							alpha = fabsf(pt.x - lastPoint.x) / d;
+							alpha = fabs(pt.x - lastPoint.x) / d;
 						else
-							alpha = fabsf(pt.x - firstPoint.x) / d;
+							alpha = fabs(pt.x - firstPoint.x) / d;
 						shiftedPoint = NSMakePoint(pt.x + alpha * shiftX, pt.y);
 						shiftedPoint = [transformView2Coordinate transformPoint:shiftedPoint];
 						[self replacePointAtIndex:j inCurveAtIndex:i withPoint:shiftedPoint];
@@ -1280,7 +1281,7 @@ NSRect rect = drawingRect;
 			NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
 			if( (int) controlPoint.x == (int) selectedPoint.x && (float) controlPoint.y == (float) selectedPoint.y)
 			{			
-				NSPoint newPointInView = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+//				NSPoint newPointInView = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 //				NSPoint newPoint = [transformView2Coordinate transformPoint:newPointInView];
 								
 				float shiftX = [theEvent deltaX];
@@ -1302,7 +1303,7 @@ NSRect rect = drawingRect;
 						
 						float alpha = 1.0;
 						if(j>0 && j<(long)[aCurve count]-1)
-							alpha = 2.0*fabsf(middlePointX - pt.x) / d;
+							alpha = 2.0*fabs(middlePointX - pt.x) / d;
 						if(pt.x<=controlPoint.x)
 							shiftedPoint = NSMakePoint(pt.x - alpha * shiftX, pt.y-shiftY);
 						else
@@ -1340,7 +1341,7 @@ NSRect rect = drawingRect;
 	}
 	else
 	{
-		if(fabsf([theEvent deltaX])>fabsf([theEvent deltaY]))
+		if(fabs([theEvent deltaX])>fabs([theEvent deltaY]))
 		{
 			zoomFixedPoint -= [theEvent deltaX] / zoomFactor;
 		}
@@ -1550,7 +1551,7 @@ NSRect rect = drawingRect;
 - (IBAction)scroll:(id)sender;
 {
 //	zoomFixedPoint = [sender floatValue] / [sender maxValue] * [self bounds].size.width;
-zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.width;
+zoomFixedPoint = [sender floatValue] / [(NSSlider *)sender maxValue] * drawingRect.size.width;
 	[self updateView];
 }
 
@@ -1961,8 +1962,6 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 #pragma mark -
 #pragma mark Saving (as plist)
 
-#define CLUTDATABASE @"/CLUTs/"
-
 - (void)chooseNameAndSave:(id)sender;
 {
 	if(isSaveButtonHighlighted)
@@ -1998,17 +1997,14 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	[clut setObject:[self convertCurvesForPlist] forKey:@"curves"];
 	[clut setObject:[self convertPointColorsForPlist] forKey:@"colors"];
 	
-	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
-	[path appendString:CLUTDATABASE];
+	NSString *path = [[[BrowserController currentBrowser] database] clutsDirPath];
 	
 	BOOL isDir = YES;
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir)
-	{
-		[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+	if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir) {
+		[[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:NULL];
 	}
 	
-	[path appendString:name];
-	[path appendString:@".plist"];
+	path = [path stringByAppendingPathComponent:[name stringByAppendingPathExtension:@"plist"]];
 	[clut writeToFile:path atomically:YES];
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixUpdateCLUTMenuNotification object:name userInfo:nil];
 	[[vrView controller] setCurCLUTMenu:name];
@@ -2016,9 +2012,8 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 
 + (NSDictionary*)presetFromFileWithName:(NSString*)name;
 {
-	NSMutableString *path = [NSMutableString stringWithString: [[BrowserController currentBrowser] documentsDirectory]];
-	[path appendString:CLUTDATABASE];
-	[path appendString:name];
+    NSString *CLUTsPath = [[[BrowserController currentBrowser] database] clutsDirPath];
+    NSString *path = [CLUTsPath stringByAppendingPathComponent:name];
 	
 	if([[NSFileManager defaultManager] fileExistsAtPath:path])
 	{
@@ -2032,7 +2027,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	}
 	else
 	{
-		[path appendString:@".plist"];
+		path = [path stringByAppendingPathExtension:@"plist"];
 		if([[NSFileManager defaultManager] fileExistsAtPath:path])
 		{
 			NSMutableDictionary *clutFromFile = [NSMutableDictionary dictionaryWithContentsOfFile:path];
@@ -2050,10 +2045,8 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 		else
 		{
 			// look in the resources bundle path
-			[path setString:[[NSBundle mainBundle] resourcePath]];
-			[path appendString:CLUTDATABASE];
-			[path appendString:name];
-			[path appendString:@".plist"];
+            path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:CLUTsPath.lastPathComponent];
+            path = [path stringByAppendingPathComponent:[name stringByAppendingPathExtension:@"plist"]];
 			if([[NSFileManager defaultManager] fileExistsAtPath:path])
 			{
 				NSMutableDictionary *clutFromFile = [NSMutableDictionary dictionaryWithContentsOfFile:path];
@@ -2268,7 +2261,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	for (i=0; i<[theCurve count]; i++)
 	{
 		pt = [[theCurve objectAtIndex:i] pointValue];
-		factor = fabsf(pt.x - middle) / half;
+		factor = fabs(pt.x - middle) / half;
 		if(factor<0.0) factor = 0.0;
 		pt.x += shiftWL;
 		if(i<[theCurve count]/2.0) pt.x -= shiftWW * factor;

@@ -759,7 +759,8 @@ OPJSupport::compressJPEG2K(void *data,
     OPJ_BOOL forceJ2K = (parameters.cod_format == J2K_CFMT ? OPJ_FALSE:(((OPJ_TRUE /*force here*/))));
     
 #ifdef WITH_OPJ_FILE_STREAM
-    tmpnam(parameters.outfile);
+    strcpy(parameters.outfile, "/tmp/opjXXXXXX");
+    mkstemp(parameters.outfile);
 #endif
     
     image = rawtoimage( (char*) data,

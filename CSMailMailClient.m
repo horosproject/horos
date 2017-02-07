@@ -53,7 +53,7 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
 	AppleEvent *quitApplicationAppleEventPtr = (AEDesc*)[ae aeDesc];
 	if (quitApplicationAppleEventPtr)
 	{
-		OSStatus err = AESendMessage(quitApplicationAppleEventPtr, NULL, kAENoReply, kAEDefaultTimeout) ;
+		/*OSStatus err =*/ AESendMessage(quitApplicationAppleEventPtr, NULL, kAENoReply, kAEDefaultTimeout) ;
 	}
 	[NSThread sleepForTimeInterval: seconds];
 }
@@ -418,7 +418,10 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
                     
                     if (err != noErr)
                     {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
                         NSLog(@"**** MailMe: Could not get password for SMTP account %@: %i/%s", username, (int)err, GetMacOSStatusCommentString(err));
+#pragma clang diagnostic pop
                     }
                 }
                 
@@ -510,7 +513,7 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
 	attachtmp = [tmpdir stringByAppendingPathComponent:
 			      [NSString stringWithFormat:@"csmail-%08lx",
 					random ()]];
-      } while (![fileManager createDirectoryAtPath:attachtmp attributes:nil]);
+      } while (![fileManager createDirectoryAtPath:attachtmp withIntermediateDirectories:YES attributes:nil error:NULL]);
     }
 
     if (attachment) {

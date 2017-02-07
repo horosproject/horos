@@ -33,12 +33,13 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString* N2StepDidBecomeActiveNotification;
-extern NSString* N2StepDidBecomeInactiveNotification;
-extern NSString* N2StepDidBecomeEnabledNotification;
-extern NSString* N2StepDidBecomeDisabledNotification;
-extern NSString* N2StepTitleDidChangeNotification;
+extern NSString * const __deprecated N2StepDidBecomeActiveNotification;
+extern NSString * const __deprecated N2StepDidBecomeInactiveNotification;
+extern NSString * const __deprecated N2StepDidBecomeEnabledNotification;
+extern NSString * const __deprecated N2StepDidBecomeDisabledNotification;
+extern NSString * const __deprecated N2StepTitleDidChangeNotification;
 
+__deprecated
 @interface N2Step : NSObject {
 	NSString* _title;
 	NSView* _enclosedView;

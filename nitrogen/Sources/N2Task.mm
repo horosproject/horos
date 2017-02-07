@@ -60,7 +60,7 @@ static void sigchld(int signum) {
 	self.arguments = NULL;
 	self.launchPath = NULL;
 	self.environment = NULL;
-	self.currentDirectoryPath = NULL;
+    [_currentDirectoryPath release]; _currentDirectoryPath = nil;
 	self.standardInput = NULL;
 	self.standardOutput = NULL;
 	self.standardError = NULL;

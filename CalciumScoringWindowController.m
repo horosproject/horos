@@ -41,9 +41,10 @@ Manages the Window for creating Calcium Scoring ROIs
 #import "DCMView.h"
 #import "ROI.h"
 #import "browserController.h"
-#import <OsiriX/DCM.h>
+#import "DCM.h"
 #import "CalciumScoringWindowController.h"
 #import "Notifications.h"
+#import "DicomDatabase.h"
 
 enum ctTypes {ElectronCTType, MultiSliceCTType};
 @implementation CalciumScoringWindowController
@@ -390,7 +391,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 			
 		//NSLog(@"pdf: %@", [dcmObject description]);
 		//get Incoming Folder Path;
-		NSString *destination = [NSString stringWithFormat: @"%@/CalciumScore%d%d.dcm", [[BrowserController currentBrowser] INCOMINGPATH], 1, 1]; 
+		NSString *destination = [NSString stringWithFormat: @"%@/CalciumScore%d%d.dcm", [[[BrowserController currentBrowser] database] incomingDirPath], 1, 1];
 	
 		if ([dcmObject writeToFile:destination withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES])
 			NSLog(@"Wrote Calcium Score to %@", destination);

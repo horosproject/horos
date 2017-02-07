@@ -356,7 +356,7 @@ public:
   /// copy assignment operator
   OFCondition& operator=(const OFCondition& arg)
   {
-    if (&arg != this && &arg && arg.theCondition)
+    if (&arg != this && arg.theCondition)
     {
         if (theCondition->deletable())
           delete OFconst_cast(OFConditionBase *, theCondition); // cast away const

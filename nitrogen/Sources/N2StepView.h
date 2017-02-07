@@ -34,6 +34,7 @@
 #import "N2DisclosureBox.h"
 @class N2Step;
 
+__deprecated
 @interface N2StepView : N2DisclosureBox {
 	N2Step* _step;
 }

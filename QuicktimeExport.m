@@ -46,20 +46,22 @@
 
 - (id) initWithSelector:(id) o :(SEL) s :(long) f
 {
-	self = [super init];
-	
-	[NSBundle loadNibNamed:@"QuicktimeExport" owner:self];
-	
-	object = [o retain];
-	selector = s;
-	numberOfFrames = f;
-	
-	return self;
+    self = [super init];
+    
+    [[NSBundle bundleForClass:self.class] loadNibNamed:@"QuicktimeExport" owner:self topLevelObjects:&_tlos];
+    
+    object = [o retain];
+    selector = s;
+    numberOfFrames = f;
+    
+    return self;
 }
 
 - (void) dealloc
 {
     [object release];
+    
+    [_tlos release]; _tlos = nil;
     
     [super dealloc];
 }
@@ -76,14 +78,14 @@
 
 - (IBAction) changeExportType:(id) sender
 {
-	if( [exportTypes count])
-	{
-		NSInteger indexOfSelectedItem = [type indexOfSelectedItem];
+    if( [exportTypes count])
+    {
+        NSInteger indexOfSelectedItem = [type indexOfSelectedItem];
         
-        [panel setRequiredFileType: [[exportTypes objectAtIndex: indexOfSelectedItem] valueForKey:@"extension"]];
+        [panel setAllowedFileTypes:@[[[exportTypes objectAtIndex: indexOfSelectedItem] valueForKey:@"extension"]]];
         
-		[[NSUserDefaults standardUserDefaults] setObject: [[exportTypes objectAtIndex: indexOfSelectedItem] valueForKey:@"videoCodec"] forKey:@"selectedMenuAVFoundationExport"];
-	}
+        [[NSUserDefaults standardUserDefaults] setObject: [[exportTypes objectAtIndex: indexOfSelectedItem] valueForKey:@"videoCodec"] forKey:@"selectedMenuAVFoundationExport"];
+    }
 }
 
 - (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name
@@ -100,7 +102,6 @@
     size_t height = [image size].height;
     size_t bitsPerComponent = 8;
     CGColorSpaceRef cs = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-    CGBitmapInfo bi = kCGImageAlphaNoneSkipFirst;
     NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey, [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey, nil];
     
     // create pixel buffer
@@ -110,7 +111,7 @@
     size_t bytesPerRow = CVPixelBufferGetBytesPerRow(buffer);
     
     // context to draw in, set to pixel buffer's address
-    CGContextRef ctxt = CGBitmapContextCreate(rasterData, width, height, bitsPerComponent, bytesPerRow, cs, bi);
+    CGContextRef ctxt = CGBitmapContextCreate(rasterData, width, height, bitsPerComponent, bytesPerRow, cs, kCGImageAlphaNoneSkipFirst);
     if(ctxt == NULL)
     {
         NSLog(@"******** CVPixelBufferFromNSImage : could not create context");
@@ -141,22 +142,23 @@
     if (fps > 0)
         [[NSUserDefaults standardUserDefaults] setInteger:fps forKey:@"quicktimeExportRateValue"];
     
-	NSString *fileName;
-	long result;
-
-	exportTypes = [self availableComponents];
-	
-	panel = [NSSavePanel savePanel];
-	
-    [[NSFileManager defaultManager] createDirectoryAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/"]  withIntermediateDirectories: YES attributes: nil error: nil];
+    NSString *fileName;
+    long result;
+    
+    exportTypes = [self availableComponents];
+    
+    panel = [NSSavePanel savePanel];
+    
+    [[NSFileManager defaultManager] createDirectoryAtPath: [[[BrowserController currentBrowser] database] tempDirPath] withIntermediateDirectories:YES attributes:nil error:NULL];
     
     
     if( produceFiles)
     {
         result = NSFileHandlingPanelOKButton;
         
-        [[NSFileManager defaultManager] removeFileAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"] handler: nil];
-        [[NSFileManager defaultManager] createDirectoryAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"] withIntermediateDirectories: YES attributes: nil error: nil];
+        NSString *path =[[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"];
+        [[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
+        [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories: YES attributes: nil error: nil];
         
         fileName = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"OsiriXMovie.mov"];
     }
@@ -180,9 +182,11 @@
         [type selectItemAtIndex: index];
         [self changeExportType: self];
         
-        result = [panel runModalForDirectory:nil file:name];
+        panel.nameFieldStringValue = name;
         
-        fileName = [panel filename];
+        result = [panel runModal];
+        
+        fileName = panel.URL.path;
     }
     
     [[NSFileManager defaultManager] removeItemAtPath: fileName error: nil];
@@ -221,7 +225,7 @@
                         CVPixelBufferRef buffer = nil;
                         
                         NSDisableScreenUpdates();
-                        NSImage	*im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];    
+                        NSImage	*im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];
                         NSEnableScreenUpdates();
                         
                         if( im)
@@ -240,13 +244,13 @@
                                     
                                     if( bitsPerSecond > 0)
                                         videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                     c, AVVideoCodecKey,
-                                                     [NSDictionary dictionaryWithObjectsAndKeys:
-                                                      [NSNumber numberWithDouble: bitsPerSecond], AVVideoAverageBitRateKey,
-                                                      [NSNumber numberWithInteger: 1], AVVideoMaxKeyFrameIntervalKey,
-                                                      nil], AVVideoCompressionPropertiesKey,
-                                                     [NSNumber numberWithInt: im.size.width], AVVideoWidthKey,
-                                                     [NSNumber numberWithInt: im.size.height], AVVideoHeightKey, nil];
+                                                         c, AVVideoCodecKey,
+                                                         [NSDictionary dictionaryWithObjectsAndKeys:
+                                                          [NSNumber numberWithDouble: bitsPerSecond], AVVideoAverageBitRateKey,
+                                                          [NSNumber numberWithInteger: 1], AVVideoMaxKeyFrameIntervalKey,
+                                                          nil], AVVideoCompressionPropertiesKey,
+                                                         [NSNumber numberWithInt: im.size.width], AVVideoWidthKey,
+                                                         [NSNumber numberWithInt: im.size.height], AVVideoHeightKey, nil];
                                     else
                                         N2LogStackTrace( @"********** bitsPerSecond == 0");
                                 }
@@ -315,10 +319,7 @@
                 [pixelBufferAdaptor release];
                 
                 if( openIt && aborted == NO)
-                {
-                    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-                    [ws openFile:fileName];
-                }
+                    [[NSWorkspace sharedWorkspace] openFile:fileName];
             }
             
             [writer release];
@@ -331,7 +332,7 @@
         N2LogExceptionWithStackTrace(e);
     }
     
-	return nil;
+    return nil;
 }
 
 @end

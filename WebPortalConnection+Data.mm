@@ -807,7 +807,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				[self getWidth: &width height:&height fromImagesArray: dicomImageArray /* isiPhone:.. */];
 			
 			[[NSFileManager defaultManager] removeItemAtPath: [fileName stringByAppendingString: @" dir"] error: nil];
-			[[NSFileManager defaultManager] createDirectoryAtPath: [fileName stringByAppendingString: @" dir"] attributes: nil];
+			[[NSFileManager defaultManager] createDirectoryAtPath: [fileName stringByAppendingString: @" dir"] withIntermediateDirectories:YES attributes:nil error:NULL];
 			
             NSInteger fps = 0;
             
@@ -2282,7 +2282,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				if ([dicomImageArray count] > 1)
 				{
 					NSString *path = [WebPortalConnection tmpDirPath];
-					[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+					[[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:NULL];
 					
 					NSString *name = [NSString stringWithFormat:@"%@",[parameters objectForKey:@"xid"]];
 					name = [name stringByAppendingFormat:@"-WADOMpeg-%d", (int) [dicomImageArray count]];
@@ -2651,7 +2651,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     
     response.data = [NSData dataWithContentsOfFile: tmpFile];
     
-    [[NSFileManager defaultManager] removeFileAtPath: tmpFile handler:nil];
+    [[NSFileManager defaultManager] removeItemAtPath: tmpFile error:NULL];
     
     //	NSString *reportType = [reportFilePath pathExtension];
     //
@@ -2676,7 +2676,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     //
     //		response.data = [NSData dataWithContentsOfFile: reportFilePath];
     //
-    //		[[NSFileManager defaultManager] removeFileAtPath:reportFilePath handler:nil];
+    //		[[NSFileManager defaultManager] removeItemAtPath:reportFilePath error:NULL];
     //	}
     //	else
     //	{

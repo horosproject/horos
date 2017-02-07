@@ -32,7 +32,7 @@
  ============================================================================*/
 
 #import "OSICustomImageAnnotations.h"
-#import <HorosAPI/NSPreferencePane+OsiriX.h>
+#import "NSPreferencePane+OsiriX.h"
 
 NSComparisonResult  compareViewTags(id firstView, id secondView, void * context);
 NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
@@ -67,13 +67,19 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	if( self = [super init])
 	{
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSICustomImageAnnotations" bundle: nil] autorelease];
-		[nib instantiateNibWithOwner:self topLevelObjects: nil];
+		[nib instantiateWithOwner:self topLevelObjects:&_tlos];
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
 	}
 	
 	return self;
+}
+
+- (void)dealloc {
+    [_tlos release]; _tlos = nil;
+    
+    [super dealloc];
 }
 
 - (void)mainViewDidLoad {
@@ -102,35 +108,39 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	{
 		[self switchModality: modalitiesPopUpButton save: YES];
 		
-		NSDictionary *cur = [layoutController curDictionary];
-		NSSavePanel		*sPanel		= [NSSavePanel savePanel];
-		[sPanel setRequiredFileType:@"plist"];
-		
-		if ([sPanel runModalForDirectory:0L file: [NSString stringWithFormat:@"%@.plist", [[modalitiesPopUpButton selectedItem] title] ]] == NSFileHandlingPanelOKButton)
-			[cur writeToFile: [sPanel filename] atomically: YES];
+		NSSavePanel *sPanel = [NSSavePanel savePanel];
+		[sPanel setAllowedFileTypes:@[@"plist"]];
+        sPanel.nameFieldStringValue = [NSString stringWithFormat:@"%@.plist", [[modalitiesPopUpButton selectedItem] title] ];
+        
+        [sPanel beginWithCompletionHandler:^(NSInteger result) {
+            if (result != NSFileHandlingPanelOKButton)
+                return;
+            
+            [[layoutController curDictionary] writeToURL:sPanel.URL atomically:YES];
+        }];
 	}
 	else						// Load
 	{
-		NSOpenPanel		*sPanel		= [NSOpenPanel openPanel];
-	
-		[sPanel setRequiredFileType:@"plist"];
-	
-		if ([sPanel runModalForDirectory:0L file:nil types:[NSArray arrayWithObject:@"plist"]] == NSFileHandlingPanelOKButton)
-		{
-			NSDictionary *cur = [NSDictionary dictionaryWithContentsOfFile: [sPanel filename]];
-			
-			if( cur)
-			{
-				if( NSRunInformationalAlertPanel( NSLocalizedString(@"Settings", nil), NSLocalizedString( @"Are you really sure you want to replace current settings? It will delete the current settings.", nil) , NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
-				{
-					NSMutableDictionary *annotationsLayoutDictionary = [layoutController annotationsLayoutDictionary];
-				
-					[annotationsLayoutDictionary setObject: cur  forKey: [layoutController currentModality]];
-				
-					[self switchModality: modalitiesPopUpButton save: NO];
-				}
-			}
-		}
+		NSOpenPanel *sPanel = [NSOpenPanel openPanel];
+        [sPanel setAllowedFileTypes:@[@"plist"]];
+
+        [sPanel beginWithCompletionHandler:^(NSInteger result) {
+            if (result != NSFileHandlingPanelOKButton)
+                return;
+            
+            NSDictionary *cur = [NSDictionary dictionaryWithContentsOfURL:sPanel.URL];
+            if( cur)
+            {
+                if( NSRunInformationalAlertPanel( NSLocalizedString(@"Settings", nil), NSLocalizedString( @"Are you really sure you want to replace current settings? It will delete the current settings.", nil) , NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
+                {
+                    NSMutableDictionary *annotationsLayoutDictionary = [layoutController annotationsLayoutDictionary];
+                    
+                    [annotationsLayoutDictionary setObject: cur  forKey: [layoutController currentModality]];
+                    
+                    [self switchModality: modalitiesPopUpButton save: NO];
+                }
+            }
+        }];
 	}
 }
 

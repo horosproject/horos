@@ -40,6 +40,7 @@
 #import "N2AdaptiveBox.h"
 #import "N2TextField.h"
 #import "N2CustomTitledPopUpButtonCell.h"
+#import "NSUserDefaultsController+N2.h"
 #include <cmath>
 #include <algorithm>
 

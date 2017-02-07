@@ -33,6 +33,7 @@
 
 #import "Scripting_Additions.h"
 #import "BrowserController.h"
+#import "DicomDatabase.h"
 #import "AppController.h"
 #import "XMLRPCMethods.h"
 
@@ -74,7 +75,7 @@
 		{
 			NSLog( @"%@", convertedPath);
 			
-			[[BrowserController currentBrowser] addFilesAndFolderToDatabase: [NSArray arrayWithObject: convertedPath]];
+			[[[BrowserController currentBrowser] database] addFilesAtPaths:@[convertedPath]];
 			
 			if( [[BrowserController currentBrowser] findAndSelectFile: convertedPath image: nil shouldExpand :YES])
 			{

@@ -58,6 +58,8 @@
 #import "DefaultsOsiriX.h" // for HotKeys
 #import "DicomDatabase.h"
 #import "DicomImage.h"
+#import "DicomSeries.h"
+#import "DicomStudy.h"
 #import "Notifications.h"
 #import "NSUserDefaultsController+OsiriX.h"
 #import "N2Debug.h"
@@ -1340,7 +1342,7 @@ public:
         if( fullDepth) [exportDCM setModalityAsSource: YES];
         else [exportDCM setModalityAsSource: YES];
         
-        [exportDCM setSourceFile: [firstObject sourceFile]];
+        [exportDCM setSourceFile: [firstObject srcFile]];
         [exportDCM setSeriesDescription: dcmSeriesString];
         
         [exportDCM setPixelData: dataPtr samplesPerPixel:spp bitsPerSample:bpp width: width height: height];
@@ -1397,7 +1399,6 @@ public:
     return [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil];
 }
 
-#define DATABASEPATH @"/DATABASE.noindex/"
 -(IBAction) endDCMExportSettings:(id) sender
 {
     [exportDCMWindow makeFirstResponder: nil];	// To force nstextfield validation.
@@ -1671,7 +1672,7 @@ public:
 //			else
 //				newpath = [QuicktimeExport generateQTVR: path frames: numberOfFrames];
 //
-//			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+//			[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
 //			[[NSFileManager defaultManager] movePath: newpath  toPath: path handler: nil];
 //
 //			[[NSWorkspace sharedWorkspace] openFile: path withApplication: nil andDeactivate: YES];
@@ -4176,7 +4177,7 @@ public:
                                                        windowNumber:[theEvent windowNumber]
                                                             context:[theEvent context]
                                                          characters:@"p"
-                                        charactersIgnoringModifiers:nil
+                                        charactersIgnoringModifiers:@"p"
                                                           isARepeat:NO
                                                             keyCode:112
                                            ];
@@ -4198,7 +4199,8 @@ public:
                 
                 if (clickCount == 2)
                 {
-                    NSPoint mouseLocationOnScreen = [[self window] convertBaseToScreen:[theEvent locationInWindow]];
+                    NSRect r = {[theEvent locationInWindow],NSZeroSize};
+                    NSPoint mouseLocationOnScreen = [[self window] convertRectToScreen:r].origin;
                     [point3DInfoPanel setAlphaValue:0.8];
                     [point3DInfoPanel	setFrame:	NSMakeRect(	mouseLocationOnScreen.x - [point3DInfoPanel frame].size.width/2.0,
                                                                mouseLocationOnScreen.y-[point3DInfoPanel frame].size.height-20.0,
@@ -6951,8 +6953,11 @@ public:
         
         NSLog( @"ratio: %f", ratio);
     }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [currentImage setScalesWhenResized:YES];
-    
+#pragma clang diagnostic pop
+
     NSImage *compositingImage = [[NSImage alloc] initWithSize: imageRect.size];
     if( [compositingImage size].width > 0 && [compositingImage size].height > 0)
     {
@@ -7494,11 +7499,11 @@ public:
     
     NSImage *im;
     
-    [pb declareTypes:[NSArray arrayWithObject:NSTIFFPboardType] owner:self];
+    [pb declareTypes:[NSArray arrayWithObject:NSPasteboardTypeTIFF] owner:self];
     
     im = [self nsimage:NO];
     
-    [pb setData: [im TIFFRepresentation] forType:NSTIFFPboardType];
+    [pb setData: [im TIFFRepresentation] forType:NSPasteboardTypeTIFF];
 }
 
 - (void) updateScissorStateButtons
@@ -7562,7 +7567,7 @@ public:
     {
         case 2:
             if( NSRunAlertPanel(NSLocalizedString(@"3D Scissor State", nil), NSLocalizedString(@"Are you sure you want to delete this 3D state? You cannot undo this operation.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
-                [[NSFileManager defaultManager] removeFileAtPath: str handler: nil];
+                [[NSFileManager defaultManager] removeItemAtPath: str error:NULL];
             break;
             
         case 1:	// Load
@@ -8735,98 +8740,92 @@ public:
 
 #pragma mark-  Drag and Drop
 
+static NSString * const O2PasteboardTypeEventModifierFlags = @"com.opensource.osirix.eventmodifierflags";
+
 - (void) startDrag:(NSTimer*)theTimer
 {
     @try {
         _dragInProgress = YES;
-        
         NSEvent *event = (NSEvent *)[theTimer userInfo];
-        NSSize dragOffset = NSMakeSize(0.0, 0.0);
-        NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard];
-        NSMutableArray *pbTypes = [NSMutableArray array];
-        // The image we will drag
-        NSImage *image;
-        if ([event modifierFlags] & NSShiftKeyMask)
-            image = [self nsimage: YES];
-        else
-            image = [self nsimage: NO];
         
-        // Thumbnail image and position
-        NSPoint event_location = [event locationInWindow];
-        NSPoint local_point = [self convertPoint:event_location fromView:nil];
-        local_point.x -= 35;
-        local_point.y -= 35;
+        NSImage *image = [self nsimage:(event.modifierFlags&NSShiftKeyMask)];
         
         NSSize originalSize = [image size];
-        
         float ratio = originalSize.width / originalSize.height;
-        
         NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize(100, 100/ratio)] autorelease];
-        
-        if( [thumbnail size].width > 0 && [thumbnail size].height > 0)
-        {
+        if( [thumbnail size].width > 0 && [thumbnail size].height > 0) {
             [thumbnail lockFocus];
             [image drawInRect: NSMakeRect(0, 0, 100, 100/ratio) fromRect: NSMakeRect(0, 0, originalSize.width, originalSize.height) operation: NSCompositeSourceOver fraction: 1.0];
             [thumbnail unlockFocus];
         }
         
-        if ([event modifierFlags] & NSAlternateKeyMask)
-            [ pbTypes addObject: NSFilesPromisePboardType];
-        else
-            [pbTypes addObject: NSTIFFPboardType];
+        NSPasteboardItem* pbi = [[[NSPasteboardItem alloc] init] autorelease];
+        [pbi setData:image.TIFFRepresentation forType:NSPasteboardTypeTIFF];
+        NSEventModifierFlags mf = event.modifierFlags;
+        [pbi setData:[NSData dataWithBytes:&mf length:sizeof(NSEventModifierFlags)] forType:O2PasteboardTypeEventModifierFlags];
+        [pbi setDataProvider:self forTypes:@[NSPasteboardTypeString, (NSString *)kPasteboardTypeFileURLPromise]];
+        [pbi setString:(id)kUTTypeImage forType:(id)kPasteboardTypeFilePromiseContent];
+
+        NSDraggingItem* di = [[[NSDraggingItem alloc] initWithPasteboardWriter:pbi] autorelease];
+        NSPoint p = [self convertPoint:event.locationInWindow fromView:nil];
+        [di setDraggingFrame:NSMakeRect(p.x-thumbnail.size.width/2, p.y-thumbnail.size.height/2, thumbnail.size.width, thumbnail.size.height) contents:thumbnail];
         
-        
-        [pboard declareTypes:pbTypes  owner:self];
-        
-        
-        if ([event modifierFlags] & NSAlternateKeyMask)
-        {
-            NSRect imageLocation;
-            local_point = [self convertPoint:event_location fromView:nil];
-            imageLocation.origin =  local_point;
-            imageLocation.size = NSMakeSize(32,32);
-            [pboard setData:nil forType:NSFilesPromisePboardType];
-            
-            if (destinationImage)
-                [destinationImage release];
-            destinationImage = [image copy];
-            
-            [self dragPromisedFilesOfTypes:[NSArray arrayWithObject:@"jpg"]
-                                  fromRect:imageLocation
-                                    source:self
-                                 slideBack:YES
-                                     event:event];
-        }
-        else
-        {
-            [pboard setData: [[NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSTIFFPboardType];
-            
-            [ self dragImage:thumbnail
-                          at:local_point
-                      offset:dragOffset
-                       event:event
-                  pasteboard:pboard
-                      source:self
-                   slideBack:YES];
-        }
-        
-    } @catch( NSException *localException) {
+        NSDraggingSession* session = [self beginDraggingSessionWithItems:@[di] event:event source:self];
+        session.animatesToStartingPositionsOnCancelOrFail = YES;
+    }
+    @catch( NSException *localException) {
         NSLog(@"Exception while dragging: %@", [localException description]);
     }
     
     _dragInProgress = NO;
 }
 
-- (NSArray *)namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination{
-    NSString *name = @"OsiriX";
-    name = [name stringByAppendingPathExtension:@"jpg"];
-    NSArray *array = [NSArray arrayWithObject:name];
-    NSData *_data = [[NSBitmapImageRep imageRepWithData: [destinationImage TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-    NSURL *url = [NSURL  URLWithString:name  relativeToURL:dropDestination];
-    [_data writeToURL:url  atomically:YES];
-    [destinationImage release];
-    destinationImage = nil;
-    return array;
+- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
+    return NSDragOperationGeneric;
+}
+
+- (void)pasteboard:(NSPasteboard *)pasteboard item:(NSPasteboardItem *)item provideDataForType:(NSString *)type {
+    if ([type isEqualToString:(id)kPasteboardTypeFileURLPromise]) {
+        PasteboardRef pboardRef = NULL;
+        PasteboardCreate((__bridge CFStringRef)[pasteboard name], &pboardRef);
+        if (!pboardRef)
+            return;
+        
+        PasteboardSynchronize(pboardRef);
+        
+        CFURLRef urlRef = NULL;
+        PasteboardCopyPasteLocation(pboardRef, &urlRef);
+        
+        if (urlRef) {
+            NSString *description = firstObject.imageObj.series.name;
+            if (!description.length)
+                description = firstObject.imageObj.series.seriesDescription;
+            
+            NSString *name = firstObject.imageObj.series.study.name;
+            if (description.length)
+                name = [name stringByAppendingFormat:@" - %@", description];
+            
+            if (!name.length)
+                name = @"Horos";
+            
+            NSURL *url = [(NSURL *)urlRef URLByAppendingPathComponent:[name stringByAppendingPathExtension:@"jpg"]];
+            size_t i = 0;
+            while ([url checkResourceIsReachableAndReturnError:NULL])
+                url = [(NSURL *)urlRef URLByAppendingPathComponent:[name stringByAppendingFormat:@" (%lu).jpg", ++i]];
+            
+            NSEventModifierFlags mf; [[item dataForType:O2PasteboardTypeEventModifierFlags] getBytes:&mf];
+            NSImage *image = [self nsimage:(mf&NSShiftKeyMask)];
+            
+            NSData *idata = [[NSBitmapImageRep imageRepWithData:image.TIFFRepresentation] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+            [idata writeToURL:url atomically:YES];
+            
+            [item setString:[url absoluteString] forType:type];
+            
+            CFRelease(urlRef);
+        }
+        
+        CFRelease(pboardRef);
+    }
 }
 
 - (void)deleteMouseDownTimer
@@ -9404,7 +9403,10 @@ void VRSpaceNavigatorMessageHandler(io_connect_t connection, natural_t messageTy
         case kConnexionMsgDeviceState:
             state = (ConnexionDeviceState*)messageArgument;
             
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
             AbsoluteTime theTime = UpTime();
+#pragma clang diagnostic pop
             uint64_t t = ((uint64_t*) &theTime)[0];
             
             if(t - state->time > 2*1000*1000)

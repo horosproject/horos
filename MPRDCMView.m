@@ -79,6 +79,10 @@ unsigned int minimumStep;
 - (N3Plane)plane;
 @end
 
+@interface MPRDCMView (Dummy)
+- (void)delayedFullLODRendering:(id)dummy;
+@end;
+
 @implementation MPRDCMView
 
 @synthesize dontUseAutoLOD, pix, camera, angleMPR, vrView, viewExport, toIntervalExport, fromIntervalExport, rotateLines, moveCenter, displayCrossLines, LOD;

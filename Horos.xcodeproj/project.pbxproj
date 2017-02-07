@@ -18,22 +18,6 @@
 			name = "Cleanup Binaries";
 			productName = "Unzip Binaries";
 		};
-		4A2F58D8078D118700C514A2 /* Build All Prerequisites */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 7E76BEC3085757B60073649A /* Build configuration list for PBXAggregateTarget "Build All Prerequisites" */;
-			buildPhases = (
-			);
-			dependencies = (
-				4A2F590D078D124B00C514A2 /* PBXTargetDependency */,
-				9966A19D1AE09AFC00F2D81A /* PBXTargetDependency */,
-				AB0F3A421046BFB9004129DD /* PBXTargetDependency */,
-				9966A2E41AE0B8AF00F2D81A /* PBXTargetDependency */,
-				AB72503C0ADE6F7000A212A0 /* PBXTargetDependency */,
-				CE8DF1260B470DC50035C230 /* PBXTargetDependency */,
-			);
-			name = "Build All Prerequisites";
-			productName = "Build All Prerequisites";
-		};
 		4A2F5931078D148300C514A2 /* Unzip Binaries */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 7E76BECF085757B70073649A /* Build configuration list for PBXAggregateTarget "Unzip Binaries" */;
@@ -532,9 +516,13 @@
 		71512E99152349E500B87012 /* DiscMountedAskTheUserDialog.xib in Resources */ = {isa = PBXBuildFile; fileRef = 71512E97152349E500B87012 /* DiscMountedAskTheUserDialog.xib */; };
 		71512E9D15234F6B00B87012 /* DiscMountedAskTheUserDialogController.h in Headers */ = {isa = PBXBuildFile; fileRef = 71512E9B15234F6B00B87012 /* DiscMountedAskTheUserDialogController.h */; };
 		71512E9E15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 71512E9C15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m */; };
+		7152C52F1D1D7BFF005526D8 /* HorosDCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */; };
 		7154B80F14ED5402000EF7E4 /* N2Stuff.h in Headers */ = {isa = PBXBuildFile; fileRef = 7154B80E14ED5402000EF7E4 /* N2Stuff.h */; };
 		716DBDBD173920AF00BDB1E4 /* ViewerController+CPP.h in Headers */ = {isa = PBXBuildFile; fileRef = 716DBDBB173920AF00BDB1E4 /* ViewerController+CPP.h */; };
 		716DBDBF173920AF00BDB1E4 /* ViewerController+CPP.mm in Sources */ = {isa = PBXBuildFile; fileRef = 716DBDBC173920AF00BDB1E4 /* ViewerController+CPP.mm */; };
+		716DFABA1DE5AA0A00440401 /* OsiriXDCMFrameworkHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 716DFAB81DE5A9F700440401 /* OsiriXDCMFrameworkHeaders.mm */; };
+		716DFABC1DE5AAB800440401 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 716DFABB1DE5AAB800440401 /* Cocoa.framework */; };
+		716DFABD1DE5AAC200440401 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 716DFABB1DE5AAB800440401 /* Cocoa.framework */; };
 		718416071654022400180467 /* DownArrowGreyRev.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 718416061654022400180467 /* DownArrowGreyRev.pdf */; };
 		7188E85616301A61006105BE /* KBPopUpToolbarItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7188E85416301A61006105BE /* KBPopUpToolbarItem.h */; };
 		7188E85816301A61006105BE /* KBPopUpToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7188E85516301A61006105BE /* KBPopUpToolbarItem.m */; };
@@ -554,6 +542,8 @@
 		71AA5A381611F1EB006A6A5F /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AA5A2B1611F1EB006A6A5F /* SBJsonParser.m */; };
 		71AA5A391611F1EB006A6A5F /* SBJsonWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 71AA5A2C1611F1EB006A6A5F /* SBJsonWriter.h */; };
 		71AA5A3A1611F1EB006A6A5F /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AA5A2D1611F1EB006A6A5F /* SBJsonWriter.m */; };
+		71C99EA61D1A81FE00208F3B /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71C99EA51D1A81FE00208F3B /* Growl.framework */; };
+		71C99EA71D1A871700208F3B /* Growl.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 71C99EA51D1A81FE00208F3B /* Growl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		71CE3C19157F489C00AC0112 /* List.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71CE3C18157F489C00AC0112 /* List.pdf */; };
 		71EB83C016DCB7FF00D48646 /* O2DicomPredicateEditor.h in Headers */ = {isa = PBXBuildFile; fileRef = 71EB83B216DCB7FF00D48646 /* O2DicomPredicateEditor.h */; };
 		71EB83C116DCB7FF00D48646 /* O2DicomPredicateEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 71EB83B316DCB7FF00D48646 /* O2DicomPredicateEditor.m */; };
@@ -573,7 +563,6 @@
 		71EB83D116DCB9AE00D48646 /* N2PopUpMenu.mm in Sources */ = {isa = PBXBuildFile; fileRef = 71EB83CF16DCB9AE00D48646 /* N2PopUpMenu.mm */; };
 		71EB83D416DD0F1800D48646 /* dicom3tools-libsrc-standard-strval-base.tpl in Resources */ = {isa = PBXBuildFile; fileRef = 71EB83D216DD0F1800D48646 /* dicom3tools-libsrc-standard-strval-base.tpl */; };
 		71EB83D516DD0F1800D48646 /* osirix-complementary.tpl in Resources */ = {isa = PBXBuildFile; fileRef = 71EB83D316DD0F1800D48646 /* osirix-complementary.tpl */; };
-		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
 		7E0B3A4D0675273500908593 /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E0B3A530675273600908593 /* DCMAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A14067526A600908593 /* DCMAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E0B3A590675273B00908593 /* DCMAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0B3A15067526A600908593 /* DCMAttribute.m */; };
@@ -729,8 +718,6 @@
 		992DD7721BCB095700369C09 /* libgdcmMSFF.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75A1BCB095700369C09 /* libgdcmMSFF.a */; };
 		992DD7741BCB095700369C09 /* libgdcmopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75B1BCB095700369C09 /* libgdcmopenjpeg.a */; };
 		992DD7761BCB095700369C09 /* libgdcmuuid.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75C1BCB095700369C09 /* libgdcmuuid.a */; };
-		9932BC6F1CC7C9120062BB0B /* libcrypto.0.9.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9932BC6B1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib */; };
-		9932BC701CC7C9120062BB0B /* libssl.0.9.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9932BC6C1CC7C8EB0062BB0B /* libssl.0.9.8.dylib */; };
 		9939F7A91BCB0BF8009FEB69 /* FVTiff.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FC808F44724002A395F /* FVTiff.m */; };
 		993DB4A01C0243D50084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
 		993DB4A11C0244430084218A /* FeedbackReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -760,8 +747,6 @@
 		9953FE521BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 9953FE4E1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx */; };
 		9953FE531BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 9953FE4F1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h */; };
 		9963031B1BCACF26009CE3E5 /* libGDCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 9963031A1BCACF26009CE3E5 /* libGDCM.h */; };
-		9966A1901AE099A400F2D81A /* ViewerController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE17661056D2659009C93B5 /* ViewerController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1911AE099A400F2D81A /* options.h in Headers */ = {isa = PBXBuildFile; fileRef = 434B46151A19F2A3008CF8CF /* options.h */; };
 		9966A19F1AE09B6F00F2D81A /* OsiriXHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9966A19E1AE09B6F00F2D81A /* OsiriXHeaders.mm */; };
 		9966A1A11AE09D3F00F2D81A /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A01AE09D3F00F2D81A /* AddressBook.framework */; };
 		9966A1A31AE09D4800F2D81A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A21AE09D4800F2D81A /* AVFoundation.framework */; };
@@ -774,82 +759,7 @@
 		9966A1AE1AE09DE200F2D81A /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1AA1AE09D7C00F2D81A /* Quartz.framework */; };
 		9966A1B41AE0AC7400F2D81A /* OsiriXAPI.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A19A1AE099A400F2D81A /* OsiriXAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9966A1B51AE0B6EE00F2D81A /* HorosDCM.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		9966A1BB1AE0B7E000F2D81A /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1BC1AE0B7E000F2D81A /* DCMAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A14067526A600908593 /* DCMAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1BD1AE0B7E000F2D81A /* DCMAttributeTag.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A16067526A600908593 /* DCMAttributeTag.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1BE1AE0B7E000F2D81A /* DCMDataContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A18067526A600908593 /* DCMDataContainer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1BF1AE0B7E000F2D81A /* DCMObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A1A067526A600908593 /* DCMObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C01AE0B7E000F2D81A /* DCMValueRepresentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A1C067526A600908593 /* DCMValueRepresentation.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C11AE0B7E000F2D81A /* DCMTagDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEB76370677FDA700F242F3 /* DCMTagDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C21AE0B7E000F2D81A /* DCMTagForNameDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEB76390677FDA700F242F3 /* DCMTagForNameDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C31AE0B7E000F2D81A /* DCMUIDs.h in Headers */ = {isa = PBXBuildFile; fileRef = BFEB767E0678071400F242F3 /* DCMUIDs.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C41AE0B7E000F2D81A /* DCMTransferSyntax.h in Headers */ = {isa = PBXBuildFile; fileRef = BF3BB37E067808D5004F6E91 /* DCMTransferSyntax.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C51AE0B7E000F2D81A /* DCMCharacterSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE0DC00067A48A3003E745F /* DCMCharacterSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C61AE0B7E000F2D81A /* DCMSequenceAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE0DC3C067A5138003E745F /* DCMSequenceAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C71AE0B7E000F2D81A /* DCMPixelDataAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ECBB8210683A68D00FF3FF4 /* DCMPixelDataAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C81AE0B7E000F2D81A /* DCMCalendarDate.h in Headers */ = {isa = PBXBuildFile; fileRef = BF61E58C06A5BB9E001C0B29 /* DCMCalendarDate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1C91AE0B7E000F2D81A /* jpegdatasrc.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E2269C406BEF624003B09E5 /* jpegdatasrc.h */; };
-		9966A1CA1AE0B7E000F2D81A /* DCMPixelDataAttributeJPEG8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB3F606BF3BD900C7EF1E /* DCMPixelDataAttributeJPEG8.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1CB1AE0B7E000F2D81A /* DCMPixelDataAttributeJPEG12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB40606BF3BEE00C7EF1E /* DCMPixelDataAttributeJPEG12.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1CC1AE0B7E000F2D81A /* DCMPixelDataAttributeJPEG16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFAEB41606BF3BFA00C7EF1E /* DCMPixelDataAttributeJPEG16.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1CD1AE0B7E000F2D81A /* DCMNetServiceDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EBB31070887269B00BF6B39 /* DCMNetServiceDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1CE1AE0B7E000F2D81A /* DCMLimitedObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E82C63D08D9FF35000BAFF9 /* DCMLimitedObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1CF1AE0B7E000F2D81A /* DCMPresentationState.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E8340D908E9F7C500E41C5E /* DCMPresentationState.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1D01AE0B7E000F2D81A /* DCMEncapsulatedPDF.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDE5BF091717F80033317B /* DCMEncapsulatedPDF.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1D11AE0B7E000F2D81A /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		9966A1D21AE0B7E000F2D81A /* jchuff12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C1D09B6828200545F5E /* jchuff12.h */; };
-		9966A1D31AE0B7E000F2D81A /* jconfig12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C2709B6828200545F5E /* jconfig12.h */; };
-		9966A1D41AE0B7E000F2D81A /* jdct12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C3709B6828200545F5E /* jdct12.h */; };
-		9966A1D51AE0B7E000F2D81A /* jdhuff12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C3B09B6828200545F5E /* jdhuff12.h */; };
-		9966A1D61AE0B7E000F2D81A /* jerror12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C4C09B6828200545F5E /* jerror12.h */; };
-		9966A1D71AE0B7E000F2D81A /* jinclude12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5409B6828300545F5E /* jinclude12.h */; };
-		9966A1D81AE0B7E000F2D81A /* jlossls12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5509B6828300545F5E /* jlossls12.h */; };
-		9966A1D91AE0B7E000F2D81A /* jlossy12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5609B6828300545F5E /* jlossy12.h */; };
-		9966A1DA1AE0B7E000F2D81A /* jmemsys12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5909B6828300545F5E /* jmemsys12.h */; };
-		9966A1DB1AE0B7E000F2D81A /* jmorecfg12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5A09B6828300545F5E /* jmorecfg12.h */; };
-		9966A1DC1AE0B7E000F2D81A /* jpegint12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5B09B6828300545F5E /* jpegint12.h */; };
-		9966A1DD1AE0B7E000F2D81A /* jpeglib12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5C09B6828300545F5E /* jpeglib12.h */; };
-		9966A1DE1AE0B7E000F2D81A /* jversion12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C6009B6828300545F5E /* jversion12.h */; };
-		9966A1DF1AE0B7E000F2D81A /* jchuff16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C6B09B6828300545F5E /* jchuff16.h */; };
-		9966A1E01AE0B7E000F2D81A /* jconfig16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C7509B6828300545F5E /* jconfig16.h */; };
-		9966A1E11AE0B7E000F2D81A /* jdct16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C8509B6828300545F5E /* jdct16.h */; };
-		9966A1E21AE0B7E000F2D81A /* jdhuff16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C8909B6828300545F5E /* jdhuff16.h */; };
-		9966A1E31AE0B7E000F2D81A /* jerror16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C9A09B6828400545F5E /* jerror16.h */; };
-		9966A1E41AE0B7E000F2D81A /* jinclude16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CA209B6828400545F5E /* jinclude16.h */; };
-		9966A1E51AE0B7E000F2D81A /* jlossls16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CA309B6828400545F5E /* jlossls16.h */; };
-		9966A1E61AE0B7E000F2D81A /* options.h in Headers */ = {isa = PBXBuildFile; fileRef = 434B46151A19F2A3008CF8CF /* options.h */; };
-		9966A1E71AE0B7E000F2D81A /* jlossy16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CA409B6828400545F5E /* jlossy16.h */; };
-		9966A1E81AE0B7E000F2D81A /* jmemsys16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CA709B6828400545F5E /* jmemsys16.h */; };
-		9966A1E91AE0B7E000F2D81A /* jmorecfg16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CA809B6828400545F5E /* jmorecfg16.h */; };
-		9966A1EA1AE0B7E000F2D81A /* jpegint16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CA909B6828400545F5E /* jpegint16.h */; };
-		9966A1EB1AE0B7E000F2D81A /* jpeglib16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CAA09B6828400545F5E /* jpeglib16.h */; };
-		9966A1EC1AE0B7E000F2D81A /* jversion16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CAE09B6828400545F5E /* jversion16.h */; };
-		9966A1ED1AE0B7E000F2D81A /* jchuff8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CB909B6828400545F5E /* jchuff8.h */; };
-		9966A1EE1AE0B7E000F2D81A /* jconfig8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CC309B6828400545F5E /* jconfig8.h */; };
-		9966A1EF1AE0B7E000F2D81A /* jdct8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CD309B6828500545F5E /* jdct8.h */; };
-		9966A1F01AE0B7E000F2D81A /* jdhuff8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CD709B6828500545F5E /* jdhuff8.h */; };
-		9966A1F11AE0B7E000F2D81A /* jerror8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CE809B6828500545F5E /* jerror8.h */; };
-		9966A1F21AE0B7E000F2D81A /* jinclude8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF009B6828500545F5E /* jinclude8.h */; };
-		9966A1F31AE0B7E000F2D81A /* jlossls8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF109B6828500545F5E /* jlossls8.h */; };
-		9966A1F41AE0B7E000F2D81A /* jlossy8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF209B6828500545F5E /* jlossy8.h */; };
-		9966A1F51AE0B7E000F2D81A /* jmemsys8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF509B6828500545F5E /* jmemsys8.h */; };
-		9966A1F61AE0B7E000F2D81A /* jmorecfg8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF609B6828500545F5E /* jmorecfg8.h */; };
-		9966A1F71AE0B7E000F2D81A /* jpegint8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF709B6828500545F5E /* jpegint8.h */; };
-		9966A1F81AE0B7E000F2D81A /* jpeglib8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF809B6828500545F5E /* jpeglib8.h */; };
-		9966A1F91AE0B7E000F2D81A /* jversion8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CFC09B6828500545F5E /* jversion8.h */; };
-		9966A1FA1AE0B7E000F2D81A /* kdu_OsiriXSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A9D49312F7F90700DA1F99 /* kdu_OsiriXSupport.h */; };
-		9966A1FC1AE0B7E000F2D81A /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
-		9966A1FD1AE0B7E000F2D81A /* version.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A21067526A600908593 /* version.plist */; };
-		9966A1FE1AE0B7E000F2D81A /* nameDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFEB763B0677FDA700F242F3 /* nameDictionary.plist */; };
-		9966A1FF1AE0B7E000F2D81A /* tagDictionary.plist in Resources */ = {isa = PBXBuildFile; fileRef = BFEB763C0677FDA700F242F3 /* tagDictionary.plist */; };
-		9966A2D91AE0B7E000F2D81A /* libCharLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB451802149F464B006674BF /* libCharLS.a */; };
-		9966A2DA1AE0B7E000F2D81A /* libopenjp2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 434B47AB1A1A1AD4008CF8CF /* libopenjp2.a */; };
-		9966A2DB1AE0B7E000F2D81A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		9966A2DC1AE0B7E000F2D81A /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB5E1A300595697700C48BEB /* Accelerate.framework */; };
-		9966A2DD1AE0B7E000F2D81A /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6D320C05B3159D0002F793 /* IOKit.framework */; };
-		9966A2E61AE0B9A200F2D81A /* OsiriXDCMFrameworkHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9966A2E51AE0B9A200F2D81A /* OsiriXDCMFrameworkHeaders.mm */; };
 		9966A2E71AE0C55600F2D81A /* HorosDCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */; };
-		9966A2E81AE0C56900F2D81A /* HorosDCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */; };
 		9966BCB51CEB5BA50086A8D7 /* osirixplugin.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9966BCB41CEB5BA50086A8D7 /* osirixplugin.icns */; };
 		99676F211BF43C22007C7531 /* format_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 99676F1D1BF43C22007C7531 /* format_defs.h */; };
 		99676F221BF43C22007C7531 /* openjpeg.h in Headers */ = {isa = PBXBuildFile; fileRef = 99676F1E1BF43C22007C7531 /* openjpeg.h */; };
@@ -867,8 +777,6 @@
 		999B0B651BB70F0800AF018A /* O2HMigrationAssistant.xib in Resources */ = {isa = PBXBuildFile; fileRef = 999B0B621BB70F0800AF018A /* O2HMigrationAssistant.xib */; };
 		999B0B671BB711ED00AF018A /* CurvedArrowGrayLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = 999B0B661BB711ED00AF018A /* CurvedArrowGrayLeft.png */; };
 		999B0B681BB7309200AF018A /* Osirix.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9966A1AF1AE09FFE00F2D81A /* Osirix.icns */; };
-		99BCCAC21DD900D800FDBD04 /* libcrypto.0.9.8.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 99BCCAC01DD900D800FDBD04 /* libcrypto.0.9.8.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		99BCCAC31DD900D900FDBD04 /* libssl.0.9.8.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 99BCCAC11DD900D800FDBD04 /* libssl.0.9.8.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		99C32EEF1CFF78E7001E71F3 /* PluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = AB2C24E10677861300A08910 /* PluginFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		99CDC0F51ADF0D0900F34F19 /* libCharLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB451802149F464B006674BF /* libCharLS.a */; };
 		A0344496143DE4AA003E1AFA /* DCMUSRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = A085E104141E53210072BF0D /* DCMUSRegion.m */; };
@@ -2167,6 +2075,8 @@
 		BFAFEE9508F2220B002AD789 /* PluginFileFormatDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAFEE9308F2220B002AD789 /* PluginFileFormatDecoder.m */; };
 		BFBCD8A709E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */; };
 		BFBCD8A809E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFBCD8A609E4C2E40078ABB6 /* DCMTKServiceClassUser.mm */; };
+		BFBF3AA109B681F500545F5E /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9D09B681F500545F5E /* libcrypto.a */; };
+		BFBF3AA209B681F500545F5E /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9E09B681F500545F5E /* libssl.a */; };
 		BFBF3AA309B681F500545F5E /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9F09B681F500545F5E /* libxml2.dylib */; };
 		BFBF3AA409B681F500545F5E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3AA009B681F500545F5E /* libz.dylib */; };
 		BFBF3E6E09B6828D00545F5E /* cfunix.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3AB809B6827D00545F5E /* cfunix.h */; };
@@ -2692,7 +2602,6 @@
 		BFF97D710BDE8BE6008333CF /* ShadingArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF97D6B0BDE8BE6008333CF /* ShadingArrayController.h */; };
 		BFF97D720BDE8BE6008333CF /* ShadingArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFF97D6C0BDE8BE6008333CF /* ShadingArrayController.m */; };
 		CE03A3CC0EA2AE0300951EF4 /* iPhone.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE03A3CB0EA2AE0300951EF4 /* iPhone.tif */; };
-		CE04B81B15289AF400EF6E52 /* Growl.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BE05D1524344D00AE6156 /* Growl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CE06475210F12DA500551AD9 /* PlayTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = CE06475110F12DA500551AD9 /* PlayTemplate.png */; };
 		CE087B0C0DE9BD6E000E5593 /* GLString.m in Sources */ = {isa = PBXBuildFile; fileRef = CE087B0A0DE9BD6E000E5593 /* GLString.m */; };
 		CE087B0D0DE9BD6E000E5593 /* GLString.h in Headers */ = {isa = PBXBuildFile; fileRef = CE087B0B0DE9BD6E000E5593 /* GLString.h */; };
@@ -2734,7 +2643,6 @@
 		CE286C120964196C001A4573 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE286C100964196C001A4573 /* Localizable.strings */; };
 		CE289B1D0D00AF91004F0A93 /* Mail.scpt in Resources */ = {isa = PBXBuildFile; fileRef = CE289B020D00ADBA004F0A93 /* Mail.scpt */; };
 		CE2AC2681830BEFB00C2B67B /* ThickSlab.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2AC2661830BEFB00C2B67B /* ThickSlab.xib */; };
-		CE2BE05E1524344D00AE6156 /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BE05D1524344D00AE6156 /* Growl.framework */; };
 		CE2BFE57153B177C00037546 /* iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = CE2BFE56153B177C00037546 /* iPad.png */; };
 		CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5F14C20B14E12700B309B9 /* CoreVideo.framework */; };
 		CE373AAA173FEBBB009F60AC /* WADOXML.h in Headers */ = {isa = PBXBuildFile; fileRef = CE373AA8173FEBBB009F60AC /* WADOXML.h */; };
@@ -3288,20 +3196,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		4A2ADDFC078D3C6200416F53 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 4A2F58D8078D118700C514A2;
-			remoteInfo = "Build All Prerequisites";
-		};
-		4A2F590C078D124B00C514A2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7E0B3A3E067526CD00908593;
-			remoteInfo = "DCM Framework";
-		};
 		59BDEE6A117CB393007F1F2C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -3309,19 +3203,47 @@
 			remoteGlobalIDString = 59BDEC2C117C92B2007F1F2C;
 			remoteInfo = "OsiriX Launcher";
 		};
-		9966A19C1AE09AFC00F2D81A /* PBXContainerItemProxy */ = {
+		71C99E981D19A7FB00208F3B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AB0F3A2B1046BD2B004129DD;
+			remoteInfo = "Horos API";
+		};
+		71C99E9A1D19A7FD00208F3B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7E0B3A3E067526CD00908593;
+			remoteInfo = "Horos DCM Framework";
+		};
+		71C99E9C1D19A80000208F3B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 9966A18E1AE099A400F2D81A;
-			remoteInfo = "OsiriX API";
+			remoteInfo = "OsiriX API (Legacy)";
 		};
-		9966A2E31AE0B8AF00F2D81A /* PBXContainerItemProxy */ = {
+		71C99E9E1D19A80200208F3B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 9966A1B91AE0B7E000F2D81A;
-			remoteInfo = "OsiriX Framework";
+			remoteInfo = "OsiriX DCM Framework (Legacy)";
+		};
+		71C99EA01D19A80A00208F3B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AB724F300ADE6ECB00A212A0;
+			remoteInfo = Decompress;
+		};
+		71C99EA21D19A80C00208F3B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CEDF6C600B46FE99008B45B8;
+			remoteInfo = DICOMPrint;
 		};
 		99FE27FC1CF4A442003C32AB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -3329,27 +3251,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 4A2F5931078D148300C514A2;
 			remoteInfo = "Unzip Binaries";
-		};
-		AB0F3A411046BFB9004129DD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AB0F3A2B1046BD2B004129DD;
-			remoteInfo = "OsiriX Headers";
-		};
-		AB72503B0ADE6F7000A212A0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AB724F300ADE6ECB00A212A0;
-			remoteInfo = Decompress;
-		};
-		CE8DF1250B470DC50035C230 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CEDF6C600B46FE99008B45B8;
-			remoteInfo = DICOMPrint;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -3360,15 +3261,13 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				99BCCAC21DD900D800FDBD04 /* libcrypto.0.9.8.dylib in Copy Frameworks */,
-				99BCCAC31DD900D900FDBD04 /* libssl.0.9.8.dylib in Copy Frameworks */,
 				993DB4A11C0244430084218A /* FeedbackReporter.framework in Copy Frameworks */,
 				999901A41B52B24200921EA1 /* libdcmprintscu.dylib in Copy Frameworks */,
 				999901A51B52B24200921EA1 /* libxerces-c.27.dylib in Copy Frameworks */,
 				9966A1B51AE0B6EE00F2D81A /* HorosDCM.framework in Copy Frameworks */,
 				59F1A515104BA8AE009E3215 /* HorosAPI.framework in Copy Frameworks */,
 				9966A1B41AE0AC7400F2D81A /* OsiriXAPI.framework in Copy Frameworks */,
-				CE04B81B15289AF400EF6E52 /* Growl.framework in Copy Frameworks */,
+				71C99EA71D1A871700208F3B /* Growl.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3862,6 +3761,8 @@
 		7154B80E14ED5402000EF7E4 /* N2Stuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2Stuff.h; path = nitrogen/Sources/N2Stuff.h; sourceTree = "<group>"; };
 		716DBDBB173920AF00BDB1E4 /* ViewerController+CPP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ViewerController+CPP.h"; sourceTree = "<group>"; };
 		716DBDBC173920AF00BDB1E4 /* ViewerController+CPP.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "ViewerController+CPP.mm"; sourceTree = "<group>"; };
+		716DFAB81DE5A9F700440401 /* OsiriXDCMFrameworkHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXDCMFrameworkHeaders.mm; sourceTree = "<group>"; };
+		716DFABB1DE5AAB800440401 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		7183153D1610651E0098576F /* weasis-ext-config.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = "weasis-ext-config.properties"; path = "Binaries/weasis-ext-config.properties"; sourceTree = "<group>"; };
 		718416061654022400180467 /* DownArrowGreyRev.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = DownArrowGreyRev.pdf; sourceTree = "<group>"; };
 		7188E85416301A61006105BE /* KBPopUpToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KBPopUpToolbarItem.h; path = nitrogen/Sources/KBPopUpToolbarItem.h; sourceTree = "<group>"; };
@@ -3881,6 +3782,8 @@
 		71AA5A2B1611F1EB006A6A5F /* SBJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonParser.m; sourceTree = "<group>"; };
 		71AA5A2C1611F1EB006A6A5F /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		71AA5A2D1611F1EB006A6A5F /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
+		71C99EA41D1A7E9F00208F3B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		71C99EA51D1A81FE00208F3B /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Growl.framework; path = Binaries/Growl.framework; sourceTree = "<group>"; };
 		71CE3C18157F489C00AC0112 /* List.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = List.pdf; path = Binaries/Icons/List.pdf; sourceTree = SOURCE_ROOT; };
 		71EB83B216DCB7FF00D48646 /* O2DicomPredicateEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = O2DicomPredicateEditor.h; sourceTree = "<group>"; };
 		71EB83B316DCB7FF00D48646 /* O2DicomPredicateEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = O2DicomPredicateEditor.m; sourceTree = "<group>"; };
@@ -3998,7 +3901,6 @@
 		843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AYDicomPrintPref.h; path = "Preference Panes/AYDicomPrintPreferencePane/AYDicomPrintPref.h"; sourceTree = SOURCE_ROOT; };
 		844003990E8CF99500A00EBD /* dciodvfy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dciodvfy; path = Binaries/dciodvfy; sourceTree = "<group>"; };
 		844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HorosDCM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		84704DBF181ACF440061B1BF /* Rules.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Rules.plist; sourceTree = "<group>"; };
 		848327AA15ED08F3003BAEEB /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/CustomIntervalPanel.xib; sourceTree = "<group>"; };
 		8483ABA50E1BE33900C21B31 /* crossCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = crossCursor.tif; path = Cursors/crossCursor.tif; sourceTree = "<group>"; };
 		848A6BE714C5BBA700C936C3 /* Tiling1x1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling1x1.pdf; path = Binaries/Icons/Tiling/Tiling1x1.pdf; sourceTree = "<group>"; };
@@ -4054,8 +3956,6 @@
 		992DD75A1BCB095700369C09 /* libgdcmMSFF.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmMSFF.a; sourceTree = "<group>"; };
 		992DD75B1BCB095700369C09 /* libgdcmopenjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmopenjpeg.a; sourceTree = "<group>"; };
 		992DD75C1BCB095700369C09 /* libgdcmuuid.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmuuid.a; sourceTree = "<group>"; };
-		9932BC6B1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.0.9.8.dylib; path = Binaries/openssl/libraries/libcrypto.0.9.8.dylib; sourceTree = "<group>"; };
-		9932BC6C1CC7C8EB0062BB0B /* libssl.0.9.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.0.9.8.dylib; path = Binaries/openssl/libraries/libssl.0.9.8.dylib; sourceTree = "<group>"; };
 		993DB49F1C0243D50084218A /* FeedbackReporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FeedbackReporter.framework; path = Binaries/FeedbackReporter.framework; sourceTree = "<group>"; };
 		994FABED1CEBF25800980A15 /* OnOffSwitchControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnOffSwitchControl.h; sourceTree = "<group>"; };
 		994FABEE1CEBF25800980A15 /* OnOffSwitchControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnOffSwitchControl.m; sourceTree = "<group>"; };
@@ -4080,7 +3980,6 @@
 		9966A1B11AE0A47600F2D81A /* HorosAPI-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "HorosAPI-Info.plist"; sourceTree = "<group>"; };
 		9966A1B21AE0A66C00F2D81A /* OsiriXAPI-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "OsiriXAPI-Info.plist"; sourceTree = "<group>"; };
 		9966A2E11AE0B7E000F2D81A /* OsiriX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		9966A2E51AE0B9A200F2D81A /* OsiriXDCMFrameworkHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXDCMFrameworkHeaders.mm; sourceTree = "<group>"; };
 		9966BCB41CEB5BA50086A8D7 /* osirixplugin.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = osirixplugin.icns; sourceTree = "<group>"; };
 		99676F1D1BF43C22007C7531 /* format_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = format_defs.h; path = Binaries/openjpeg/format_defs.h; sourceTree = "<group>"; };
 		99676F1E1BF43C22007C7531 /* openjpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = openjpeg.h; path = Binaries/openjpeg/openjpeg.h; sourceTree = "<group>"; };
@@ -4096,8 +3995,6 @@
 		999B0B611BB70F0800AF018A /* O2HMigrationAssistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = O2HMigrationAssistant.m; path = Horos.xcodeproj/../O2HMigrationAssistant.m; sourceTree = "<group>"; };
 		999B0B621BB70F0800AF018A /* O2HMigrationAssistant.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = O2HMigrationAssistant.xib; path = Horos.xcodeproj/../O2HMigrationAssistant.xib; sourceTree = "<group>"; };
 		999B0B661BB711ED00AF018A /* CurvedArrowGrayLeft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CurvedArrowGrayLeft.png; sourceTree = "<group>"; };
-		99BCCAC01DD900D800FDBD04 /* libcrypto.0.9.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.0.9.8.dylib; path = Binaries/openssl/libraries/libcrypto.0.9.8.dylib; sourceTree = "<group>"; };
-		99BCCAC11DD900D800FDBD04 /* libssl.0.9.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.0.9.8.dylib; path = Binaries/openssl/libraries/libssl.0.9.8.dylib; sourceTree = "<group>"; };
 		A085E103141E53210072BF0D /* DCMUSRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMUSRegion.h; sourceTree = "<group>"; };
 		A085E104141E53210072BF0D /* DCMUSRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMUSRegion.m; sourceTree = "<group>"; };
 		A90202BA0B980CD60001A00B /* PluginManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManagerController.h; sourceTree = "<group>"; };
@@ -4599,7 +4496,6 @@
 		ABBB64A8063587B200D9531F /* VolumeRendering.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = VolumeRendering.tif; sourceTree = "<group>"; };
 		ABBB64AA063587B200D9531F /* XML.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = XML.icns; sourceTree = "<group>"; };
 		ABBB64AC063587B200D9531F /* ZoomToFit.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ZoomToFit.tif; sourceTree = "<group>"; };
-		ABBFDA3F063480490011BD0A /* Deployment-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "Deployment-Info.plist"; sourceTree = "<group>"; };
 		ABC3E5500B330A58006704E3 /* DNDArrayController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DNDArrayController.m; sourceTree = "<group>"; };
 		ABC3E5510B330A58006704E3 /* DNDArrayController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DNDArrayController.h; sourceTree = "<group>"; };
 		ABC3E5580B330A68006704E3 /* sourcesTableView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = sourcesTableView.m; sourceTree = "<group>"; };
@@ -4730,6 +4626,8 @@
 		BFAFEE9308F2220B002AD789 /* PluginFileFormatDecoder.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginFileFormatDecoder.m; sourceTree = "<group>"; };
 		BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKServiceClassUser.h; sourceTree = "<group>"; };
 		BFBCD8A609E4C2E40078ABB6 /* DCMTKServiceClassUser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKServiceClassUser.mm; sourceTree = "<group>"; };
+		BFBF3A9D09B681F500545F5E /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = /Users/ale/Work/Horos/Binaries/openssl/libs/libcrypto.a; sourceTree = "<absolute>"; };
+		BFBF3A9E09B681F500545F5E /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = /Users/ale/Work/Horos/Binaries/openssl/libs/libssl.a; sourceTree = "<absolute>"; };
 		BFBF3A9F09B681F500545F5E /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = /usr/lib/libxml2.dylib; sourceTree = "<absolute>"; };
 		BFBF3AA009B681F500545F5E /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		BFBF3AB809B6827D00545F5E /* cfunix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cfunix.h; sourceTree = "<group>"; };
@@ -5612,7 +5510,6 @@
 		CE286C110964196C001A4573 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = Binaries/English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE289B020D00ADBA004F0A93 /* Mail.scpt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.scpt; name = Mail.scpt; path = Binaries/Mail.scpt; sourceTree = "<group>"; };
 		CE2AC2671830BEFB00C2B67B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ThickSlab.xib; sourceTree = "<group>"; };
-		CE2BE05D1524344D00AE6156 /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Growl.framework; path = Binaries/Growl.framework; sourceTree = "<group>"; };
 		CE2BFE56153B177C00037546 /* iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPad.png; sourceTree = "<group>"; };
 		CE3368571595888D00167676 /* WebPortalDB 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 7.xcdatamodel"; sourceTree = "<group>"; };
 		CE373AA8173FEBBB009F60AC /* WADOXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WADOXML.h; sourceTree = "<group>"; };
@@ -5952,6 +5849,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				716DFABD1DE5AAC200440401 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5959,11 +5857,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9966A2D91AE0B7E000F2D81A /* libCharLS.a in Frameworks */,
-				9966A2DA1AE0B7E000F2D81A /* libopenjp2.a in Frameworks */,
-				9966A2DB1AE0B7E000F2D81A /* Cocoa.framework in Frameworks */,
-				9966A2DC1AE0B7E000F2D81A /* Accelerate.framework in Frameworks */,
-				9966A2DD1AE0B7E000F2D81A /* IOKit.framework in Frameworks */,
+				716DFABC1DE5AAB800440401 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5978,8 +5872,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9932BC6F1CC7C9120062BB0B /* libcrypto.0.9.8.dylib in Frameworks */,
-				9932BC701CC7C9120062BB0B /* libssl.0.9.8.dylib in Frameworks */,
 				994FABF91CED3E1000980A15 /* libgdcmcharls.a in Frameworks */,
 				994FABFA1CED3E1000980A15 /* libgdcmCommon.a in Frameworks */,
 				994FABFB1CED3E1000980A15 /* libgdcmDICT.a in Frameworks */,
@@ -6014,6 +5906,7 @@
 				993DB4A01C0243D50084218A /* FeedbackReporter.framework in Frameworks */,
 				4362180C1A2F375C006FA27A /* libvtkFiltersHyperTree-6.2.a in Frameworks */,
 				4362181E1A2F375C006FA27A /* libvtkImagingColor-6.2.a in Frameworks */,
+				71C99EA61D1A81FE00208F3B /* Growl.framework in Frameworks */,
 				436218301A2F375C006FA27A /* libvtkIOExodus-6.2.a in Frameworks */,
 				436217721A2F3730006FA27A /* libITKOptimizers-4.7.a in Frameworks */,
 				4362180E1A2F375C006FA27A /* libvtkFiltersModeling-6.2.a in Frameworks */,
@@ -6067,6 +5960,7 @@
 				436218531A2F375D006FA27A /* libvtkRenderingLabel-6.2.a in Frameworks */,
 				436217FA1A2F375C006FA27A /* libvtkCommonDataModel-6.2.a in Frameworks */,
 				436218241A2F375C006FA27A /* libvtkImagingMorphological-6.2.a in Frameworks */,
+				BFBF3AA109B681F500545F5E /* libcrypto.a in Frameworks */,
 				436218041A2F375C006FA27A /* libvtkFiltersAMR-6.2.a in Frameworks */,
 				4362181B1A2F375C006FA27A /* libvtkgl2ps-6.2.a in Frameworks */,
 				436217501A2F3730006FA27A /* libITKIOBMP-4.7.a in Frameworks */,
@@ -6087,6 +5981,7 @@
 				4362174F1A2F3730006FA27A /* libITKIOBioRad-4.7.a in Frameworks */,
 				436218231A2F375C006FA27A /* libvtkImagingMath-6.2.a in Frameworks */,
 				436217401A2F3730006FA27A /* libitkdouble-conversion-4.7.a in Frameworks */,
+				BFBF3AA209B681F500545F5E /* libssl.a in Frameworks */,
 				4362182E1A2F375C006FA27A /* libvtkIOCore-6.2.a in Frameworks */,
 				436218151A2F375C006FA27A /* libvtkFiltersStatistics-6.2.a in Frameworks */,
 				BFBF3AA309B681F500545F5E /* libxml2.dylib in Frameworks */,
@@ -6162,7 +6057,6 @@
 				4362180F1A2F375C006FA27A /* libvtkFiltersParallel-6.2.a in Frameworks */,
 				436217671A2F3730006FA27A /* libITKIOTransformMatlab-4.7.a in Frameworks */,
 				431BCC401A24AC94002B36FB /* libtiff.a in Frameworks */,
-				CE2BE05E1524344D00AE6156 /* Growl.framework in Frameworks */,
 				436218551A2F375D006FA27A /* libvtkRenderingLOD-6.2.a in Frameworks */,
 				436218261A2F375C006FA27A /* libvtkImagingStatistics-6.2.a in Frameworks */,
 				436218291A2F375C006FA27A /* libvtkInfovisLayout-6.2.a in Frameworks */,
@@ -6235,7 +6129,7 @@
 				59FB643B1230EE4100EBA136 /* libmingOsiriX.a in Frameworks */,
 				59FB643C1230EE4100EBA136 /* libpng12OsiriX.a in Frameworks */,
 				AB451871149F4B2C006674BF /* libCharLS.a in Frameworks */,
-				9966A2E81AE0C56900F2D81A /* HorosDCM.framework in Frameworks */,
+				7152C52F1D1D7BFF005526D8 /* HorosDCM.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6310,6 +6204,8 @@
 				7E54303C07A05E7100500ABB /* DiscRecordingUI.framework */,
 				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
 				AB6D320C05B3159D0002F793 /* IOKit.framework */,
+				BFBF3A9D09B681F500545F5E /* libcrypto.a */,
+				BFBF3A9E09B681F500545F5E /* libssl.a */,
 				BFBF3A9F09B681F500545F5E /* libxml2.dylib */,
 				BFBF3AA009B681F500545F5E /* libz.dylib */,
 				AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */,
@@ -6328,7 +6224,7 @@
 			children = (
 				993DB49F1C0243D50084218A /* FeedbackReporter.framework */,
 				439B8C131A19CCC300F396D7 /* 3DconnexionClient.framework */,
-				CE2BE05D1524344D00AE6156 /* Growl.framework */,
+				71C99EA51D1A81FE00208F3B /* Growl.framework */,
 				CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */,
 				CE6693C60AF551210073D923 /* libxerces-c.27.dylib */,
 			);
@@ -6384,7 +6280,7 @@
 		29B97314FDCFA39411CA2CEA /* OsiriX */ = {
 			isa = PBXGroup;
 			children = (
-				99BCCAC41DD900E200FDBD04 /* OpenSSL */,
+				71C99EA41D1A7E9F00208F3B /* Info.plist */,
 				434B461A1A19F4E4008CF8CF /* OpenJPEG */,
 				AB451801149F44DD006674BF /* JPEG-LS (CharLS) */,
 				84A9D44712F7F8BE00DA1F99 /* KDU SDK */,
@@ -6403,7 +6299,6 @@
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				4A2F58D9078D119600C514A2 /* Dependencies */,
 				A98795CA16DB9FD100926023 /* Unit Tests */,
-				84704DBF181ACF440061B1BF /* Rules.plist */,
 				9966A1B11AE0A47600F2D81A /* HorosAPI-Info.plist */,
 				9966A1B21AE0A66C00F2D81A /* OsiriXAPI-Info.plist */,
 			);
@@ -6417,7 +6312,7 @@
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				59F1A4C7104BA5BE009E3215 /* HorosHeaders.mm */,
 				9966A19E1AE09B6F00F2D81A /* OsiriXHeaders.mm */,
-				9966A2E51AE0B9A200F2D81A /* OsiriXDCMFrameworkHeaders.mm */,
+				716DFAB81DE5A9F700440401 /* OsiriXDCMFrameworkHeaders.mm */,
 				32E422140C97301600E193CA /* altivecFunctions.h */,
 				434B46151A19F2A3008CF8CF /* options.h */,
 			);
@@ -6508,7 +6403,6 @@
 				CE3F991A0C84724B00CB38F1 /* WaitRendering.xib */,
 				CE3F993E0C84724B00CB38F1 /* XMLViewer.xib */,
 				ABD7BC2E063EFD8D00E24B0E /* BlackBody.plist */,
-				ABBFDA3F063480490011BD0A /* Deployment-Info.plist */,
 				ABD7BC4C063F00A900E24B0E /* Flow.plist */,
 				CEBD3E0C14B9EDE300FBDF08 /* French.plist */,
 				CEBD3E0D14B9EDE300FBDF08 /* Perfusion.plist */,
@@ -6543,6 +6437,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				716DFABB1DE5AAB800440401 /* Cocoa.framework */,
 				59FB64331230EE2F00EBA136 /* Ming */,
 				CE11138608EDD5E2005B15E1 /* ITKLibs */,
 				CE11138108EDD5CE005B15E1 /* VTKLibs */,
@@ -6553,8 +6448,6 @@
 				999901A31B52B24200921EA1 /* libxerces-c.27.dylib */,
 				436217891A2F3741006FA27A /* libjpeg.a */,
 				431BCC3F1A24AC94002B36FB /* libtiff.a */,
-				9932BC6B1CC7C8EB0062BB0B /* libcrypto.0.9.8.dylib */,
-				9932BC6C1CC7C8EB0062BB0B /* libssl.0.9.8.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -6878,6 +6771,25 @@
 			name = Ming;
 			sourceTree = "<group>";
 		};
+		7152C52D1D1D2922005526D8 /* Deprecated N2Layout (devs should use NSStackView instead) */ = {
+			isa = PBXGroup;
+			children = (
+				AB10FAE31129338A009EB238 /* N2View.h */,
+				AB10FAE41129338A009EB238 /* N2View.mm */,
+				AB10FAE51129338A009EB238 /* N2Panel.h */,
+				AB10FAE61129338A009EB238 /* N2Panel.mm */,
+				AB10FAE71129338A009EB238 /* N2Window.h */,
+				AB10FAE81129338A009EB238 /* N2Window.mm */,
+				AB10FAE91129338A009EB238 /* N2Layout.h */,
+				AB10FAEA1129338A009EB238 /* N2Layout.mm */,
+				AB10FAEB1129338A009EB238 /* N2ColumnLayout.h */,
+				AB10FAEC1129338A009EB238 /* N2ColumnLayout.mm */,
+				AB10FAED1129338A009EB238 /* N2CellDescriptor.h */,
+				AB10FAEE1129338A009EB238 /* N2CellDescriptor.mm */,
+			);
+			name = "Deprecated N2Layout (devs should use NSStackView instead)";
+			sourceTree = "<group>";
+		};
 		71AA5A201611F1EB006A6A5F /* JSON */ = {
 			isa = PBXGroup;
 			children = (
@@ -7160,15 +7072,6 @@
 			name = MigrationAssitant;
 			sourceTree = "<group>";
 		};
-		99BCCAC41DD900E200FDBD04 /* OpenSSL */ = {
-			isa = PBXGroup;
-			children = (
-				99BCCAC01DD900D800FDBD04 /* libcrypto.0.9.8.dylib */,
-				99BCCAC11DD900D800FDBD04 /* libssl.0.9.8.dylib */,
-			);
-			name = OpenSSL;
-			sourceTree = "<group>";
-		};
 		A90C722016E4D8AE0060302F /* Data */ = {
 			isa = PBXGroup;
 			children = (
@@ -7371,20 +7274,9 @@
 		AB10FAE21129338A009EB238 /* Layout */ = {
 			isa = PBXGroup;
 			children = (
-				AB10FAE31129338A009EB238 /* N2View.h */,
-				AB10FAE41129338A009EB238 /* N2View.mm */,
-				AB10FAE51129338A009EB238 /* N2Panel.h */,
-				AB10FAE61129338A009EB238 /* N2Panel.mm */,
-				AB10FAE71129338A009EB238 /* N2Window.h */,
-				AB10FAE81129338A009EB238 /* N2Window.mm */,
 				84281FFD13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h */,
 				84281FFC13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m */,
-				AB10FAE91129338A009EB238 /* N2Layout.h */,
-				AB10FAEA1129338A009EB238 /* N2Layout.mm */,
-				AB10FAEB1129338A009EB238 /* N2ColumnLayout.h */,
-				AB10FAEC1129338A009EB238 /* N2ColumnLayout.mm */,
-				AB10FAED1129338A009EB238 /* N2CellDescriptor.h */,
-				AB10FAEE1129338A009EB238 /* N2CellDescriptor.mm */,
+				7152C52D1D1D2922005526D8 /* Deprecated N2Layout (devs should use NSStackView instead) */,
 			);
 			name = Layout;
 			sourceTree = "<group>";
@@ -9931,86 +9823,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9966A18F1AE099A400F2D81A /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9966A1901AE099A400F2D81A /* ViewerController.h in Headers */,
-				9966A1911AE099A400F2D81A /* options.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9966A1BA1AE0B7E000F2D81A /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9966A1BB1AE0B7E000F2D81A /* DCM.h in Headers */,
-				9966A1BC1AE0B7E000F2D81A /* DCMAttribute.h in Headers */,
-				9966A1BD1AE0B7E000F2D81A /* DCMAttributeTag.h in Headers */,
-				9966A1BE1AE0B7E000F2D81A /* DCMDataContainer.h in Headers */,
-				9966A1BF1AE0B7E000F2D81A /* DCMObject.h in Headers */,
-				9966A1C01AE0B7E000F2D81A /* DCMValueRepresentation.h in Headers */,
-				9966A1C11AE0B7E000F2D81A /* DCMTagDictionary.h in Headers */,
-				9966A1C21AE0B7E000F2D81A /* DCMTagForNameDictionary.h in Headers */,
-				9966A1C31AE0B7E000F2D81A /* DCMUIDs.h in Headers */,
-				9966A1C41AE0B7E000F2D81A /* DCMTransferSyntax.h in Headers */,
-				9966A1C51AE0B7E000F2D81A /* DCMCharacterSet.h in Headers */,
-				9966A1C61AE0B7E000F2D81A /* DCMSequenceAttribute.h in Headers */,
-				9966A1C71AE0B7E000F2D81A /* DCMPixelDataAttribute.h in Headers */,
-				9966A1C81AE0B7E000F2D81A /* DCMCalendarDate.h in Headers */,
-				9966A1C91AE0B7E000F2D81A /* jpegdatasrc.h in Headers */,
-				9966A1CA1AE0B7E000F2D81A /* DCMPixelDataAttributeJPEG8.h in Headers */,
-				9966A1CB1AE0B7E000F2D81A /* DCMPixelDataAttributeJPEG12.h in Headers */,
-				9966A1CC1AE0B7E000F2D81A /* DCMPixelDataAttributeJPEG16.h in Headers */,
-				9966A1CD1AE0B7E000F2D81A /* DCMNetServiceDelegate.h in Headers */,
-				9966A1CE1AE0B7E000F2D81A /* DCMLimitedObject.h in Headers */,
-				9966A1CF1AE0B7E000F2D81A /* DCMPresentationState.h in Headers */,
-				9966A1D01AE0B7E000F2D81A /* DCMEncapsulatedPDF.h in Headers */,
-				9966A1D11AE0B7E000F2D81A /* DCMAbstractSyntaxUID.h in Headers */,
-				9966A1D21AE0B7E000F2D81A /* jchuff12.h in Headers */,
-				9966A1D31AE0B7E000F2D81A /* jconfig12.h in Headers */,
-				9966A1D41AE0B7E000F2D81A /* jdct12.h in Headers */,
-				9966A1D51AE0B7E000F2D81A /* jdhuff12.h in Headers */,
-				9966A1D61AE0B7E000F2D81A /* jerror12.h in Headers */,
-				9966A1D71AE0B7E000F2D81A /* jinclude12.h in Headers */,
-				9966A1D81AE0B7E000F2D81A /* jlossls12.h in Headers */,
-				9966A1D91AE0B7E000F2D81A /* jlossy12.h in Headers */,
-				9966A1DA1AE0B7E000F2D81A /* jmemsys12.h in Headers */,
-				9966A1DB1AE0B7E000F2D81A /* jmorecfg12.h in Headers */,
-				9966A1DC1AE0B7E000F2D81A /* jpegint12.h in Headers */,
-				9966A1DD1AE0B7E000F2D81A /* jpeglib12.h in Headers */,
-				9966A1DE1AE0B7E000F2D81A /* jversion12.h in Headers */,
-				9966A1DF1AE0B7E000F2D81A /* jchuff16.h in Headers */,
-				9966A1E01AE0B7E000F2D81A /* jconfig16.h in Headers */,
-				9966A1E11AE0B7E000F2D81A /* jdct16.h in Headers */,
-				9966A1E21AE0B7E000F2D81A /* jdhuff16.h in Headers */,
-				9966A1E31AE0B7E000F2D81A /* jerror16.h in Headers */,
-				9966A1E41AE0B7E000F2D81A /* jinclude16.h in Headers */,
-				9966A1E51AE0B7E000F2D81A /* jlossls16.h in Headers */,
-				9966A1E61AE0B7E000F2D81A /* options.h in Headers */,
-				9966A1E71AE0B7E000F2D81A /* jlossy16.h in Headers */,
-				9966A1E81AE0B7E000F2D81A /* jmemsys16.h in Headers */,
-				9966A1E91AE0B7E000F2D81A /* jmorecfg16.h in Headers */,
-				9966A1EA1AE0B7E000F2D81A /* jpegint16.h in Headers */,
-				9966A1EB1AE0B7E000F2D81A /* jpeglib16.h in Headers */,
-				9966A1EC1AE0B7E000F2D81A /* jversion16.h in Headers */,
-				9966A1ED1AE0B7E000F2D81A /* jchuff8.h in Headers */,
-				9966A1EE1AE0B7E000F2D81A /* jconfig8.h in Headers */,
-				9966A1EF1AE0B7E000F2D81A /* jdct8.h in Headers */,
-				9966A1F01AE0B7E000F2D81A /* jdhuff8.h in Headers */,
-				9966A1F11AE0B7E000F2D81A /* jerror8.h in Headers */,
-				9966A1F21AE0B7E000F2D81A /* jinclude8.h in Headers */,
-				9966A1F31AE0B7E000F2D81A /* jlossls8.h in Headers */,
-				9966A1F41AE0B7E000F2D81A /* jlossy8.h in Headers */,
-				9966A1F51AE0B7E000F2D81A /* jmemsys8.h in Headers */,
-				9966A1F61AE0B7E000F2D81A /* jmorecfg8.h in Headers */,
-				9966A1F71AE0B7E000F2D81A /* jpegint8.h in Headers */,
-				9966A1F81AE0B7E000F2D81A /* jpeglib8.h in Headers */,
-				9966A1F91AE0B7E000F2D81A /* jversion8.h in Headers */,
-				9966A1FA1AE0B7E000F2D81A /* kdu_OsiriXSupport.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		AB28B42A05B7921E00A9906C /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -10925,11 +10737,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9966A1971AE099A400F2D81A /* Build configuration list for PBXNativeTarget "OsiriX API (Legacy)" */;
 			buildPhases = (
-				9966A18F1AE099A400F2D81A /* Headers */,
 				9966A1921AE099A400F2D81A /* Sources */,
 				9966A1941AE099A400F2D81A /* Frameworks */,
-				9966A1951AE099A400F2D81A /* Copy Headers and Create Horos.h */,
-				9966A1961AE099A400F2D81A /* Code Signing */,
 			);
 			buildRules = (
 			);
@@ -10944,8 +10753,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9966A2DE1AE0B7E000F2D81A /* Build configuration list for PBXNativeTarget "OsiriX DCM Framework (Legacy)" */;
 			buildPhases = (
-				9966A1BA1AE0B7E000F2D81A /* Headers */,
-				9966A1FB1AE0B7E000F2D81A /* Resources */,
 				9966A2001AE0B7E000F2D81A /* Sources */,
 				9966A2D81AE0B7E000F2D81A /* Frameworks */,
 			);
@@ -10998,7 +10805,12 @@
 			);
 			dependencies = (
 				99FE27FD1CF4A442003C32AB /* PBXTargetDependency */,
-				4A2ADDFD078D3C6200416F53 /* PBXTargetDependency */,
+				71C99E991D19A7FB00208F3B /* PBXTargetDependency */,
+				71C99E9B1D19A7FD00208F3B /* PBXTargetDependency */,
+				71C99E9D1D19A80000208F3B /* PBXTargetDependency */,
+				71C99E9F1D19A80200208F3B /* PBXTargetDependency */,
+				71C99EA11D19A80A00208F3B /* PBXTargetDependency */,
+				71C99EA31D19A80C00208F3B /* PBXTargetDependency */,
 				59BDEE6B117CB393007F1F2C /* PBXTargetDependency */,
 			);
 			name = Horos;
@@ -11046,7 +10858,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = NO;
 				LastTestingUpgradeCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = "The Horos Project";
 				TargetAttributes = {
 					59BDEC2C117C92B2007F1F2C = {
@@ -11093,7 +10905,6 @@
 				CEDF6C600B46FE99008B45B8 /* DICOMPrint */,
 				4A2F5931078D148300C514A2 /* Unzip Binaries */,
 				434B46111A19ECD6008CF8CF /* Cleanup Binaries */,
-				4A2F58D8078D118700C514A2 /* Build All Prerequisites */,
 				BF7486A50CC6AA5C00198387 /* Documentation */,
 				9966A18E1AE099A400F2D81A /* OsiriX API (Legacy) */,
 				9966A1B91AE0B7E000F2D81A /* OsiriX DCM Framework (Legacy) */,
@@ -11114,21 +10925,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */,
 				7E0B3AA00675274500908593 /* version.plist in Resources */,
 				BFEB76410677FDA700F242F3 /* nameDictionary.plist in Resources */,
 				BFEB76420677FDA700F242F3 /* tagDictionary.plist in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9966A1FB1AE0B7E000F2D81A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9966A1FC1AE0B7E000F2D81A /* DCM Framework_Prefix.pch in Resources */,
-				9966A1FD1AE0B7E000F2D81A /* version.plist in Resources */,
-				9966A1FE1AE0B7E000F2D81A /* nameDictionary.plist in Resources */,
-				9966A1FF1AE0B7E000F2D81A /* tagDictionary.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11583,7 +11382,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Binaries\"\nrm -rf GDCMLibs\nrm -rf GDCMHeaders\nrm -rf ITKLibs\nrm -rf VTKLibs\nrm -rf ITKHeaders\nrm -rf VTKHeaders\nrm -rf openjpeg\nrm -rf openssl\n\n# Get them out of the way so that we can unzip the defaults\ncd \"$SRCROOT\"\nrm -Rf options.h\nrm -Rf url.h\n\nexit 0\n";
+			shellScript = "cd \"$SRCROOT/Binaries\"\nrm -rf GDCMLibs\nrm -rf GDCMHeaders\nrm -rf ITKLibs\nrm -rf VTKLibs\nrm -rf VTKHeaders\nrm -rf openjpeg\n\nexit 0\n";
 		};
 		4A2F5930078D148300C514A2 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -11597,7 +11396,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo openssl.zip\nunzip -uo GDCMLibs.zip\nunzip -uo GDCMHeaders.zip\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo ITKLibs.zip\nunzip -uo VTKLibs.zip\nunzip -uo ITKHeaders.zip\nunzip -uo VTKHeaders.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo FeedbackReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo libPapyrusToolkit.a.zip\nunzip -uo Ming.zip\nunzip -uo weasis-portable.zip\nchmod -R 755 weasis\ncd \"$SRCROOT/Binaries/weasis\"\nif [ -d \"weasis-portable\" ]; then\n    cd \"weasis-portable\"\n    for f in *; do\n        rm -Rf \"../$f\"\n        mv \"$f\" ..\n    done\n    cd ..\n    rm -Rf weasis-portable\nfi\nfind . -name __MACOSX | xargs rm -Rf\n\ncd \"$SRCROOT/Binaries/ReportsToPDF/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\n# Don't overwrite customized files\n#cd \"$SRCROOT\"\n#if [ ! -f \"options.h\" ] ; then\n#    unzip -uo options.h.zip\n#fi\n#if [ ! -f \"url.h\" ] ; then\n#    unzip -uo url.h.zip\n#fi\n\nexit 0\n";
+			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo GDCMLibs.zip\nunzip -uo GDCMHeaders.zip\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo ITKLibs.zip\nunzip -uo VTKLibs.zip\nunzip -uo VTKHeaders.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo FeedbackReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo libPapyrusToolkit.a.zip\nunzip -uo Ming.zip\nunzip -uo weasis-portable.zip\nchmod -R 755 weasis\ncd \"$SRCROOT/Binaries/weasis\"\nif [ -d \"weasis-portable\" ]; then\n    cd \"weasis-portable\"\n    for f in *; do\n        rm -Rf \"../$f\"\n        mv \"$f\" ..\n    done\n    cd ..\n    rm -Rf weasis-portable\nfi\nfind . -name __MACOSX | xargs rm -Rf\n\ncd \"$SRCROOT/Binaries/ReportsToPDF/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\nexit 0";
 		};
 		59BDEDC8117CAB86007F1F2C /* Zip Horos Lite into Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -11669,34 +11468,6 @@
 			shellPath = /bin/sh;
 			shellScript = "mkdir -p \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources Disabled/\"\nexit 0";
 		};
-		9966A1951AE099A400F2D81A /* Copy Headers and Create Horos.h */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Headers and Create Horos.h";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /usr/bin/perl;
-			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen OsiriX_h, \">\", \"$destination/OsiriX.h\" or die $!;\n\nprint OsiriX_h \"#ifndef __OsiriX_API\\n#define __OsiriX_API\\n\\n\";\n\n\n# TODO TODO TODO\n# -------------------------------------------------------------------------------------------------- #\n\n# \"$ENV{PROJECT_DIR}/cocoahttpserver\",\n# \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/config\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmsr\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmdata\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/ofstd\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmnet,\n\n# -------------------------------------------------------------------------------------------------- #\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/nitrogen/Sources\", \"$ENV{PROJECT_DIR}/nitrogen/Sources/JSON\", $ENV{PROJECT_DIR} );\n\nforeach my $root (@fromdirs) {\n    opendir(DIR, $root);\n    \n    my @files = readdir(DIR);\n    foreach (@files) {\n        my $filename = $_;\n        next unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n        my @args = ( \"cp\", \"-fp\", \"$root/$filename\", \"$destination/\".(basename $filename) );\n        system(@args) == 0 or die \"Copy failed: $?\";\n        print OsiriX_h \"#include <OsiriXAPI/$filename>\\n\";\n    }\n    \n    closedir(DIR);\n}\n\nprint OsiriX_h \"\\n#endif\\n\";\nclose OsiriX_h;\n\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/Binaries/VTKHeaders\" );\n\nforeach my $root (@fromdirs) {\n    my @args = ( \"cp\", \"-Rfp\", \"$root\", \"$destination/\" );\n    system(@args) == 0 or die \"Copy failed: $?\";\n}\n\n\n\nchdir \"$ENV{TARGET_BUILD_DIR}/$ENV{FULL_PRODUCT_NAME}\";\nsymlink \"Versions/Current/Headers\", \"Headers\";\n\nexit 0;";
-		};
-		9966A1961AE099A400F2D81A /* Code Signing */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Code Signing";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "#test with codesign -vvv\n\nif [[ ${CONFIGURATION} == \"Deployment 32-bit\" ]]\nthen\n# -f means force to re-sign even if already signed\ncodesign -f -s \"Developer ID Application\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\necho \"code signed\"\nfi\n\nif [[ ${CONFIGURATION} == \"Deployment 64-bit\" ]]\nthen\n# -f means force to re-sign even if already signed\ncodesign -f -s \"Developer ID Application\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\necho \"code signed\"\nfi";
-		};
 		AB0F3A3F1046BE51004129DD /* Copy Headers and Create Horos.h */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -11709,7 +11480,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /usr/bin/perl;
-			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen Horos_h, \">\", \"$destination/Horos.h\" or die $!;\n\nprint Horos_h \"#ifndef __Horos_API\\n#define __Horos_API\\n\\n\";\n\n\n# TODO TODO TODO\n# -------------------------------------------------------------------------------------------------- #\n\n# \"$ENV{PROJECT_DIR}/cocoahttpserver\",\n# \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/config\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmsr\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmdata\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/ofstd\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmnet,\n\n# -------------------------------------------------------------------------------------------------- #\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/nitrogen/Sources\", \"$ENV{PROJECT_DIR}/nitrogen/Sources/JSON\", $ENV{PROJECT_DIR} );\n\nforeach my $root (@fromdirs) {\n\topendir(DIR, $root);\n\t\n\tmy @files = readdir(DIR);\n\tforeach (@files) {\n\t\tmy $filename = $_;\n\t\tnext unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n\t\tmy @args = ( \"cp\", \"-fp\", \"$root/$filename\", \"$destination/\".(basename $filename) );\n\t\tsystem(@args) == 0 or die \"Copy failed: $?\";\n\t\tprint Horos_h \"#include <HorosAPI/$filename>\\n\";\n\t}\n\t\n\tclosedir(DIR);\n}\n\nprint Horos_h \"\\n#endif\\n\";\nclose Horos_h;\n\n\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/Binaries/VTKHeaders\" );\n\nforeach my $root (@fromdirs) {\n    my @args = ( \"cp\", \"-Rfp\", \"$root\", \"$destination/\" );\n    system(@args) == 0 or die \"Copy failed: $?\";\n}\n\n\n\n\nchdir \"$ENV{TARGET_BUILD_DIR}/$ENV{FULL_PRODUCT_NAME}\";\nsymlink \"Versions/Current/Headers\", \"Headers\";\n\nexit 0;\n\n";
+			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen Horos_h, \">\", \"$destination/Horos.h\" or die $!;\n\nprint Horos_h \"#ifndef __Horos_API\\n#define __Horos_API\\n\\n\";\n\n\n# TODO TODO TODO\n# -------------------------------------------------------------------------------------------------- #\n\n# \"$ENV{PROJECT_DIR}/cocoahttpserver\",\n# \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/config\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmsr\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmdata\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/ofstd\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmnet,\n\n# -------------------------------------------------------------------------------------------------- #\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/nitrogen/Sources\", \"$ENV{PROJECT_DIR}/nitrogen/Sources/JSON\", $ENV{PROJECT_DIR} );\n\nforeach my $root (@fromdirs) {\n    opendir(DIR, $root);\n    \n    my @files = readdir(DIR);\n    foreach (@files) {\n        my $filename = $_;\n        next unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n        my @args = ( \"cp\", \"-fp\", \"$root/$filename\", \"$destination/\".(basename $filename) );\n        system(@args) == 0 or die \"Copy failed: $?\";\n        print Horos_h \"#include <HorosAPI/$filename>\\n\";\n    }\n    \n    closedir(DIR);\n}\n\nprint Horos_h \"\\n#endif\\n\";\nclose Horos_h;\n\n\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/Binaries/VTKHeaders\" );\n\nforeach my $root (@fromdirs) {\n    my @args = ( \"cp\", \"-Rfp\", \"$root\", \"$destination/\" );\n    system(@args) == 0 or die \"Copy failed: $?\";\n}\n\n\n\n\nchdir \"$ENV{TARGET_BUILD_DIR}/$ENV{FULL_PRODUCT_NAME}\";\nsymlink \"Versions/Current/Headers\", \"Headers\";\n\nexit 0;\n";
 		};
 		ABF307FB1443330100BBC96A /* Copy odt2pdf script */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -11764,7 +11535,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#test with codesign -vvv\n\nif [[ ${CONFIGURATION} == \"Deployment 32-bit\" ]]\nthen\n# -f means force to re-sign even if already signed\ncodesign -f -s \"Developer ID Application\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\necho \"code signed\"\nfi\n\nif [[ ${CONFIGURATION} == \"Deployment 64-bit\" ]]\nthen\n# -f means force to re-sign even if already signed\ncodesign -f -s \"Developer ID Application\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\necho \"code signed\"\nfi";
+			shellScript = "#test with codesign -vvv\nif [[ ${CONFIGURATION} == \"Release\" ]]; then\n# -f means force to re-sign even if already signed\ncodesign -f -s \"Developer ID Application\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\necho \"code signed\"\nfi";
 		};
 		CED88262125064F70085A861 /* CodeSigning */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -11778,7 +11549,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#test with codesign -vvv\n\nchmod -R 777 \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\n\nif [[ ${CONFIGURATION} == \"Deployment 32-bit\" ]]\nthen\n# -f means force to re-sign even if already signed\ncodesign -f -s \"Developer ID Application\" \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/HorosAPI.framework\"\ncodesign --resource-rules Rules.plist -f -s \"Developer ID Application\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\necho \"code signed\"\nfi\n\nif [[ ${CONFIGURATION} == \"Deployment 64-bit\" ]]\nthen\n# -f means force to re-sign even if already signed\ncodesign -f -s \"Developer ID Application\" \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/HorosAPI.framework\"\ncodesign --resource-rules Rules.plist -f -s \"Developer ID Application\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\necho \"code signed\"\nfi";
+			shellScript = "#test with codesign -vvv\n\nchmod -R 777 \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\n\nif [[ ${CONFIGURATION} == \"Release\" ]]; then\n# -f means force to re-sign even if already signed\ncodesign -f -s \"Developer ID Application\" \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/HorosAPI.framework\"\ncodesign --resource-rules Rules.plist -f -s \"Developer ID Application\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\necho \"code signed\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -12027,7 +11798,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9966A2E61AE0B9A200F2D81A /* OsiriXDCMFrameworkHeaders.mm in Sources */,
+				716DFABA1DE5AA0A00440401 /* OsiriXDCMFrameworkHeaders.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13366,50 +13137,45 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		4A2ADDFD078D3C6200416F53 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 4A2F58D8078D118700C514A2 /* Build All Prerequisites */;
-			targetProxy = 4A2ADDFC078D3C6200416F53 /* PBXContainerItemProxy */;
-		};
-		4A2F590D078D124B00C514A2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7E0B3A3E067526CD00908593 /* Horos DCM Framework */;
-			targetProxy = 4A2F590C078D124B00C514A2 /* PBXContainerItemProxy */;
-		};
 		59BDEE6B117CB393007F1F2C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 59BDEC2C117C92B2007F1F2C /* Horos Launcher */;
 			targetProxy = 59BDEE6A117CB393007F1F2C /* PBXContainerItemProxy */;
 		};
-		9966A19D1AE09AFC00F2D81A /* PBXTargetDependency */ = {
+		71C99E991D19A7FB00208F3B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AB0F3A2B1046BD2B004129DD /* Horos API */;
+			targetProxy = 71C99E981D19A7FB00208F3B /* PBXContainerItemProxy */;
+		};
+		71C99E9B1D19A7FD00208F3B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7E0B3A3E067526CD00908593 /* Horos DCM Framework */;
+			targetProxy = 71C99E9A1D19A7FD00208F3B /* PBXContainerItemProxy */;
+		};
+		71C99E9D1D19A80000208F3B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 9966A18E1AE099A400F2D81A /* OsiriX API (Legacy) */;
-			targetProxy = 9966A19C1AE09AFC00F2D81A /* PBXContainerItemProxy */;
+			targetProxy = 71C99E9C1D19A80000208F3B /* PBXContainerItemProxy */;
 		};
-		9966A2E41AE0B8AF00F2D81A /* PBXTargetDependency */ = {
+		71C99E9F1D19A80200208F3B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 9966A1B91AE0B7E000F2D81A /* OsiriX DCM Framework (Legacy) */;
-			targetProxy = 9966A2E31AE0B8AF00F2D81A /* PBXContainerItemProxy */;
+			targetProxy = 71C99E9E1D19A80200208F3B /* PBXContainerItemProxy */;
+		};
+		71C99EA11D19A80A00208F3B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AB724F300ADE6ECB00A212A0 /* Decompress */;
+			targetProxy = 71C99EA01D19A80A00208F3B /* PBXContainerItemProxy */;
+		};
+		71C99EA31D19A80C00208F3B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CEDF6C600B46FE99008B45B8 /* DICOMPrint */;
+			targetProxy = 71C99EA21D19A80C00208F3B /* PBXContainerItemProxy */;
 		};
 		99FE27FD1CF4A442003C32AB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 4A2F5931078D148300C514A2 /* Unzip Binaries */;
 			targetProxy = 99FE27FC1CF4A442003C32AB /* PBXContainerItemProxy */;
-		};
-		AB0F3A421046BFB9004129DD /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AB0F3A2B1046BD2B004129DD /* Horos API */;
-			targetProxy = AB0F3A411046BFB9004129DD /* PBXContainerItemProxy */;
-		};
-		AB72503C0ADE6F7000A212A0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AB724F300ADE6ECB00A212A0 /* Decompress */;
-			targetProxy = AB72503B0ADE6F7000A212A0 /* PBXContainerItemProxy */;
-		};
-		CE8DF1260B470DC50035C230 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CEDF6C600B46FE99008B45B8 /* DICOMPrint */;
-			targetProxy = CE8DF1250B470DC50035C230 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -13929,11 +13695,11 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		434B46141A19ECD6008CF8CF /* Development */ = {
+		434B46141A19ECD6008CF8CF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_ALTIVEC_EXTENSIONS = YES;
@@ -13946,7 +13712,6 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				HEADER_SEARCH_PATHS = Binaries;
 				OTHER_CFLAGS = (
 					"-falign-functions=32",
 					"-falign-labels=32",
@@ -13956,7 +13721,6 @@
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = "Cleanup Binaries";
-				SDKROOT = macosx10.12;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -13964,50 +13728,62 @@
 					"-Wno-unknown-pragmas",
 				);
 			};
-			name = Development;
+			name = Debug;
 		};
-		43E98D191A32BF6A001B9E51 /* Deployment */ = {
+		43E98D191A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_RESOURCE_RULES_PATH = Rules.plist;
-				COPY_PHASE_STRIP = NO;
+				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					.,
+					Binaries,
+					"$(BUILT_PRODUCTS_DIR)",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = NO;
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				HEADER_SEARCH_PATHS = (
+					/usr/local/include,
 					/usr/include/libxml2,
 					AYDicomPrint,
 				);
 				IBC_FLATTEN_NIBS = NO;
+				LIBRARY_SEARCH_PATHS = (
+					AYDicomPrint,
+					Binaries/CharLS,
+					Binaries/openjpeg,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				OTHER_CFLAGS = "-fvisibility=default";
-				OTHER_CODE_SIGN_FLAGS = "";
-				OTHER_LDFLAGS = "";
-				SDKROOT = macosx10.12;
+				SDKROOT = macosx;
 			};
-			name = Deployment;
+			name = Release;
 		};
-		43E98D1A1A32BF6A001B9E51 /* Deployment */ = {
+		43E98D1A1A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -14015,61 +13791,35 @@
 				CLANG_WARN_EMPTY_BODY = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					.,
-					Binaries,
-					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-					"$(SRCROOT)",
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/build/Development\"",
-					"$(PROJECT_DIR)/build/Development",
-					"$(PROJECT_DIR)/Binaries",
-				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_FAST_MATH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_OPTIMIZATION_LEVEL = fast;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Horos_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				HEADER_SEARCH_PATHS = (
-					AYDicomPrint,
-					/usr/include/libxml2,
-					/usr/local/include,
-				);
 				IBC_FLATTEN_NIBS = YES;
-				INFOPLIST_FILE = "Deployment-Info.plist";
+				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				KEEP_PRIVATE_EXTERNS = YES;
 				LIBRARY_SEARCH_PATHS = (
-					AYDicomPrint,
-					"$(SRCROOT)/Binaries/VTKLibs",
-					"$(SRCROOT)/Binaries/ITKLibs",
-					"$(SRCROOT)/Binaries",
-					"$(SRCROOT)/Binaries/CharLS",
-					"$(SRCROOT)/Binaries/openjpeg",
-					"$(PROJECT_DIR)/Binaries/LibTiff",
-					"$(PROJECT_DIR)/Binaries/ITKLibs",
-					"$(PROJECT_DIR)/Binaries/VTKLibs",
-					"$(PROJECT_DIR)/Binaries/CharLS",
-					"$(PROJECT_DIR)/AYDicomPrint",
-					"$(PROJECT_DIR)/Binaries/GDCMLibs",
-					"$(PROJECT_DIR)/Binaries/openssl/libraries",
-					/usr/local/lib,
+					"$(inherited)",
+					Binaries/GDCMLibs,
+					Binaries/ITKLibs,
+					Binaries/VTKLibs,
+					Binaries/LibTiff,
+					Binaries/openssl/libs,
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
-					"-Wno-deprecated",
 					"-no-pedantic",
 				);
 				OTHER_LDFLAGS = (
@@ -14082,18 +13832,18 @@
 					"-sectcreate",
 					__TEXT,
 					__info_plist,
-					"Deployment-Info.plist",
+					Info.plist,
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.horosproject.horos;
 				PRODUCT_NAME = Horos;
-				SDKROOT = macosx10.12;
 				STRIP_STYLE = debugging;
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/GDCMHeaders $(SRCROOT)/Binaries/ITKHeaders $(SRCROOT)/Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff $(SRCROOT)/Binaries/openssl/include";
+				USER_HEADER_SEARCH_PATHS = "Binaries/GDCMHeaders Binaries/ITKHeaders Binaries/VTKHeaders Binaries/openjpeg/** Binaries/LibTiff Binaries/openssl/include";
 				WARNING_CFLAGS = "-no-pedantic";
 			};
-			name = Deployment;
+			name = Release;
 		};
-		43E98D1B1A32BF6A001B9E51 /* Deployment */ = {
+		43E98D1B1A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -14101,10 +13851,6 @@
 				CLANG_CXX_LIBRARY = "libstdc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Binaries",
-				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -14118,29 +13864,22 @@
 					"-framework",
 					AppKit,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.horosproject.horos-launcher";
 				PRODUCT_NAME = "Horos Launcher";
-				SDKROOT = macosx10.12;
 				SKIP_INSTALL = YES;
 			};
-			name = Deployment;
+			name = Release;
 		};
-		43E98D1C1A32BF6A001B9E51 /* Deployment */ = {
+		43E98D1C1A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = "";
 				DEAD_CODE_STRIPPING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SYSTEM_LIBRARY_DIR)/Frameworks",
-					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-					Binaries,
-					"$(SRCROOT)/Binaries",
-				);
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -14149,34 +13888,25 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCM Framework/DCM Framework_Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = Binaries/openjpeg;
 				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					Binaries/openjpeg,
-					"$(PROJECT_DIR)/Binaries/VTKLibs",
-					"$(PROJECT_DIR)/Binaries/LibTiff",
-					"$(PROJECT_DIR)/Binaries/CharLS",
-				);
 				OTHER_LDFLAGS = (
 					"-seg1addr",
 					0x20000000,
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.dcmframework;
 				PRODUCT_NAME = HorosDCM;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
-				SDKROOT = macosx10.12;
-				SECTORDER_FLAGS = "";
 				SKIP_INSTALL = YES;
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/openjpeg/**";
 			};
-			name = Deployment;
+			name = Release;
 		};
-		43E98D1D1A32BF6A001B9E51 /* Deployment */ = {
+		43E98D1D1A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_ALTIVEC_EXTENSIONS = YES;
@@ -14189,7 +13919,6 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				HEADER_SEARCH_PATHS = Binaries;
 				OTHER_CFLAGS = (
 					"-falign-functions=32",
 					"-falign-labels=32",
@@ -14199,7 +13928,6 @@
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = "Unzip Binaries";
-				SDKROOT = macosx10.12;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -14207,13 +13935,13 @@
 					"-Wno-unknown-pragmas",
 				);
 			};
-			name = Deployment;
+			name = Release;
 		};
-		43E98D1E1A32BF6A001B9E51 /* Deployment */ = {
+		43E98D1E1A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_ALTIVEC_EXTENSIONS = YES;
@@ -14226,7 +13954,6 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				HEADER_SEARCH_PATHS = Binaries;
 				OTHER_CFLAGS = (
 					"-falign-functions=32",
 					"-falign-labels=32",
@@ -14236,7 +13963,6 @@
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = "Cleanup Binaries";
-				SDKROOT = macosx10.12;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -14244,73 +13970,30 @@
 					"-Wno-unknown-pragmas",
 				);
 			};
-			name = Deployment;
+			name = Release;
 		};
-		43E98D1F1A32BF6A001B9E51 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				GCC_ALTIVEC_EXTENSIONS = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_CPU = "";
-				GCC_MODEL_PPC64 = NO;
-				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = 1;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_SHADOW = NO;
-				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				HEADER_SEARCH_PATHS = Binaries;
-				OTHER_CFLAGS = (
-					"-falign-functions=32",
-					"-falign-labels=32",
-					"-falign-loops=32",
-					"-falign-jumps=32",
-				);
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "Build All Prerequisites";
-				SDKROOT = macosx10.12;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = Deployment;
-		};
-		43E98D201A32BF6A001B9E51 /* Deployment */ = {
+		43E98D201A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				PRODUCT_NAME = Documentation;
-				SDKROOT = macosx10.12;
 			};
-			name = Deployment;
+			name = Release;
 		};
-		43E98D211A32BF6A001B9E51 /* Deployment */ = {
+		43E98D211A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
 				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = YES;
 				DEPLOYMENT_LOCATION = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(FRAMEWORK_SEARCH_PATHS)",
-					"$(SRCROOT)",
-					"$(PROJECT_DIR)/build/Development",
-					"$(PROJECT_DIR)/Binaries",
-				);
 				GCC_FAST_MATH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -14318,20 +14001,10 @@
 				GCC_PREFIX_HEADER = Decompres_Prefix.pch;
 				GCC_UNROLL_LOOPS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
-					AYDicomPrint,
-					/usr/local/include,
-				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/Binaries/Ming\"",
-					"\"$(SRCROOT)/Binaries/KDU SDK\"",
-					"\"$(SRCROOT)/Binaries/CharLS\"",
-					"\"$(SRCROOT)/Binaries/VTKLibs\"",
-					"$(PROJECT_DIR)/Binaries/openjpeg",
-					"$(PROJECT_DIR)/Binaries/GDCMLibs",
+					Binaries/GDCMLibs,
+					Binaries/Ming,
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -14341,38 +14014,26 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = Decompress;
-				SDKROOT = macosx10.12;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
 				SYMROOT = build;
 				USER_HEADER_SEARCH_PATHS = "Binaries/GDCMHeaders Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
 			};
-			name = Deployment;
+			name = Release;
 		};
-		43E98D221A32BF6A001B9E51 /* Deployment */ = {
+		43E98D221A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
 				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(FRAMEWORK_SEARCH_PATHS)",
-					"$(SRCROOT)",
-				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					Binaries/LibTiff,
-					AYDicomPrint,
-				);
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -14380,27 +14041,22 @@
 					AppKit,
 				);
 				PRODUCT_NAME = DICOMPrint;
-				SDKROOT = macosx10.12;
 				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				VALID_ARCHS = i386;
 			};
-			name = Deployment;
+			name = Release;
 		};
-		43E98D231A32BF6A001B9E51 /* Deployment */ = {
+		43E98D231A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Binaries",
-				);
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -14417,13 +14073,13 @@
 					"-framework",
 					AppKit,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.horosproject.$(PRODUCT_NAME:identifier)";
 				PRODUCT_NAME = HorosAPI;
-				SDKROOT = macosx10.12;
 				SKIP_INSTALL = YES;
 			};
-			name = Deployment;
+			name = Release;
 		};
-		59BDEC30117C92B3007F1F2C /* Development */ = {
+		59BDEC30117C92B3007F1F2C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -14431,10 +14087,6 @@
 				CLANG_CXX_LIBRARY = "libstdc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Binaries",
-				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -14448,28 +14100,21 @@
 					"-framework",
 					AppKit,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.horosproject.horos-launcher";
 				PRODUCT_NAME = "Horos Launcher";
-				SDKROOT = macosx10.12;
 				SKIP_INSTALL = YES;
 			};
-			name = Development;
+			name = Debug;
 		};
-		7E76BEC1085757B60073649A /* Development */ = {
+		7E76BEC1085757B60073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SYSTEM_LIBRARY_DIR)/Frameworks",
-					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-					Binaries,
-					"$(SRCROOT)/Binaries",
-				);
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -14478,65 +14123,21 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCM Framework/DCM Framework_Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = Binaries/openjpeg;
 				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					Binaries/openjpeg,
-					"$(PROJECT_DIR)/Binaries/VTKLibs",
-					"$(PROJECT_DIR)/Binaries/LibTiff",
-					"$(PROJECT_DIR)/Binaries/CharLS",
-				);
 				OTHER_LDFLAGS = (
 					"-seg1addr",
 					0x20000000,
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.dcmframework;
 				PRODUCT_NAME = HorosDCM;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
-				SDKROOT = macosx10.12;
-				SECTORDER_FLAGS = "";
 				SKIP_INSTALL = YES;
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/openjpeg/**";
 			};
-			name = Development;
+			name = Debug;
 		};
-		7E76BEC4085757B60073649A /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				GCC_ALTIVEC_EXTENSIONS = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_CPU = "";
-				GCC_MODEL_PPC64 = NO;
-				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = 1;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_SHADOW = NO;
-				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				HEADER_SEARCH_PATHS = Binaries;
-				OTHER_CFLAGS = (
-					"-falign-functions=32",
-					"-falign-labels=32",
-					"-falign-loops=32",
-					"-falign-jumps=32",
-				);
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "Build All Prerequisites";
-				SDKROOT = macosx10.12;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = Development;
-		};
-		7E76BEC7085757B70073649A /* Development */ = {
+		7E76BEC7085757B70073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -14544,59 +14145,33 @@
 				CLANG_WARN_EMPTY_BODY = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					.,
-					Binaries,
-					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-					"$(SRCROOT)",
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/build/Development\"",
-					"$(PROJECT_DIR)/build/Development",
-					"$(PROJECT_DIR)/Binaries",
-				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Horos_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
 				GCC_WARN_MISSING_PARENTHESES = NO;
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				HEADER_SEARCH_PATHS = (
-					AYDicomPrint,
-					/usr/include/libxml2,
-					/usr/local/include,
-				);
 				IBC_FLATTEN_NIBS = NO;
-				INFOPLIST_FILE = "Deployment-Info.plist";
+				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_SEARCH_PATHS = (
-					AYDicomPrint,
-					"$(SRCROOT)/Binaries/VTKLibs",
-					"$(SRCROOT)/Binaries/ITKLibs",
-					"$(SRCROOT)/Binaries",
-					"$(SRCROOT)/Binaries/CharLS",
-					"$(SRCROOT)/Binaries/openjpeg",
-					"$(PROJECT_DIR)/Binaries/LibTiff",
-					"$(PROJECT_DIR)/Binaries/ITKLibs",
-					"$(PROJECT_DIR)/Binaries/VTKLibs",
-					"$(PROJECT_DIR)/Binaries/CharLS",
-					"$(PROJECT_DIR)/AYDicomPrint",
-					"$(PROJECT_DIR)/Binaries/GDCMLibs",
-					"$(PROJECT_DIR)/Binaries/openssl/libraries",
-					/usr/local/lib,
+					"$(inherited)",
+					Binaries/GDCMLibs,
+					Binaries/ITKLibs,
+					Binaries/VTKLibs,
+					Binaries/LibTiff,
+					Binaries/openssl/libs,
 				);
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
-					"-Wno-deprecated",
 					"-no-pedantic",
 				);
 				OTHER_LDFLAGS = (
@@ -14609,21 +14184,21 @@
 					"-sectcreate",
 					__TEXT,
 					__info_plist,
-					"Deployment-Info.plist",
+					Info.plist,
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.horosproject.horos;
 				PRODUCT_NAME = Horos;
-				SDKROOT = macosx10.12;
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/GDCMHeaders $(SRCROOT)/Binaries/ITKHeaders $(SRCROOT)/Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff $(SRCROOT)/Binaries/openssl/include";
+				USER_HEADER_SEARCH_PATHS = "Binaries/GDCMHeaders Binaries/ITKHeaders Binaries/VTKHeaders Binaries/openjpeg/** Binaries/LibTiff Binaries/openssl/include";
 				WARNING_CFLAGS = "-no-pedantic";
 			};
-			name = Development;
+			name = Debug;
 		};
-		7E76BED0085757B70073649A /* Development */ = {
+		7E76BED0085757B70073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_ALTIVEC_EXTENSIONS = YES;
@@ -14636,7 +14211,6 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				HEADER_SEARCH_PATHS = Binaries;
 				OTHER_CFLAGS = (
 					"-falign-functions=32",
 					"-falign-labels=32",
@@ -14646,7 +14220,6 @@
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = "Unzip Binaries";
-				SDKROOT = macosx10.12;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -14654,32 +14227,42 @@
 					"-Wno-unknown-pragmas",
 				);
 			};
-			name = Development;
+			name = Debug;
 		};
-		7E76BED9085757B70073649A /* Development */ = {
+		7E76BED9085757B70073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_RESOURCE_RULES_PATH = Rules.plist;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					.,
+					Binaries,
+					"$(BUILT_PRODUCTS_DIR)",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
@@ -14688,29 +14271,33 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
+					/usr/local/include,
 					/usr/include/libxml2,
 					AYDicomPrint,
 				);
 				IBC_FLATTEN_NIBS = NO;
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				LIBRARY_SEARCH_PATHS = (
+					AYDicomPrint,
+					Binaries/CharLS,
+					Binaries/openjpeg,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-fvisibility=default";
-				OTHER_CODE_SIGN_FLAGS = "";
-				OTHER_LDFLAGS = "";
-				SDKROOT = macosx10.12;
+				SDKROOT = macosx;
 			};
-			name = Development;
+			name = Debug;
 		};
-		9966A1981AE099A400F2D81A /* Development */ = {
+		9966A1981AE099A400F2D81A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -14727,23 +14314,22 @@
 					"-framework",
 					AppKit,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.osirix.$(PRODUCT_NAME:identifier)";
 				PRODUCT_NAME = OsiriXAPI;
-				SDKROOT = macosx10.12;
 				SKIP_INSTALL = YES;
 			};
-			name = Development;
+			name = Debug;
 		};
-		9966A1991AE099A400F2D81A /* Deployment */ = {
+		9966A1991AE099A400F2D81A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -14760,28 +14346,22 @@
 					"-framework",
 					AppKit,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.osirix.$(PRODUCT_NAME:identifier)";
 				PRODUCT_NAME = OsiriXAPI;
-				SDKROOT = macosx10.12;
 				SKIP_INSTALL = YES;
 			};
-			name = Deployment;
+			name = Release;
 		};
-		9966A2DF1AE0B7E000F2D81A /* Development */ = {
+		9966A2DF1AE0B7E000F2D81A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SYSTEM_LIBRARY_DIR)/Frameworks",
-					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-					Binaries,
-					"$(SRCROOT)/Binaries",
-				);
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -14790,45 +14370,31 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCM Framework/DCM Framework_Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = Binaries/openjpeg;
 				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					Binaries/openjpeg,
-					"$(PROJECT_DIR)/Binaries/VTKLibs",
-					"$(PROJECT_DIR)/Binaries/LibTiff",
-					"$(PROJECT_DIR)/Binaries/CharLS",
-				);
 				OTHER_LDFLAGS = (
 					"-seg1addr",
 					0x20000000,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.dcmframework;
 				PRODUCT_NAME = OsiriX;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
-				SDKROOT = macosx10.12;
 				SECTORDER_FLAGS = "";
 				SKIP_INSTALL = YES;
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/openjpeg/**";
 			};
-			name = Development;
+			name = Debug;
 		};
-		9966A2E01AE0B7E000F2D81A /* Deployment */ = {
+		9966A2E01AE0B7E000F2D81A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = "";
 				DEAD_CODE_STRIPPING = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SYSTEM_LIBRARY_DIR)/Frameworks",
-					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
-					Binaries,
-					"$(SRCROOT)/Binaries",
-				);
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -14837,42 +14403,30 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCM Framework/DCM Framework_Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = Binaries/openjpeg;
 				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					Binaries/openjpeg,
-					"$(PROJECT_DIR)/Binaries/VTKLibs",
-					"$(PROJECT_DIR)/Binaries/LibTiff",
-					"$(PROJECT_DIR)/Binaries/CharLS",
-				);
 				OTHER_LDFLAGS = (
 					"-seg1addr",
 					0x20000000,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.dcmframework;
 				PRODUCT_NAME = OsiriX;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
-				SDKROOT = macosx10.12;
 				SECTORDER_FLAGS = "";
 				SKIP_INSTALL = YES;
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/openjpeg/**";
 			};
-			name = Deployment;
+			name = Release;
 		};
-		AB0F3A2E1046BD2D004129DD /* Development */ = {
+		AB0F3A2E1046BD2D004129DD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Binaries",
-				);
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -14889,46 +14443,29 @@
 					"-framework",
 					AppKit,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.horosproject.$(PRODUCT_NAME:identifier)";
 				PRODUCT_NAME = HorosAPI;
-				SDKROOT = macosx10.12;
 				SKIP_INSTALL = YES;
 			};
-			name = Development;
+			name = Debug;
 		};
-		AB724FF40ADE6ECB00A212A0 /* Development */ = {
+		AB724FF40ADE6ECB00A212A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
 				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = YES;
 				DEPLOYMENT_LOCATION = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(FRAMEWORK_SEARCH_PATHS)",
-					"$(SRCROOT)",
-					"$(PROJECT_DIR)/build/Development",
-					"$(PROJECT_DIR)/Binaries",
-				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREFIX_HEADER = Decompres_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = (
-					/usr/include/libxml2,
-					AYDicomPrint,
-					/usr/local/include,
-				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/Binaries/Ming\"",
-					"\"$(SRCROOT)/Binaries/KDU SDK\"",
-					"\"$(SRCROOT)/Binaries/CharLS\"",
-					"\"$(SRCROOT)/Binaries/VTKLibs\"",
-					"$(PROJECT_DIR)/Binaries/openjpeg",
-					"$(PROJECT_DIR)/Binaries/GDCMLibs",
+					Binaries/GDCMLibs,
+					Binaries/Ming,
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -14938,53 +14475,41 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = Decompress;
-				SDKROOT = macosx10.12;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
 				SYMROOT = build;
 				USER_HEADER_SEARCH_PATHS = "Binaries/GDCMHeaders Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
 			};
-			name = Development;
+			name = Debug;
 		};
-		BF7486A60CC6AA5D00198387 /* Development */ = {
+		BF7486A60CC6AA5D00198387 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				PRODUCT_NAME = Documentation;
-				SDKROOT = macosx10.12;
 			};
-			name = Development;
+			name = Debug;
 		};
-		CEDF6DCE0B46FE99008B45B8 /* Development */ = {
+		CEDF6DCE0B46FE99008B45B8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
 				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(FRAMEWORK_SEARCH_PATHS)",
-					"$(SRCROOT)",
-				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					Binaries/LibTiff,
-					AYDicomPrint,
-				);
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -14992,12 +14517,11 @@
 					AppKit,
 				);
 				PRODUCT_NAME = DICOMPrint;
-				SDKROOT = macosx10.12;
 				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				VALID_ARCHS = i386;
 			};
-			name = Development;
+			name = Debug;
 		};
 /* End XCBuildConfiguration section */
 
@@ -15005,119 +14529,110 @@
 		434B46131A19ECD6008CF8CF /* Build configuration list for PBXAggregateTarget "Cleanup Binaries" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				434B46141A19ECD6008CF8CF /* Development */,
-				43E98D1E1A32BF6A001B9E51 /* Deployment */,
+				434B46141A19ECD6008CF8CF /* Debug */,
+				43E98D1E1A32BF6A001B9E51 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
+			defaultConfigurationName = Release;
 		};
 		59BDEC33117C92B4007F1F2C /* Build configuration list for PBXNativeTarget "Horos Launcher" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				59BDEC30117C92B3007F1F2C /* Development */,
-				43E98D1B1A32BF6A001B9E51 /* Deployment */,
+				59BDEC30117C92B3007F1F2C /* Debug */,
+				43E98D1B1A32BF6A001B9E51 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
+			defaultConfigurationName = Release;
 		};
 		7E76BEC0085757B60073649A /* Build configuration list for PBXNativeTarget "Horos DCM Framework" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				7E76BEC1085757B60073649A /* Development */,
-				43E98D1C1A32BF6A001B9E51 /* Deployment */,
+				7E76BEC1085757B60073649A /* Debug */,
+				43E98D1C1A32BF6A001B9E51 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
-		};
-		7E76BEC3085757B60073649A /* Build configuration list for PBXAggregateTarget "Build All Prerequisites" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				7E76BEC4085757B60073649A /* Development */,
-				43E98D1F1A32BF6A001B9E51 /* Deployment */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
+			defaultConfigurationName = Release;
 		};
 		7E76BEC6085757B70073649A /* Build configuration list for PBXNativeTarget "Horos" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				7E76BEC7085757B70073649A /* Development */,
-				43E98D1A1A32BF6A001B9E51 /* Deployment */,
+				7E76BEC7085757B70073649A /* Debug */,
+				43E98D1A1A32BF6A001B9E51 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
+			defaultConfigurationName = Release;
 		};
 		7E76BECF085757B70073649A /* Build configuration list for PBXAggregateTarget "Unzip Binaries" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				7E76BED0085757B70073649A /* Development */,
-				43E98D1D1A32BF6A001B9E51 /* Deployment */,
+				7E76BED0085757B70073649A /* Debug */,
+				43E98D1D1A32BF6A001B9E51 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
+			defaultConfigurationName = Release;
 		};
 		7E76BED8085757B70073649A /* Build configuration list for PBXProject "Horos" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				7E76BED9085757B70073649A /* Development */,
-				43E98D191A32BF6A001B9E51 /* Deployment */,
+				7E76BED9085757B70073649A /* Debug */,
+				43E98D191A32BF6A001B9E51 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
+			defaultConfigurationName = Release;
 		};
 		9966A1971AE099A400F2D81A /* Build configuration list for PBXNativeTarget "OsiriX API (Legacy)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				9966A1981AE099A400F2D81A /* Development */,
-				9966A1991AE099A400F2D81A /* Deployment */,
+				9966A1981AE099A400F2D81A /* Debug */,
+				9966A1991AE099A400F2D81A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
+			defaultConfigurationName = Release;
 		};
 		9966A2DE1AE0B7E000F2D81A /* Build configuration list for PBXNativeTarget "OsiriX DCM Framework (Legacy)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				9966A2DF1AE0B7E000F2D81A /* Development */,
-				9966A2E01AE0B7E000F2D81A /* Deployment */,
+				9966A2DF1AE0B7E000F2D81A /* Debug */,
+				9966A2E01AE0B7E000F2D81A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
+			defaultConfigurationName = Release;
 		};
 		AB0F3A321046BD2D004129DD /* Build configuration list for PBXNativeTarget "Horos API" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AB0F3A2E1046BD2D004129DD /* Development */,
-				43E98D231A32BF6A001B9E51 /* Deployment */,
+				AB0F3A2E1046BD2D004129DD /* Debug */,
+				43E98D231A32BF6A001B9E51 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
+			defaultConfigurationName = Release;
 		};
 		AB724FF30ADE6ECB00A212A0 /* Build configuration list for PBXNativeTarget "Decompress" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AB724FF40ADE6ECB00A212A0 /* Development */,
-				43E98D211A32BF6A001B9E51 /* Deployment */,
+				AB724FF40ADE6ECB00A212A0 /* Debug */,
+				43E98D211A32BF6A001B9E51 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
+			defaultConfigurationName = Release;
 		};
 		BF7486AA0CC6AA7C00198387 /* Build configuration list for PBXAggregateTarget "Documentation" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				BF7486A60CC6AA5D00198387 /* Development */,
-				43E98D201A32BF6A001B9E51 /* Deployment */,
+				BF7486A60CC6AA5D00198387 /* Debug */,
+				43E98D201A32BF6A001B9E51 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
+			defaultConfigurationName = Release;
 		};
 		CEDF6DCD0B46FE99008B45B8 /* Build configuration list for PBXNativeTarget "DICOMPrint" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CEDF6DCE0B46FE99008B45B8 /* Development */,
-				43E98D221A32BF6A001B9E51 /* Deployment */,
+				CEDF6DCE0B46FE99008B45B8 /* Debug */,
+				43E98D221A32BF6A001B9E51 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

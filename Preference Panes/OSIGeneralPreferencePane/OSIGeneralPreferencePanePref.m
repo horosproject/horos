@@ -33,10 +33,10 @@
 
 
 #import "OSIGeneralPreferencePanePref.h"
-#import <HorosAPI/NSPreferencePane+OsiriX.h>
-#import <HorosAPI/AppController.h>
-#import <HorosAPI/DefaultsOsiriX.h>
-#import <HorosAPI/N2Debug.h>
+#import "NSPreferencePane+OsiriX.h"
+#import "AppController.h"
+#import "DefaultsOsiriX.h"
+#import "N2Debug.h"
 
 static NSArray *languagesToMoveWhenQuitting = nil;
 
@@ -90,7 +90,7 @@ static NSArray *languagesToMoveWhenQuitting = nil;
         }
         
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIGeneralPreferencePanePref" bundle: nil] autorelease];
-		[nib instantiateNibWithOwner:self topLevelObjects: nil];
+		[nib instantiateWithOwner:self topLevelObjects:&_tlos];
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
@@ -296,6 +296,8 @@ static NSArray *languagesToMoveWhenQuitting = nil;
 	NSLog(@"dealloc OSIGeneralPreferencePanePref");
 	
     [languages release];
+    
+    [_tlos release]; _tlos = nil;
     
 	[super dealloc];
 }

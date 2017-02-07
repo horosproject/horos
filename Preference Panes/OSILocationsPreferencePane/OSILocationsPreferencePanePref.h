@@ -34,10 +34,10 @@
 #import <PreferencePanes/PreferencePanes.h>
 #import <SecurityInterface/SFChooseIdentityPanel.h>
 #import <SecurityInterface/SFCertificateView.h>
-#import <HorosAPI/DNDArrayController.h>
+#import "DNDArrayController.h"
 #import <WebKit/WebKit.h>
 
-#import <HorosAPI/DICOMTLS.h>
+#import "DICOMTLS.h"
 
 @interface OSILocationsPreferencePanePref : NSPreferencePane 
 {
@@ -68,6 +68,8 @@
 	
 	IBOutlet NSWindow						*mainWindow;
     BOOL                            testingNodes;
+    
+    id _tlos;
 }
 
 @property int WADOhttps, WADOPort, WADOTransferSyntax;

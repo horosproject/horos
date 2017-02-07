@@ -513,7 +513,8 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 
     
 //    if (!_noMouseMovedToWindowLocationOnNextRefresh)
-        [_puView mouseMovedToWindowLocation:[self.window convertScreenToBase:[NSEvent mouseLocation]]];
+        NSRect r = {[NSEvent mouseLocation], NSZeroSize};
+        [_puView mouseMovedToWindowLocation:[self.window convertRectFromScreen:r].origin];
 //    --_noMouseMovedToWindowLocationOnNextRefresh;
   
     _refreshing = NO;
@@ -821,7 +822,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 }
 
 - (void)mouseExited:(NSEvent*)event {
-    [self mouseMoved:nil];
+    [self mouseMoved:event];
 }
 
 - (void)mouseDown:(NSEvent*)event {
@@ -980,7 +981,7 @@ static const NSSize PopUpWindowBorder = NSMakeSize(10,4);
 - (void)timerFire:(NSTimer*)timer {
     [self sendAction:self.action to:self.target];
     if (!self.superview)
-        [self mouseExited:nil];
+        [self mouseExited:[NSApp currentEvent]];
 }
 
 - (void)drawRect:(NSRect)dirtyRect {

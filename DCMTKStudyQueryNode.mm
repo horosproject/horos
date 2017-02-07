@@ -33,7 +33,7 @@
 
 
 #import "DCMTKStudyQueryNode.h"
-#import <OsiriX/DCMCalendarDate.h>
+#import "DCMCalendarDate.h"
 #import "DCMTKSeriesQueryNode.h"
 #import "DCMTKImageQueryNode.h"
 #import "DICOMToNSString.h"

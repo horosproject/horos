@@ -42,7 +42,7 @@
 	return [self initWithCString:cString  encoding:stringEncoding];
 }
 
-+ (id) stringWithCString:(const char *)cString  DICOMEncoding:(NSString *)encoding
++ (id) stringWithUTF8String:(const char *)cString  DICOMEncoding:(NSString *)encoding
 {
 	return [[[NSString alloc] initWithCString: cString  DICOMEncoding: encoding] autorelease];
 }

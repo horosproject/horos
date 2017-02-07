@@ -64,7 +64,7 @@
 
 - (void) createDMG:(NSString*) imagePath withSource:(NSString*) directoryPath
 {
-	[[NSFileManager defaultManager] removeFileAtPath:imagePath handler:nil];
+	[[NSFileManager defaultManager] removeItemAtPath:imagePath error:NULL];
 	
 	NSTask* makeImageTask = [[[NSTask alloc] init] autorelease];
 
@@ -92,7 +92,7 @@
 {
     if( self = [super initWithWindowNibName:@"BurnViewer"])
     {
-		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
+		[[NSFileManager defaultManager] removeItemAtPath:[self folderToBurn] error:NULL];
 		
 		files = [theFiles mutableCopy];
 		burning = NO;
@@ -108,7 +108,7 @@
 {
 	if( self = [super initWithWindowNibName:@"BurnViewer"])
 	{
-		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
+		[[NSFileManager defaultManager] removeItemAtPath:[self folderToBurn] error:NULL];
 		
 		files = [theFiles mutableCopy]; // file paths
 		dbObjectsID = [managedObjects mutableCopy];
@@ -256,8 +256,8 @@
             cdName = [@"UNTITLED" retain];
         }
         
-        [[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
-        [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"/tmp/burnAnonymized"] handler:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:[self folderToBurn] error:NULL];
+        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"/tmp/burnAnonymized"] error:NULL];
         
         [writeVolumePath release];
         writeVolumePath = nil;
@@ -325,10 +325,11 @@
                 {
                     NSSavePanel *savePanel = [NSSavePanel savePanel];
                     [savePanel setCanSelectHiddenExtension:YES];
-                    [savePanel setRequiredFileType:@"dmg"];
+                    [savePanel setAllowedFileTypes:@[@"dmg"]];
                     [savePanel setTitle:@"Save as DMG"];
+                    savePanel.nameFieldStringValue = cdName;
                     
-                    if( [savePanel runModalForDirectory:nil file: cdName] == NSFileHandlingPanelOKButton)
+                    if ([savePanel runModal] == NSFileHandlingPanelOKButton)
                     {
                         [writeDMGPath release];
                         writeDMGPath = [[[savePanel URL] path] retain];
@@ -722,8 +723,8 @@
 		return NO;
 	else
 	{
-		[[NSFileManager defaultManager] removeFileAtPath: [self folderToBurn] handler:nil];
-		[[NSFileManager defaultManager] removeFileAtPath: [NSString stringWithFormat:@"/tmp/burnAnonymized"] handler:nil];
+		[[NSFileManager defaultManager] removeItemAtPath: [self folderToBurn] error:NULL];
+		[[NSFileManager defaultManager] removeItemAtPath: [NSString stringWithFormat:@"/tmp/burnAnonymized"] error:NULL];
 		
 		[filesToBurn release];
 		filesToBurn = nil;
@@ -851,8 +852,9 @@
 - (NSNumber*) getSizeOfDirectory: (NSString*) path
 {
 	if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO) return [NSNumber numberWithLong: 0];
-
-	if( [[[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO]fileType]!=NSFileTypeSymbolicLink || [[[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO]fileType]!=NSFileTypeUnknown)
+    
+    NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:NULL];
+	if( ![attributes[NSFileType] isEqualToString:NSFileTypeSymbolicLink] && ![attributes[NSFileType] isEqualToString:NSFileTypeUnknown])
 	{
 		NSArray *args = nil;
 		NSPipe *fromPipe = nil;
@@ -880,7 +882,7 @@
 		duOutput = [[fromPipe fileHandleForReading] availableData];
 		[duOutput getBytes:aBuffer];
 		
-		size = [NSString stringWithCString:aBuffer];
+		size = [NSString stringWithUTF8String:aBuffer];
 		stringComponents = [size pathComponents];
 		
 		size = [stringComponents objectAtIndex:0];
@@ -931,11 +933,11 @@
         //create burn Folder and dicomdir.
         
         if( ![manager fileExistsAtPath:burnFolder])
-            [manager createDirectoryAtPath:burnFolder attributes:nil];
+            [manager createDirectoryAtPath:burnFolder withIntermediateDirectories:YES attributes:nil error:NULL];
         if( ![manager fileExistsAtPath:subFolder])
-            [manager createDirectoryAtPath:subFolder attributes:nil];
+            [manager createDirectoryAtPath:subFolder withIntermediateDirectories:YES attributes:nil error:NULL];
         if( ![manager fileExistsAtPath:dicomdirPath])
-            [manager copyPath:[[NSBundle mainBundle] pathForResource:@"DICOMDIR" ofType:nil] toPath:dicomdirPath handler:nil];
+            [manager copyItemAtPath:[[NSBundle mainBundle] pathForResource:@"DICOMDIR" ofType:nil] toPath:dicomdirPath error:NULL];
             
         NSMutableArray *newFiles = [NSMutableArray array];
         NSMutableArray *compressedArray = [NSMutableArray array];
@@ -946,7 +948,7 @@
             @autoreleasepool {
                 NSString *newPath = [NSString stringWithFormat:@"%@/%05d", subFolder, i++];
                 
-                [manager copyPath: file toPath: newPath handler:nil];
+                [manager copyItemAtPath:file toPath:newPath error:NULL];
                 
                 if( [DicomFile isDICOMFile: newPath])
                 {
@@ -994,15 +996,18 @@
             
             @try
             {
+
+                
+                
                 switch( [compressionMode selectedTag])
                 {
                     case 1:
-                        [[BrowserController currentBrowser] decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'C']];
+                        [[[BrowserController currentBrowser] database] processFilesAtPaths:compressedArray intoDirAtPath:nil mode:Compress];
                     break;
                     
                     case 2:
-                        [[BrowserController currentBrowser] decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'D']];
-                    break;
+                        [[[BrowserController currentBrowser] database] processFilesAtPaths:compressedArray intoDirAtPath:nil mode:Decompress];
+                        break;
                 }
             }
             @catch (NSException *e) {
@@ -1086,7 +1091,7 @@
                         NSEnumerator *enumerator = [manager enumeratorAtPath: supplementaryBurnPath];
                         while (file=[enumerator nextObject])
                         {
-                            [manager copyPath: [NSString stringWithFormat:@"%@/%@", supplementaryBurnPath,file] toPath: [NSString stringWithFormat:@"%@/%@", burnFolder,file] handler:nil]; 
+                            [manager copyItemAtPath: [NSString stringWithFormat:@"%@/%@", supplementaryBurnPath,file] toPath: [NSString stringWithFormat:@"%@/%@", burnFolder,file] error:NULL];
                         }
                     }
                     else [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"BurnSupplementaryFolder"];
@@ -1113,9 +1118,10 @@
                 {
                     if( [[study valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[study valueForKey: @"reportURL"] hasPrefix: @"https://"])
                     {
-                        NSString *urlContent = [NSString stringWithContentsOfURL: [NSURL URLWithString: [study valueForKey: @"reportURL"]]];
+                        NSStringEncoding enc;
+                        NSString *urlContent = [NSString stringWithContentsOfURL: [NSURL URLWithString: [study valueForKey: @"reportURL"]] usedEncoding:&enc error:NULL];
                         
-                        [urlContent writeToFile: [NSString stringWithFormat:@"%@/Report-%@ %@.%@", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]], [self cleanStringForFile: [[study valueForKey:@"reportURL"] pathExtension]]] atomically: YES];
+                        [urlContent writeToFile: [NSString stringWithFormat:@"%@/Report-%@ %@.%@", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]], [self cleanStringForFile: [[study valueForKey:@"reportURL"] pathExtension]]] atomically: YES encoding:enc error:NULL];
                     }
                     else
                     {
@@ -1124,9 +1130,9 @@
                         NSString *pdfPath = [study saveReportAsPdfInTmp];
                         
                         if( [manager fileExistsAtPath: pdfPath] == NO)
-                            [manager copyPath: [study valueForKey:@"reportURL"] toPath: [NSString stringWithFormat:@"%@/Report-%@ %@.%@", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]], [self cleanStringForFile: [[study valueForKey:@"reportURL"] pathExtension]]] handler:nil]; 
+                            [manager copyItemAtPath: [study valueForKey:@"reportURL"] toPath: [NSString stringWithFormat:@"%@/Report-%@ %@.%@", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]], [self cleanStringForFile: [[study valueForKey:@"reportURL"] pathExtension]]] error:NULL];
                         else
-                            [manager copyPath: pdfPath toPath: [NSString stringWithFormat:@"%@/Report-%@ %@.pdf", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]]] handler: nil];
+                            [manager copyItemAtPath: pdfPath toPath: [NSString stringWithFormat:@"%@/Report-%@ %@.pdf", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]]] error:NULL];
                     }
                     
                     if( cancelled)
@@ -1148,7 +1154,7 @@
                 self.password = @"";
                 
                 [[NSFileManager defaultManager] removeItemAtPath: burnFolder error: nil];
-                [[NSFileManager defaultManager] createDirectoryAtPath: burnFolder attributes: nil];
+                [[NSFileManager defaultManager] createDirectoryAtPath: burnFolder withIntermediateDirectories:YES attributes:nil error:NULL];
                 
                 [[NSFileManager defaultManager] moveItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.zip"] toPath: [burnFolder stringByAppendingPathComponent: @"encryptedDICOM.zip"] error: nil];
                 [[NSString stringWithString: NSLocalizedString( @"The images are encrypted with a password in this ZIP file: first, unzip this file to read the content. Use an Unzip application to extract the files.", nil)] writeToFile: [burnFolder stringByAppendingPathComponent: @"ReadMe.txt"] atomically: YES encoding: NSASCIIStringEncoding error: nil];
@@ -1175,7 +1181,7 @@
 	
 	for (file in files)
 	{
-		fattrs = [manager fileAttributesAtPath:file traverseLink:YES];
+		fattrs = [manager attributesOfItemAtPath:file error:NULL];
 		size += [fattrs fileSize]/1024;
 	}
 	

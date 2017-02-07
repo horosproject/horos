@@ -33,7 +33,7 @@
 
 #import <PreferencePanes/PreferencePanes.h>
 
-#import <HorosAPI/DICOMTLS.h>
+#import "DICOMTLS.h"
 
 @interface OSIListenerPreferencePanePref : NSPreferencePane 
 {
@@ -62,7 +62,9 @@
 	IBOutlet NSTextField *TLSPortTextField;
 	IBOutlet NSTextField *TLSPreferredSyntaxTextField;
 	
-	IBOutlet NSWindow *mainWindow;
+    IBOutlet NSWindow *mainWindow;
+    
+    id _tlos;
 }
 
 @property (retain) NSString *TLSAuthenticationCertificate, *TLSStoreSCPAETITLE;

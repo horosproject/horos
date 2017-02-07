@@ -37,8 +37,8 @@
 #import "DicomStudy.h"
 #import "WaitRendering.h"
 #import "DCMTKQueryNode.h"
-#import <OsiriX/DCMCalendarDate.h>
-#import <OsiriX/DCMNetServiceDelegate.h>
+#import "DCMCalendarDate.h"
+#import "DCMNetServiceDelegate.h"
 #import "DICOMToNSString.h"
 #import "MoveManager.h"
 #import "browserController.h"
@@ -647,7 +647,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         //	const char *queryLevel;
         //	if (dataset->findAndGetString(DCM_QueryRetrieveLevel, queryLevel).good())
         //	{
-        //		const char *string = [[NSString stringWithCString: queryLevel] cStringUsingEncoding: encoding];
+        //		const char *string = [[NSString stringWithUTF8String: queryLevel] cStringUsingEncoding: encoding];
         //		dataset->putAndInsertString(DCM_QueryRetrieveLevel, string);
         //	}
             
@@ -1078,7 +1078,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                     {
                         if( [image uid])
                         {
-                            if( [localObjectUIDs containsString: [image uid]] == NO)
+                            if( [localObjectUIDs containsObject: [image uid]] == NO)
                             {
                                 NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [image seriesInstanceUID], [image uid], ts]];
                                 
@@ -1138,7 +1138,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             {
                 if( [image uid])
                 {
-                    if( [localObjectUIDs containsString: [image uid]] == NO)
+                    if( [localObjectUIDs containsObject: [image uid]] == NO)
                     {
                         NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [study uid], [self uid], [image uid], ts]];
                         if( url)
@@ -1305,7 +1305,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                     {
                                         if( [image uid])
                                         {
-                                            if( [localObjectUIDs containsString: [image uid]] == NO)
+                                            if( [localObjectUIDs containsObject: [image uid]] == NO)
                                             {
                                                 if( [image seriesInstanceUID])
                                                 {
@@ -1329,7 +1329,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                                     {
                                         if( [image uid])
                                         {
-                                            if( [localObjectUIDs containsString: [image uid]] == NO)
+                                            if( [localObjectUIDs containsObject: [image uid]] == NO)
                                             {
                                                 if( [seriesUIDsToRetrieve objectForKey: [image seriesInstanceUID]] == nil)
                                                     [seriesUIDsToRetrieve setObject: [NSMutableArray array] forKey: [image seriesInstanceUID]];
@@ -1914,14 +1914,12 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 
 + (void) releaseNetworkVariables
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool {
 	
     [NSThread currentThread].name = @"DCMTK Network release variables";
     
-    while( 1) // Infinite loop
+    while( 1) @autoreleasepool // Infinite loop
     {
-        NSAutoreleasePool *pool2 = [[NSAutoreleasePool alloc] init];
-        
         BOOL abortAssociations = [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"];
         
         NSArray *copyArray = nil;
@@ -1987,11 +1985,8 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
         }
         
         [NSThread sleepForTimeInterval: 1];
-        
-        [pool2 release];
     }
-    
-	[pool release];
+    }
 }
 
 //common network code for move and query
@@ -2602,9 +2597,9 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 		if (_secureConnection)
 		{
 	//		[DDKeychain unlockTmpFiles];
-			[[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS keyPathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID] handler:nil];
-			[[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS certificatePathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID] handler:nil];
-			[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, uniqueStringID] handler:nil];
+			[[NSFileManager defaultManager] removeItemAtPath:[DICOMTLS keyPathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID] error:NULL];
+			[[NSFileManager defaultManager] removeItemAtPath:[DICOMTLS certificatePathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID] error:NULL];
+			[[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, uniqueStringID] error:NULL];
 		}
 	#endif
 	}
@@ -2686,7 +2681,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 		{
 			NSString	*response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r", _calledAET, _hostname, _port];
 			
-			response = [response stringByAppendingString: [NSString stringWithCString: DU_cfindStatusString(rsp.DimseStatus)]];
+			response = [response stringByAppendingString: [NSString stringWithUTF8String: DU_cfindStatusString(rsp.DimseStatus)]];
 			
 			 if (statusDetail != NULL)
 			 {
@@ -2725,7 +2720,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
             errmsg("Find Failed\n Condition:\n");
             //dataset->print(COUT);
             DimseCondition::dump(cond);
-            NSLog(@"Dimse Status: %@", [NSString stringWithCString: DU_cfindStatusString(rsp.DimseStatus)]);
+            NSLog(@"Dimse Status: %@", [NSString stringWithUTF8String: DU_cfindStatusString(rsp.DimseStatus)]);
         }
     }
 
@@ -2881,7 +2876,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 				DIMSE_printCMoveRSP(stdout, &rsp);
 				
                 if( showErrorMessage)
-                    [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone: NO];
+                    [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithUTF8String: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone: NO];
 			}
 			
 			if (_verbose)
@@ -2896,7 +2891,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 		else
 		{
             if (showErrorMessage)
-                [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: cond.text()], NSLocalizedString(@"Continue", nil), nil] waitUntilDone: NO];
+                [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithUTF8String: cond.text()], NSLocalizedString(@"Continue", nil), nil] waitUntilDone: NO];
             if (_verbose) {
                 errmsg("Move Failed:");
                 DimseCondition::dump(cond);
@@ -2994,7 +2989,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 			DIMSE_printCGetRSP(stdout, &rsp);
 			
             if( showErrorMessage)
-                [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Get Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+                [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Get Failed", nil), [NSString stringWithUTF8String: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 		}
 		
         if (_verbose)
@@ -3010,7 +3005,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 	else
 	{
         if( showErrorMessage)
-            [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Get Failed", nil), [NSString stringWithCString: cond.text()], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+            [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Get Failed", nil), [NSString stringWithUTF8String: cond.text()], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
         if (_verbose) {
             errmsg("Get Failed:");
             DimseCondition::dump(cond);
@@ -3050,7 +3045,7 @@ static NSString *releaseNetworkVariablesSync = @"releaseNetworkVariablesSync";
 #pragma mark Max simultaneous auto-retrieve requests
 
 static NSMutableDictionary* semaphores = [[NSMutableDictionary alloc] init];
-static const MPSemaphoreCount virtualLimit = 1000; // this value must higher that the maximum possible number of allowed simultaneous retrieves... the GUI limit is currently 9
+//static const MPSemaphoreCount virtualLimit = 1000; // this value must higher that the maximum possible number of allowed simultaneous retrieves... the GUI limit is currently 9
 
 + (dispatch_semaphore_t)semaphoreForServerHostAndPort:(NSString*)key { // this method can lock the thread (that happens when the user has diminished the limit and requests are already past the limit)
     dispatch_semaphore_t mpsid = nil;

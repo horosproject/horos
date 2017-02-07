@@ -34,8 +34,8 @@
 #import "BrowserController.h"
 #import "SendController.h"
 #import "Wait.h"
-#import <OsiriX/DCMNetServiceDelegate.h>
-#import <OsiriX/DCM.h>
+#import "DCMNetServiceDelegate.h"
+#import "DCM.h"
 #import "PluginFilter.h"
 #import "PluginManager.h"
 #import "DCMTKStoreSCU.h"

@@ -32,7 +32,7 @@
  ============================================================================*/
 
 #import "DicomFileDCMTKCategory.h"
-#import <OsiriX/DCMAbstractSyntaxUID.h>
+#import "DCMAbstractSyntaxUID.h"
 #import "DICOMToNSString.h"
 #import "MutableArrayCategory.h"
 #import "DicomStudy.h"
@@ -345,7 +345,7 @@ extern NSRecursiveLock *PapyrusLock;
             if( [c count] < 10)
             {
                 for( i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-                for( i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
+                for( i = (int)[c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
             }
         }
         
@@ -435,7 +435,7 @@ extern NSRecursiveLock *PapyrusLock;
             //				NSString	*album = nil;
             //				if (dataset->findAndGetString(DCM_ImageComments, string, OFFalse).good() && string != NULL)
             //				{
-            //					album = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
+            //					album = [NSString stringWithUTF8String:string encoding: NSISOLatin1StringEncoding];
             //					if( [album length] >= 2)
             //					{
             //						if( [[album substringToIndex:2] isEqualToString: @"LV"])
@@ -449,7 +449,7 @@ extern NSRecursiveLock *PapyrusLock;
             //				DcmTagKey albumKey = DcmTagKey(0x0040, 0x0280);
             //				if (dataset->findAndGetString(albumKey, string, OFFalse).good() && string != NULL)
             //				{
-            //					album = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
+            //					album = [NSString stringWithUTF8String:string encoding: NSISOLatin1StringEncoding];
             //					if( [album length] >= 2)
             //					{
             //						if( [[album substringToIndex:2] isEqualToString: @"LV"])
@@ -463,7 +463,7 @@ extern NSRecursiveLock *PapyrusLock;
             //				 albumKey = DcmTagKey(0x0040, 0x1400);
             //				 if (dataset->findAndGetString(albumKey, string, OFFalse).good() && string != NULL)
             //				 {
-            //					album = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
+            //					album = [NSString stringWithUTF8String:string encoding: NSISOLatin1StringEncoding];
             //					if( [album length] >= 2)
             //					{
             //						if( [[album substringToIndex:2] isEqualToString: @"LV"])

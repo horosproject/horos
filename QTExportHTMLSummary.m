@@ -92,9 +92,9 @@
 {
 	DicomDatabase* database = [[BrowserController currentBrowser] database];
 	[database checkForHtmlTemplates];
-	patientsListTemplate = [[NSString stringWithContentsOfFile:[[database htmlTemplatesDirPath] stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"]] retain];
-	examsListTemplate = [[NSString stringWithContentsOfFile:[[database htmlTemplatesDirPath] stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"]] retain];
-	seriesTemplate = [[NSString stringWithContentsOfFile:[[database htmlTemplatesDirPath] stringByAppendingPathComponent:@"QTExportSeriesTemplate.html"]] retain];
+	patientsListTemplate = [[NSString stringWithContentsOfFile:[[database htmlTemplatesDirPath] stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"] usedEncoding:NULL error:NULL] retain];
+	examsListTemplate = [[NSString stringWithContentsOfFile:[[database htmlTemplatesDirPath] stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"] usedEncoding:NULL error:NULL] retain];
+	seriesTemplate = [[NSString stringWithContentsOfFile:[[database htmlTemplatesDirPath] stringByAppendingPathComponent:@"QTExportSeriesTemplate.html"] usedEncoding:NULL error:NULL] retain];
 }
 
 - (NSString*)fillPatientsListTemplates;
@@ -454,9 +454,9 @@
 - (void)createHTMLExtraDirectory;
 {
 	NSFileManager *fileManager = [NSFileManager defaultManager];
-	NSString *htmlExtraDirectory = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/HTML_TEMPLATES/html-extra/"];
+	NSString *htmlExtraDirectory = [[[[BrowserController currentBrowser] database] htmlTemplatesDirPath] stringByAppendingPathComponent:@"html-extra"];
 	//if([directoryContent count])
-	[fileManager copyPath:htmlExtraDirectory toPath:[rootPath stringByAppendingPathComponent:@"/html-extra/"] handler:NO];
+    [fileManager copyItemAtPath:htmlExtraDirectory toPath:[rootPath stringByAppendingPathComponent:@"html-extra"] error:NULL];
 }
 
 - (void)createHTMLSeriesPage:(NSManagedObject*)series numberOfImages:(int)imagesCount outPutFileName:(NSString*)fileName;

@@ -504,10 +504,10 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
         
         // remove destination directory
         if ([fileManager fileExistsAtPath: destPath])
-            [fileManager removeFileAtPath: destPath handler: nil];
+            [fileManager removeItemAtPath: destPath error:NULL];
         
         // create destination directory
-        if ([fileManager fileExistsAtPath: destPath] || ![fileManager createDirectoryAtPath: destPath attributes: nil])
+        if ([fileManager fileExistsAtPath: destPath] || ![fileManager createDirectoryAtPath: destPath withIntermediateDirectories:YES attributes:nil error:NULL])
             [self _setProgressMessage: NSLocalizedString( @"Can't write to temporary directory.", nil)];
         else
         {
@@ -610,7 +610,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 		// create log directory, if it does not exist
 		NSFileManager *fileManager = [NSFileManager defaultManager];
 		if (![fileManager fileExistsAtPath: logPath])
-			[fileManager createDirectoryAtPath: logPath attributes: nil];
+			[fileManager createDirectoryAtPath: logPath withIntermediateDirectories:YES attributes:nil error:NULL];
 		
 		NSTask *theTask = [[NSTask alloc] init];
 		
@@ -629,7 +629,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 		}
 
 		// remove temporary files
-		[[NSFileManager defaultManager] removeFileAtPath: [xmlPath stringByDeletingLastPathComponent] handler: nil];
+		[[NSFileManager defaultManager] removeItemAtPath: [xmlPath stringByDeletingLastPathComponent] error:NULL];
 		
 	}
 	@catch (NSException * e) 

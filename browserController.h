@@ -53,7 +53,9 @@ enum simpleSearchType {PatientNameSearch, PatientIDSearch};
 enum queueStatus{QueueHasData, QueueEmpty};
 enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
-extern NSString* O2AlbumDragType;
+extern NSString * const __deprecated O2AlbumDragType; // was used to mark dragging pasteboards destinated to the Sources list in the Database window, we now make the list accept O2PasteboardTypeDatabaseObjectXIDs instead
+extern NSString * const __deprecated O2DatabaseXIDsDragType; // the original UTI used for XID drags, use O2PasteboardTypeDatabaseObjectXIDs instead
+extern NSString * const O2PasteboardTypeDatabaseObjectXIDs;
 
 @interface NSString (BrowserController)
 -(NSMutableString*)filenameString;
@@ -340,7 +342,7 @@ extern NSString* O2AlbumDragType;
 - (IBAction) clickBanner:(id) sender;
 - (IBAction) refreshPACSOnDemandResults:(id)sender;
 - (IBAction) drawerToggle: (id)sender;
-- (void) openDatabasePath: (NSString*) path __deprecated;
+- (void) openDatabasePath: (NSString*) path;
 - (NSArray*) albums;
 - (NSManagedObjectID*) currentAlbumID: (DicomDatabase*) d;
 - (DicomStudy*) selectedStudy;
@@ -482,7 +484,7 @@ extern NSString* O2AlbumDragType;
 - (IBAction) regenerateAutoComments:(id) sender;
 - (DCMPix *)previewPix:(int)i;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray __deprecated;
-- (void) addFilesAndFolderToDatabase:(NSArray*) filenames __deprecated;
+- (void) addFilesAndFolderToDatabase:(NSArray*) filenames; // asks what to do with files
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles __deprecated;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject __deprecated;
 - (NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject context: (NSManagedObjectContext*) context dbFolder:(NSString*) dbFolder __deprecated;
@@ -623,6 +625,8 @@ extern NSString* O2AlbumDragType;
  */
 
 +(NSInteger)_scrollerStyle:(NSScroller*)scroller;
+
++ (NSArray<NSString *> *)DatabaseObjectXIDsPasteboardTypes;
 
 #pragma mark Deprecated
 

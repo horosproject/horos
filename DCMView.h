@@ -92,14 +92,16 @@ typedef NS_ENUM(short, ToolMode)
     //tOvalAngle                  //  31
 };
 
-
-extern NSString * const pasteBoardOsiriX; // __deprecated;
-extern NSString * const pasteBoardOsiriXPlugin; // __deprecated;
-extern NSString * const OsirixPluginPboardUTI; // __deprecated;
-
-extern NSString * const pasteBoardHoros;
-extern NSString * const pasteBoardHorosPlugin;
-extern NSString * const HorosPluginPboardUTI;
+extern NSString * const HorosPasteboardType;
+extern NSString * const HorosPasteboardTypePlugin;
+// these older pasteboard keys are deprecated, but they still work
+extern NSString * const __deprecated pasteBoardOsiriX; // use HorosPasteboardType
+extern NSString * const __deprecated pasteBoardOsiriXPlugin; // use HorosPasteboardTypePlugin
+extern NSString * const __deprecated OsirixPluginPboardUTI; // use HorosPasteboardTypePlugin
+extern NSString * const __deprecated pasteBoardHoros; // use HorosPasteboardType
+extern NSString * const __deprecated HorosPboardUTI; // use HorosPasteboardType
+extern NSString * const __deprecated pasteBoardHorosPlugin; // use HorosPasteboardTypePlugin
+extern NSString * const __deprecated HorosPluginPboardUTI; // use HorosPasteboardTypePlugin
 
 extern int CLUTBARS, ANNOTATIONS, SOFTWAREINTERPOLATION_MAX, DISPLAYCROSSREFERENCELINES;
 
@@ -125,7 +127,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 
 /** \brief Image/Frame View for ViewerController */
 
-@interface DCMView: NSOpenGLView
+@interface DCMView: NSOpenGLView <NSDraggingSource, NSPasteboardItemDataProvider>
 {
 	NSInteger		_imageRows;
 	NSInteger		_imageColumns;
@@ -544,7 +546,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 + (unsigned char*) PETblueTable;
 - (void) startDrag:(NSTimer*)theTimer;
 - (void)deleteMouseDownTimer;
-- (id)dicomImage;
+- (DicomImage *)dicomImage;
 - (void) roiLoadFromFilesArray: (NSArray*) filenames;
 - (id)windowController;
 - (BOOL)is2DViewer;
@@ -585,11 +587,16 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void)setIsLUT12Bit:(BOOL)boo;
 - (BOOL)isLUT12Bit;
 
+- (void)flagsChanged;
+
 //- (void)displayLoupe;
 //- (void)displayLoupeWithCenter:(NSPoint)center;
 //- (void)hideLoupe;
 
 + (NSArray*)cleanedOutDcmPixArray:(NSArray*)input; // filters the input array of DCMPix by returning only the pix with the most common ImageType in the input array
+
++ (NSArray<NSString *> *)PasteboardTypes;
++ (NSArray<NSString *> *)PluginPasteboardTypes;
 
 @end
 #endif

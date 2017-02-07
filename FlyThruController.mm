@@ -426,7 +426,7 @@
 		
 		[dcmSequence setSeriesNumber:8500 + [[NSCalendarDate date] minuteOfHour]  + [[NSCalendarDate date] secondOfMinute]];
 		[dcmSequence setSeriesDescription: dcmSeriesName];
-		[dcmSequence setSourceFile: [[[controller3D pixList] objectAtIndex:0] sourceFile]];
+		[dcmSequence setSourceFile: [[[controller3D pixList] objectAtIndex:0] srcFile]];
 				
 		for( i = 0; i < numberOfFrames; i++)
 		{

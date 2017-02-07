@@ -46,9 +46,9 @@
 #import "dicomFile.h"
 #import "ViewerController.h"
 #import "PluginFileFormatDecoder.h"
-#import <OsiriX/DCMCalendarDate.h>
-#import <OsiriX/DCMAbstractSyntaxUID.h>
-#import <OsiriX/DCMSequenceAttribute.h>
+#import "DCMCalendarDate.h"
+#import "DCMAbstractSyntaxUID.h"
+#import "DCMSequenceAttribute.h"
 #import "DICOMToNSString.h"
 #import "DefaultsOsiriX.h"
 
@@ -273,7 +273,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
     if( str == nil) return nil;
     
     char c;
-    int	i, from, len = strlen( str), index;
+    int	i, from, len = (int)strlen(str), index;
     NSMutableString	*result = [NSMutableString string];
     BOOL separators = NO;
     //	BOOL twoCharsEncoding = NO;
@@ -354,7 +354,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 {
     if( str == nil) return nil;
     
-    int fromLength = strlen( str);
+    int fromLength = (int)strlen(str);
     
     NSMutableString	*result = [NSMutableString string];
     BOOL checkPNDelimiters = YES;
@@ -373,7 +373,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
         
         if (isEscape || isDelimiter)
         {
-            int convertLength = currentChar - firstChar - 1;
+            int convertLength = (int)(currentChar - firstChar) - 1;
             
             if( convertLength - (escLength+1) >= 0)
             {
@@ -509,10 +509,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
     
     // convert any remaining characters from the input string
     {
-        int convertLength = currentChar - firstChar;
+        int convertLength = (int)(currentChar - firstChar);
         if (convertLength > 0)
         {
-            int convertLength = currentChar - firstChar;
+            int convertLength = (int)(currentChar - firstChar);
             
             if( firstChar + convertLength <= str + fromLength && ( convertLength - (escLength+1) >= 0))
             {
@@ -550,7 +550,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
             
             DEFAULTSSET = YES;
             
-            PREFERPAPYRUSFORCD = [sd integerForKey: @"PREFERPAPYRUSFORCD"];
+            PREFERPAPYRUSFORCD = (int)[sd integerForKey: @"PREFERPAPYRUSFORCD"];
             TOOLKITPARSER = 2; // Always and only DCMTK. Papyrus has been removed from the project.
             
 #ifdef OSIRIX_LIGHT
@@ -926,7 +926,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
             
             date = [[NSDate dateWithNaturalLanguageString:datetime_string] retain];
             if (date == nil)
-                date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+                date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:NULL] valueForKey:NSFileCreationDate] retain];
             if( date == nil) date = [[NSDate date] retain];
             
             [dicomElements setObject:studyID forKey:@"studyID"];
@@ -1785,9 +1785,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                 
                 [dicomElements setObject:[SeriesNum stringByAppendingString: self.serieID] forKey:[@"seriesID" stringByAppendingString:SeriesNum]];
                 [dicomElements setObject:[SeriesNum stringByAppendingString:name] forKey:[@"seriesDescription" stringByAppendingString:SeriesNum]];
-                [dicomElements setObject:[NSNumber numberWithInt: i] forKey:[@"seriesNumber" stringByAppendingString:SeriesNum]];
+                [dicomElements setObject:[NSNumber numberWithInt:(int)i] forKey:[@"seriesNumber" stringByAppendingString:SeriesNum]];
                 [dicomElements setObject:[imageID stringByAppendingString:SeriesNum] forKey:[@"SOPUID" stringByAppendingString:SeriesNum]];
-                [dicomElements setObject:[NSNumber numberWithInt: i] forKey:[@"imageID" stringByAppendingString:SeriesNum]];
+                [dicomElements setObject:[NSNumber numberWithInt:(int)i] forKey:[@"imageID" stringByAppendingString:SeriesNum]];
             }
             ////////////////
             return 0;
@@ -2125,10 +2125,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
     
     if( returnVal)
     {
-        [dicomElements setObject:[NSNumber numberWithInt: height] forKey:@"height"];
-        [dicomElements setObject:[NSNumber numberWithInt: width] forKey:@"width"];
-        [dicomElements setObject:[NSNumber numberWithInt: NoOfFrames] forKey:@"numberOfFrames"];
-        [dicomElements setObject:[NSNumber numberWithInt: NoOfSeries] forKey:@"numberOfSeries"];
+        [dicomElements setObject:[NSNumber numberWithInt:(int)height] forKey:@"height"];
+        [dicomElements setObject:[NSNumber numberWithInt:(int)width] forKey:@"width"];
+        [dicomElements setObject:[NSNumber numberWithInt:(int)NoOfFrames] forKey:@"numberOfFrames"];
+        [dicomElements setObject:[NSNumber numberWithInt:(int)NoOfSeries] forKey:@"numberOfSeries"];
         [dicomElements setObject:filePath forKey:@"filePath"];
     }
     else
@@ -2222,10 +2222,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
     
     if( returnVal)
     {
-        [dicomElements setObject:[NSNumber numberWithInt: height] forKey:@"height"];
-        [dicomElements setObject:[NSNumber numberWithInt: width] forKey:@"width"];
-        [dicomElements setObject:[NSNumber numberWithInt: NoOfFrames] forKey:@"numberOfFrames"];
-        [dicomElements setObject:[NSNumber numberWithInt: NoOfSeries] forKey:@"numberOfSeries"];
+        [dicomElements setObject:[NSNumber numberWithInt:(int)height] forKey:@"height"];
+        [dicomElements setObject:[NSNumber numberWithInt:(int)width] forKey:@"width"];
+        [dicomElements setObject:[NSNumber numberWithInt:(int)NoOfFrames] forKey:@"numberOfFrames"];
+        [dicomElements setObject:[NSNumber numberWithInt:(int)NoOfSeries] forKey:@"numberOfSeries"];
         [dicomElements setObject:f forKey:@"filePath"];
     }
     

@@ -32,9 +32,9 @@
  ============================================================================*/
 
 #import <Foundation/Foundation.h>
-#import <OsiriX/DCMObject.h>
-#import <OsiriX/DCMTransferSyntax.h>
-#import <OsiriX/DCMTransferSyntax.h>
+#import "DCMObject.h"
+#import "DCMTransferSyntax.h"
+#import "DCMTransferSyntax.h"
 
 #include "AYDcmPrintSCU.h"
 

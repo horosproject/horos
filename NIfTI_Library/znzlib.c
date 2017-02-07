@@ -130,10 +130,10 @@ int Xznzclose(znzFile * file)
 
 size_t znzread(void* buf, size_t size, size_t nmemb, znzFile file)
 {
-  size_t     remain = size*nmemb;
-  char     * cbuf = (char *)buf;
-  unsigned   n2read;
-  int        nread;
+//  size_t     remain = size*nmemb;
+//  char     * cbuf = (char *)buf;
+//  unsigned   n2read;
+//  int        nread;
 
   if (file==NULL) { return 0; }
 #ifdef HAVE_ZLIB
@@ -164,10 +164,10 @@ size_t znzread(void* buf, size_t size, size_t nmemb, znzFile file)
 
 size_t znzwrite(const void* buf, size_t size, size_t nmemb, znzFile file)
 {
-  size_t     remain = size*nmemb;
-  char     * cbuf = (char *)buf;
-  unsigned   n2write;
-  int        nwritten;
+//  size_t     remain = size*nmemb;
+//  char     * cbuf = (char *)buf;
+//  unsigned   n2write;
+//  int        nwritten;
 
   if (file==NULL) { return 0; }
 #ifdef HAVE_ZLIB
@@ -293,7 +293,7 @@ int znzgetc(znzFile file)
 int znzprintf(znzFile stream, const char *format, ...)
 {
   int retval=0;
-  char *tmpstr;
+//  char *tmpstr;
   va_list va;
   if (stream==NULL) { return 0; }
   va_start(va, format);

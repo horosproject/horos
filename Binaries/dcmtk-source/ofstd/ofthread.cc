@@ -68,7 +68,11 @@ extern "C" {
 #endif
 extern "C" {
 #include <pthread.h>    /* for threads, read/write locks and mutexes*/
+#ifdef __APPLE__
+#include <dispatch/dispatch.h>
+#else
 #include <semaphore.h>  /* for semaphores */
+#endif
 }
 #endif
 
@@ -182,7 +186,7 @@ unsigned int OFThread::threadID()
 #ifdef HAVE_POINTER_TYPE_PTHREAD_T
   // dangerous - we cast a pointer type to unsigned int and hope that it
   // remains valid after casting back to a pointer type.
-  return OFreinterpret_cast(unsigned long, theThread);
+  return (int)OFreinterpret_cast(unsigned long, theThread);
 #else
   return theThread;
 #endif
@@ -229,7 +233,7 @@ unsigned int OFThread::self()
   return OFstatic_cast(unsigned int, GetCurrentThreadId());
 #elif defined(POSIX_INTERFACE)
 #ifdef HAVE_POINTER_TYPE_PTHREAD_T
-  return OFreinterpret_cast(unsigned long, pthread_self());
+  return (unsigned int)OFreinterpret_cast(unsigned long, pthread_self());
 #else
   return OFstatic_cast(unsigned int, pthread_self());
 #endif
@@ -415,12 +419,16 @@ OFSemaphore::OFSemaphore(unsigned int /* numResources */ )
 #ifdef WINDOWS_INTERFACE
   theSemaphore = (void *)(CreateSemaphore(NULL, numResources, numResources, NULL));
 #elif defined(POSIX_INTERFACE)
+#ifdef __APPLE__
+  theSemaphore = dispatch_semaphore_create(numResources);
+#else
   sem_t *sem = new sem_t;
   if (sem)
   {
     if (sem_init(sem, 0, numResources) == -1) delete sem;
     else theSemaphore = sem;
   }
+#endif
 #elif defined(SOLARIS_INTERFACE)
   sema_t *sem = new sema_t;
   if (sem)
@@ -437,8 +445,12 @@ OFSemaphore::~OFSemaphore()
 #ifdef WINDOWS_INTERFACE
   CloseHandle((HANDLE)theSemaphore);
 #elif defined(POSIX_INTERFACE)
+#ifdef __APPLE__
+    if (theSemaphore) dispatch_release((dispatch_semaphore_t)theSemaphore);
+#else
   if (theSemaphore) sem_destroy(OFthread_cast(sem_t *, theSemaphore));
   delete OFthread_cast(sem_t *, theSemaphore);
+#endif
 #elif defined(SOLARIS_INTERFACE)
   if (theSemaphore) sema_destroy(OFthread_cast(sema_t *, theSemaphore));
   delete OFthread_cast(sema_t *, theSemaphore);
@@ -463,7 +475,11 @@ int OFSemaphore::wait()
 #elif defined(POSIX_INTERFACE)
   if (theSemaphore)
   {
+#ifdef __APPLE__
+      return (int)dispatch_semaphore_wait((dispatch_semaphore_t)theSemaphore, DISPATCH_TIME_FOREVER);
+#else
     if (sem_wait(OFthread_cast(sem_t *, theSemaphore))) return errno; else return 0;
+#endif
   } else return EINVAL;
 #elif defined(SOLARIS_INTERFACE)
   if (theSemaphore) return sema_wait(OFthread_cast(sema_t *, theSemaphore)); else return EINVAL;
@@ -482,7 +498,11 @@ int OFSemaphore::trywait()
 #elif defined(POSIX_INTERFACE)
   if (theSemaphore)
   {
+#ifdef __APPLE__
+      return (int)dispatch_semaphore_wait((dispatch_semaphore_t)theSemaphore, DISPATCH_TIME_NOW);
+#else
     if (sem_trywait(OFthread_cast(sem_t *, theSemaphore))) return errno; else return 0; // may return EAGAIN
+#endif
   } else return EINVAL;
 #elif defined(SOLARIS_INTERFACE)
   if (theSemaphore) return sema_trywait(OFthread_cast(sema_t *, theSemaphore)); else return EINVAL; // may return EBUSY
@@ -498,7 +518,11 @@ int OFSemaphore::post()
 #elif defined(POSIX_INTERFACE)
   if (theSemaphore)
   {
+#ifdef __APPLE__
+    return (int)dispatch_semaphore_signal((dispatch_semaphore_t)theSemaphore);
+#else
     if (sem_post(OFthread_cast(sem_t *, theSemaphore))) return errno; else return 0;
+#endif
   } else return EINVAL;
 #elif defined(SOLARIS_INTERFACE)
   if (theSemaphore) return sema_post(OFthread_cast(sema_t *, theSemaphore)); else return EINVAL;
@@ -525,8 +549,12 @@ void OFSemaphore::errorstr(OFString& description, int /* code */ )
     LocalFree(buf);
   }
 #elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
+#ifdef __APPLE__
+    description = "no description available for dispatch_semaphore errors";
+#else
   const char *str = strerror(code);
   if (str) description = str; else description.clear();
+#endif
 #else
   description = "error: semaphore not implemented";
 #endif

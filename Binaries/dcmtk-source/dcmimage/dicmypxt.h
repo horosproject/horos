@@ -98,12 +98,12 @@ class DiCMYKPixelTemplate
             const unsigned int count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
             const T2 maxvalue = OFstatic_cast(T2, DicomImageClass::maxval(bits));
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
-            register const T1 *p = pixel;
+            const T1 *p = pixel;
             if (this->PlanarConfiguration)
             {
 /*
-                register const T1 *k;
-                register T2 *q;
+                const T1 *k;
+                T2 *q;
                 for (int j = 0; j < 3; ++j)
                 {
                     q = this->Data[j];
@@ -112,10 +112,10 @@ class DiCMYKPixelTemplate
                         *(q++) = maxvalue - removeSign(*(p++), offset) - removeSign(*(k++), offset);
                 }
 */
-                register const T1 *k;
-                register T2 *q;
-                register unsigned int l;
-                register unsigned int i = 0;
+                const T1 *k;
+                T2 *q;
+                unsigned int l;
+                unsigned int i = 0;
                 while (i < count)
                 {
                     /* store current pixel index */
@@ -138,9 +138,9 @@ class DiCMYKPixelTemplate
             }
             else
             {
-                register T1 k;
-                register int j;
-                register unsigned int i;
+                T1 k;
+                int j;
+                unsigned int i;
                 for (i = 0; i < count; ++i)
                 {
                     k = *(p + 3);

@@ -97,11 +97,11 @@ class DiRGBPixelTemplate
             // attribute), but not more than the size of the intermediate buffer
             const unsigned int count = (this->InputCount < this->Count) ? this->InputCount : this->Count;
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
-            register const T1 *p = pixel;
+            const T1 *p = pixel;
             if (this->PlanarConfiguration)
             {
 /*
-                register T2 *q;
+                T2 *q;
                 // number of pixels to be skipped (only applicable if 'PixelData' contains more
                 // pixels than expected)
                 const unsigned int skip = (this->InputCount > this->Count) ? (this->InputCount - this->Count) : 0;
@@ -114,8 +114,8 @@ class DiRGBPixelTemplate
                     p += skip;
                 }
 */
-                register unsigned int l;
-                register unsigned int i = 0;
+                unsigned int l;
+                unsigned int i = 0;
                 while (i < count)
                 {
                     /* store current pixel index */
@@ -131,8 +131,8 @@ class DiRGBPixelTemplate
             }
             else
             {
-                register int j;
-                register unsigned int i;
+                int j;
+                unsigned int i;
                 for (i = 0; i < count; ++i)                         /* for all pixel ... */
                     for (j = 0; j < 3; ++j)
                         this->Data[j][i] = removeSign(*(p++), offset);    /* ... copy planes */

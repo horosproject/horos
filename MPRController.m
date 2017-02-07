@@ -47,10 +47,6 @@
 #import "DicomDatabase.h"
 #import "PluginManager.h"
 
-#define PRESETS_DIRECTORY @"/3DPRESETS/"
-#define CLUTDATABASE @"/CLUTs/"
-#define DATABASEPATH @"/DATABASE.noindex/"
-
 extern void setvtkMeanIPMode( int m);
 extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float *u, float *iP);
 static float deg2rad = M_PI/180.0; 
@@ -2119,7 +2115,8 @@ static float deg2rad = M_PI/180.0;
 			{
 				NSRect bounds = [v bounds];
 				NSPoint or = [v convertPoint: bounds.origin toView: nil];
-				bounds.origin = [[self window] convertBaseToScreen: or];
+                NSRect r = {or,NSZeroSize};
+				bounds.origin = [[self window] convertRectToScreen:r].origin;
                 
                 bounds.origin.x *= v.window.backingScaleFactor;
                 bounds.origin.y *= v.window.backingScaleFactor;
@@ -2471,9 +2468,9 @@ static float deg2rad = M_PI/180.0;
 	curExportView = [self selectedView];
 	
 	if( quicktimeExportMode)
-		[NSApp beginSheet: quicktimeWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
+		[NSApp beginSheet: quicktimeWindow modalForWindow:self.window modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 	else
-		[NSApp beginSheet: dcmWindow modalForWindow: nil modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
+		[NSApp beginSheet: dcmWindow modalForWindow:self.window modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 	
 	if( [self selectedView] != mprView1) mprView1.displayCrossLines = YES;
 	if( [self selectedView] != mprView2) mprView2.displayCrossLines = YES;
@@ -2679,24 +2676,27 @@ static float deg2rad = M_PI/180.0;
     NSSavePanel     *panel = [NSSavePanel savePanel];
 
 	[panel setCanSelectHiddenExtension:YES];
-	[panel setRequiredFileType:@"jpg"];
-	
-	if( [panel runModalForDirectory:nil file: NSLocalizedString( @"MPR Image", nil)] == NSFileHandlingPanelOKButton)
-	{
-		NSImage *im = [[self selectedView] nsimage:NO];
-		
-		NSArray *representations;
-		NSData *bitmapData;
-		
-		representations = [im representations];
-		
-		bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-		
-		[bitmapData writeToFile:[panel filename] atomically:YES];
-		
-		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
-	}
+	[panel setAllowedFileTypes:@[@"jpg"]];
+    panel.nameFieldStringValue = NSLocalizedString(@"MPR Image", nil);
+    
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
+        NSImage *im = [[self selectedView] nsimage:NO];
+        
+        NSArray *representations;
+        NSData *bitmapData;
+        
+        representations = [im representations];
+        
+        bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+        
+        [bitmapData writeToURL:panel.URL atomically:YES];
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+            [[NSWorkspace sharedWorkspace] openURL:panel.URL];
+    }];
 }
 
 -(void) export2iPhoto:(id) sender
@@ -2709,12 +2709,13 @@ static float deg2rad = M_PI/180.0;
 	
 	representations = [im representations];
 	
-	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+    bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 	
-	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"] atomically:YES];
+    NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingString:@"Horos.jpg"];
+	[bitmapData writeToFile:path atomically:YES];
 	
 	ifoto = [[iPhoto alloc] init];
-	[ifoto importIniPhoto: [NSArray arrayWithObject:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"]]];
+	[ifoto importIniPhoto:@[path]];
 	[ifoto release];
 }
 
@@ -2723,17 +2724,20 @@ static float deg2rad = M_PI/180.0;
     NSSavePanel     *panel = [NSSavePanel savePanel];
 
 	[panel setCanSelectHiddenExtension:YES];
-	[panel setRequiredFileType:@"tif"];
-	
-	if( [panel runModalForDirectory:nil file:@"3D MPR Image"] == NSFileHandlingPanelOKButton)
-	{
-		NSImage *im = [[self selectedView] nsimage:NO];
-		
-		[[im TIFFRepresentation] writeToFile:[panel filename] atomically:NO];
-		
-		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
-	}
+	[panel setAllowedFileTypes:@[@"tif"]];
+	panel.nameFieldStringValue = @"3D MPR Image";
+    
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
+        NSImage *im = [[self selectedView] nsimage:NO];
+        
+        [[im TIFFRepresentation] writeToURL:panel.URL atomically:NO];
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+            [[NSWorkspace sharedWorkspace] openURL:panel.URL];
+    }];
 }
 
 #pragma mark NSWindow Notifications action

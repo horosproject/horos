@@ -1357,7 +1357,7 @@ stripTrailing(char* s, char c)
 
     if (s == NULL) return s;
 
-    n = strlen(s);
+    n = (int)strlen(s);
     for (i = n - 1; (i >= 0) && (s[i] == c); i--)
         s[i] = '\0';
     return s;
@@ -1366,11 +1366,11 @@ stripTrailing(char* s, char c)
 static void
 addUIDComponent(char* uid, const char* s)
 {
-    int charsLeft = maxUIDLen - strlen(uid);
+    int charsLeft = maxUIDLen - (int)strlen(uid);
 
     if (charsLeft > 0) {
         /* copy into uid as much of the contents of s as possible */
-        int slen = strlen(s);
+        int slen = (int)strlen(s);
         int use = charsLeft;
         if (slen < charsLeft) use = slen;
             strncat(uid, s, use);

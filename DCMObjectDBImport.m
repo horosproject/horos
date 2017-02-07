@@ -34,7 +34,7 @@
 
 
 #import "DCMObjectDBImport.h"
-#import <OsiriX/DCM.h>
+#import "DCM.h"
 
 
 @implementation DCMObjectDBImport

@@ -164,8 +164,8 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
     
     fistCTSlice = (higherCTSliceIndex < lowerCTSliceIndex)? higherCTSliceIndex : lowerCTSliceIndex ;
     fistPETSlice = (higherPETSliceIndex < lowerPETSliceIndex)? higherPETSliceIndex : lowerPETSliceIndex ;
-    sliceRangeCT = abs(higherCTSliceIndex - lowerCTSliceIndex)+1;
-    sliceRangePET = abs(higherPETSliceIndex - lowerPETSliceIndex)+1;
+    sliceRangeCT = abs((int)(higherCTSliceIndex - lowerCTSliceIndex))+1;
+    sliceRangePET = abs((int)(higherPETSliceIndex - lowerPETSliceIndex))+1;
     
     if( fistCTSlice < 0) fistCTSlice = 0;
     if( fistPETSlice < 0) fistPETSlice = 0;
@@ -2143,11 +2143,12 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
     
     bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
     
-    [bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"] atomically:YES];
+    NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"Horos.jpg"];
+    [bitmapData writeToFile:path atomically:YES];
 				
     email = [[Mailer alloc] init];
     
-    [email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"]];
+    [email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image:path];
     
     [email release];
 }
@@ -2156,21 +2157,21 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 {
     NSSavePanel     *panel = [NSSavePanel savePanel];
     BOOL			all = YES;
-    int			i;
-    NSWorkspace		*ws = [NSWorkspace sharedWorkspace];
-    
-    long deltaX, deltaY, x, y, oldX, oldY, max;
-    deltaX = deltaY = x = y = oldX = oldY = max = 0;
-    
-    OrthogonalMPRView *view = nil;
     
     [panel setCanSelectHiddenExtension:YES];
-    [panel setRequiredFileType:@"jpg"];
+    [panel setAllowedFileTypes:@[@"jpg"]];
+    panel.nameFieldStringValue = [[filesList objectAtIndex:0] valueForKeyPath:@"series.name"];
     
-    if( [panel runModalForDirectory:nil file:[[filesList objectAtIndex:0] valueForKeyPath:@"series.name"]] == NSFileHandlingPanelOKButton)
-    {
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
         if( all)
         {
+            long deltaX, deltaY, x, y, oldX, oldY, max;
+            deltaX = deltaY = x = y = oldX = oldY = max = 0;
+            OrthogonalMPRView *view = nil;
+
             if ([[self keyView] isEqualTo:[[[self keyView] controller] originalView]])
             {
                 deltaX = 0;
@@ -2205,7 +2206,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
                 max = [[view curDCM] pheight];
             }
             
-            for( i = 0; i < max; i++)
+            for(int i = 0; i < max; i++)
             {
                 [view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
                 [modalitySplitView display];
@@ -2221,7 +2222,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
                 
                 bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
                 
-                [bitmapData writeToFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%d.jpg", i+1]] atomically:YES];
+                [bitmapData writeToURL:[[panel.URL URLByDeletingPathExtension] URLByAppendingPathExtension:[NSString stringWithFormat:@"%d.jpg", i+1]] atomically:YES];
             }
             [view setCrossPosition:oldX+0.5 :oldY+0.5];
             [view setNeedsDisplay:YES];
@@ -2229,7 +2230,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
             if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
             {
                 //[ws openFile:[[[panel filename] stringByDeletingPathExtension] stringByAppendingPathExtension:[NSString stringWithFormat:@"%d.jpg", 1]]];
-                [ws openFile:[panel directory]];
+                [[NSWorkspace sharedWorkspace] openURL:panel.URL];
             }
         }
         else
@@ -2245,11 +2246,12 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
             
             bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
             
-            [bitmapData writeToFile:[panel filename] atomically:YES];
+            [bitmapData writeToURL:panel.URL atomically:YES];
             
-            if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
+            if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+                [[NSWorkspace sharedWorkspace] openURL:panel.URL];
         }
-    }
+    }];
 }
 
 - (NSDictionary*) exportDICOMFileInt :(BOOL) screenCapture
@@ -2309,7 +2311,8 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
         {
             NSRect bounds = [v bounds];
             NSPoint or = [v convertPoint: bounds.origin toView: nil];
-            bounds.origin = [[self window] convertBaseToScreen: or];
+            NSRect r = {or, NSZeroSize};
+            bounds.origin = [[self window] convertRectToScreen:r].origin;
             
             bounds.origin.x *= v.window.backingScaleFactor;
             bounds.origin.y *= v.window.backingScaleFactor;
@@ -2735,7 +2738,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
     [dcmInterval setIntValue:1];
     [dcmIntervalTextField setIntValue:1];
     
-    int count = fabs( [dcmFromTextField intValue] - [dcmToTextField intValue]);
+    int count = abs( [dcmFromTextField intValue] - [dcmToTextField intValue]);
     count++;
     count /= [dcmIntervalTextField intValue];
     [dcmCountTextField setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d images", nil), count]];
@@ -2754,7 +2757,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
     else if([sender isEqualTo:dcmIntervalTextField]){[dcmInterval setIntValue:[sender intValue]];[dcmInterval display];}
     else if([sender isEqualTo:dcmInterval]){[dcmIntervalTextField setIntValue:[sender intValue]];[dcmIntervalTextField display];}
     
-    int count = fabs( [dcmFromTextField intValue] - [dcmToTextField intValue]);
+    int count = abs( [dcmFromTextField intValue] - [dcmToTextField intValue]);
     count++;
     count /= [dcmIntervalTextField intValue];
     [dcmCountTextField setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d images", nil), count]];

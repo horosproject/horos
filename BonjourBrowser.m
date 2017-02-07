@@ -204,7 +204,7 @@ static BonjourBrowser *currentBrowser = nil;
 {
     int			i;
     NSArray		*dbArray = [[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"];
-    NSString	*defaultPath = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]);
+    NSString	*defaultPath = [DicomDatabase baseDirPathForMode:[[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] path:[[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
     
     if( dbArray == nil) dbArray = [NSArray array];
     
@@ -316,14 +316,14 @@ static BonjourBrowser *currentBrowser = nil;
                     case AF_INET:
                         if (inet_ntop(AF_INET, &((struct sockaddr_in *)socketAddress)->sin_addr, buffer, sizeof(buffer)))
                         {
-                            ipAddressString = [NSString stringWithCString:buffer];
+                            ipAddressString = [NSString stringWithUTF8String:buffer];
                             portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in *)socketAddress)->sin_port)];
                         }
                         break;
                     case AF_INET6:
                         if (inet_ntop(AF_INET6, &((struct sockaddr_in6 *)socketAddress)->sin6_addr, buffer, sizeof(buffer)))
                         {
-                            ipAddressString = [NSString stringWithCString:buffer];
+                            ipAddressString = [NSString stringWithUTF8String:buffer];
                             portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in6 *)socketAddress)->sin6_port)];
                         }
                         break;

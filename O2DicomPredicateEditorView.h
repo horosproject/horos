@@ -44,7 +44,7 @@
     NSInteger _tagsSortKey;
     NSMutableArray* _menuItems;
     // values
-    DCMAttributeTag* _tag;
+    DCMAttributeTag* _DCMAttributeTag;
     NSInteger _operator;
     NSString* _stringValue;
     NSNumber* _numberValue;
@@ -66,7 +66,12 @@
 @property(retain,nonatomic, readonly) NSArray* tags;
 @property NSInteger tagsSortKey;
 
-@property(retain) DCMAttributeTag* tag;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincompatible-property-type"
+@property(retain) DCMAttributeTag* tag NS_UNAVAILABLE;
+#pragma clang diagnostic pop
+
+@property(retain) DCMAttributeTag* DCMAttributeTag;
 @property NSInteger operator;
 @property(retain,nonatomic) NSString* stringValue;
 @property(retain) NSNumber* numberValue;

@@ -141,6 +141,13 @@ static int numberOfActiveAssociations = 0;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+@interface ContextCleaner (Dummy)
+
+- (void)displayListenerError:(id)dummy;
+- (void)waitForPID:(id)dummy;
+
+@end
+
 @implementation ContextCleaner
 
 + (void) waitUnlockFileWithPID: (NSDictionary*) dict
@@ -210,8 +217,8 @@ static int numberOfActiveAssociations = 0;
     
 	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
 	{
-		NSString *str = [NSString stringWithContentsOfFile: @"/tmp/error_message"];
-		[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/error_message" handler: nil];
+		NSString *str = [NSString stringWithContentsOfFile: @"/tmp/error_message" usedEncoding:NULL error:NULL];
+		[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/error_message" error:NULL];
 		
 		if( str && [str length] > 0)
 			[[AppController sharedAppController] performSelectorOnMainThread: @selector(displayListenerError:) withObject: str waitUntilDone: NO];
@@ -494,9 +501,9 @@ void DcmQueryRetrieveSCP::writeErrorMessage( const char *str)
 
 NSString* DcmQueryRetrieveSCP::getErrorMessage()	// see emptyDeleteQueue: for reading this error message
 {
-	NSString *str = [NSString stringWithContentsOfFile: @"/tmp/error_message"];
+	NSString *str = [NSString stringWithContentsOfFile: @"/tmp/error_message" usedEncoding:NULL error:NULL];
 	
-	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/error_message" handler: nil];
+	[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/error_message" error:NULL];
 	
 	return str;
 }
@@ -990,7 +997,7 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
 	if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
 	{
 		char dir[ 1024];
-		sprintf( dir, "%s/%s", [[BrowserController currentBrowser] cfixedIncomingNoIndexDirectory], last( imageFileName, '/'));
+		sprintf( dir, "%s/%s", [[DicomDatabase activeLocalDatabase] incomingDirPathC], last( imageFileName, '/'));
 		rename( imageFileName, dir);
         
         if( forkedProcess == NO && index == 0)
@@ -1595,7 +1602,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 	
 	if(! go_cleanup)
 	{
-		if( [BrowserController isHardDiskFull])
+		if( [[DicomDatabase activeLocalDatabase] isFileSystemFreeSizeLimitReached])
 		{
 			/* reject: no enough memory on the hard disk */
             if (options_.verbose_)
@@ -1704,8 +1711,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                     {
                         NSThread *t = [[[NSThread alloc] initWithTarget: [ContextCleaner class] selector:@selector(handleAssociation:) object: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: this], @"DcmQueryRetrieveSCP", nil]] autorelease];
                         t.name = NSLocalizedString( @"DICOM Services...", nil);
-                        if( assoc && assoc->params && assoc->params->DULparams.callingPresentationAddress)
-                            t.status = [NSString stringWithFormat: NSLocalizedString( @"%s", nil), assoc->params->DULparams.callingPresentationAddress];
+                        if( assoc && assoc->params && assoc->params->DULparams.callingPresentationAddress[0])
+                            t.status = [NSString stringWithUTF8String:assoc->params->DULparams.callingPresentationAddress];
                         
                         t.supportsCancel = YES;
                         [[ThreadsManager defaultManager] addThreadAndStart: t];
@@ -1757,8 +1764,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                             // Display a thread in the ThreadsManager for this pid
                             NSThread *t = [[[NSThread alloc] initWithTarget: [AppController sharedAppController] selector:@selector(waitForPID:) object: [NSNumber numberWithInt: pid]] autorelease];
                             t.name = NSLocalizedString( @"DICOM Services...", nil);
-                            if( assoc && assoc->params && assoc->params->DULparams.callingPresentationAddress)
-                                t.status = [NSString stringWithFormat: NSLocalizedString( @"%s", nil), assoc->params->DULparams.callingPresentationAddress];
+                            if( assoc && assoc->params && assoc->params->DULparams.callingPresentationAddress[0])
+                                t.status = [NSString stringWithUTF8String:assoc->params->DULparams.callingPresentationAddress];
                             [[ThreadsManager defaultManager] addThreadAndStart: t];
                         }
                         else

@@ -41,6 +41,8 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 
 // Images ...
 
+#pragma clang diaagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
 	/***/
 	static NSString *ComputedRadiographyImageStorage = @"1.2.840.10008.5.1.4.1.1.1";
 	/***/
@@ -275,6 +277,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	static NSString *GeneralRelevantPatientInformationQuerySOP = @"1.2.840.10008.5.1.4.37.1"; 
 	static NSString *BreastImagingRelevantPatientInformationQuery = @"1.2.840.10008.5.1.4.37.2";
 	static NSString	*CardiacRelevantPatientInformationQuery = @"1.2.840.10008.5.1.4.37.3";
+#pragma clang diaagnostic pop
 
 @implementation DCMAbstractSyntaxUID
 

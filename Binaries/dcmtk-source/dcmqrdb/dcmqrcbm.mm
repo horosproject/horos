@@ -63,13 +63,13 @@
  *
  */
 
-#include <Cocoa/Cocoa.h>
-#include"OsiriX/DCMNetServiceDelegate.h"
+#import <Cocoa/Cocoa.h>
+#import "DCMNetServiceDelegate.h"
 #import "SendController.h"
 #import "browserController.h"
-#import "OsiriX/DCMObject.h"
-#import "OsiriX/DCM.h"
-#import "OsiriX/DCMTransferSyntax.h"
+#import "DCMObject.h"
+#import "DCM.h"
+#import "DCMTransferSyntax.h"
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmqrcbm.h"
@@ -132,9 +132,9 @@ OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname)
 	{
 		@try
 		{
-			NSString *path = [NSString stringWithCString:fname encoding:NSUTF8StringEncoding];
+			NSString *path = [NSString stringWithUTF8String:fname];
 			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
-			[[NSFileManager defaultManager] removeFileAtPath:path handler:0L];
+			[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
 			[dcmObject writeToFile:path withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality AET:@"Horos" atomically:YES];
 			[dcmObject release];
 		}
@@ -186,8 +186,8 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 	{
 		@try
 		{
-			NSString *path = [NSString stringWithCString:fname encoding:NSUTF8StringEncoding];
-			NSString *outpath = [NSString stringWithCString:outfname encoding:NSUTF8StringEncoding];
+			NSString *path = [NSString stringWithUTF8String:fname];
+			NSString *outpath = [NSString stringWithUTF8String:outfname];
 			
 			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
 			
@@ -208,8 +208,8 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 	{
 		@try
 		{
-			NSString *path = [NSString stringWithCString:fname encoding:NSUTF8StringEncoding];
-			NSString *outpath = [NSString stringWithCString:outfname encoding:NSUTF8StringEncoding];
+			NSString *path = [NSString stringWithUTF8String:fname];
+			NSString *outpath = [NSString stringWithUTF8String:outfname];
 			
 			DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
 			
@@ -443,7 +443,7 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
 	    requestIdentifiers->print(COUT);
         }
 		
-		if( request->MoveDestination)
+		if (request->MoveDestination[0])
 			strcpy( currentDestinationMoveAET, request->MoveDestination);
 		else
 			strcpy( currentDestinationMoveAET, "");
@@ -830,7 +830,7 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
 		DcmXfer preferredXfer( xferSyntax);
 		OFBool status = YES;
 		
-		sprintf( outfname, "%s/QR-CMOVE-%d-%d.dcm", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], seed++, getpid());
+		sprintf( outfname, "%s/QR-CMOVE-%d-%d.dcm", [[DicomDatabase activeLocalDatabase] tempDirPathC], seed++, getpid());
 		unlink( outfname);
 		
 		if (filexfer.isNotEncapsulated() && preferredXfer.isNotEncapsulated())

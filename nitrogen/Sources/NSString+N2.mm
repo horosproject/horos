@@ -271,34 +271,25 @@ NSString* N2NonNullString(NSString* s) {
 
 - (NSString *)stringByConditionallyResolvingAlias
 {
-	NSString *resolvedPath = nil;
-	
-	CFURLRef url = CFURLCreateWithFileSystemPath
-	(kCFAllocatorDefault, (CFStringRef)self, kCFURLPOSIXPathStyle, NO);
-	if (url != NULL)
-	{
-		FSRef fsRef;
-		if (CFURLGetFSRef(url, &fsRef))
-		{
-			Boolean targetIsFolder, wasAliased;
-			OSErr err = FSResolveAliasFileWithMountFlags(
-														 &fsRef, false, &targetIsFolder, &wasAliased, kResolveAliasFileNoUI);
-			if ((err == noErr) && wasAliased)
-			{
-				CFURLRef resolvedUrl = CFURLCreateFromFSRef(kCFAllocatorDefault, &fsRef);
-				if (resolvedUrl != NULL)
-				{
-					resolvedPath =
-					[(id)CFURLCopyFileSystemPath(resolvedUrl, kCFURLPOSIXPathStyle)
-					 autorelease];
-					CFRelease(resolvedUrl);
-				}
-			}
-		}
-		CFRelease(url);
-	}
-	
-	return resolvedPath;
+    NSString *resolvedPath = nil;
+    CFURLRef	url = CFURLCreateWithFileSystemPath(NULL, (CFStringRef)self, kCFURLPOSIXPathStyle, NO);
+    if (url != NULL)
+    {
+        CFDataRef bd = CFURLCreateBookmarkDataFromFile(NULL, url, NULL);
+        if (bd) {
+            CFURLRef r = CFURLCreateByResolvingBookmarkData(NULL, bd, kCFBookmarkResolutionWithoutUIMask, NULL, NULL, NULL, NULL);
+            if (r) {
+                resolvedPath = CFBridgingRelease(CFURLCopyPath(r));
+                CFRelease(r);
+            }
+            
+            CFRelease(bd);
+        }
+        
+        CFRelease(url);
+    }
+    
+    return resolvedPath;
 }
 
 //- (NSString *)stringByIterativelyResolvingSymlinkOrAlias BUG this creates an infinite loop..... Finding source code on the internet is not always a good solution...

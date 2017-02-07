@@ -40,6 +40,8 @@
 	IBOutlet NSWindow *mainWindow;
     IBOutlet NSButton *CheckUpdatesOnOff;
     NSMutableArray *languages;
+    
+    id _tlos;
 }
 
 @property (retain) NSMutableArray *languages;

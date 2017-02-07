@@ -50,7 +50,11 @@
 
 //static NSMutableDictionary *paneBundles = nil;
 
-//#define DATAFILEPATH @"/Database.dat"
+@interface PreferencesWindowController (Dummy)
+
+- (void)enableControls:(id)dummy;
+
+@end
 
 @implementation PreferencesWindowContext
 
@@ -100,7 +104,7 @@ static NSMutableDictionary *prefPanes = nil;
         
 		if( builtinPrefPaneClass)
 		{
-			self.pane = [[[builtinPrefPaneClass alloc] initWithBundle:nil] autorelease];
+			self.pane = [[[builtinPrefPaneClass alloc] initWithBundle:[NSBundle mainBundle]] autorelease];
 		}
 		else
 		{

@@ -1,16 +1,24 @@
-OsiriX_Lion.xcodeproj/xcuserdata/
-OsiriX_Lion.xcodeproj/project.xcworkspace/xcuserdata/
-Horos.xcodeproj/xcuserdata/
-Horos.xcodeproj/project.xcworkspace/xcuserdata/
-*.xcworkspace
-*.DS_Store
-__MACOSX/
-Binaries/__MACOSX/
+.DS_Store
+.Trashes
+*.swp
+*.lock
+*~.nib
+DerivedData/
 build/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata
+*.moved-aside
+
+__MACOSX
+
 AYDicomPrint/
 AYDicomPrint/xercesc
 AYDicomPrint/libxerces-c.27.dylib
 AYDicomPrint/libdcmprintscu.dylib
+
 Binaries/3DconnexionClient.framework/
 Binaries/DB_Previous_Models/
 Binaries/DCMTK/
@@ -19,13 +27,13 @@ Binaries/Growl.framework/
 Binaries/GDCMHeaders/
 Binaries/GDCMLibs/
 Binaries/ILCrashReporter.framework/
-Binaries/ITKHeaders/
 Binaries/ITKLibs/
 Binaries/KDU SDK/libkdu_v73R.a
 Binaries/libPapyrusToolkit.a
 Binaries/LibTiff/
 Binaries/Ming/
 Binaries/openjpeg/
+Binaries/openssl
 Binaries/OsiriX Report.template
 Binaries/PAGES/
 Binaries/ReportsToPDF/odt2pdf/build/odt2pdf
@@ -36,12 +44,3 @@ Binaries/GDCMLibs/
 Binaries/weasis/
 Binaries/._OsiriX Report.template
 Binaries/FeedbackReporter.framework/
-Binaries/openssl
-
-*.xcscheme
-xcuserdata/
-DerivedData/
-*.xcworkspacedata
-
-
-

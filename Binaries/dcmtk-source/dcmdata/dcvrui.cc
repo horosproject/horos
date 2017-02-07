@@ -149,7 +149,7 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString()
     /* check whether automatic input data correction is enabled */
     if ((value != NULL) && dcmEnableAutomaticInputDataCorrection.get())
     {
-        const int len = strlen(value);
+        const int len = (int)strlen(value);
         /*
         ** Remove any leading, embedded, or trailing white space.
         ** This manipulation attempts to correct problems with

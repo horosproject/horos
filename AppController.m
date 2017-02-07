@@ -50,7 +50,7 @@
 #import "SplashScreen.h"
 #import "NSFont_OpenGL.h"
 #import "DicomFile.h"
-#import <OsiriX/DCM.h>
+#import "DCM.h"
 #import "PluginManager.h"
 #import "DCMTKQueryRetrieveSCP.h"
 #import "BLAuthentication.h"
@@ -100,6 +100,8 @@
 #import "DicomStudy.h"
 #import "SRAnnotation.h"
 #import "Reports.h"
+#import "WebPortalDatabase.h"
+#import "NSString+SymlinksAndAliases.h"
 #include <OpenGL/OpenGL.h>
 
 #include <kdu_OsiriXSupport.h>
@@ -124,12 +126,12 @@ static PluginManager *pluginManager = nil;
 static unsigned char *LUT12toRGB = nil;
 static BOOL canDisplay12Bit = NO;
 static NSInvocation *fill12BitBufferInvocation = nil;
-static NSString *appStartingDate = nil;
+//static NSString *appStartingDate = nil;
 
 BOOL					NEEDTOREBUILD = NO;
 BOOL					COMPLETEREBUILD = NO;
 BOOL					USETOOLBARPANEL = NO;
-short					Altivec = 1;
+//short					Altivec = 1;
 short                   Use_kdu_IfAvailable = 0;
 AppController			*appController = nil;
 DCMTKQueryRetrieveSCP   *dcmtkQRSCP = nil, *dcmtkQRSCPTLS = nil;
@@ -430,7 +432,7 @@ static volatile BOOL converting = NO;
 
 NSString* filenameWithDate( NSString *inputfile)
 {
-	NSDictionary	*fattrs = [[NSFileManager defaultManager] fileAttributesAtPath:inputfile traverseLink:YES];
+	NSDictionary	*fattrs = [[NSFileManager defaultManager] attributesOfItemAtPath:inputfile error:NULL];
 	NSDate			*createDate;
 	NSNumber		*fileSize;
 	
@@ -455,7 +457,7 @@ NSString* convertDICOM( NSString *inputfile)
 	converting = YES;
 	NSLog(@"convertDICOM - FAILED to use current DICOM File Parser : %@", inputfile);
 	#ifndef OSIRIX_LIGHT
-	[[BrowserController currentBrowser] decompressDICOMList: [NSArray arrayWithObject: inputfile] to: [outputfile stringByDeletingLastPathComponent]];
+	[[[BrowserController currentBrowser] database] decompressFilesAtPaths:@[inputfile] intoDirAtPath:[outputfile stringByDeletingLastPathComponent]];
 	#endif
 	return outputfile;
 }
@@ -465,54 +467,40 @@ int dictSort(id num1, id num2, void *context)
     return [[num1 objectForKey:@"AETitle"] caseInsensitiveCompare: [num2 objectForKey:@"AETitle"]];
 }
 
-#define kHasAltiVecMask    ( 1 << gestaltPowerPCHasVectorInstructions )  // used in  looking for a g4 
-
-short HasAltiVec ( )
-{
-	Boolean			hasAltiVec = 0;
-	OSErr			err;       
-	SInt32			ppcFeatures;
-	
-	err = Gestalt ( gestaltPowerPCProcessorFeatures, &ppcFeatures );       
-	if ( err == noErr)       
-	{             
-		if ( ( ppcFeatures & kHasAltiVecMask) != 0 )
-		{
-			hasAltiVec = 1;
-			NSLog(@"AltiVEC is available");
-		}
-	}       
-	return hasAltiVec;                   
-}
+//#define kHasAltiVecMask    ( 1 << gestaltPowerPCHasVectorInstructions )  // used in  looking for a g4 
+//
+//short HasAltiVec ( )
+//{
+//	Boolean			hasAltiVec = 0;
+//	OSErr			err;       
+//	SInt32			ppcFeatures;
+//	
+//	err = Gestalt ( gestaltPowerPCProcessorFeatures, &ppcFeatures );       
+//	if ( err == noErr)       
+//	{             
+//		if ( ( ppcFeatures & kHasAltiVecMask) != 0 )
+//		{
+//			hasAltiVec = 1;
+//			NSLog(@"AltiVEC is available");
+//		}
+//	}       
+//	return hasAltiVec;                   
+//}
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-SInt32 macOS_Version()
-{
-    SInt32	osVersion = 0;
-    
-    if ([[NSProcessInfo processInfo] respondsToSelector:@selector(operatingSystemVersion)])
-    {
-        NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
-        
-        osVersion = version.patchVersion;
-        osVersion = ((SInt32) version.minorVersion << 8 );
-        osVersion = ((SInt32) version.majorVersion << 16);
-    }
-    else
-    {
-        OSErr err = 0;
-        
-        err = Gestalt ( gestaltSystemVersion, &osVersion );
-        if ( err == noErr)
-        {
-            osVersion = 0;
-        }
-    }
-    
-    return osVersion;
-
-}
+//SInt32 osVersion()
+//{
+//	OSErr						err;       
+//	SInt32						osVersion;
+//	
+//	err = Gestalt ( gestaltSystemVersion, &osVersion );       
+//	if ( err == noErr)       
+//	{
+//		return osVersion;
+//	}
+//	return 0;                   
+//}
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
@@ -579,7 +567,7 @@ NSRect screenFrame()
 	return screenRect;
 }
 
-#import <Foundation/Foundation.h>  
+/*#import <Foundation/Foundation.h>
 
 // This function takes as parameter the data of the aliases  
 // stored in the com.apple.LaunchServices.plist file.  
@@ -627,7 +615,7 @@ static NSString *getResolvedAliasPath(NSData* inData)
     }  
 	
     return outPath;  
-}  
+}*/
 
 void exceptionHandler(NSException *exception)
 {
@@ -654,49 +642,90 @@ void exceptionHandler(NSException *exception)
 
 @end
 
+@interface AppController (Dummy)
+
+- (void)AddCurrentWLWW:(id)dummy;
+- (void)ApplyConv:(id)dummy;
+- (void)AddConv:(id)dummy;
+- (void)addPreferencesFromURL:(id)dummy;
+- (BOOL)showsFullScreenButton;
+
+@end
+
 @implementation AppController
 
 @synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, recentStudiesMenu, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
 @synthesize bonjourPublisher = _bonjourPublisher;
 
++ (NSOperatingSystemVersion)operatingSystemVersion {
+    NSProcessInfo *info = [NSProcessInfo processInfo];
+    if ([info respondsToSelector:@selector(operatingSystemVersion)])
+        return [info operatingSystemVersion];
+    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    SInt32 major = 0, minor = 0, patch = 0;
+    Gestalt(gestaltSystemVersionMajor, &major);
+    Gestalt(gestaltSystemVersionMinor, &minor);
+    Gestalt(gestaltSystemVersionBugFix, &patch);
+#pragma clang diagnostic pop
+    
+    NSOperatingSystemVersion version = {major, minor, patch};
+    return version;
+}
+
 +(BOOL) hasMacOSX1083
 {
-    return NO;
+    NSOperatingSystemVersion v = [self.class operatingSystemVersion];
+    return (v.majorVersion == 10 && v.minorVersion == 8 && v.patchVersion == 3);
+}
+
++ (BOOL)hasMacOSXSierra
+{
+    NSOperatingSystemVersion v = [self.class operatingSystemVersion];
+    return (v.majorVersion >= 10 && v.minorVersion >= 12);
 }
 
 +(BOOL) hasMacOSXElCapitan
 {
-    return YES;
+    NSOperatingSystemVersion v = [self.class operatingSystemVersion];
+    return (v.majorVersion >= 10 && v.minorVersion >= 11);
 }
 
 +(BOOL) hasMacOSXYosemite
 {
-    return YES;
+    NSOperatingSystemVersion v = [self.class operatingSystemVersion];
+    return (v.majorVersion >= 10 && v.minorVersion >= 10);
 }
 
 +(BOOL) hasMacOSXMaverick
 {
-    return YES;
+    NSOperatingSystemVersion v = [self.class operatingSystemVersion];
+    return (v.majorVersion >= 10 && v.minorVersion >= 9);
 }
 
 +(BOOL) hasMacOSXMountainLion
 {
-    return NO;
+    NSOperatingSystemVersion v = [self.class operatingSystemVersion];
+    return (v.majorVersion >= 10 && v.minorVersion >= 8);
 }
 
 +(BOOL) hasMacOSXLion
 {
-    return YES;
+    NSOperatingSystemVersion v = [self.class operatingSystemVersion];
+    return (v.majorVersion >= 10 && v.minorVersion >= 7);
 }
 
 +(BOOL) hasMacOSXSnowLeopard
 {
-    return YES;
+    NSOperatingSystemVersion v = [self.class operatingSystemVersion];
+    return (v.majorVersion >= 10 && v.minorVersion >= 6);
 }
 
 +(BOOL) hasMacOSXLeopard
 {
-    return YES;
+    NSOperatingSystemVersion v = [self.class operatingSystemVersion];
+    return (v.majorVersion >= 10 && v.minorVersion >= 5);
 }
 
 + (void) createNoIndexDirectoryIfNecessary:(NSString*) path { // __deprecated
@@ -974,7 +1003,7 @@ void exceptionHandler(NSException *exception)
 		
 		NSString *pluginBundleName = [[path lastPathComponent] stringByDeletingPathExtension];
 		
-		NSURL *bundleURL = [NSURL fileURLWithPath: [PluginManager pathResolved:path]];
+		NSURL *bundleURL = [NSURL fileURLWithPath:path.stringByResolvingAlias];
 		CFDictionaryRef bundleInfoDict = CFBundleCopyInfoDictionaryInDirectory((CFURLRef)bundleURL);
 		
 		CFStringRef versionString = nil;
@@ -1053,7 +1082,7 @@ void exceptionHandler(NSException *exception)
 
 - (NSString*) privateIP
 {
-	return [NSString stringWithCString:GetPrivateIP() encoding:NSUTF8StringEncoding];
+	return [NSString stringWithUTF8String:GetPrivateIP()];
 }
 
 - (IBAction)cancelModal:(id)sender
@@ -1132,7 +1161,7 @@ void exceptionHandler(NSException *exception)
 		{
 			if( [[NSFileManager defaultManager] fileExistsAtPath: path] && [(NSString*)[NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil] length] > 0)
 			{
-				[NSThread currentThread].status = [[NSThread currentThread].status stringByAppendingFormat: NSLocalizedString( @" - %@", nil), [NSString stringWithContentsOfFile: path]];
+				[NSThread currentThread].status = [[NSThread currentThread].status stringByAppendingFormat: NSLocalizedString( @" - %@", nil), [NSString stringWithContentsOfFile:path usedEncoding:NULL error:NULL]];
 				[NSThread sleepForTimeInterval: 1];
 				threadStateChanged = YES;
 			}
@@ -1151,7 +1180,7 @@ void exceptionHandler(NSException *exception)
 {
 	char s[_POSIX_HOST_NAME_MAX+1];
 	gethostname(s,_POSIX_HOST_NAME_MAX);
-	NSString *c = [NSString stringWithCString:s encoding:NSUTF8StringEncoding];
+	NSString *c = [NSString stringWithUTF8String:s];
 	NSRange range = [c rangeOfString: @"."];
 	if( range.location != NSNotFound) c = [c substringToIndex: range.location];
 	
@@ -2182,7 +2211,7 @@ void exceptionHandler(NSException *exception)
 		[alert setInformativeText: [err stringByAppendingString: @"\r\rThis error message can be hidden by activating the Server Mode (see Listener Preferences)"]];
 		[alert addButtonWithTitle: NSLocalizedString(@"OK", nil)];
 		
-		[alert beginSheetModalForWindow:nil modalDelegate:nil didEndSelector:nil contextInfo:nil];
+		[alert beginSheetModalForWindow:[[BrowserController currentBrowser] window] completionHandler:nil];
 	}
 }
 
@@ -2744,7 +2773,7 @@ static BOOL firstCall = YES;
 #endif
         [[NSFileManager defaultManager] removeItemAtPath:[[NSFileManager defaultManager] tmpDirPath] error:NULL];
         
-        if ([[NSFileManager defaultManager] fileExistsAtPath:[[[[NSFileManager defaultManager] findSystemFolderOfType:kApplicationSupportFolderType forDomain:kLocalDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"]])
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[[[[[[NSFileManager defaultManager] URLsForDirectory:NSApplicationSupportDirectory inDomains:NSLocalDomainMask] firstObject] path] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"]])
             [N2Debug setActive:YES];
         
     //  NSLog(@"%@ -> %d", [[[[NSFileManager defaultManager] findSystemFolderOfType:kApplicationSupportFolderType forDomain:kLocalDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"], [N2Debug isActive]);
@@ -2812,18 +2841,18 @@ static BOOL initialized = NO;
 				
 				srandom(time(NULL));
 				
-				Altivec = HasAltiVec();
+//				Altivec = HasAltiVec();
 				//	if( Altivec == 0)
 				//	{
 				//		NSRunCriticalAlertPanel(@"Hardware Info", @"This application is optimized for Altivec - Velocity Engine unit, available only on G4/G5 processors.", @"OK", nil, nil);
 				//		exit(0);
 				//	}
 				
-				//if ([AppController hasMacOSXSnowLeopard] == NO)
-				//{
-				//	NSRunCriticalAlertPanel(NSLocalizedString(@"Mac OS X", nil), NSLocalizedString(@"This application requires Mac OS X 10.6 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"Quit", nil), nil, nil);
-				//	exit(0);
-				//}
+				if ([AppController hasMacOSXElCapitan] == NO)
+				{
+					NSRunCriticalAlertPanel(NSLocalizedString(@"macOS", nil), NSLocalizedString(@"This application requires macOS 10.11 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"Quit", nil), nil, nil);
+					exit(0);
+				}
                 
                 int processors;
                 int mib[2] = {CTL_HW, HW_NCPU};
@@ -2849,12 +2878,6 @@ static BOOL initialized = NO;
 				#else
 				NSLog( @"**** DEBUG MODE ****");
 				#endif
-				
-			//	if( hasMacOSXVersion() == NO)
-			//	{
-			//		NSRunCriticalAlertPanel(@"Software Error", @"This application requires MacOS X 10.3 or higher. Please upgrade your operating system.", @"OK", nil, nil);
-			//		exit(0);
-			//	}
 				
 			//	if( [[NSCalendarDate dateWithYear:2006 month:6 day:2 hour:12 minute:0 second:0 timeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]] timeIntervalSinceNow] < 0)
 			//	{
@@ -3563,9 +3586,9 @@ static BOOL initialized = NO;
 #endif // NDEBUG
 #endif // OSIRIX_LIGHT
     
-    if( [AppController hasMacOSXLion] == NO)
+    if( [AppController hasMacOSXElCapitan] == NO)
     {
-        NSRunCriticalAlertPanel( NSLocalizedString( @"MacOS Version", nil), NSLocalizedString( @"Horos requires MacOS 10.7.5 or higher. Please update your OS: Apple Menu - Software Update...", nil), NSLocalizedString( @"Quit", nil) , nil, nil);
+        NSRunCriticalAlertPanel( NSLocalizedString( @"macOS Version", nil), NSLocalizedString( @"Horos requires macOS 10.11 or higher. Please update your OS: Apple Menu - Software Update...", nil), NSLocalizedString( @"Quit", nil) , nil, nil);
         exit( 0);
     }
     
@@ -3846,8 +3869,8 @@ static BOOL initialized = NO;
     
 	BOOL dialog = NO;
     
-	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/"] == NO)
-		[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/" attributes: nil];
+//	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/"] == NO)
+//		[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/" attributes: nil];
 	
     
     NSMutableArray *dbArray = [[[[NSUserDefaults standardUserDefaults] arrayForKey: @"localDatabasePaths"] deepMutableCopy] autorelease];

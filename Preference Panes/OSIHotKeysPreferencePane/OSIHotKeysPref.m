@@ -41,7 +41,7 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 	if( self = [super init])
 	{
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIHotKeysPref" bundle: nil] autorelease];
-		[nib instantiateNibWithOwner:self topLevelObjects: nil];
+		[nib instantiateWithOwner:self topLevelObjects:&_tlos];
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
@@ -117,7 +117,10 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 
 - (void)dealloc{	
 	NSLog(@"dealloc Hot Key Pref PAne");
-	[_actions release];
+    [_actions release];
+    
+    [_tlos release]; _tlos = nil;
+    
 	[super dealloc];
 }
 

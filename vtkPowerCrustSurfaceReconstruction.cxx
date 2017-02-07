@@ -3446,14 +3446,14 @@ void Ax_plus_y_test(Coord a, point x, point y) {
 
 void Vec_scale(int n, Coord a, Coord *x)
 {
-    register Coord *xx = x,
+    Coord *xx = x,
         *xend = xx + n;
     while (xx!=xend) *xx++ *= a;
 }
 
 void Vec_scale_test(int n, Coord a, Coord *x)
 {
-    register Coord *xx = x,
+    Coord *xx = x,
         *xend = xx + n  ;
 
     check_overshoot(a);
@@ -3804,7 +3804,7 @@ void get_normal_sede(simplex *s) {
             c[0] = -c[0]; c[1] = -c[1]; c[2] = -c[2];
             break;
         }
-        DEBS(-1) if (!check_perps(s)) /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE)); EDEBS
+//        DEBS(-1) if (!check_perps(s)) /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE)); EDEBS
                                                    return;
     }   
         
@@ -3815,7 +3815,7 @@ void get_normal_sede(simplex *s) {
         if (s->normal->sqb != 0) break;
     }
 
-    DEBS(-1) if (!check_perps(s)) {DEBTR(-1) /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE));} EDEBS
+//    DEBS(-1) if (!check_perps(s)) {DEBTR(-1) /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE));} EDEBS
 
                                                            }
 
@@ -3858,11 +3858,11 @@ int sees(site p, simplex *s) {
         get_basis_sede(s);
         reduce_inner(b,s,cdim);
     }
-    DEBS(-7) if (i==3) {
-        DEB(-6, looped too much in sees);
-        DEBEXP(-6,dd) DEBEXP(-6,dds) DEBEXP(-6,site_num(p));
-        print_simplex_f(s, DFILE/* function has empty body */, &print_neighbor_full); /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE));}
-    EDEBS
+//    DEBS(-7) if (i==3) {
+//        DEB(-6, looped too much in sees);
+//        DEBEXP(-6,dd) DEBEXP(-6,dds) DEBEXP(-6,site_num(p));
+//        print_simplex_f(s, DFILE/* function has empty body */, &print_neighbor_full); /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE));}
+//    EDEBS
         return 0;
 }
 
@@ -5478,8 +5478,8 @@ simplex *make_facets(simplex *seen) {
 
 
     if (!seen) return NULL;
-    DEBS(-1) OSIRIX_ASSERT((long) (sees(p,seen) && !seen->peak.vert));
-    EDEBS seen->peak.vert = p;
+    /*DEBS(-1) OSIRIX_ASSERT((long) (sees(p,seen) && !seen->peak.vert));
+    EDEBS*/ seen->peak.vert = p;
 
     for (i=0,bn = seen->neigh; i<cdim; i++,bn++) {
         n = bn->simp;

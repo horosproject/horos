@@ -191,7 +191,7 @@
 		{
             countOfSuccesses++;
             
-			if( [[NSString stringWithCString: [d bytes] length: 2] isEqualToString: @"PK"])
+			if( [[[[NSString alloc] initWithBytes:d.bytes length:2 encoding:NSUTF8StringEncoding] autorelease] isEqualToString: @"PK"])
 				extension = @"osirixzip";
             
             NSString *filename = [[NSString stringWithFormat:@".WADO-%d-%ld", WADOThreads, (long) self] stringByAppendingPathExtension: extension];

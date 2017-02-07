@@ -388,7 +388,7 @@ NSRect DKCenterRect(NSRect smallRect, NSRect bigRect)
 	}
 }
 
-- (NSUInteger)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView {
+- (NSCellHitResult)hitTestForEvent:(NSEvent *)event inRect:(NSRect)cellFrame ofView:(NSView *)controlView {
 	NSPoint mouseLocation = [controlView convertPoint:[event locationInWindow] fromView:nil];
 	return NSPointInRect(mouseLocation, cellFrame) ? (NSCellHitContentArea | NSCellHitTrackableArea) : NSCellHitNone;
 }

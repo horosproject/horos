@@ -46,6 +46,7 @@
 #import "DicomDatabase.h"
 #import "N2Debug.h"
 #import "CSMailMailClient.h"
+#import "NSString+SymlinksAndAliases.h"
 
 @interface WebPortalServer ()
 
@@ -53,6 +54,11 @@
 
 @end
 
+@interface WebPortalServer (Dummy)
+
+- (void)ignore:(id)dummy;
+
+@end
 
 @implementation WebPortalServer
 
@@ -556,7 +562,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	BOOL isDirectory;
 	
 	for (NSInteger i = 0; i < dirsToScanForFile.count; ++i) {
-		NSString* path = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[dirsToScanForFile objectAtIndex:i]];
+		NSString* path = [[dirsToScanForFile objectAtIndex:i] stringByResolvingSymlinksAndAliases];
 		
 		// path not on disk, ignore
 		if (![[NSFileManager defaultManager] fileExistsAtPath: path isDirectory:&isDirectory] || !isDirectory) {

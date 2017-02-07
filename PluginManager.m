@@ -33,17 +33,18 @@
 
 
 #import "PluginManager.h"
-#import "ViewerController.h"
 #import "AppController.h"
 #import "browserController.h"
 #import "BLAuthentication.h"
 #import "PluginManagerController.h"
 #import "Notifications.h"
 #import "NSFileManager+N2.h"
+#import "NSString+SymlinksAndAliases.h"
 #import "NSMutableDictionary+N2.h"
 #import "PreferencesWindowController.h"
 #import "N2Debug.h"
 #import "url.h"
+#import "NSString+SymlinksAndAliases.h"
 
 static NSMutableDictionary		*plugins = nil, *pluginsDict = nil, *fileFormatPlugins = nil;
 static NSMutableDictionary		*reportPlugins = nil, *pluginsBundleDictionnary = nil;
@@ -55,6 +56,12 @@ static NSMutableDictionary		*pluginsNames = nil;
 static BOOL						ComPACSTested = NO, isComPACS = NO;
 
 BOOL gPluginsAlertAlreadyDisplayed = NO;
+
+@interface PluginManager (Dummy)
+
+- (void)executeFilter:(id)sender;
+
+@end
 
 @implementation PluginManager
 
@@ -464,36 +471,10 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	return self;
 }
 
-
-
 + (NSString*) pathResolved:(NSString*) inPath
 {
-	CFStringRef resolvedPath = nil;
-	CFURLRef	url = CFURLCreateWithFileSystemPath(NULL /*allocator*/, (CFStringRef)inPath, kCFURLPOSIXPathStyle, NO /*isDirectory*/);
-	if (url != NULL)
-    {
-		FSRef fsRef;
-		if (CFURLGetFSRef(url, &fsRef))
-        {
-			Boolean targetIsFolder, wasAliased;
-			if (FSResolveAliasFile (&fsRef, true /*resolveAliasChains*/, &targetIsFolder, &wasAliased) == noErr && wasAliased)
-            {
-				CFURLRef resolvedurl = CFURLCreateFromFSRef(NULL /*allocator*/, &fsRef);
-				if (resolvedurl != NULL)
-                {
-					resolvedPath = CFURLCopyFileSystemPath(resolvedurl, kCFURLPOSIXPathStyle);
-					CFRelease(resolvedurl);
-				}
-			}
-		}
-		CFRelease(url);
-	}
-	
-	if( resolvedPath == nil) return inPath;
-	else return [(NSString *) resolvedPath autorelease];
+    return [inPath stringByResolvingAlias];
 }
-
-
 
 + (void) releaseInstanciedObjectsOfClass: (Class) class
 {
@@ -600,7 +581,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
         
         @try
         {
-            NSString *pathResolved = [PluginManager pathResolved: [path stringByAppendingPathComponent: name]];
+            NSString *pathResolved = [[path stringByAppendingPathComponent:name] stringByResolvingAlias];
             
             [PluginManager startProtectForCrashWithPath: pathResolved];
             
@@ -824,7 +805,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
             @try {
                 NSArray* donotloadnames = nil;
                 if (![path isKindOfClass:[NSNull class]]) {
-                    donotloadnames = [[NSString stringWithContentsOfFile:[path stringByAppendingPathComponent:@"DoNotLoad.txt"]] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+                    donotloadnames = [[NSString stringWithContentsOfFile:[path stringByAppendingPathComponent:@"DoNotLoad.txt"] usedEncoding:NULL error:NULL] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
                     if ([donotloadnames containsObject:@"*"])
                         break;
                 }
@@ -832,7 +813,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                 NSEnumerator* e = nil;
                 if ([path isKindOfClass:[NSString class]])
                 {
-                    NSArray* pluginsInDir = [[NSFileManager defaultManager] directoryContentsAtPath:path];
+                    NSArray<NSString *>* pluginsInDir = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL];
                     e = [[pluginsInDir filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSString* plugin, NSDictionary* bindings) {
                         BOOL listed = [dontLoadOtherWithTheseNames containsObject:plugin];
                         if (listed)
@@ -856,12 +837,8 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
                 
                 NSString* name;
                 while (name = [e nextObject])
-                    if ([donotloadnames containsObject:[name stringByDeletingPathExtension]] == NO) {
-                        NSString *ppath = [path stringByAppendingPathComponent:name];
-                        NSString *rpath = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:ppath];
-                        NSURL *url = [NSURL fileURLWithPath:rpath relativeToURL:[NSURL fileURLWithPath:ppath isDirectory:NO]];
-                        [pathsOfPluginsToLoad addObject:url.path];
-                    }
+                    if ([donotloadnames containsObject:[name stringByDeletingPathExtension]] == NO)
+                        [pathsOfPluginsToLoad addObject:[[path stringByAppendingPathComponent:name] stringByResolvingSymlinksAndAliases]];
             } @catch (NSException* e) {
                 N2LogExceptionWithStackTrace(e);
             }
@@ -1040,7 +1017,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	if([sourcePath isEqualToString:destinationPath]) return;
 	
 	if(![[NSFileManager defaultManager] fileExistsAtPath:[destinationPath stringByDeletingLastPathComponent]])
-		[[NSFileManager defaultManager] createDirectoryAtPath:[destinationPath stringByDeletingLastPathComponent] attributes:nil];
+		[[NSFileManager defaultManager] createDirectoryAtPath:[destinationPath stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:NULL];
 
     NSMutableArray *args = [NSMutableArray array];
 	[args addObject:@"-f"];
@@ -1075,7 +1052,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	for(inactivePath in inactivePaths)
 	{
 		activePath = [activePathEnum nextObject];
-		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:inactivePath] objectEnumerator];
+        NSEnumerator *e = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:inactivePath error:NULL] objectEnumerator];
 		NSString *name;
 		while(name = [e nextObject])
 		{
@@ -1109,7 +1086,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	for(activePath in activePaths)
 	{
 		inactivePath = [inactivePathEnum nextObject];
-		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:activePath] objectEnumerator];
+        NSEnumerator *e = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:activePath error:NULL] objectEnumerator];
 		NSString *name;
 		while(name = [e nextObject])
 		{
@@ -1155,7 +1132,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	
 	while((path = [pathEnum nextObject]) && !found)
 	{
-		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
+        NSEnumerator *e = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL] objectEnumerator];
 		NSString *name;
 		while((name = [e nextObject]) && !found)
 		{
@@ -1199,7 +1176,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	BOOL isDir = YES;
 	BOOL directoryCreated = NO;
 	if (![[NSFileManager defaultManager] fileExistsAtPath:directoryPath isDirectory:&isDir] && isDir)
-		directoryCreated = [[NSFileManager defaultManager] createDirectoryAtPath:directoryPath attributes:nil];
+		directoryCreated = [[NSFileManager defaultManager] createDirectoryAtPath:directoryPath withIntermediateDirectories:YES attributes:nil error:NULL];
 
 	if(!directoryCreated)
 	{
@@ -1335,7 +1312,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 	
 	for(path in pluginsPaths)
 	{
-		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
+        NSEnumerator *e = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL] objectEnumerator];
 		NSString *name;
 		while(name = [e nextObject])
 		{
@@ -1358,7 +1335,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 				returnPath = path;
 				
 //				// delete
-//				BOOL deleted = [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"%@/%@", path, name] handler:nil];
+//				BOOL deleted = [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", path, name] error:NULL];
 //				if(!deleted)
 //				{
 //					NSMutableArray *args = [NSMutableArray array];
@@ -1427,7 +1404,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 		else if([path isEqualToString:userActivePath] || [path isEqualToString:userInactivePath])
 			availability = [[PluginManager availabilities] objectAtIndex:0];
 		
-		NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
+        NSEnumerator *e = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL] objectEnumerator];
 		
         NSString *name = nil;
 		
@@ -1458,7 +1435,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 					////////////////////////////////////
                     
 					// taking the "version" through NSBundle is a BAD idea: Cocoa keeps the NSBundle in cache... thus for a same path you'll always have the same version
-					NSURL *bundleURL = [NSURL fileURLWithPath:[PluginManager pathResolved:[path stringByAppendingPathComponent:name]]];
+					NSURL *bundleURL = [NSURL fileURLWithPath:[[path stringByAppendingPathComponent:name] stringByResolvingAlias]];
 					CFDictionaryRef bundleInfoDict = CFBundleCopyInfoDictionaryInDirectory((CFURLRef) bundleURL);
 								
 					//////////////
@@ -1505,7 +1482,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
                             }
                         }
                         
-                        [pluginDescription setObject:[[NSNumber numberWithBool:NO] boolValue]?@"YES":@"NO" forKey:@"HorosCompatiblePlugin"];
+                        [pluginDescription setObject:[horosCompatible boolValue]?@"YES":@"NO" forKey:@"HorosCompatiblePlugin"];
                     }
                     
                     //////////////

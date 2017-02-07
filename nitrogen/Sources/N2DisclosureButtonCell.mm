@@ -44,10 +44,10 @@
 	[self setControlSize:NSSmallControlSize];
 	[self sendActionOn:NSLeftMouseDownMask];
 	
-	_attributes = [[NSMutableDictionary dictionaryWithObjectsAndKeys:
-//						[NSColor whiteColor], NSForegroundColorAttributeName,
-//						[NSFont labelFontOfSize:[NSFont smallSystemFontSize]], NSFontAttributeName,
-					NULL] retain];
+    _attributes = [[NSMutableDictionary alloc] initWithDictionary:@{
+//						NSForegroundColorAttributeName: [NSColor whiteColor],
+//						NSFontAttributeName: [NSFont labelFontOfSize:[NSFont smallSystemFontSize]],
+                                                                    }];
 	
 	return self;
 }

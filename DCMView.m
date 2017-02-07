@@ -31,8 +31,8 @@
      PURPOSE.
  ============================================================================*/
 
-#import "OsiriX/DCMAbstractSyntaxUID.h"
-#import <DCMView.h>
+#import "DCMAbstractSyntaxUID.h"
+#import "DCMView.h"
 #import "StringTexture.h"
 #import "DCMPix.h"
 #import "ROI.h"
@@ -91,13 +91,16 @@ static		NSDictionary				*_hotKeyDictionary = nil, *_hotKeyModifiersDictionary = 
 static		NSRecursiveLock				*drawLock = nil;
 static		NSMutableArray				*globalStringTextureCache = nil;
 
-NSString * const pasteBoardHoros = @"Horos pasteboard";
-NSString * const pasteBoardHorosPlugin = @"HorosPluginDataType";
-NSString * const HorosPluginPboardUTI = @"com.opensource.horos.plugin.uti";
+NSString * const HorosPasteboardType = @"com.opensource.horos";
+NSString * const HorosPasteboardTypePlugin = @"com.opensource.horos.plugin";
 
-NSString * const pasteBoardOsiriX = @"OsiriX pasteboard";
-NSString * const pasteBoardOsiriXPlugin = @"OsiriXPluginDataType";
-NSString * const OsirixPluginPboardUTI = @"com.opensource.osirix.plugin.uti";
+NSString * const pasteBoardOsiriX = @"OsiriX pasteboard"; // deprecated
+NSString * const pasteBoardOsiriXPlugin = @"OsiriXPluginDataType"; // deprecated
+NSString * const OsirixPluginPboardUTI = @"com.opensource.osirix.plugin.uti"; // deprecated
+NSString * const pasteBoardHoros = @"Horos pasteboard"; // deprecated
+NSString * const HorosPboardUTI = @"com.opensource.horos.uti"; // deprecated
+NSString * const pasteBoardHorosPlugin = @"HorosPluginDataType"; // deprecated
+NSString * const HorosPluginPboardUTI = @"com.opensource.horos.plugin.uti"; // deprecated
 
 // intersect3D_SegmentPlane(): intersect a segment and a plane
 //    Input:  S = a segment, and Pn = a plane = {Point V0; Vector n;}
@@ -436,8 +439,8 @@ BOOL lineIntersectsRect(NSPoint lineStarts, NSPoint lineEnds, NSRect rect)
     
     if( rect.size.width == 0 || rect.size.height == 0) return NO;
     
-    float width = fabsf(lineStarts.x - lineEnds.x);
-    float height = fabsf(lineStarts.y - lineEnds.y);
+    CGFloat width = fabs(lineStarts.x - lineEnds.x);
+    CGFloat height = fabs(lineStarts.y - lineEnds.y);
     NSRect lineBoundingBox = NSMakeRect(min(lineStarts.x, lineEnds.x), min(lineStarts.y, lineEnds.y), width, height);
     
     if(NSIsEmptyRect(lineBoundingBox))
@@ -485,6 +488,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
     return nil;
 }
+@end
+
+@interface DCMView (Dummy)
+
+- (void)setFontColor:(id)dummy;
+
 @end
 
 @implementation DCMView
@@ -1031,9 +1040,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         NSLog( @"w:%f, h:%f", [im size].width, [im size].height);
         
         if ([im size].height < [im size].width)
-            [printInfo setOrientation: NSLandscapeOrientation];
+            [printInfo setOrientation: NSPaperOrientationLandscape];
         else
-            [printInfo setOrientation: NSPortraitOrientation];
+            [printInfo setOrientation: NSPaperOrientationPortrait];
         
         //NSRect	r = NSMakeRect( 0, 0, [printInfo paperSize].width, [printInfo paperSize].height);
         
@@ -1047,8 +1056,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         
         //	[pwindow setContentView: imageView];
         
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         [im setScalesWhenResized:YES];
-        
+#pragma clang diagnostic pop
+
         [imageView setImage: im];
         [imageView setImageScaling: NSScaleProportionally];
         [imageView setImageAlignment: NSImageAlignCenter];
@@ -1324,8 +1336,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         for( id loopItem1 in roiArray)
         {
             [loopItem1 setOriginAndSpacing:curDCM.pixelSpacingX :curDCM.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: curDCM]];
-            [loopItem1 setROIMode: ROI_selected];
-            [loopItem1 setRoiView :self];
+            [loopItem1 setROIMode:ROI_selected];
+            [loopItem1 setCurView:self];
             
             [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: loopItem1 userInfo: nil];
         }
@@ -1408,25 +1420,28 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (IBAction) roiSaveSelected: (id) sender
 {
-    NSSavePanel     *panel = [NSSavePanel savePanel];
+    NSSavePanel *panel = [NSSavePanel savePanel];
     
-    NSMutableArray  *selectedROIs = [NSMutableArray  array];
+    NSMutableArray *selectedROIs = [NSMutableArray  array];
     
-    for( ROI *r in curRoiList)
+    for (ROI *r in curRoiList)
     {
-        if( [r ROImode] == ROI_selected)
-            [selectedROIs addObject: r];
+        if ([r ROImode] == ROI_selected)
+            [selectedROIs addObject:r];
     }
     
-    if( [selectedROIs count] > 0)
+    if ([selectedROIs count] > 0)
     {
         [panel setCanSelectHiddenExtension:NO];
-        [panel setRequiredFileType:@"roi"];
+        panel.allowedFileTypes = @[@"roi"];
+        panel.nameFieldStringValue = [[selectedROIs objectAtIndex:0] name];
         
-        if( [panel runModalForDirectory:nil file:[[selectedROIs objectAtIndex:0] name]] == NSFileHandlingPanelOKButton)
-        {
-            [NSArchiver archiveRootObject: selectedROIs toFile :[panel filename]];
-        }
+        [panel beginWithCompletionHandler:^(NSInteger result) {
+            if (result != NSFileHandlingPanelOKButton)
+                return;
+            
+            [NSArchiver archiveRootObject:selectedROIs toFile:panel.URL.path];
+        }];
     }
     else
         NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Save Error",nil), NSLocalizedString(@"No ROI(s) selected to save!",nil) , NSLocalizedString(@"OK",nil), nil, nil);
@@ -1479,7 +1494,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         
         roi.points = pointsArray;
         roi.ROImode = ROI_selected;
-        [roi setRoiView :self];
+        [roi setCurView:self];
         if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
         {
             if( [self is2DViewer] == YES && [self isKeyImage] == NO && [[self windowController] isPostprocessed] == NO)
@@ -1555,7 +1570,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             [r setOriginAndSpacing :curDCM.pixelSpacingX : curDCM.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: curDCM]];
             
             [r setROIMode: ROI_selected];
-            [r setRoiView :self];
+            [r setCurView:self];
         }
         
         if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
@@ -1608,15 +1623,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     {
         NSImage *im;
         
-        [pb declareTypes:[NSArray arrayWithObject:NSTIFFPboardType] owner:self];
+        [pb declareTypes:[NSArray arrayWithObject:NSPasteboardTypeTIFF] owner:self];
         
         im = [self nsimage: NO allViewers: [sender tag]];
         
-        [pb setData: [[NSBitmapImageRep imageRepWithData: [im TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSTIFFPboardType];
+        [pb setData: [[NSBitmapImageRep imageRepWithData: [im TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSPasteboardTypeTIFF];
     }
     else
     {
-        [pb declareTypes:[NSArray arrayWithObjects:@"ROIObject", NSStringPboardType, nil] owner:nil];
+        [pb declareTypes:[NSArray arrayWithObjects:@"ROIObject", NSPasteboardTypeString, nil] owner:nil];
         [pb setData: [NSArchiver archivedDataWithRootObject: roiSelectedArray] forType:@"ROIObject"];
         
         NSMutableString *r = [NSMutableString string];
@@ -1629,7 +1644,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 [r appendString:@"\r"];
         }
         
-        [pb setString: r  forType:NSStringPboardType];
+        [pb setString: r  forType:NSPasteboardTypeString];
     }
 }
 
@@ -1896,7 +1911,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void)DrawCStringGL:(char*)cstrOut :(GLuint)fontL :(long)x :(long)y align:(DCMViewTextAlign)align useStringTexture:(BOOL)stringTex;
 {
-    [self DrawNSStringGL:[NSString stringWithCString:cstrOut encoding:NSUTF8StringEncoding] :fontL :x :y align:align useStringTexture:stringTex];
+    [self DrawNSStringGL:[NSString stringWithUTF8String:cstrOut] :fontL :x :y align:align useStringTexture:stringTex];
 }
 
 - (void) DrawCStringGL: (char *) cstrOut :(GLuint) fontL :(long) x :(long) y
@@ -2094,7 +2109,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         
         for( ROI *r in curRoiList)
         {
-            [r setRoiView :self];
+            [r setCurView:self];
             [r recompute];
             // Unselect previous ROIs
             [r setROIMode : ROI_sleep];
@@ -2555,7 +2570,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             keepIt = NO;
             for( ROI *r in curRoiList)
             {
-                [r setRoiView :self];
+                [r setCurView:self];
                 [r recompute];
                 if( curROI == r) keepIt = YES;
             }
@@ -2992,8 +3007,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             {
                 short   inc, previmage;
                 
-                if( yMove) val = yMove/abs(yMove);
-                else val = xMove/abs(xMove);
+                if( yMove) val = yMove/labs(yMove);
+                else val = xMove/labs(xMove);
                 
                 previmage = curImage;
                 
@@ -3201,6 +3216,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     }
 }
 
+- (void)flagsChanged {
+    NSEvent *e = nil;
+    [self flagsChanged:e];
+}
+
 - (void) flagsChanged:(NSEvent *)event
 {
     [self deleteLens];
@@ -3397,7 +3417,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 [ROISelectorSelectedROIList release];
                 ROISelectorSelectedROIList = nil;
                 
-                NSRect rect = NSMakeRect(ROISelectorStartPoint.x-1, ROISelectorStartPoint.y-1, fabsf(ROISelectorEndPoint.x-ROISelectorStartPoint.x)+2, fabsf(ROISelectorEndPoint.y-ROISelectorStartPoint.y)+2);
+                NSRect rect = NSMakeRect(ROISelectorStartPoint.x-1, ROISelectorStartPoint.y-1, fabs(ROISelectorEndPoint.x-ROISelectorStartPoint.x)+2, fabs(ROISelectorEndPoint.y-ROISelectorStartPoint.y)+2);
                 ROISelectorStartPoint = NSMakePoint(0.0, 0.0);
                 ROISelectorEndPoint = NSMakePoint(0.0, 0.0);
                 [self drawRect:rect];
@@ -3416,13 +3436,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(void) roiSet:(ROI*) aRoi
 {
-    [aRoi setRoiView :self];
+    [aRoi setCurView:self];
 }
 
 -(void) roiSet
 {
     for( ROI *c in curRoiList)
-        [c setRoiView :self];
+        [c setCurView:self];
 }
 
 // checks to see if tool is a valid ID for ROIs
@@ -4715,7 +4735,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                                 }
                                 else [curRoiList addObject: aNewROI];
                                 
-                                [aNewROI setRoiView :self];
+                                [aNewROI setCurView:self];
                                 
                                 if( [[NSUserDefaults standardUserDefaults] boolForKey: @"markROIImageAsKeyImage"])
                                 {
@@ -4840,7 +4860,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             if( [ViewerController isFrontMost2DViewer: self.window] == NO)
             {
                 [[self window] makeKeyAndOrderFront: self];
-                [self.windowController windowDidBecomeMain: nil]; //If the application is in background, it will not automatically called.
+                [self.windowController windowDidBecomeMain:[NSNotification notificationWithName:NSWindowDidBecomeMainNotification object:self.window]]; //If the application is in background, it will not automatically called.
             }
         }
         else if( [[self window] isMainWindow] == NO)
@@ -5867,7 +5887,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         NSPoint tempStartPoint = [self ConvertFromUpLeftView2GL: [self convertPointToBacking: ROISelectorStartPoint]];
         NSPoint tempEndPoint = [self ConvertFromUpLeftView2GL: [self convertPointToBacking: ROISelectorEndPoint]];
         
-        rect = NSMakeRect(min(tempStartPoint.x, tempEndPoint.x), min(tempStartPoint.y, tempEndPoint.y), fabsf(tempStartPoint.x - tempEndPoint.x), fabsf(tempStartPoint.y - tempEndPoint.y));
+        rect = NSMakeRect(min(tempStartPoint.x, tempEndPoint.x), min(tempStartPoint.y, tempEndPoint.y), fabs(tempStartPoint.x - tempEndPoint.x), fabs(tempStartPoint.y - tempEndPoint.y));
         
         if(rect.size.width<1)rect.size.width=1;
         if(rect.size.height<1)rect.size.height=1;
@@ -7539,9 +7559,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 -(NSPoint) ConvertFromGL2Screen:(NSPoint) a
 {
     a = [self ConvertFromGL2NSView: a];
-    a = [self convertPointToBase: a];
-    a = [[self window] convertBaseToScreen: a];
-    
+    a = [self convertPointToBacking:a];
+    a = [self.window convertRectToScreen:NSMakeRect(a.x, a.y, 0, 0)].origin;
     return a;
 }
 
@@ -8672,7 +8691,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             [[NSNotificationCenter defaultCenter] postNotificationName: OsirixGLFontChangeNotification object: self];
             
             for( ROI *r in curRoiList)
-                [r setRoiView :self];
+                [r setCurView:self];
         }
         
         [self drawRect: backingBounds withContext: [self openGLContext]];
@@ -8874,7 +8893,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         glEnd();
     }
     
-    size_t step = sizeof(CGFloat)*numberOfChannels;
+//    size_t step = sizeof(CGFloat)*numberOfChannels;
     for (size_t i = 0; i < numberOfChannels; ++i) {
         DCMWaveformChannelDefinition* cd = [ws.channelDefinitions objectAtIndex:i];
         CGFloat min, max; [cd getValuesMin:&min max:&max];
@@ -9397,7 +9416,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                         ROI *r = [[curRoiList objectAtIndex:i] retain];	// If we are not in the main thread (iChat), we want to be sure to keep our ROIs
                         
                         if( resetData) [r recompute];
-                        [r setRoiView :self];
+                        [r setCurView:self];
                         [r drawROI: scaleValue : curDCM.pwidth / 2. : curDCM.pheight / 2. : curDCM.pixelSpacingX : curDCM.pixelSpacingY];
                         
                         [r release];
@@ -9825,7 +9844,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             
             /* mouse position */
             
-            NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
+            NSRect mlr = {[NSEvent mouseLocation], NSZeroSize};
+            NSPoint eventLocation = [[self window] convertRectFromScreen:mlr].origin;
             eventLocation = [self convertPointToBacking: [self convertPoint:eventLocation fromView:nil]];
             
             if( xFlipped)
@@ -10624,9 +10644,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 #if __BIG_ENDIAN__
                     glReadPixels( smartCroppedRect.origin.x, drawingFrameRect.size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
                     
-                    register int ii = *width * *height;
-                    register unsigned char	*t_argb = buf;
-                    register unsigned char	*t_rgb = buf;
+                    int ii = *width * *height;
+                    unsigned char	*t_argb = buf;
+                    unsigned char	*t_rgb = buf;
                     while( ii-->0)
                     {
                         *((int*) t_rgb) = *((int*) t_argb);
@@ -10636,9 +10656,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 #else
                     glReadPixels(  smartCroppedRect.origin.x, drawingFrameRect.size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
                     
-                    register int ii = *width * *height;
-                    register unsigned char	*t_argb = buf;
-                    register unsigned char	*t_rgb = buf;
+                    int ii = *width * *height;
+                    unsigned char	*t_argb = buf;
+                    unsigned char	*t_rgb = buf;
                     while( ii-->0 ) {
                         *((int*) t_rgb) = *((int*) t_argb);
                         t_argb+=4;
@@ -11217,13 +11237,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                     
                     // correct the spacing & origin
                     
-                    if( imOrigin)
+//                    if( imOrigin)
                     {
                         NSPoint tempPt = [self ConvertFromUpLeftView2GL: croppedOrigin];
                         [curDCM convertPixX: tempPt.x pixY: tempPt.y toDICOMCoords: imOrigin pixelCenter: YES];
                     }
                     
-                    if( imSpacing)
+//                    if( imSpacing)
                     {
                         imSpacing[ 0] /= rescale;
                         imSpacing[ 1] /= rescale;
@@ -11360,10 +11380,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 bounds.size.height *= [[v seriesView] imageRows];
             }
             
-            NSPoint or = [[v imageView] convertPoint: bounds.origin toView: nil];
-            bounds.origin = [[v window] convertBaseToScreen: or];
+            NSRect or = {[v.imageView convertPoint:bounds.origin toView:nil], NSZeroSize};
+            bounds.origin = [v.window convertRectToScreen:or].origin;
             
-            bounds = NSIntegralRect( bounds);
+            bounds = NSIntegralRect(bounds);
             
             bounds.origin.x *= v.window.backingScaleFactor;
             bounds.origin.y *= v.window.backingScaleFactor;
@@ -13344,86 +13364,95 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 #pragma mark-  Drag and Drop
 
+static NSString * const O2PasteboardTypeEventModifierFlags = @"com.opensource.osirix.eventmodifierflags";
+
 - (void) startDrag:(NSTimer*)theTimer
 {
     @try {
         _dragInProgress = YES;
-        NSEvent *event = (NSEvent *)[theTimer userInfo];
+        NSEvent *event = [theTimer userInfo];
         
-        NSSize dragOffset = NSMakeSize(0.0, 0.0);
-        NSPasteboard *pboard = [NSPasteboard pasteboardWithName: NSDragPboard]; 
-        NSMutableArray *pbTypes = [NSMutableArray array];
-        
-        NSImage *image;
-        if ([event modifierFlags] & NSShiftKeyMask)
-            image = [self nsimage: YES];
-        else
-            image = [self nsimage: NO];
-        
-        // Thumbnail image and position
-        NSPoint event_location = [event locationInWindow];
-        NSPoint local_point = [self convertPoint:event_location fromView:nil];
-        local_point.x -= 35;
-        local_point.y -= 35;
+        NSImage *image = [self nsimage:(event.modifierFlags&NSShiftKeyMask)];
         
         NSSize originalSize = [image size];
-        
         float ratio = originalSize.width / originalSize.height;
-        
         NSImage *thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize(100, 100/ratio)] autorelease];
-        if( [thumbnail size].width > 0 && [thumbnail size].height > 0)
-        {
+        if( [thumbnail size].width > 0 && [thumbnail size].height > 0) {
             [thumbnail lockFocus];
             [image drawInRect: NSMakeRect(0, 0, 100, 100/ratio) fromRect: NSMakeRect(0, 0, originalSize.width, originalSize.height) operation: NSCompositeSourceOver fraction: 1.0];
             [thumbnail unlockFocus];
         }
         
-        [pbTypes addObject: NSFilenamesPboardType];
-        [pbTypes addObject: NSTIFFPboardType];
+        NSPasteboardItem* pbi = [[[NSPasteboardItem alloc] init] autorelease];
+        for (NSString *pasteboardType in DCMView.PasteboardTypes)
+            if ([pasteboardType containsString:@"."])
+                [pbi setData:[NSData dataWithBytes:&self length:sizeof(DCMView *)] forType:pasteboardType];
+        [pbi setData:image.TIFFRepresentation forType:NSPasteboardTypeTIFF];
+        NSEventModifierFlags mf = event.modifierFlags;
+        [pbi setData:[NSData dataWithBytes:&mf length:sizeof(NSEventModifierFlags)] forType:O2PasteboardTypeEventModifierFlags];
+        [pbi setDataProvider:self forTypes:@[NSPasteboardTypeString, (NSString *)kPasteboardTypeFileURLPromise]];
+        [pbi setString:(id)kUTTypeImage forType:(id)kPasteboardTypeFilePromiseContent];
+
+        NSDraggingItem* di = [[[NSDraggingItem alloc] initWithPasteboardWriter:pbi] autorelease];
+        NSPoint p = [self convertPoint:event.locationInWindow fromView:nil];
+        [di setDraggingFrame:NSMakeRect(p.x-thumbnail.size.width/2, p.y-thumbnail.size.height/2, thumbnail.size.width, thumbnail.size.height) contents:thumbnail];
         
-        if( [self dicomImage])
-        {
-            [pbTypes addObject: pasteBoardHoros];
-            [pboard declareTypes:pbTypes owner:self];
-            [pboard setData:nil forType:pasteBoardHoros];
-        }
-        else
-            [pboard declareTypes:pbTypes  owner:self];
-        
-        NSData *pDataDCMView = [NSData dataWithBytes:&self length:sizeof(DCMView*)];
-        [pboard setData:pDataDCMView forType:pasteBoardHoros];
-        
-        [pboard setData: [image TIFFRepresentation] forType: NSTIFFPboardType];
-        
-        NSString *description = [[self dicomImage] valueForKeyPath:@"series.name"];
-        
-        if( description.length == 0)
-            description = [[self dicomImage] valueForKeyPath:@"series.seriesDescription"];
-        
-        NSString *path = [[NSFileManager defaultManager] tmpDirPath];
-        
-        if( description.length)
-            path = [path stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", [[self dicomImage] valueForKeyPath:@"series.study.name"], description]];
-        else
-            path = [path stringByAppendingPathComponent: [[self dicomImage] valueForKeyPath:@"series.study.name"]];
-        
-        path = [path stringByAppendingPathExtension: @"jpg"];
-        [[NSFileManager defaultManager] removeItemAtPath: path error: nil];
-        
-        NSData *data = [[NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-        [data writeToFile: path atomically:YES];
-        [pboard setPropertyList:[NSArray arrayWithObject: path] forType:NSFilenamesPboardType];
-        
-        if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
-            N2LogStackTrace( @"file doesnt exist: %@", path);
-        
-        [self dragImage: thumbnail at:local_point offset:dragOffset event:event pasteboard:pboard source:self slideBack:YES];
+        NSDraggingSession* session = [self beginDraggingSessionWithItems:@[di] event:event source:self];
+        session.animatesToStartingPositionsOnCancelOrFail = YES;
     }
     @catch( NSException *localException) {
         NSLog(@"Exception while dragging: %@", [localException description]);
     }
     
     _dragInProgress = NO;
+}
+
+- (NSDragOperation)draggingSession:(NSDraggingSession *)session sourceOperationMaskForDraggingContext:(NSDraggingContext)context {
+    return NSDragOperationGeneric;
+}
+
+- (void)pasteboard:(NSPasteboard *)pasteboard item:(NSPasteboardItem *)item provideDataForType:(NSString *)type {
+    if ([type isEqualToString:(id)kPasteboardTypeFileURLPromise]) {
+        PasteboardRef pboardRef = NULL;
+        PasteboardCreate((__bridge CFStringRef)[pasteboard name], &pboardRef);
+        if (!pboardRef)
+            return;
+
+        PasteboardSynchronize(pboardRef);
+        
+        CFURLRef urlRef = NULL;
+        PasteboardCopyPasteLocation(pboardRef, &urlRef);
+        
+        if (urlRef) {
+            NSString *description = self.dicomImage.series.name;
+            if (!description.length)
+                description = self.dicomImage.series.seriesDescription;
+
+            NSString *name = self.dicomImage.series.study.name;
+            if (description.length)
+                name = [name stringByAppendingFormat:@" - %@", description];
+            
+            if (!name.length)
+                name = @"Horos";
+
+            NSURL *url = [(NSURL *)urlRef URLByAppendingPathComponent:[name stringByAppendingPathExtension:@"jpg"]];
+            size_t i = 0;
+            while ([url checkResourceIsReachableAndReturnError:NULL])
+                url = [(NSURL *)urlRef URLByAppendingPathComponent:[name stringByAppendingFormat:@" (%lu).jpg", ++i]];
+
+            NSEventModifierFlags mf; [[item dataForType:O2PasteboardTypeEventModifierFlags] getBytes:&mf];
+            NSImage *image = [self nsimage:(mf&NSShiftKeyMask)];
+            
+            NSData *idata = [[NSBitmapImageRep imageRepWithData:image.TIFFRepresentation] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+            [idata writeToURL:url atomically:YES];
+
+            [item setString:[url absoluteString] forType:type];
+
+            CFRelease(urlRef);
+        }
+        
+        CFRelease(pboardRef);
+    }
 }
 
 - (void)deleteMouseDownTimer
@@ -13439,7 +13468,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     return NSDragOperationEvery;
 }
 
-- (id)dicomImage{
+- (DicomImage *)dicomImage{
     return [dcmFilesList objectAtIndex: curImage];
 }
 
@@ -13857,5 +13886,23 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //	if([[loupeController window] isVisible])
 //		[[loupeController window] orderOut:self];
 //}
+
++ (NSArray<NSString *> *)PasteboardTypes {
+    return @[HorosPasteboardType,
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+             HorosPboardUTI, pasteBoardHoros, pasteBoardOsiriX
+#pragma clang diagnostic pop
+             ];
+}
+
++ (NSArray<NSString *> *)PluginPasteboardTypes {
+    return @[HorosPasteboardTypePlugin,
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+             HorosPluginPboardUTI, pasteBoardHorosPlugin, OsirixPluginPboardUTI, pasteBoardOsiriXPlugin
+#pragma clang diagnostic pop
+             ];
+}
 
 @end

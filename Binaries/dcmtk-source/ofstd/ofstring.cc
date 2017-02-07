@@ -445,7 +445,7 @@ OFString::compare (const OFString& str) const
     const size_t rlen = (this_size < str_size)?(this_size):(str_size);
     int result = strncmp(this->theCString, str.theCString, rlen);
     if (result == 0) {
-        result = (this_size - str_size);
+        result = (int)(this_size - str_size);
     }
     return result;
 }
@@ -545,7 +545,7 @@ OFString::rfind (const OFString& pattern, size_t pos) const
         return OFString_npos;
     }
     int above = ((this_size-pattern_size) < pos)?
-                 (this_size-pattern_size):(pos);
+                 (int)(this_size-pattern_size):(int)(pos);
     for (int i=above; i>=0; i--) {
         int match = 1; /* assume there is a match */
         for (size_t j=0; (j<pattern_size) && match; j++) {

@@ -1194,7 +1194,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
         
         if(dataPtr)
         {
-            [exportDCM setSourceFile: [[[mprController originalView] curDCM] sourceFile]];
+            [exportDCM setSourceFile: [[[mprController originalView] curDCM] srcFile]];
             [exportDCM setSeriesDescription: [exportDCMSeriesName stringValue]];
             [exportDCM setSeriesNumber:5500];
             [exportDCM setPixelData: dataPtr samplesPerPixel:spp bitsPerSample:bpp width: width height: height];
@@ -1517,14 +1517,14 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
             // move camera
             OSIVoxel* cpos = [centerline objectAtIndex:flyAssistantPositionIndex];
             OSIVoxel * fpos;
-            if (/*NO*/YES) {
+//            if (/*NO*/YES) {
                 fpos = [assistant computeMaximizingViewDirectionFrom:cpos
                                                            LookingAt:[centerline objectAtIndex:flyAssistantPositionIndex+1]];
-            }
-            else
-            {
-                fpos = [centerline objectAtIndex:flyAssistantPositionIndex+1];
-            }
+//            }
+//            else
+//            {
+//                fpos = [centerline objectAtIndex:flyAssistantPositionIndex+1];
+//            }
             [self setCameraAtPosition:cpos TowardsPosition:fpos];
             
             // add current camera to Fly Thru

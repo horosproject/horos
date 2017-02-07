@@ -299,7 +299,7 @@ OFCondition DJLSEncoderBase::adjustOverlays(
           elem = new DcmOverlayData(DcmTagKey(group, 0x3000)); // DCM_OverlayData
           if (elem)
           {
-            result = elem->putUint8Array(buffer, bytesAllocated);
+            result = elem->putUint8Array(buffer, (unsigned int)bytesAllocated);
             delete[] buffer;
             if (result.good())
             {
@@ -704,7 +704,7 @@ OFCondition DJLSEncoderBase::compressRawFrame(
     {
       // 'size' now contains the size of the compressed data in buffer
       compressedSize = size;
-      result = pixelSequence->storeCompressedFrame(offsetList, buffer, size, fragmentSize);
+      result = pixelSequence->storeCompressedFrame(offsetList, buffer, (Uint32)size, fragmentSize);
     }
 
     delete[] buffer;
@@ -778,7 +778,7 @@ OFCondition DJLSEncoderBase::losslessCookedEncode(
   // differ and the decoder would error out.
   flags |= CIF_UseAbsolutePixelRange;
 
-  DicomImage *dimage = new DicomImage(dataset, EXS_LittleEndianImplicit, flags); // read all frames
+  DicomImage *dimage = new DicomImage(dataset, EXS_LittleEndianImplicit, (unsigned int)flags); // read all frames
   if (dimage == NULL) return EC_MemoryExhausted;
   if (dimage->getStatus() != EIS_Normal)
   {
@@ -828,7 +828,7 @@ OFCondition DJLSEncoderBase::losslessCookedEncode(
       // compress frame
 //      DCMJPLS_DEBUG("JPEG-LS encoder processes frame " << (i+1) << " of " << frameCount);
       result = compressCookedFrame(pixelSequence, dimage,
-          photometricInterpretation, offsetList, compressedFrameSize, djcp, i, nearLosslessDeviation);
+          photometricInterpretation, offsetList, compressedFrameSize, djcp, (Uint32)i, nearLosslessDeviation);
 
       compressedSize += compressedFrameSize;
     }
@@ -1101,7 +1101,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   {
     // 'compressed_buffer_size' now contains the size of the compressed data in buffer
     compressedSize = compressed_buffer_size;
-    result = pixelSequence->storeCompressedFrame(offsetList, compressed_buffer, compressed_buffer_size, fragmentSize);
+    result = pixelSequence->storeCompressedFrame(offsetList, compressed_buffer, (Uint32)compressed_buffer_size, fragmentSize);
   }
 
   delete[] buffer;

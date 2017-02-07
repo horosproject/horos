@@ -46,6 +46,7 @@
 #import "DicomImage.h"
 #import "PluginManager.h"
 #import "N2Debug.h"
+#import "DicomDatabase.h"
 
 static NSString* 	MIPToolbarIdentifier				= @"SR Toolbar Identifier";
 static NSString*	QTExportToolbarItemIdentifier		= @"QTExport.pdf";
@@ -65,6 +66,13 @@ static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.pdf";
 static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
 static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorView";
+
+@interface SRController (Dummy)
+
+- (void)exportQuicktime3DVR:(id)dummy;
+- (void)sendMail:(id)dummy;
+
+@end
 
 @implementation SRController
 
@@ -935,10 +943,11 @@ return YES;
 	
 	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 	
-	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"] atomically:YES];
+    NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"Horos.jpg"];
+	[bitmapData writeToFile:path atomically:YES];
 	
 	ifoto = [[iPhoto alloc] init];
-	[ifoto importIniPhoto: [NSArray arrayWithObject:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"]]];
+	[ifoto importIniPhoto:@[path]];
 	[ifoto release];
 }
 
@@ -947,10 +956,13 @@ return YES;
     NSSavePanel     *panel = [NSSavePanel savePanel];
 
 	[panel setCanSelectHiddenExtension:YES];
-	[panel setRequiredFileType:@"jpg"];
-	
-	if( [panel runModalForDirectory:nil file:@"3D SR Image"] == NSFileHandlingPanelOKButton)
-	{
+	[panel setAllowedFileTypes:@[@"jpg"]];
+    panel.nameFieldStringValue = NSLocalizedString(@"3D SR Image", nil);
+    
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+    
 		NSImage *im = [view nsimage:NO];
 		
 		NSArray *representations;
@@ -960,11 +972,11 @@ return YES;
 		
 		bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 		
-		[bitmapData writeToFile:[panel filename] atomically:YES];
+		[bitmapData writeToFile:panel.URL.path atomically:YES];
 		
-		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
-	}
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+            [[NSWorkspace sharedWorkspace] openURL:panel.URL];
+    }];
 }
 
 - (void) exportTIFF:(id) sender
@@ -972,17 +984,20 @@ return YES;
     NSSavePanel     *panel = [NSSavePanel savePanel];
 
 	[panel setCanSelectHiddenExtension:YES];
-	[panel setRequiredFileType:@"tif"];
-	
-	if( [panel runModalForDirectory:nil file:@"3D SR Image"] == NSFileHandlingPanelOKButton)
-	{
+    [panel setAllowedFileTypes:@[@"tif"]];
+    panel.nameFieldStringValue = NSLocalizedString(@"3D SR Image", nil);
+    
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
 		NSImage *im = [view nsimage:NO];
 		
-		[[im TIFFRepresentation] writeToFile:[panel filename] atomically:NO];
+		[[im TIFFRepresentation] writeToFile:panel.URL.path atomically:NO];
 		
-		NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
-	}
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+            [[NSWorkspace sharedWorkspace] openURL:panel.URL];
+    }];
 }
 
 // Fly Thru

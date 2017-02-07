@@ -34,7 +34,7 @@
 #import "DefaultsOsiriX.h"
 #import "PluginManager.h"
 #import "NSUserDefaults+OsiriX.h"
-#import "OsiriX/DCMAbstractSyntaxUID.h"
+#import "DCMAbstractSyntaxUID.h"
 #import <AVFoundation/AVFoundation.h>
 
 #ifdef OSIRIX_VIEWER
@@ -91,7 +91,7 @@ static NSHost *currentHost = nil;
 //		
 //		char s[_POSIX_HOST_NAME_MAX+1];
 //		gethostname(s,_POSIX_HOST_NAME_MAX);
-//		NSString *c = [NSString stringWithCString:s encoding:NSUTF8StringEncoding];
+//		NSString *c = [NSString stringWithUTF8String:s encoding:NSUTF8StringEncoding];
 //		
 //		if( [c length] > 8 )
 //		{
@@ -130,7 +130,7 @@ static NSHost *currentHost = nil;
 //		
 //		char s[_POSIX_HOST_NAME_MAX+1];
 //		gethostname(s,_POSIX_HOST_NAME_MAX);
-//		NSString *c = [NSString stringWithCString:s encoding:NSUTF8StringEncoding];
+//		NSString *c = [NSString stringWithUTF8String:s encoding:NSUTF8StringEncoding];
 //		
 //		if( [c length] > 8 )
 //		{
@@ -759,7 +759,7 @@ static NSHost *currentHost = nil;
 		#ifdef OSIRIX_VIEWER
 		char s[_POSIX_HOST_NAME_MAX+1];
 		gethostname(s,_POSIX_HOST_NAME_MAX);
-		NSString *c = [NSString stringWithCString:s encoding:NSUTF8StringEncoding];
+		NSString *c = [NSString stringWithUTF8String:s];
 		NSRange range = [c rangeOfString: @"."];
 		if( range.location != NSNotFound) c = [c substringToIndex: range.location];
 	

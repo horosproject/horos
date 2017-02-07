@@ -35,6 +35,12 @@
 #import "MenuDictionary.h"
 
 
+@interface NSMenu (Dummy)
+
+- (void)contextualMenuEvent:(id)dummy;
+
+@end
+
 @implementation NSMenu (MenuDictionary)
 
 - (NSMenu*)initWithTitle:(NSString *)aTitle withDictionary:(NSDictionary *)aDictionary forWindowController:(NSWindowController *)aWindowController

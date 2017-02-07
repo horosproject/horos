@@ -227,7 +227,7 @@
 
 
 + (NSString *)stringValue:(char *)vr{
-	return [NSString stringWithCString:vr];
+	return [NSString stringWithUTF8String:vr];
 }
 
 + (int)getWordLengthOfValueAffectedByEndianness:(char *)vr{

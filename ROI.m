@@ -560,14 +560,14 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	
 	distance = minxIndex - minyIndex;
 	
-	if( fabs( distance) > [newPts count]/2)
+	if (abs(distance) > [newPts count]/2)
 	{
 		if( distance >= 0) reverse = YES;
 		else reverse = NO;
 	}
 	else
 	{
-		if( distance >= 0) reverse = NO;
+		if (distance >= 0) reverse = NO;
 		else reverse = YES;
 	}
 	
@@ -1810,7 +1810,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 - (NSPoint) lowerRightPoint
 {
 	float		xmin, xmax, ymin, ymax;
-	NSPoint		result;
+	NSPoint		result = NSZeroPoint;
 	
 	switch( type)
 	{
@@ -4325,7 +4325,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				{
 					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
                     
-                    NSBitmapImageRep* layerImageRep = [[layerImage representations] objectAtIndex:0];
+                    NSBitmapImageRep* layerImageRep = (NSBitmapImageRep *)[[layerImage representations] objectAtIndex:0];
                     
 					NSSize imageSize = NSMakeSize(layerImageRep.pixelsWide, layerImageRep.pixelsHigh); // [layerImage size];
 					float imageWidth = imageSize.width;
