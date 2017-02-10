@@ -279,7 +279,7 @@ NSString* N2NonNullString(NSString* s) {
         if (bd) {
             CFURLRef r = CFURLCreateByResolvingBookmarkData(NULL, bd, kCFBookmarkResolutionWithoutUIMask, NULL, NULL, NULL, NULL);
             if (r) {
-                resolvedPath = CFBridgingRelease(CFURLCopyPath(r));
+                resolvedPath = CFBridgingRelease(CFURLCopyFileSystemPath(r, kCFURLPOSIXPathStyle));
                 CFRelease(r);
             }
             
