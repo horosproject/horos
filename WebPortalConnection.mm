@@ -455,8 +455,18 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	[response.tokens setObject:parameters forKey:@"Request"];
 	
 	// find the name of the requested file
-	// SECURITY: we cannot allow the client to read any file on the hard disk (outside the shared dir), so no ".." 
+	// SECURITY: we cannot allow the client to read any file on the hard disk (outside the shared dir), so no ".."
+    //FIXED 20170312: path traversal bug, added extra filtering patterns: https://www.exploit-db.com/exploits/40930/ https://github.com/horosproject/horos/issues/163
 	requestedPath = [[urlComponenents objectAtIndex:0] stringByReplacingOccurrencesOfString:@"../" withString:@""];
+    requestedPath = [[urlComponenents objectAtIndex:0] stringByReplacingOccurrencesOfString:@"/../" withString:@""];
+    requestedPath = [[urlComponenents objectAtIndex:0] stringByReplacingOccurrencesOfString:@"..//" withString:@""];
+    requestedPath = [[urlComponenents objectAtIndex:0] stringByReplacingOccurrencesOfString:@"/../" withString:@""];
+    requestedPath = [[urlComponenents objectAtIndex:0] stringByReplacingOccurrencesOfString:@"/..//" withString:@""];
+    requestedPath = [[urlComponenents objectAtIndex:0] stringByReplacingOccurrencesOfString:@"//.." withString:@""];
+    requestedPath = [[urlComponenents objectAtIndex:0] stringByReplacingOccurrencesOfString:@"//../" withString:@""];
+    
+    
+    
 	
 //	NSString* userAgent = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"User-Agent") autorelease];
 //	BOOL isIOS [userAgent contains:@"iPhone"] || [userAgent contains:@"iPad"];	
