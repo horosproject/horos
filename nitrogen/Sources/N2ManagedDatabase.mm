@@ -56,7 +56,8 @@ static int gTotalN2ManagedObjectContext = 0;
 
 -(id)initWithDatabase: (N2ManagedDatabase*) db
 {
-    self = [super init];
+    if (!(self = [super initWithConcurrencyType:NSConfinementConcurrencyType]))
+        return nil;
     
     _database = db;
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector( N2ManagedDatabaseDealloced:) name: @"N2ManagedDatabaseDealloced" object: db];

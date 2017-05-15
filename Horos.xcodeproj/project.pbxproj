@@ -520,9 +520,6 @@
 		7154B80F14ED5402000EF7E4 /* N2Stuff.h in Headers */ = {isa = PBXBuildFile; fileRef = 7154B80E14ED5402000EF7E4 /* N2Stuff.h */; };
 		716DBDBD173920AF00BDB1E4 /* ViewerController+CPP.h in Headers */ = {isa = PBXBuildFile; fileRef = 716DBDBB173920AF00BDB1E4 /* ViewerController+CPP.h */; };
 		716DBDBF173920AF00BDB1E4 /* ViewerController+CPP.mm in Sources */ = {isa = PBXBuildFile; fileRef = 716DBDBC173920AF00BDB1E4 /* ViewerController+CPP.mm */; };
-		716DFABA1DE5AA0A00440401 /* OsiriXDCMFrameworkHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 716DFAB81DE5A9F700440401 /* OsiriXDCMFrameworkHeaders.mm */; };
-		716DFABC1DE5AAB800440401 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 716DFABB1DE5AAB800440401 /* Cocoa.framework */; };
-		716DFABD1DE5AAC200440401 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 716DFABB1DE5AAB800440401 /* Cocoa.framework */; };
 		718416071654022400180467 /* DownArrowGreyRev.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 718416061654022400180467 /* DownArrowGreyRev.pdf */; };
 		7188E85616301A61006105BE /* KBPopUpToolbarItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7188E85416301A61006105BE /* KBPopUpToolbarItem.h */; };
 		7188E85816301A61006105BE /* KBPopUpToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7188E85516301A61006105BE /* KBPopUpToolbarItem.m */; };
@@ -747,7 +744,6 @@
 		9953FE521BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 9953FE4E1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx */; };
 		9953FE531BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 9953FE4F1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h */; };
 		9963031B1BCACF26009CE3E5 /* libGDCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 9963031A1BCACF26009CE3E5 /* libGDCM.h */; };
-		9966A19F1AE09B6F00F2D81A /* OsiriXHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9966A19E1AE09B6F00F2D81A /* OsiriXHeaders.mm */; };
 		9966A1A11AE09D3F00F2D81A /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A01AE09D3F00F2D81A /* AddressBook.framework */; };
 		9966A1A31AE09D4800F2D81A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A21AE09D4800F2D81A /* AVFoundation.framework */; };
 		9966A1A51AE09D5100F2D81A /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A41AE09D5100F2D81A /* CoreMedia.framework */; };
@@ -757,7 +753,6 @@
 		9966A1AC1AE09DB300F2D81A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A21AE09D4800F2D81A /* AVFoundation.framework */; };
 		9966A1AD1AE09DD000F2D81A /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A41AE09D5100F2D81A /* CoreMedia.framework */; };
 		9966A1AE1AE09DE200F2D81A /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1AA1AE09D7C00F2D81A /* Quartz.framework */; };
-		9966A1B41AE0AC7400F2D81A /* OsiriXAPI.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A19A1AE099A400F2D81A /* OsiriXAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9966A1B51AE0B6EE00F2D81A /* HorosDCM.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9966A2E71AE0C55600F2D81A /* HorosDCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */; };
 		9966BCB51CEB5BA50086A8D7 /* osirixplugin.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9966BCB41CEB5BA50086A8D7 /* osirixplugin.icns */; };
@@ -3217,20 +3212,6 @@
 			remoteGlobalIDString = 7E0B3A3E067526CD00908593;
 			remoteInfo = "Horos DCM Framework";
 		};
-		71C99E9C1D19A80000208F3B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 9966A18E1AE099A400F2D81A;
-			remoteInfo = "OsiriX API (Legacy)";
-		};
-		71C99E9E1D19A80200208F3B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 9966A1B91AE0B7E000F2D81A;
-			remoteInfo = "OsiriX DCM Framework (Legacy)";
-		};
 		71C99EA01D19A80A00208F3B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -3266,7 +3247,6 @@
 				999901A51B52B24200921EA1 /* libxerces-c.27.dylib in Copy Frameworks */,
 				9966A1B51AE0B6EE00F2D81A /* HorosDCM.framework in Copy Frameworks */,
 				59F1A515104BA8AE009E3215 /* HorosAPI.framework in Copy Frameworks */,
-				9966A1B41AE0AC7400F2D81A /* OsiriXAPI.framework in Copy Frameworks */,
 				71C99EA71D1A871700208F3B /* Growl.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
@@ -3967,7 +3947,6 @@
 		9953FE4E1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vtkHorosFixedPointVolumeRayCastMIPHelper.cxx; sourceTree = "<group>"; };
 		9953FE4F1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkHorosFixedPointVolumeRayCastMIPHelper.h; sourceTree = "<group>"; };
 		9963031A1BCACF26009CE3E5 /* libGDCM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libGDCM.h; path = Binaries/GDCMHeaders/libGDCM.h; sourceTree = "<group>"; };
-		9966A19A1AE099A400F2D81A /* OsiriXAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriXAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9966A19E1AE09B6F00F2D81A /* OsiriXHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXHeaders.mm; sourceTree = "<group>"; };
 		9966A1A01AE09D3F00F2D81A /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		9966A1A21AE09D4800F2D81A /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -3979,7 +3958,6 @@
 		9966A1B01AE0A1BA00F2D81A /* OsiriX.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = OsiriX.sdef; sourceTree = "<group>"; };
 		9966A1B11AE0A47600F2D81A /* HorosAPI-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "HorosAPI-Info.plist"; sourceTree = "<group>"; };
 		9966A1B21AE0A66C00F2D81A /* OsiriXAPI-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "OsiriXAPI-Info.plist"; sourceTree = "<group>"; };
-		9966A2E11AE0B7E000F2D81A /* OsiriX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9966BCB41CEB5BA50086A8D7 /* osirixplugin.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = osirixplugin.icns; sourceTree = "<group>"; };
 		99676F1D1BF43C22007C7531 /* format_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = format_defs.h; path = Binaries/openjpeg/format_defs.h; sourceTree = "<group>"; };
 		99676F1E1BF43C22007C7531 /* openjpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = openjpeg.h; path = Binaries/openjpeg/openjpeg.h; sourceTree = "<group>"; };
@@ -5845,22 +5823,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9966A1941AE099A400F2D81A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				716DFABD1DE5AAC200440401 /* Cocoa.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9966A2D81AE0B7E000F2D81A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				716DFABC1DE5AAB800440401 /* Cocoa.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		AB0F3A2A1046BD2B004129DD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -6271,8 +6233,6 @@
 				844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */,
 				AB0F3A2C1046BD2B004129DD /* HorosAPI.framework */,
 				59BDEC2D117C92B2007F1F2C /* Horos Launcher.app */,
-				9966A19A1AE099A400F2D81A /* OsiriXAPI.framework */,
-				9966A2E11AE0B7E000F2D81A /* OsiriX.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -10733,38 +10693,6 @@
 			productReference = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		9966A18E1AE099A400F2D81A /* OsiriX API (Legacy) */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 9966A1971AE099A400F2D81A /* Build configuration list for PBXNativeTarget "OsiriX API (Legacy)" */;
-			buildPhases = (
-				9966A1921AE099A400F2D81A /* Sources */,
-				9966A1941AE099A400F2D81A /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "OsiriX API (Legacy)";
-			productName = "OsiriXHeaders Framework";
-			productReference = 9966A19A1AE099A400F2D81A /* OsiriXAPI.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		9966A1B91AE0B7E000F2D81A /* OsiriX DCM Framework (Legacy) */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 9966A2DE1AE0B7E000F2D81A /* Build configuration list for PBXNativeTarget "OsiriX DCM Framework (Legacy)" */;
-			buildPhases = (
-				9966A2001AE0B7E000F2D81A /* Sources */,
-				9966A2D81AE0B7E000F2D81A /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "OsiriX DCM Framework (Legacy)";
-			productName = DCM;
-			productReference = 9966A2E11AE0B7E000F2D81A /* OsiriX.framework */;
-			productType = "com.apple.product-type.framework";
-		};
 		AB0F3A2B1046BD2B004129DD /* Horos API */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AB0F3A321046BD2D004129DD /* Build configuration list for PBXNativeTarget "Horos API" */;
@@ -10807,8 +10735,6 @@
 				99FE27FD1CF4A442003C32AB /* PBXTargetDependency */,
 				71C99E991D19A7FB00208F3B /* PBXTargetDependency */,
 				71C99E9B1D19A7FD00208F3B /* PBXTargetDependency */,
-				71C99E9D1D19A80000208F3B /* PBXTargetDependency */,
-				71C99E9F1D19A80200208F3B /* PBXTargetDependency */,
 				71C99EA11D19A80A00208F3B /* PBXTargetDependency */,
 				71C99EA31D19A80C00208F3B /* PBXTargetDependency */,
 				59BDEE6B117CB393007F1F2C /* PBXTargetDependency */,
@@ -10906,8 +10832,6 @@
 				4A2F5931078D148300C514A2 /* Unzip Binaries */,
 				434B46111A19ECD6008CF8CF /* Cleanup Binaries */,
 				BF7486A50CC6AA5C00198387 /* Documentation */,
-				9966A18E1AE099A400F2D81A /* OsiriX API (Legacy) */,
-				9966A1B91AE0B7E000F2D81A /* OsiriX DCM Framework (Legacy) */,
 			);
 		};
 /* End PBXProject section */
@@ -11783,22 +11707,6 @@
 				CE4441011165D1B70034BF18 /* jquant1.c in Sources */,
 				CE4441021165D1B70034BF18 /* jquant2.c in Sources */,
 				CE4441031165D1B70034BF18 /* jutils.c in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9966A1921AE099A400F2D81A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9966A19F1AE09B6F00F2D81A /* OsiriXHeaders.mm in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9966A2001AE0B7E000F2D81A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				716DFABA1DE5AA0A00440401 /* OsiriXDCMFrameworkHeaders.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13152,16 +13060,6 @@
 			target = 7E0B3A3E067526CD00908593 /* Horos DCM Framework */;
 			targetProxy = 71C99E9A1D19A7FD00208F3B /* PBXContainerItemProxy */;
 		};
-		71C99E9D1D19A80000208F3B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 9966A18E1AE099A400F2D81A /* OsiriX API (Legacy) */;
-			targetProxy = 71C99E9C1D19A80000208F3B /* PBXContainerItemProxy */;
-		};
-		71C99E9F1D19A80200208F3B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 9966A1B91AE0B7E000F2D81A /* OsiriX DCM Framework (Legacy) */;
-			targetProxy = 71C99E9E1D19A80200208F3B /* PBXContainerItemProxy */;
-		};
 		71C99EA11D19A80A00208F3B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = AB724F300ADE6ECB00A212A0 /* Decompress */;
@@ -14290,135 +14188,6 @@
 			};
 			name = Debug;
 		};
-		9966A1981AE099A400F2D81A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = A;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "OsiriXAPI-Info.plist";
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.osirix.$(PRODUCT_NAME:identifier)";
-				PRODUCT_NAME = OsiriXAPI;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		9966A1991AE099A400F2D81A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = A;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = s;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "OsiriXAPI-Info.plist";
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.osirix.$(PRODUCT_NAME:identifier)";
-				PRODUCT_NAME = OsiriXAPI;
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
-		9966A2DF1AE0B7E000F2D81A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = "";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = A;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DCM Framework/DCM Framework_Prefix.pch";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_LDFLAGS = (
-					"-seg1addr",
-					0x20000000,
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.dcmframework;
-				PRODUCT_NAME = OsiriX;
-				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
-				SECTORDER_FLAGS = "";
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		9966A2E01AE0B7E000F2D81A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = "";
-				DEAD_CODE_STRIPPING = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = A;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DCM Framework/DCM Framework_Prefix.pch";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_LDFLAGS = (
-					"-seg1addr",
-					0x20000000,
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.dcmframework;
-				PRODUCT_NAME = OsiriX;
-				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
-				SECTORDER_FLAGS = "";
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
 		AB0F3A2E1046BD2D004129DD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -14580,24 +14349,6 @@
 			buildConfigurations = (
 				7E76BED9085757B70073649A /* Debug */,
 				43E98D191A32BF6A001B9E51 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		9966A1971AE099A400F2D81A /* Build configuration list for PBXNativeTarget "OsiriX API (Legacy)" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				9966A1981AE099A400F2D81A /* Debug */,
-				9966A1991AE099A400F2D81A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		9966A2DE1AE0B7E000F2D81A /* Build configuration list for PBXNativeTarget "OsiriX DCM Framework (Legacy)" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				9966A2DF1AE0B7E000F2D81A /* Debug */,
-				9966A2E01AE0B7E000F2D81A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
