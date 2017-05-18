@@ -54,9 +54,9 @@ static int gTotalN2ManagedObjectContext = 0;
 
 @synthesize database = _database;
 
--(id)initWithDatabase: (N2ManagedDatabase*) db
+- (id)initWithDatabase:(N2ManagedDatabase *)db concurrencyType:(NSManagedObjectContextConcurrencyType)ct
 {
-    if (!(self = [super initWithConcurrencyType:NSConfinementConcurrencyType]))
+    if (!(self = [super initWithConcurrencyType:ct]))
         return nil;
     
     _database = db;
@@ -284,7 +284,7 @@ static int gTotalN2ManagedObjectContext = 0;
     if( sqlFilePath.length == 0)
         return nil;
     
-    N2ManagedObjectContext* moc = [[[N2ManagedObjectContext alloc] initWithDatabase: self] autorelease];
+    N2ManagedObjectContext* moc = [[[N2ManagedObjectContext alloc] initWithDatabase:self concurrencyType:NSConfinementConcurrencyType] autorelease];
     //	NSLog(@"---------- NEW %@ at %@", moc, sqlFilePath);
 	moc.undoManager = nil;
 	
