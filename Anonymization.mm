@@ -472,7 +472,7 @@ static NSString *templateDicomFile = nil;
                     
                     DCMAttributeTag* tag = [replacingItem objectAtIndex:0];
                     if ([replacingItem count] > 1)
-                        newValue = std::string( [[replacingItem objectAtIndex:1] cStringUsingEncoding:encoding] );
+                        newValue = std::string( [[[replacingItem objectAtIndex:1] description] cStringUsingEncoding:encoding] );
                     
                     replace_tags.push_back( std::make_pair(gdcm::Tag(tag.group,tag.element),newValue) );                    
                 }
