@@ -484,7 +484,6 @@
 		59EBFDDD12BA5A1B00809C61 /* WebPortal+Email+Log.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */; };
 		59EBFEA412BB500C00809C61 /* BrowserController.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFEA212BB500C00809C61 /* BrowserController.h */; };
 		59F1A4C8104BA5BE009E3215 /* HorosHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F1A4C7104BA5BE009E3215 /* HorosHeaders.mm */; };
-		59F1A515104BA8AE009E3215 /* HorosAPI.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* HorosAPI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		59F5F3F911F476030047A90D /* N2ImageButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F3F711F476030047A90D /* N2ImageButtonCell.h */; };
 		59F5F3FA11F476030047A90D /* N2ImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F3F811F476030047A90D /* N2ImageButtonCell.mm */; };
 		59F5F4EC11F485CC0047A90D /* BrowserController+Activity.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F4EA11F485CC0047A90D /* BrowserController+Activity.h */; };
@@ -3246,7 +3245,6 @@
 				999901A41B52B24200921EA1 /* libdcmprintscu.dylib in Copy Frameworks */,
 				999901A51B52B24200921EA1 /* libxerces-c.27.dylib in Copy Frameworks */,
 				9966A1B51AE0B6EE00F2D81A /* HorosDCM.framework in Copy Frameworks */,
-				59F1A515104BA8AE009E3215 /* HorosAPI.framework in Copy Frameworks */,
 				71C99EA71D1A871700208F3B /* Growl.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
@@ -3762,6 +3760,7 @@
 		71AA5A2B1611F1EB006A6A5F /* SBJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonParser.m; sourceTree = "<group>"; };
 		71AA5A2C1611F1EB006A6A5F /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		71AA5A2D1611F1EB006A6A5F /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
+		71BC461B1F272CA400FD6CCF /* Scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Scripts; sourceTree = "<group>"; };
 		71C99EA41D1A7E9F00208F3B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		71C99EA51D1A81FE00208F3B /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Growl.framework; path = Binaries/Growl.framework; sourceTree = "<group>"; };
 		71CE3C18157F489C00AC0112 /* List.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = List.pdf; path = Binaries/Icons/List.pdf; sourceTree = SOURCE_ROOT; };
@@ -4195,7 +4194,7 @@
 		AB0DF7450FD79FEA00A7C57E /* dviface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dviface.h; path = "Binaries/dcmtk-source/dcmpstat/dviface.h"; sourceTree = SOURCE_ROOT; };
 		AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		AB0F20AB06460F7F0075465D /* Burner.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Burner.icns; sourceTree = "<group>"; };
-		AB0F3A2C1046BD2B004129DD /* HorosAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HorosAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB0F3A2C1046BD2B004129DD /* Horos.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Horos.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB10FA221129302A009EB238 /* PopUpArrows.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = PopUpArrows.png; path = nitrogen/Resources/PopUpArrows.png; sourceTree = SOURCE_ROOT; };
 		AB10FA670B96C95500D74684 /* OsirixDownload.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = OsirixDownload.icns; sourceTree = "<group>"; };
 		AB10FA9F11293378009EB238 /* N2Debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2Debug.h; path = nitrogen/Sources/N2Debug.h; sourceTree = "<group>"; };
@@ -6231,7 +6230,7 @@
 				AB724FF60ADE6ECB00A212A0 /* Decompress */,
 				CEDF6DD00B46FE99008B45B8 /* DICOMPrint */,
 				844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */,
-				AB0F3A2C1046BD2B004129DD /* HorosAPI.framework */,
+				AB0F3A2C1046BD2B004129DD /* Horos.framework */,
 				59BDEC2D117C92B2007F1F2C /* Horos Launcher.app */,
 			);
 			name = Products;
@@ -6259,6 +6258,7 @@
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				4A2F58D9078D119600C514A2 /* Dependencies */,
 				A98795CA16DB9FD100926023 /* Unit Tests */,
+				71BC461B1F272CA400FD6CCF /* Scripts */,
 				9966A1B11AE0A47600F2D81A /* HorosAPI-Info.plist */,
 				9966A1B21AE0A66C00F2D81A /* OsiriXAPI-Info.plist */,
 			);
@@ -10675,9 +10675,9 @@
 			productReference = 59BDEC2D117C92B2007F1F2C /* Horos Launcher.app */;
 			productType = "com.apple.product-type.application";
 		};
-		7E0B3A3E067526CD00908593 /* Horos DCM Framework */ = {
+		7E0B3A3E067526CD00908593 /* Horos DCM */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7E76BEC0085757B60073649A /* Build configuration list for PBXNativeTarget "Horos DCM Framework" */;
+			buildConfigurationList = 7E76BEC0085757B60073649A /* Build configuration list for PBXNativeTarget "Horos DCM" */;
 			buildPhases = (
 				7E0B3A3A067526CD00908593 /* Headers */,
 				7E0B3A3B067526CD00908593 /* Resources */,
@@ -10688,7 +10688,7 @@
 			);
 			dependencies = (
 			);
-			name = "Horos DCM Framework";
+			name = "Horos DCM";
 			productName = DCM;
 			productReference = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */;
 			productType = "com.apple.product-type.framework";
@@ -10709,7 +10709,7 @@
 			);
 			name = "Horos API";
 			productName = "OsiriXHeaders Framework";
-			productReference = AB0F3A2C1046BD2B004129DD /* HorosAPI.framework */;
+			productReference = AB0F3A2C1046BD2B004129DD /* Horos.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		AB28B42E05B7921E00A9906C /* Horos */ = {
@@ -10723,9 +10723,9 @@
 				AB28B42C05B7921E00A9906C /* Sources */,
 				AB28B42D05B7921E00A9906C /* Frameworks */,
 				CECA66E306CD8C1500D8750E /* Copy Frameworks */,
+				71BC461D1F27308D00FD6CCF /* Copy Horos Framework */,
 				ABF307FB1443330100BBC96A /* Copy odt2pdf script */,
 				59F69A4E1056328D008585F5 /* Clean Frameworks */,
-				847B929C15480BC400271A61 /* Create Resources Disabled folder */,
 				CE48FEFE181E486C00A0910B /* Git Hash */,
 				CED88262125064F70085A861 /* CodeSigning */,
 			);
@@ -10794,7 +10794,8 @@
 						DevelopmentTeam = KM2Q4CB65V;
 					};
 					AB28B42E05B7921E00A9906C = {
-						DevelopmentTeam = KM2Q4CB65V;
+						DevelopmentTeam = R8G9BDMT59;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -10826,7 +10827,7 @@
 				AB28B42E05B7921E00A9906C /* Horos */,
 				59BDEC2C117C92B2007F1F2C /* Horos Launcher */,
 				AB0F3A2B1046BD2B004129DD /* Horos API */,
-				7E0B3A3E067526CD00908593 /* Horos DCM Framework */,
+				7E0B3A3E067526CD00908593 /* Horos DCM */,
 				AB724F300ADE6ECB00A212A0 /* Decompress */,
 				CEDF6C600B46FE99008B45B8 /* DICOMPrint */,
 				4A2F5931078D148300C514A2 /* Unzip Binaries */,
@@ -11362,7 +11363,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#set -x\n\n#################### Horos API\n\nheaderspath=\"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/HorosAPI.framework/Versions/A/Headers\"\nrm -Rf \"$headerspath\"\nmkdir -p \"$headerspath\"\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/HorosAPI.framework/Versions/A/Frameworks/Nitrogen.framework\"\n\nif [ \"$DEBUGGING_SYMBOLS\" == \"YES\" ] ; then\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/Nitrogen.framework/Versions/A/Nitrogen.framework.dSYM\"\nfi\n\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/Horos Headers.framework\"\n\ncd \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH\"\nln -sf “HorosAPI.framework\" “Horos Headers.framework\"\n\ncd \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/HorosAPI.framework\"\nln -sf “HorosAPI\" “Horos Headers\"\n\ncd \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/HorosAPI.framework/Versions/A\"\nln -sf “HorosAPI\" “Horos Headers\"\n\n#################### OsiriX API\n\nheaderspath=\"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriXAPI.framework/Versions/A/Headers\"\nrm -Rf \"$headerspath\"\nmkdir -p \"$headerspath\"\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriXAPI.framework/Versions/A/Frameworks/Nitrogen.framework\"\n\nif [ \"$DEBUGGING_SYMBOLS\" == \"YES\" ] ; then\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/Nitrogen.framework/Versions/A/Nitrogen.framework.dSYM\"\nfi\n\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX Headers.framework\"\n\ncd \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH\"\nln -sf “OsiriXAPI.framework\" “OsiriX Headers.framework\"\n\ncd \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriXAPI.framework\"\nln -sf “OsiriXAPI\" “OsiriX Headers\"\n\ncd \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriXAPI.framework/Versions/A\"\nln -sf “OsiriXAPI\" “OsiriX Headers\"\n";
+			shellScript = "sh \"$PROJECT_DIR/Scripts/Clean.sh\"";
 		};
 		7183153F161065BE0098576F /* Replace Weasis ext-config.properties */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -11378,19 +11379,19 @@
 			shellPath = /bin/sh;
 			shellScript = "cp -fp \"${PROJECT_DIR}/Binaries/weasis-ext-config.properties\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/weasis/weasis/conf/ext-config.properties\"";
 		};
-		847B929C15480BC400271A61 /* Create Resources Disabled folder */ = {
+		71BC461D1F27308D00FD6CCF /* Copy Horos Framework */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Create Resources Disabled folder";
+			name = "Copy Horos Framework";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "mkdir -p \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources Disabled/\"\nexit 0";
+			shellScript = "echo rsync --exclude=\".DS_Store\" -rtlv \"$TARGET_BUILD_DIR/Horos.framework\" \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/\"";
 		};
 		AB0F3A3F1046BE51004129DD /* Copy Headers and Create Horos.h */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -11404,7 +11405,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /usr/bin/perl;
-			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen Horos_h, \">\", \"$destination/Horos.h\" or die $!;\n\nprint Horos_h \"#ifndef __Horos_API\\n#define __Horos_API\\n\\n\";\n\n\n# TODO TODO TODO\n# -------------------------------------------------------------------------------------------------- #\n\n# \"$ENV{PROJECT_DIR}/cocoahttpserver\",\n# \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/config\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmsr\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmdata\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/ofstd\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmnet,\n\n# -------------------------------------------------------------------------------------------------- #\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/nitrogen/Sources\", \"$ENV{PROJECT_DIR}/nitrogen/Sources/JSON\", $ENV{PROJECT_DIR} );\n\nforeach my $root (@fromdirs) {\n    opendir(DIR, $root);\n    \n    my @files = readdir(DIR);\n    foreach (@files) {\n        my $filename = $_;\n        next unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n        my @args = ( \"cp\", \"-fp\", \"$root/$filename\", \"$destination/\".(basename $filename) );\n        system(@args) == 0 or die \"Copy failed: $?\";\n        print Horos_h \"#include <HorosAPI/$filename>\\n\";\n    }\n    \n    closedir(DIR);\n}\n\nprint Horos_h \"\\n#endif\\n\";\nclose Horos_h;\n\n\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/Binaries/VTKHeaders\" );\n\nforeach my $root (@fromdirs) {\n    my @args = ( \"cp\", \"-Rfp\", \"$root\", \"$destination/\" );\n    system(@args) == 0 or die \"Copy failed: $?\";\n}\n\n\n\n\nchdir \"$ENV{TARGET_BUILD_DIR}/$ENV{FULL_PRODUCT_NAME}\";\nsymlink \"Versions/Current/Headers\", \"Headers\";\n\nexit 0;\n";
+			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen Horos_h, \">\", \"$destination/Horos.h\" or die $!;\n\nprint Horos_h \"#ifndef __Horos_API\\n#define __Horos_API\\n\\n\";\n\n\n# TODO TODO TODO\n# -------------------------------------------------------------------------------------------------- #\n\n# \"$ENV{PROJECT_DIR}/cocoahttpserver\",\n# \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/config\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmsr\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmdata\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/ofstd\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmnet,\n\n# -------------------------------------------------------------------------------------------------- #\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/nitrogen/Sources\", \"$ENV{PROJECT_DIR}/nitrogen/Sources/JSON\", $ENV{PROJECT_DIR} );\n\nforeach my $root (@fromdirs) {\n    opendir(DIR, $root);\n    \n    my @files = readdir(DIR);\n    foreach (@files) {\n        my $filename = $_;\n        next unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n        my @args = ( \"cp\", \"-fp\", \"$root/$filename\", \"$destination/\".(basename $filename) );\n        system(@args) == 0 or die \"Copy failed: $?\";\n        print Horos_h \"#include <Horos/$filename>\\n\";\n    }\n    \n    closedir(DIR);\n}\n\nprint Horos_h \"\\n#endif\\n\";\nclose Horos_h;\n\n\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/Binaries/VTKHeaders\" );\n\nforeach my $root (@fromdirs) {\n    my @args = ( \"cp\", \"-Rfp\", \"$root\", \"$destination/\" );\n    system(@args) == 0 or die \"Copy failed: $?\";\n}\n\n\n\n\nchdir \"$ENV{TARGET_BUILD_DIR}/$ENV{FULL_PRODUCT_NAME}\";\nsymlink \"Versions/Current/Headers\", \"Headers\";\n\nexit 0;\n";
 		};
 		ABF307FB1443330100BBC96A /* Copy odt2pdf script */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -13057,7 +13058,7 @@
 		};
 		71C99E9B1D19A7FD00208F3B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 7E0B3A3E067526CD00908593 /* Horos DCM Framework */;
+			target = 7E0B3A3E067526CD00908593 /* Horos DCM */;
 			targetProxy = 71C99E9A1D19A7FD00208F3B /* PBXContainerItemProxy */;
 		};
 		71C99EA11D19A80A00208F3B /* PBXTargetDependency */ = {
@@ -13689,8 +13690,10 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_WARN_EMPTY_BODY = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = R8G9BDMT59;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_FAST_MATH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -13733,8 +13736,9 @@
 					__info_plist,
 					Info.plist,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.horosproject.horos;
+				PRODUCT_BUNDLE_IDENTIFIER = io.volz.horos;
 				PRODUCT_NAME = Horos;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_STYLE = debugging;
 				USER_HEADER_SEARCH_PATHS = "Binaries/GDCMHeaders Binaries/ITKHeaders Binaries/VTKHeaders Binaries/openjpeg/** Binaries/LibTiff Binaries/openssl/include";
 			};
@@ -13973,8 +13977,7 @@
 					"-framework",
 					AppKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.horosproject.$(PRODUCT_NAME:identifier)";
-				PRODUCT_NAME = HorosAPI;
+				PRODUCT_NAME = Horos;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -14044,8 +14047,10 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_WARN_EMPTY_BODY = YES;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = R8G9BDMT59;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -14086,8 +14091,9 @@
 					__info_plist,
 					Info.plist,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.horosproject.horos;
+				PRODUCT_BUNDLE_IDENTIFIER = io.volz.horos;
 				PRODUCT_NAME = Horos;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				USER_HEADER_SEARCH_PATHS = "Binaries/GDCMHeaders Binaries/ITKHeaders Binaries/VTKHeaders Binaries/openjpeg/** Binaries/LibTiff Binaries/openssl/include";
 			};
 			name = Debug;
@@ -14215,8 +14221,7 @@
 					"-framework",
 					AppKit,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.horosproject.$(PRODUCT_NAME:identifier)";
-				PRODUCT_NAME = HorosAPI;
+				PRODUCT_NAME = Horos;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -14317,7 +14322,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7E76BEC0085757B60073649A /* Build configuration list for PBXNativeTarget "Horos DCM Framework" */ = {
+		7E76BEC0085757B60073649A /* Build configuration list for PBXNativeTarget "Horos DCM" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E76BEC1085757B60073649A /* Debug */,
