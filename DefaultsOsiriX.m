@@ -726,6 +726,10 @@ static NSHost *currentHost = nil;
 	[DefaultsOsiriX addCLUT: @"HotMetal" dictionary: clutValues];	
 	[DefaultsOsiriX addCLUT: @"HotGreen" dictionary: clutValues];	
 	[DefaultsOsiriX addCLUT: @"Jet" dictionary: clutValues];
+    [DefaultsOsiriX addCLUT: @"PPU Inferno" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"PPU Magma" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"PPU Plasma" dictionary: clutValues];
+	[DefaultsOsiriX addCLUT: @"PPU Viridis" dictionary: clutValues];
 	
 	[defaultValues setObject: clutValues forKey: @"CLUT"];
 	#endif
