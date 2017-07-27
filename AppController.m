@@ -1193,25 +1193,25 @@ void exceptionHandler(NSException *exception)
 	[[NSUserDefaults standardUserDefaults] setObject: c forKey:@"AETITLE"];
 }
 
-- (void) checkForRestartStoreSCPOrder: (NSTimer*) t
-{
-	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/RESTARTOSIRIXSTORESCP"])
-	{
-		[NSThread sleepForTimeInterval: 1];
-		[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/RESTARTOSIRIXSTORESCP" error: nil];
-		
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) // Only for server mode
-		{
-			NSLog( @"******* RESTARTOSIRIXSTORESCP : killDICOMListenerWait");
-			[self killDICOMListenerWait: YES];
-			
-			[NSThread sleepForTimeInterval: 1];
-						
-			NSLog( @"******* RESTARTOSIRIXSTORESCP : restartSTORESCP");
-			[self restartSTORESCP];
-		}
-	}
-}
+//- (void) checkForRestartStoreSCPOrder: (NSTimer*) t
+//{
+//	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/RESTARTOSIRIXSTORESCP"])
+//	{
+//		[NSThread sleepForTimeInterval: 1];
+//		[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/RESTARTOSIRIXSTORESCP" error: nil];
+//		
+//		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) // Only for server mode
+//		{
+//			NSLog( @"******* RESTARTOSIRIXSTORESCP : killDICOMListenerWait");
+//			[self killDICOMListenerWait: YES];
+//			
+//			[NSThread sleepForTimeInterval: 1];
+//						
+//			NSLog( @"******* RESTARTOSIRIXSTORESCP : restartSTORESCP");
+//			[self restartSTORESCP];
+//		}
+//	}
+//}
 
 - (void) runPreferencesUpdateCheck:(NSTimer*) timer
 {
@@ -3966,7 +3966,7 @@ static BOOL initialized = NO;
 	[self initDCMTK];
 	[self restartSTORESCP];
 	
-	[NSTimer scheduledTimerWithTimeInterval: 2 target: self selector: @selector(checkForRestartStoreSCPOrder:) userInfo: nil repeats: YES];
+//	[NSTimer scheduledTimerWithTimeInterval: 2 target: self selector: @selector(checkForRestartStoreSCPOrder:) userInfo: nil repeats: YES];
 	
 	[DicomDatabase initializeDicomDatabaseClass];
 	[BrowserController initializeBrowserControllerClass];
