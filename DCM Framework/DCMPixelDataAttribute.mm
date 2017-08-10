@@ -2765,7 +2765,9 @@ static inline int int_ceildivpow2(int a, int b) {
                         {
                             for( x = 0; x < width; x++)
                             {
-                                pixelR = pixelG = pixelB = bufPtr[y*width + x];
+                                if (clutDepthR != 16 || clutDepthG != 16 || clutDepthB != 16)
+                                    pixelR = pixelG = pixelB = bufPtr[y*width + x];
+                                else pixelR = pixelG = pixelB = bufPtr16[y*width + x];
                                 
                                 if( pixelR > clutEntryR) {	pixelR = clutEntryR-1;}
                                 if( pixelG > clutEntryG) {	pixelG = clutEntryG-1;}
