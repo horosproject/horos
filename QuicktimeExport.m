@@ -155,8 +155,8 @@
     {
         result = NSFileHandlingPanelOKButton;
         
-        [[NSFileManager defaultManager] removeFileAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"] handler: nil];
-        [[NSFileManager defaultManager] createDirectoryAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"] withIntermediateDirectories: YES attributes: nil error: nil];
+        [[NSFileManager defaultManager] removeFileAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"Photos"] handler: nil];
+        [[NSFileManager defaultManager] createDirectoryAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"Photos"] withIntermediateDirectories: YES attributes: nil error: nil];
         
         fileName = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"OsiriXMovie.mov"];
     }

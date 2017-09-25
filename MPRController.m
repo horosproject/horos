@@ -39,7 +39,7 @@
 #import "DICOMExport.h"
 #import "DicomImage.h"
 #import "ROI.h"
-#import "iPhoto.h"
+#import "Photos.h"
 #import "Notifications.h"
 #import "ROIWindow.h"
 #import "NSUserDefaultsController+OsiriX.h"
@@ -2701,7 +2701,7 @@ static float deg2rad = M_PI/180.0;
 
 -(void) export2iPhoto:(id) sender
 {
-	iPhoto		*ifoto;
+	Photos		*ifoto;
 	NSImage		*im = [[self selectedView] nsimage:NO];
 	
 	NSArray		*representations;
@@ -2713,8 +2713,8 @@ static float deg2rad = M_PI/180.0;
 	
 	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"] atomically:YES];
 	
-	ifoto = [[iPhoto alloc] init];
-	[ifoto importIniPhoto: [NSArray arrayWithObject:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"]]];
+	ifoto = [[Photos alloc] init];
+	[ifoto importInPhotos: [NSArray arrayWithObject:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"]]];
 	[ifoto release];
 }
 
