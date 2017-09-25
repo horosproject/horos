@@ -53,7 +53,7 @@
 static NSString* 	MPROrthoToolbarIdentifier				= @"MPROrtho Viewer Toolbar Identifier";
 static NSString*	AdjustSplitViewToolbarItemIdentifier	= @"sameSizeSplitView";
 //static NSString*	TurnSplitViewToolbarItemIdentifier		= @"turnSplitView";
-static NSString*	iPhotoToolbarItemIdentifier				= @"iPhoto";
+static NSString*	PhotosToolbarItemIdentifier				= @"iPhoto";
 static NSString*	ToolsToolbarItemIdentifier				= @"Tools";
 static NSString*	ThickSlabToolbarItemIdentifier			= @"ThickSlab";
 static NSString*	WLWWToolbarItemIdentifier				= @"WLWW";
@@ -1021,11 +1021,11 @@ static SyncSeriesScope globalSyncSeriesScope;
     //	[toolbarItem setTarget: self];
     //	[toolbarItem setAction: @selector(exportQuicktime:)];
     //    }
-    //	else if ([itemIdent isEqualToString: iPhotoToolbarItemIdentifier]) {
+    //	else if ([itemIdent isEqualToString: PhotosToolbarItemIdentifier]) {
     //
-    //	[toolbarItem setLabel: NSLocalizedString(@"iPhoto",nil)];
-    //	[toolbarItem setPaletteLabel: NSLocalizedString(@"iPhoto",nil)];
-    //	[toolbarItem setToolTip: NSLocalizedString(@"Export this series to iPhoto",nil)];
+    //	[toolbarItem setLabel: NSLocalizedString(@"Photos",nil)];
+    //	[toolbarItem setPaletteLabel: NSLocalizedString(@"Photos",nil)];
+    //	[toolbarItem setToolTip: NSLocalizedString(@"Export this series to Photos",nil)];
     //
     //	[toolbarItem setView: iPhotoView];
     //	[toolbarItem setMinSize:NSMakeSize(NSWidth([iPhotoView frame]), NSHeight([iPhotoView frame]))];
@@ -1235,7 +1235,7 @@ static SyncSeriesScope globalSyncSeriesScope;
                              ToolsToolbarItemIdentifier,
                              ExportToolbarItemIdentifier,
                              SyncSeriesToolbarItemIdentifier,
-                             iPhotoToolbarItemIdentifier,
+                             PhotosToolbarItemIdentifier,
                              MailToolbarItemIdentifier,
                              AdjustSplitViewToolbarItemIdentifier,
                              //										TurnSplitViewToolbarItemIdentifier,

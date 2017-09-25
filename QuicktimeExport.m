@@ -156,7 +156,7 @@
     {
         result = NSFileHandlingPanelOKButton;
         
-        NSString *path =[[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"];
+        NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"Photos"];
         [[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
         [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories: YES attributes: nil error: nil];
         

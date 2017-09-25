@@ -39,7 +39,7 @@
 #import "DICOMExport.h"
 #import "DicomImage.h"
 #import "ROI.h"
-#import "iPhoto.h"
+#import "Photos.h"
 #import "Notifications.h"
 #import "ROIWindow.h"
 #import "NSUserDefaultsController+OsiriX.h"
@@ -629,10 +629,10 @@ static float deg2rad = M_PI / 180.0;
     // Restore previous path, if it exists
     
     NSString *path = [[[BrowserController currentBrowser] database] statesDirPath];
-	
+    
 	if (![[NSFileManager defaultManager] fileExistsAtPath: path])
-		[[NSFileManager defaultManager] createDirectoryAtPath: path withIntermediateDirectories:YES attributes:nil error:NULL];
-	
+        [[NSFileManager defaultManager] createDirectoryAtPath: path withIntermediateDirectories:YES attributes:nil error:NULL];
+    
     path = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"CPR-%@", [[[viewer2D fileList: 0] objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
 	
     if( path)
@@ -2477,7 +2477,7 @@ static float deg2rad = M_PI / 180.0;
         if (!isSame) {
             [self willChangeValueForKey:@"exportSequenceNumberOfFrames"];
         }
-        exportSliceInterval = fabs( newExportSliceInterval);
+        exportSliceInterval = fabs(newExportSliceInterval);
         if (!isSame) {
             [self didChangeValueForKey:@"exportSequenceNumberOfFrames"];        
         }
@@ -2726,7 +2726,7 @@ static float deg2rad = M_PI / 180.0;
 				NSRect bounds = [v bounds];
 				NSPoint or = [v convertPoint: bounds.origin toView: nil];
                 NSRect r = {or, NSZeroSize};
-				bounds.origin = [[self window] convertRectToScreen: r].origin;
+                bounds.origin = [[self window] convertRectToScreen: r].origin;
                 
                 bounds.origin.x *= v.window.backingScaleFactor;
                 bounds.origin.y *= v.window.backingScaleFactor;
@@ -3186,10 +3186,10 @@ static float deg2rad = M_PI / 180.0;
 	curExportView = [self selectedView];
 	
 	if( quicktimeExportMode)
-		[NSApp beginSheet:quicktimeWindow modalForWindow:self.window modalDelegate:self didEndSelector:nil contextInfo:NULL];
+        [NSApp beginSheet:quicktimeWindow modalForWindow:self.window modalDelegate:self didEndSelector:nil contextInfo:NULL];
 	else
-		[NSApp beginSheet:dcmWindow modalForWindow:self.window modalDelegate:self didEndSelector:nil contextInfo:NULL];
-	
+        [NSApp beginSheet:dcmWindow modalForWindow:self.window modalDelegate:self didEndSelector:nil contextInfo:NULL];
+    
     self.exportSlabThickness = fabs([self getClippingRangeThicknessInMm]);
     self.exportSliceInterval = fabs([cprView.volumeData minPixelSpacing]);
     self.exportTransverseSliceInterval = fabs([curvedPath transverseSectionSpacing]);
@@ -3412,7 +3412,7 @@ static float deg2rad = M_PI / 180.0;
     NSSavePanel     *panel = [NSSavePanel savePanel];
     
 	[panel setCanSelectHiddenExtension:YES];
-	[panel setAllowedFileTypes:@[@"jpg"]];
+    [panel setAllowedFileTypes:@[@"jpg"]];
     panel.nameFieldStringValue = NSLocalizedString(@"Curved MPR Image", nil);
     
     [panel beginWithCompletionHandler:^(NSInteger result) {
@@ -3440,7 +3440,7 @@ static float deg2rad = M_PI / 180.0;
 
 -(void) export2iPhoto:(id) sender
 {
-	iPhoto		*ifoto;
+	Photos		*ifoto;
 	NSImage		*im = [[self selectedView] nsimage:NO];
 	
 	NSArray		*representations;
@@ -3451,10 +3451,10 @@ static float deg2rad = M_PI / 180.0;
 	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 	
     NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"Horos.jpg"];
-	[bitmapData writeToFile:path atomically:YES];
-	
-	ifoto = [[iPhoto alloc] init];
-	[ifoto importIniPhoto:@[path]];
+    [bitmapData writeToFile:path atomically:YES];
+    
+	ifoto = [[Photos alloc] init];
+	[ifoto importInPhotos:@[path]];
 	[ifoto release];
 }
 
@@ -3463,9 +3463,9 @@ static float deg2rad = M_PI / 180.0;
     NSSavePanel     *panel = [NSSavePanel savePanel];
     
 	[panel setCanSelectHiddenExtension:YES];
-	[panel setAllowedFileTypes:@[@"tif"]];
+    [panel setAllowedFileTypes:@[@"tif"]];
     panel.nameFieldStringValue = @"3D MPR Image";
-	
+    
     [panel beginWithCompletionHandler:^(NSInteger result) {
         if (result != NSFileHandlingPanelOKButton)
             return;
@@ -3590,11 +3590,11 @@ static float deg2rad = M_PI / 180.0;
 {
     NSOpenPanel *oPanel = [NSOpenPanel openPanel];
     [oPanel setAllowedFileTypes:@[@"curvedPath"]];
-
+    
     [oPanel beginWithCompletionHandler:^(NSInteger result) {
         if (result != NSFileHandlingPanelOKButton)
             return;
-       
+        
         [self loadBezierPathFromFile:oPanel.URL.path];
     }];
 }

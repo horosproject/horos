@@ -55,19 +55,15 @@ static OSStatus SSLSecPolicyCopy(SecPolicyRef *ret_policy)
 	*ret_policy = NULL;
 	status = SecPolicySearchCreate(CSSM_CERT_X_509v3, &CSSMOID_APPLE_TP_SSL, NULL, &policy_search);
 	//status = SecPolicySearchCreate(CSSM_CERT_X_509v3, &CSSMOID_APPLE_X509_BASIC, NULL, &policy_search);
-	require_noerr(status, SecPolicySearchCreate);
+    if (status == errSecSuccess) {
+        status = SecPolicySearchCopyNext(policy_search, &policy);
+        
+        if (status == errSecSuccess)
+            *ret_policy = policy;
 	
-	status = SecPolicySearchCopyNext(policy_search, &policy);
-	require_noerr(status, SecPolicySearchCopyNext);
-	
-	*ret_policy = policy;
-	
-SecPolicySearchCopyNext:
-	
-	CFRelease(policy_search);
-	
-SecPolicySearchCreate:
-	
+        CFRelease(policy_search);
+    }
+    
 	return (status);
 }
 

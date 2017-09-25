@@ -3031,14 +3031,14 @@
 		CE97630208FABDA600E6F8B0 /* PaletteController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9762FE08FABDA600E6F8B0 /* PaletteController.h */; };
 		CE97630308FABDA600E6F8B0 /* PaletteController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9762FF08FABDA600E6F8B0 /* PaletteController.m */; };
 		CE995076183E05D60087E409 /* PerpendicularLines.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CE995075183E05D60087E409 /* PerpendicularLines.pdf */; };
-		CE99E890073AB4C500725ABC /* iPhoto.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE99E88E073AB4C500725ABC /* iPhoto.icns */; };
+		CE99E890073AB4C500725ABC /* Photos.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE99E88E073AB4C500725ABC /* Photos.icns */; };
 		CE9C734A0B34946B0062FCCC /* echoscu in Resources */ = {isa = PBXBuildFile; fileRef = CE9C73490B34946B0062FCCC /* echoscu */; };
 		CE9DD284086B35050058DD2A /* DicomStudy.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9DD280086B35050058DD2A /* DicomStudy.m */; };
 		CE9DD285086B35050058DD2A /* DicomStudy.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9DD281086B35050058DD2A /* DicomStudy.h */; };
 		CE9DD286086B35050058DD2A /* DicomSeries.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9DD282086B35050058DD2A /* DicomSeries.h */; };
 		CE9DD287086B35050058DD2A /* DicomSeries.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9DD283086B35050058DD2A /* DicomSeries.m */; };
-		CEA20537073A810100F0DAB7 /* iPhoto.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA20533073A810100F0DAB7 /* iPhoto.h */; };
-		CEA20538073A810100F0DAB7 /* iPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA20534073A810100F0DAB7 /* iPhoto.m */; };
+		CEA20537073A810100F0DAB7 /* Photos.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA20533073A810100F0DAB7 /* Photos.h */; };
+		CEA20538073A810100F0DAB7 /* Photos.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA20534073A810100F0DAB7 /* Photos.m */; };
 		CEA4F07515AEA5FE009584C7 /* Cloud.png in Resources */ = {isa = PBXBuildFile; fileRef = CEA4F07215AEA5FE009584C7 /* Cloud.png */; };
 		CEA4F07715AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA4F07315AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m */; };
 		CEA4F07915AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA4F07415AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h */; };
@@ -5655,14 +5655,14 @@
 		CE9762FE08FABDA600E6F8B0 /* PaletteController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PaletteController.h; sourceTree = "<group>"; };
 		CE9762FF08FABDA600E6F8B0 /* PaletteController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PaletteController.m; sourceTree = "<group>"; };
 		CE995075183E05D60087E409 /* PerpendicularLines.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = PerpendicularLines.pdf; sourceTree = "<group>"; };
-		CE99E88E073AB4C500725ABC /* iPhoto.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = iPhoto.icns; sourceTree = "<group>"; };
+		CE99E88E073AB4C500725ABC /* Photos.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Photos.icns; sourceTree = "<group>"; };
 		CE9C73490B34946B0062FCCC /* echoscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = echoscu; path = Binaries/DCMTK/echoscu; sourceTree = SOURCE_ROOT; };
 		CE9DD280086B35050058DD2A /* DicomStudy.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DicomStudy.m; sourceTree = "<group>"; };
 		CE9DD281086B35050058DD2A /* DicomStudy.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomStudy.h; sourceTree = "<group>"; };
 		CE9DD282086B35050058DD2A /* DicomSeries.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomSeries.h; sourceTree = "<group>"; };
 		CE9DD283086B35050058DD2A /* DicomSeries.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DicomSeries.m; sourceTree = "<group>"; };
-		CEA20533073A810100F0DAB7 /* iPhoto.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = iPhoto.h; sourceTree = "<group>"; };
-		CEA20534073A810100F0DAB7 /* iPhoto.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = iPhoto.m; sourceTree = "<group>"; };
+		CEA20533073A810100F0DAB7 /* Photos.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Photos.h; sourceTree = "<group>"; };
+		CEA20534073A810100F0DAB7 /* Photos.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Photos.m; sourceTree = "<group>"; };
 		CEA4F07215AEA5FE009584C7 /* Cloud.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Cloud.png; path = "Preference Panes/OSIPACSOnDemandPreferencePane/Cloud.png"; sourceTree = "<group>"; };
 		CEA4F07315AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSIPACSOnDemandPreferencePane.m; path = "Preference Panes/OSIPACSOnDemandPreferencePane/OSIPACSOnDemandPreferencePane.m"; sourceTree = "<group>"; };
 		CEA4F07415AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSIPACSOnDemandPreferencePane.h; path = "Preference Panes/OSIPACSOnDemandPreferencePane/OSIPACSOnDemandPreferencePane.h"; sourceTree = "<group>"; };
@@ -7629,8 +7629,8 @@
 				AB36742F0BE0CEB0003634E6 /* iLifeControls */,
 				BF5C0185065320A800BAFCF7 /* ImageAndTextCell.h */,
 				BF5C0186065320A800BAFCF7 /* ImageAndTextCell.m */,
-				CEA20533073A810100F0DAB7 /* iPhoto.h */,
-				CEA20534073A810100F0DAB7 /* iPhoto.m */,
+				CEA20533073A810100F0DAB7 /* Photos.h */,
+				CEA20534073A810100F0DAB7 /* Photos.m */,
 				ABB230B90C2F95DD00B38596 /* JPEGExif.h */,
 				ABB230BA0C2F95DD00B38596 /* JPEGExif.m */,
 				A9EDB2CD091A473E00EE86AF /* KFSplitView.h */,
@@ -7850,7 +7850,7 @@
 				BF398B8A065B124700AD1F25 /* InArrow.tif */,
 				CE2BFE56153B177C00037546 /* iPad.png */,
 				CE03A3CB0EA2AE0300951EF4 /* iPhone.tif */,
-				CE99E88E073AB4C500725ABC /* iPhoto.icns */,
+				CE99E88E073AB4C500725ABC /* Photos.icns */,
 				ABE1E8AE0649F4150028E2E0 /* iPod.icns */,
 				CEDEF7D50D020E9100CADB15 /* JPEGSmall.tif */,
 				AB9E05460B30107A00661F7E /* key.png */,
@@ -9854,7 +9854,7 @@
 				CE4A922E06DBF255006DAAF7 /* ITKSegmentation3D.h in Headers */,
 				BF00C95C06F3F43900715191 /* DCMCursor.h in Headers */,
 				7ECB4B41072EF9F800C2CFC4 /* DCMCalendarScript.h in Headers */,
-				CEA20537073A810100F0DAB7 /* iPhoto.h in Headers */,
+				CEA20537073A810100F0DAB7 /* Photos.h in Headers */,
 				7EB4AAE7079494CB007AD271 /* QueryArrayController.h in Headers */,
 				7E54307707A05ED100500ABB /* BurnerWindowController.h in Headers */,
 				CEDE5B6307F206B5003034B6 /* ROIDefaultsWindow.h in Headers */,
@@ -10950,7 +10950,7 @@
 				7E2BE3F50715DBFB0017898A /* Network.tif in Resources */,
 				7E2BE3FE0715DC0D0017898A /* StartupDisk.tif in Resources */,
 				7E2BE4190715E5040017898A /* CD.tif in Resources */,
-				CE99E890073AB4C500725ABC /* iPhoto.icns in Resources */,
+				CE99E890073AB4C500725ABC /* Photos.icns in Resources */,
 				CE49E2CA0760B93500444203 /* Empty.tif in Resources */,
 				CE16066E0769EFE60036CAD3 /* VR Muscles-Bones.plist in Resources */,
 				999B0B651BB70F0800AF018A /* O2HMigrationAssistant.xib in Resources */,
@@ -11795,7 +11795,7 @@
 				CE26442306DCF096007F5B71 /* ITKSegmentation3DController.m in Sources */,
 				BF00C95D06F3F43A00715191 /* DCMCursor.m in Sources */,
 				7ECB4B42072EF9F800C2CFC4 /* DCMCalendarScript.m in Sources */,
-				CEA20538073A810100F0DAB7 /* iPhoto.m in Sources */,
+				CEA20538073A810100F0DAB7 /* Photos.m in Sources */,
 				7EB4AAE8079494CB007AD271 /* QueryArrayController.mm in Sources */,
 				7E54307807A05ED400500ABB /* BurnerWindowController.m in Sources */,
 				CEDE5B6207F206B5003034B6 /* ROIDefaultsWindow.m in Sources */,
@@ -13696,6 +13696,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_LDFLAGS = "-Wno-deprecated";
+				OTHER_CODE_SIGN_FLAGS = "";
+				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -13816,6 +13818,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.dcmframework;
 				PRODUCT_NAME = HorosDCM;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
+				SECTORDER_FLAGS = "";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;

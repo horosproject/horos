@@ -33,7 +33,7 @@
 
 #import "SRController.h"
 #import "DCMView.h"
-#import "iPhoto.h"
+#import "Photos.h"
 #import "SRView.h"
 #import "SRFlyThruAdapter.h"
 #import "ROI.h"
@@ -50,7 +50,7 @@
 
 static NSString* 	MIPToolbarIdentifier				= @"SR Toolbar Identifier";
 static NSString*	QTExportToolbarItemIdentifier		= @"QTExport.pdf";
-static NSString*	iPhotoToolbarItemIdentifier			= @"iPhoto.icns";
+static NSString*	PhotosToolbarItemIdentifier			= @"iPhoto.icns";
 static NSString*	StereoIdentifier					= @"Stereo.icns";
 //static NSString*	QTExportVRToolbarItemIdentifier		= @"QTExportVR.icns";
 static NSString*	SRSettingsToolbarItemIdentifier		= @"SRSettings.tif";
@@ -682,12 +682,12 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	[toolbarItem setTarget: view];
 	[toolbarItem setAction: @selector(exportQuicktime:)];
     }
-	else if ([itemIdent isEqualToString: iPhotoToolbarItemIdentifier]) {
+	else if ([itemIdent isEqualToString: PhotosToolbarItemIdentifier]) {
         
-	[toolbarItem setLabel: NSLocalizedString(@"iPhoto",nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"iPhoto",nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Export this series to iPhoto",nil)];
-	[toolbarItem setImage: [NSImage imageNamed: iPhotoToolbarItemIdentifier]];
+	[toolbarItem setLabel: NSLocalizedString(@"Photos",nil)];
+	[toolbarItem setPaletteLabel: NSLocalizedString(@"Photos",nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Export this series to Photos",nil)];
+	[toolbarItem setImage: [NSImage imageNamed:@"Photos"]];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(export2iPhoto:)];
     }
@@ -871,7 +871,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 										StereoIdentifier,
 										OrientationToolbarItemIdentifier,
 										QTExportToolbarItemIdentifier,
-										iPhotoToolbarItemIdentifier,
+										PhotosToolbarItemIdentifier,
 										Export3DFileFormat,
 										OrientationsViewToolbarItemIdentifier,
                                         ToolsToolbarItemIdentifier,
@@ -933,7 +933,7 @@ return YES;
 
 -(void) export2iPhoto:(id) sender
 {
-	iPhoto		*ifoto;
+	Photos		*ifoto;
 	NSImage		*im = [view nsimage:NO];
 	
 	NSArray		*representations;
@@ -946,8 +946,8 @@ return YES;
     NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"Horos.jpg"];
 	[bitmapData writeToFile:path atomically:YES];
 	
-	ifoto = [[iPhoto alloc] init];
-	[ifoto importIniPhoto:@[path]];
+	ifoto = [[Photos alloc] init];
+	[ifoto importInPhotos:@[path]];
 	[ifoto release];
 }
 
@@ -1367,7 +1367,7 @@ return YES;
 		[subItem setTarget:self];
 		[exportSubmenu addItem:subItem];
 		
-		subItem = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"iPhoto", nil)  action:@selector(export2iPhoto:) keyEquivalent:@""] autorelease];
+		subItem = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Photos", nil)  action:@selector(export2iPhoto:) keyEquivalent:@""] autorelease];
 		[subItem setTarget:self];
 		[exportSubmenu addItem:subItem];
 		

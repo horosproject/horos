@@ -40,7 +40,7 @@
 #import "NSFullScreenWindow.h"
 #import "BrowserController.h"
 #include <Accelerate/Accelerate.h>
-#import "iPhoto.h"
+#import "Photos.h"
 #import "DICOMExport.h"
 #import "VRFlyThruAdapter.h"
 #import "DicomImage.h"
@@ -64,7 +64,7 @@ static NSString* 	VRStandardToolbarIdentifier = @"VR Toolbar Identifier";
 static NSString* 	VRPanelToolbarIdentifier = @"VRPanel Toolbar Identifier";
 
 static NSString*	QTExportToolbarItemIdentifier = @"QTExport.pdf";
-static NSString*	iPhotoToolbarItemIdentifier = @"iPhoto.icns";
+static NSString*	PhotosToolbarItemIdentifier = @"iPhoto.icns";
 //static NSString*	QTExportVRToolbarItemIdentifier = @"QTExportVR.icns";
 static NSString*	StereoIdentifier = @"Stereo.icns";
 static NSString*	CaptureToolbarItemIdentifier = @"BestRendering.pdf";
@@ -1821,12 +1821,12 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
         [toolbarItem setTarget: view];
         [toolbarItem setAction: @selector(exportQuicktime:)];
     }
-    else if ([itemIdent isEqualToString: iPhotoToolbarItemIdentifier]) {
+    else if ([itemIdent isEqualToString: PhotosToolbarItemIdentifier]) {
         
-        [toolbarItem setLabel: NSLocalizedString(@"iPhoto",nil)];
-        [toolbarItem setPaletteLabel:NSLocalizedString(@"iPhoto",nil)];
-        [toolbarItem setToolTip:NSLocalizedString(@"Export this image to iPhoto",nil)];
-        [toolbarItem setImage: [NSImage imageNamed: iPhotoToolbarItemIdentifier]];
+        [toolbarItem setLabel: NSLocalizedString(@"Photos",nil)];
+        [toolbarItem setPaletteLabel:NSLocalizedString(@"Photos",nil)];
+        [toolbarItem setToolTip:NSLocalizedString(@"Export this image to Photos",nil)];
+        [toolbarItem setImage: [NSImage imageNamed:@"Photos"]];
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(export2iPhoto:)];
     }
@@ -2114,7 +2114,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
                               MovieToolbarItemIdentifier,
                               StereoIdentifier,
                               QTExportToolbarItemIdentifier,
-                              iPhotoToolbarItemIdentifier,
+                              PhotosToolbarItemIdentifier,
                               //											QTExportVRToolbarItemIdentifier,
                               MailToolbarItemIdentifier,
                               ResetToolbarItemIdentifier,
@@ -2152,7 +2152,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
                 OrientationToolbarItemIdentifier,
                 OrientationsViewToolbarItemIdentifier,
                 QTExportToolbarItemIdentifier,
-                iPhotoToolbarItemIdentifier,
+                PhotosToolbarItemIdentifier,
                 MailToolbarItemIdentifier,
                 ResetToolbarItemIdentifier,
                 RevertToolbarItemIdentifier,
@@ -2226,7 +2226,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 -(void) export2iPhoto:(id) sender
 {
-    iPhoto *ifoto;
+    Photos *ifoto;
     NSImage *im = [view nsimage:NO];
     
     NSArray *representations;
@@ -2239,8 +2239,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"Horos.jpg"];
     [bitmapData writeToFile:path atomically:YES];
     
-    ifoto = [[iPhoto alloc] init];
-    [ifoto importIniPhoto:@[path]];
+    ifoto = [[Photos alloc] init];
+    [ifoto importInPhotos:@[path]];
     [ifoto release];
 }
 
