@@ -221,7 +221,10 @@
 		symlinkPath =
 			[[self stringByDeletingLastPathComponent]
 				stringByAppendingPathComponent:symlinkPath];
-		symlinkPath = [symlinkPath stringByStandardizingPath];
+		
+        NSString *standardizedPath = [symlinkPath stringByStandardizingPath];
+        if (![standardizedPath isEqualToString:self]) // avoid looping on resolving the alias and standardizing it back to the original alias
+            symlinkPath = standardizedPath;
 	}
 	return symlinkPath;
 }
