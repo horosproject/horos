@@ -1073,6 +1073,7 @@ PixelRepresentation
             }
             @catch( NSException *e) {
                 NSLog( @"%@", e);
+//                break; // Horos bug #210 provided to OP, but OP stopped responding to email
             }
             @finally {
                 [subPool release];
