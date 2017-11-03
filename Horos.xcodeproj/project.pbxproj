@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -64,7 +64,6 @@
 		183C865D08563F3A000E6A68 /* VRFlyThruAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 183C864908563F3A000E6A68 /* VRFlyThruAdapter.m */; };
 		32E422150C97301600E193CA /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 32E422140C97301600E193CA /* altivecFunctions.h */; };
 		4307C62C1A2091900083877C /* url.h in Headers */ = {isa = PBXBuildFile; fileRef = 4307C62B1A2091900083877C /* url.h */; };
-		431BCC401A24AC94002B36FB /* libtiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 431BCC3F1A24AC94002B36FB /* libtiff.a */; };
 		433F9A801A1B18A500E52C6C /* VTKView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 433F9A7E1A1B18A500E52C6C /* VTKView.mm */; };
 		433F9A811A1B18A500E52C6C /* VTKViewOSIRIX.h in Headers */ = {isa = PBXBuildFile; fileRef = 433F9A7F1A1B18A500E52C6C /* VTKViewOSIRIX.h */; };
 		433F9A891A1B7C1C00E52C6C /* vtkHorosFixedPointVolumeRayCastMapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 433F9A871A1B7C1C00E52C6C /* vtkHorosFixedPointVolumeRayCastMapper.cxx */; };
@@ -82,181 +81,6 @@
 		434B47AC1A1A1AD4008CF8CF /* libopenjp2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 434B47AB1A1A1AD4008CF8CF /* libopenjp2.a */; };
 		434B47AE1A1A1AD4008CF8CF /* libopenjp2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 434B47AB1A1A1AD4008CF8CF /* libopenjp2.a */; };
 		434B47AF1A1A1AD4008CF8CF /* libopenjp2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 434B47AB1A1A1AD4008CF8CF /* libopenjp2.a */; };
-		4362173C1A2F3730006FA27A /* libITKBiasCorrection-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436216EF1A2F3730006FA27A /* libITKBiasCorrection-4.7.a */; };
-		4362173D1A2F3730006FA27A /* libITKBioCell-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436216F01A2F3730006FA27A /* libITKBioCell-4.7.a */; };
-		4362173E1A2F3730006FA27A /* libITKCommon-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436216F11A2F3730006FA27A /* libITKCommon-4.7.a */; };
-		4362173F1A2F3730006FA27A /* libITKDICOMParser-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436216F21A2F3730006FA27A /* libITKDICOMParser-4.7.a */; };
-		436217401A2F3730006FA27A /* libitkdouble-conversion-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436216F31A2F3730006FA27A /* libitkdouble-conversion-4.7.a */; };
-		436217411A2F3730006FA27A /* libITKEXPAT-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436216F41A2F3730006FA27A /* libITKEXPAT-4.7.a */; };
-		436217421A2F3730006FA27A /* libITKFEM-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436216F51A2F3730006FA27A /* libITKFEM-4.7.a */; };
-		4362174C1A2F3730006FA27A /* libITKgiftiio-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436216FF1A2F3730006FA27A /* libITKgiftiio-4.7.a */; };
-		4362174D1A2F3730006FA27A /* libitkhdf5_cpp-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217001A2F3730006FA27A /* libitkhdf5_cpp-4.7.a */; };
-		4362174E1A2F3730006FA27A /* libitkhdf5-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217011A2F3730006FA27A /* libitkhdf5-4.7.a */; };
-		4362174F1A2F3730006FA27A /* libITKIOBioRad-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217021A2F3730006FA27A /* libITKIOBioRad-4.7.a */; };
-		436217501A2F3730006FA27A /* libITKIOBMP-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217031A2F3730006FA27A /* libITKIOBMP-4.7.a */; };
-		436217511A2F3730006FA27A /* libITKIOCSV-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217041A2F3730006FA27A /* libITKIOCSV-4.7.a */; };
-		436217521A2F3730006FA27A /* libITKIOGDCM-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217051A2F3730006FA27A /* libITKIOGDCM-4.7.a */; };
-		436217531A2F3730006FA27A /* libITKIOGE-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217061A2F3730006FA27A /* libITKIOGE-4.7.a */; };
-		436217541A2F3730006FA27A /* libITKIOGIPL-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217071A2F3730006FA27A /* libITKIOGIPL-4.7.a */; };
-		436217551A2F3730006FA27A /* libITKIOHDF5-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217081A2F3730006FA27A /* libITKIOHDF5-4.7.a */; };
-		436217561A2F3730006FA27A /* libITKIOImageBase-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217091A2F3730006FA27A /* libITKIOImageBase-4.7.a */; };
-		436217571A2F3730006FA27A /* libITKIOIPL-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362170A1A2F3730006FA27A /* libITKIOIPL-4.7.a */; };
-		436217581A2F3730006FA27A /* libITKIOJPEG-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362170B1A2F3730006FA27A /* libITKIOJPEG-4.7.a */; };
-		436217591A2F3730006FA27A /* libITKIOLSM-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362170C1A2F3730006FA27A /* libITKIOLSM-4.7.a */; };
-		4362175A1A2F3730006FA27A /* libITKIOMesh-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362170D1A2F3730006FA27A /* libITKIOMesh-4.7.a */; };
-		4362175B1A2F3730006FA27A /* libITKIOMeta-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362170E1A2F3730006FA27A /* libITKIOMeta-4.7.a */; };
-		4362175C1A2F3730006FA27A /* libITKIOMRC-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362170F1A2F3730006FA27A /* libITKIOMRC-4.7.a */; };
-		4362175D1A2F3730006FA27A /* libITKIONIFTI-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217101A2F3730006FA27A /* libITKIONIFTI-4.7.a */; };
-		4362175E1A2F3730006FA27A /* libITKIONRRD-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217111A2F3730006FA27A /* libITKIONRRD-4.7.a */; };
-		4362175F1A2F3730006FA27A /* libITKIOPNG-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217121A2F3730006FA27A /* libITKIOPNG-4.7.a */; };
-		436217601A2F3730006FA27A /* libITKIOSiemens-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217131A2F3730006FA27A /* libITKIOSiemens-4.7.a */; };
-		436217611A2F3730006FA27A /* libITKIOSpatialObjects-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217141A2F3730006FA27A /* libITKIOSpatialObjects-4.7.a */; };
-		436217621A2F3730006FA27A /* libITKIOStimulate-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217151A2F3730006FA27A /* libITKIOStimulate-4.7.a */; };
-		436217631A2F3730006FA27A /* libITKIOTIFF-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217161A2F3730006FA27A /* libITKIOTIFF-4.7.a */; };
-		436217641A2F3730006FA27A /* libITKIOTransformBase-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217171A2F3730006FA27A /* libITKIOTransformBase-4.7.a */; };
-		436217651A2F3730006FA27A /* libITKIOTransformHDF5-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217181A2F3730006FA27A /* libITKIOTransformHDF5-4.7.a */; };
-		436217661A2F3730006FA27A /* libITKIOTransformInsightLegacy-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217191A2F3730006FA27A /* libITKIOTransformInsightLegacy-4.7.a */; };
-		436217671A2F3730006FA27A /* libITKIOTransformMatlab-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362171A1A2F3730006FA27A /* libITKIOTransformMatlab-4.7.a */; };
-		436217681A2F3730006FA27A /* libITKIOVTK-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362171B1A2F3730006FA27A /* libITKIOVTK-4.7.a */; };
-		436217691A2F3730006FA27A /* libITKIOXML-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362171C1A2F3730006FA27A /* libITKIOXML-4.7.a */; };
-		4362176A1A2F3730006FA27A /* libITKKLMRegionGrowing-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362171D1A2F3730006FA27A /* libITKKLMRegionGrowing-4.7.a */; };
-		4362176B1A2F3730006FA27A /* libITKLabelMap-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362171E1A2F3730006FA27A /* libITKLabelMap-4.7.a */; };
-		4362176C1A2F3730006FA27A /* libITKMesh-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362171F1A2F3730006FA27A /* libITKMesh-4.7.a */; };
-		4362176D1A2F3730006FA27A /* libITKMetaIO-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217201A2F3730006FA27A /* libITKMetaIO-4.7.a */; };
-		4362176E1A2F3730006FA27A /* libitkNetlibSlatec-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217211A2F3730006FA27A /* libitkNetlibSlatec-4.7.a */; };
-		4362176F1A2F3730006FA27A /* libITKniftiio-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217221A2F3730006FA27A /* libITKniftiio-4.7.a */; };
-		436217701A2F3730006FA27A /* libITKNrrdIO-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217231A2F3730006FA27A /* libITKNrrdIO-4.7.a */; };
-		436217711A2F3730006FA27A /* libitkopenjpeg-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217241A2F3730006FA27A /* libitkopenjpeg-4.7.a */; };
-		436217721A2F3730006FA27A /* libITKOptimizers-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217251A2F3730006FA27A /* libITKOptimizers-4.7.a */; };
-		436217731A2F3730006FA27A /* libITKOptimizersv4-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217261A2F3730006FA27A /* libITKOptimizersv4-4.7.a */; };
-		436217741A2F3730006FA27A /* libITKPath-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217271A2F3730006FA27A /* libITKPath-4.7.a */; };
-		436217751A2F3730006FA27A /* libitkpng-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217281A2F3730006FA27A /* libitkpng-4.7.a */; };
-		436217761A2F3730006FA27A /* libITKPolynomials-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217291A2F3730006FA27A /* libITKPolynomials-4.7.a */; };
-		436217771A2F3730006FA27A /* libITKQuadEdgeMesh-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362172A1A2F3730006FA27A /* libITKQuadEdgeMesh-4.7.a */; };
-		436217781A2F3730006FA27A /* libITKSpatialObjects-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362172B1A2F3730006FA27A /* libITKSpatialObjects-4.7.a */; };
-		436217791A2F3730006FA27A /* libITKStatistics-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362172C1A2F3730006FA27A /* libITKStatistics-4.7.a */; };
-		4362177A1A2F3730006FA27A /* libitksys-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362172D1A2F3730006FA27A /* libitksys-4.7.a */; };
-		4362177B1A2F3730006FA27A /* libitktiff-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362172E1A2F3730006FA27A /* libitktiff-4.7.a */; };
-		4362177C1A2F3730006FA27A /* libitkv3p_lsqr-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362172F1A2F3730006FA27A /* libitkv3p_lsqr-4.7.a */; };
-		4362177D1A2F3730006FA27A /* libitkv3p_netlib-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217301A2F3730006FA27A /* libitkv3p_netlib-4.7.a */; };
-		4362177E1A2F3730006FA27A /* libitkvcl-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217311A2F3730006FA27A /* libitkvcl-4.7.a */; };
-		4362177F1A2F3730006FA27A /* libITKVideoCore-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217321A2F3730006FA27A /* libITKVideoCore-4.7.a */; };
-		436217801A2F3730006FA27A /* libITKVideoIO-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217331A2F3730006FA27A /* libITKVideoIO-4.7.a */; };
-		436217811A2F3730006FA27A /* libitkvnl_algo-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217341A2F3730006FA27A /* libitkvnl_algo-4.7.a */; };
-		436217821A2F3730006FA27A /* libitkvnl-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217351A2F3730006FA27A /* libitkvnl-4.7.a */; };
-		436217831A2F3730006FA27A /* libITKVNLInstantiation-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217361A2F3730006FA27A /* libITKVNLInstantiation-4.7.a */; };
-		436217841A2F3730006FA27A /* libITKVTK-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217371A2F3730006FA27A /* libITKVTK-4.7.a */; };
-		436217851A2F3730006FA27A /* libITKVtkGlue-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217381A2F3730006FA27A /* libITKVtkGlue-4.7.a */; };
-		436217861A2F3730006FA27A /* libITKWatersheds-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217391A2F3730006FA27A /* libITKWatersheds-4.7.a */; };
-		436217871A2F3730006FA27A /* libitkzlib-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362173A1A2F3730006FA27A /* libitkzlib-4.7.a */; };
-		436217881A2F3731006FA27A /* libITKznz-4.7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362173B1A2F3730006FA27A /* libITKznz-4.7.a */; };
-		4362178A1A2F3741006FA27A /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217891A2F3741006FA27A /* libjpeg.a */; };
-		436217F51A2F375C006FA27A /* libvtkalglib-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362178B1A2F375C006FA27A /* libvtkalglib-6.2.a */; };
-		436217F61A2F375C006FA27A /* libvtkChartsCore-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362178C1A2F375C006FA27A /* libvtkChartsCore-6.2.a */; };
-		436217F71A2F375C006FA27A /* libvtkCommonColor-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362178D1A2F375C006FA27A /* libvtkCommonColor-6.2.a */; };
-		436217F81A2F375C006FA27A /* libvtkCommonComputationalGeometry-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362178E1A2F375C006FA27A /* libvtkCommonComputationalGeometry-6.2.a */; };
-		436217F91A2F375C006FA27A /* libvtkCommonCore-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362178F1A2F375C006FA27A /* libvtkCommonCore-6.2.a */; };
-		436217FA1A2F375C006FA27A /* libvtkCommonDataModel-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217901A2F375C006FA27A /* libvtkCommonDataModel-6.2.a */; };
-		436217FB1A2F375C006FA27A /* libvtkCommonExecutionModel-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217911A2F375C006FA27A /* libvtkCommonExecutionModel-6.2.a */; };
-		436217FC1A2F375C006FA27A /* libvtkCommonMath-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217921A2F375C006FA27A /* libvtkCommonMath-6.2.a */; };
-		436217FD1A2F375C006FA27A /* libvtkCommonMisc-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217931A2F375C006FA27A /* libvtkCommonMisc-6.2.a */; };
-		436217FE1A2F375C006FA27A /* libvtkCommonSystem-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217941A2F375C006FA27A /* libvtkCommonSystem-6.2.a */; };
-		436217FF1A2F375C006FA27A /* libvtkCommonTransforms-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217951A2F375C006FA27A /* libvtkCommonTransforms-6.2.a */; };
-		436218001A2F375C006FA27A /* libvtkDICOMParser-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217961A2F375C006FA27A /* libvtkDICOMParser-6.2.a */; };
-		436218011A2F375C006FA27A /* libvtkDomainsChemistry-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217971A2F375C006FA27A /* libvtkDomainsChemistry-6.2.a */; };
-		436218021A2F375C006FA27A /* libvtkexoIIc-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217981A2F375C006FA27A /* libvtkexoIIc-6.2.a */; };
-		436218031A2F375C006FA27A /* libvtkexpat-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217991A2F375C006FA27A /* libvtkexpat-6.2.a */; };
-		436218041A2F375C006FA27A /* libvtkFiltersAMR-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362179A1A2F375C006FA27A /* libvtkFiltersAMR-6.2.a */; };
-		436218051A2F375C006FA27A /* libvtkFiltersCore-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362179B1A2F375C006FA27A /* libvtkFiltersCore-6.2.a */; };
-		436218061A2F375C006FA27A /* libvtkFiltersExtraction-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362179C1A2F375C006FA27A /* libvtkFiltersExtraction-6.2.a */; };
-		436218071A2F375C006FA27A /* libvtkFiltersFlowPaths-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362179D1A2F375C006FA27A /* libvtkFiltersFlowPaths-6.2.a */; };
-		436218081A2F375C006FA27A /* libvtkFiltersGeneral-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362179E1A2F375C006FA27A /* libvtkFiltersGeneral-6.2.a */; };
-		436218091A2F375C006FA27A /* libvtkFiltersGeneric-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4362179F1A2F375C006FA27A /* libvtkFiltersGeneric-6.2.a */; };
-		4362180A1A2F375C006FA27A /* libvtkFiltersGeometry-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217A01A2F375C006FA27A /* libvtkFiltersGeometry-6.2.a */; };
-		4362180B1A2F375C006FA27A /* libvtkFiltersHybrid-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217A11A2F375C006FA27A /* libvtkFiltersHybrid-6.2.a */; };
-		4362180C1A2F375C006FA27A /* libvtkFiltersHyperTree-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217A21A2F375C006FA27A /* libvtkFiltersHyperTree-6.2.a */; };
-		4362180D1A2F375C006FA27A /* libvtkFiltersImaging-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217A31A2F375C006FA27A /* libvtkFiltersImaging-6.2.a */; };
-		4362180E1A2F375C006FA27A /* libvtkFiltersModeling-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217A41A2F375C006FA27A /* libvtkFiltersModeling-6.2.a */; };
-		4362180F1A2F375C006FA27A /* libvtkFiltersParallel-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217A51A2F375C006FA27A /* libvtkFiltersParallel-6.2.a */; };
-		436218101A2F375C006FA27A /* libvtkFiltersParallelImaging-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217A61A2F375C006FA27A /* libvtkFiltersParallelImaging-6.2.a */; };
-		436218111A2F375C006FA27A /* libvtkFiltersProgrammable-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217A71A2F375C006FA27A /* libvtkFiltersProgrammable-6.2.a */; };
-		436218121A2F375C006FA27A /* libvtkFiltersSelection-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217A81A2F375C006FA27A /* libvtkFiltersSelection-6.2.a */; };
-		436218131A2F375C006FA27A /* libvtkFiltersSMP-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217A91A2F375C006FA27A /* libvtkFiltersSMP-6.2.a */; };
-		436218141A2F375C006FA27A /* libvtkFiltersSources-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217AA1A2F375C006FA27A /* libvtkFiltersSources-6.2.a */; };
-		436218151A2F375C006FA27A /* libvtkFiltersStatistics-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217AB1A2F375C006FA27A /* libvtkFiltersStatistics-6.2.a */; };
-		436218161A2F375C006FA27A /* libvtkFiltersTexture-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217AC1A2F375C006FA27A /* libvtkFiltersTexture-6.2.a */; };
-		436218171A2F375C006FA27A /* libvtkFiltersVerdict-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217AD1A2F375C006FA27A /* libvtkFiltersVerdict-6.2.a */; };
-		436218181A2F375C006FA27A /* libvtkfreetype-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217AE1A2F375C006FA27A /* libvtkfreetype-6.2.a */; };
-		436218191A2F375C006FA27A /* libvtkftgl-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217AF1A2F375C006FA27A /* libvtkftgl-6.2.a */; };
-		4362181A1A2F375C006FA27A /* libvtkGeovisCore-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217B01A2F375C006FA27A /* libvtkGeovisCore-6.2.a */; };
-		4362181B1A2F375C006FA27A /* libvtkgl2ps-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217B11A2F375C006FA27A /* libvtkgl2ps-6.2.a */; };
-		4362181C1A2F375C006FA27A /* libvtkhdf5_hl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217B21A2F375C006FA27A /* libvtkhdf5_hl.a */; };
-		4362181D1A2F375C006FA27A /* libvtkhdf5.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217B31A2F375C006FA27A /* libvtkhdf5.a */; };
-		4362181E1A2F375C006FA27A /* libvtkImagingColor-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217B41A2F375C006FA27A /* libvtkImagingColor-6.2.a */; };
-		4362181F1A2F375C006FA27A /* libvtkImagingCore-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217B51A2F375C006FA27A /* libvtkImagingCore-6.2.a */; };
-		436218201A2F375C006FA27A /* libvtkImagingFourier-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217B61A2F375C006FA27A /* libvtkImagingFourier-6.2.a */; };
-		436218211A2F375C006FA27A /* libvtkImagingGeneral-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217B71A2F375C006FA27A /* libvtkImagingGeneral-6.2.a */; };
-		436218221A2F375C006FA27A /* libvtkImagingHybrid-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217B81A2F375C006FA27A /* libvtkImagingHybrid-6.2.a */; };
-		436218231A2F375C006FA27A /* libvtkImagingMath-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217B91A2F375C006FA27A /* libvtkImagingMath-6.2.a */; };
-		436218241A2F375C006FA27A /* libvtkImagingMorphological-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217BA1A2F375C006FA27A /* libvtkImagingMorphological-6.2.a */; };
-		436218251A2F375C006FA27A /* libvtkImagingSources-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217BB1A2F375C006FA27A /* libvtkImagingSources-6.2.a */; };
-		436218261A2F375C006FA27A /* libvtkImagingStatistics-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217BC1A2F375C006FA27A /* libvtkImagingStatistics-6.2.a */; };
-		436218271A2F375C006FA27A /* libvtkImagingStencil-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217BD1A2F375C006FA27A /* libvtkImagingStencil-6.2.a */; };
-		436218281A2F375C006FA27A /* libvtkInfovisCore-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217BE1A2F375C006FA27A /* libvtkInfovisCore-6.2.a */; };
-		436218291A2F375C006FA27A /* libvtkInfovisLayout-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217BF1A2F375C006FA27A /* libvtkInfovisLayout-6.2.a */; };
-		4362182A1A2F375C006FA27A /* libvtkInteractionImage-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217C01A2F375C006FA27A /* libvtkInteractionImage-6.2.a */; };
-		4362182B1A2F375C006FA27A /* libvtkInteractionStyle-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217C11A2F375C006FA27A /* libvtkInteractionStyle-6.2.a */; };
-		4362182C1A2F375C006FA27A /* libvtkInteractionWidgets-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217C21A2F375C006FA27A /* libvtkInteractionWidgets-6.2.a */; };
-		4362182D1A2F375C006FA27A /* libvtkIOAMR-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217C31A2F375C006FA27A /* libvtkIOAMR-6.2.a */; };
-		4362182E1A2F375C006FA27A /* libvtkIOCore-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217C41A2F375C006FA27A /* libvtkIOCore-6.2.a */; };
-		4362182F1A2F375C006FA27A /* libvtkIOEnSight-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217C51A2F375C006FA27A /* libvtkIOEnSight-6.2.a */; };
-		436218301A2F375C006FA27A /* libvtkIOExodus-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217C61A2F375C006FA27A /* libvtkIOExodus-6.2.a */; };
-		436218311A2F375C006FA27A /* libvtkIOExport-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217C71A2F375C006FA27A /* libvtkIOExport-6.2.a */; };
-		436218321A2F375C006FA27A /* libvtkIOGeometry-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217C81A2F375C006FA27A /* libvtkIOGeometry-6.2.a */; };
-		436218331A2F375C006FA27A /* libvtkIOImage-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217C91A2F375C006FA27A /* libvtkIOImage-6.2.a */; };
-		436218341A2F375C006FA27A /* libvtkIOImport-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217CA1A2F375C006FA27A /* libvtkIOImport-6.2.a */; };
-		436218351A2F375C006FA27A /* libvtkIOInfovis-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217CB1A2F375C006FA27A /* libvtkIOInfovis-6.2.a */; };
-		436218361A2F375C006FA27A /* libvtkIOLegacy-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217CC1A2F375C006FA27A /* libvtkIOLegacy-6.2.a */; };
-		436218371A2F375C006FA27A /* libvtkIOLSDyna-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217CD1A2F375C006FA27A /* libvtkIOLSDyna-6.2.a */; };
-		436218381A2F375C006FA27A /* libvtkIOMINC-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217CE1A2F375C006FA27A /* libvtkIOMINC-6.2.a */; };
-		436218391A2F375C006FA27A /* libvtkIOMovie-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217CF1A2F375C006FA27A /* libvtkIOMovie-6.2.a */; };
-		4362183A1A2F375C006FA27A /* libvtkIONetCDF-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217D01A2F375C006FA27A /* libvtkIONetCDF-6.2.a */; };
-		4362183B1A2F375C006FA27A /* libvtkIOParallel-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217D11A2F375C006FA27A /* libvtkIOParallel-6.2.a */; };
-		4362183C1A2F375C006FA27A /* libvtkIOParallelXML-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217D21A2F375C006FA27A /* libvtkIOParallelXML-6.2.a */; };
-		4362183D1A2F375C006FA27A /* libvtkIOPLY-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217D31A2F375C006FA27A /* libvtkIOPLY-6.2.a */; };
-		4362183E1A2F375C006FA27A /* libvtkIOSQL-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217D41A2F375C006FA27A /* libvtkIOSQL-6.2.a */; };
-		4362183F1A2F375C006FA27A /* libvtkIOVideo-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217D51A2F375C006FA27A /* libvtkIOVideo-6.2.a */; };
-		436218401A2F375C006FA27A /* libvtkIOXML-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217D61A2F375C006FA27A /* libvtkIOXML-6.2.a */; };
-		436218411A2F375C006FA27A /* libvtkIOXMLParser-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217D71A2F375C006FA27A /* libvtkIOXMLParser-6.2.a */; };
-		436218421A2F375C006FA27A /* libvtkjsoncpp-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217D81A2F375C006FA27A /* libvtkjsoncpp-6.2.a */; };
-		436218431A2F375C006FA27A /* libvtklibxml2-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217D91A2F375C006FA27A /* libvtklibxml2-6.2.a */; };
-		436218441A2F375C006FA27A /* libvtkmetaio-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217DA1A2F375C006FA27A /* libvtkmetaio-6.2.a */; };
-		436218451A2F375C006FA27A /* libvtkNetCDF_cxx-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217DB1A2F375C006FA27A /* libvtkNetCDF_cxx-6.2.a */; };
-		436218461A2F375C006FA27A /* libvtkNetCDF-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217DC1A2F375C006FA27A /* libvtkNetCDF-6.2.a */; };
-		436218471A2F375C006FA27A /* libvtkoggtheora-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217DD1A2F375C006FA27A /* libvtkoggtheora-6.2.a */; };
-		436218481A2F375C006FA27A /* libvtkParallelCore-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217DE1A2F375C006FA27A /* libvtkParallelCore-6.2.a */; };
-		436218491A2F375C006FA27A /* libvtkpng-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217DF1A2F375C006FA27A /* libvtkpng-6.2.a */; };
-		4362184A1A2F375C006FA27A /* libvtkproj4-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217E01A2F375C006FA27A /* libvtkproj4-6.2.a */; };
-		4362184B1A2F375C006FA27A /* libvtkRenderingAnnotation-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217E11A2F375C006FA27A /* libvtkRenderingAnnotation-6.2.a */; };
-		4362184C1A2F375C006FA27A /* libvtkRenderingContext2D-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217E21A2F375C006FA27A /* libvtkRenderingContext2D-6.2.a */; };
-		4362184D1A2F375C006FA27A /* libvtkRenderingContextOpenGL-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217E31A2F375C006FA27A /* libvtkRenderingContextOpenGL-6.2.a */; };
-		4362184E1A2F375C006FA27A /* libvtkRenderingCore-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217E41A2F375C006FA27A /* libvtkRenderingCore-6.2.a */; };
-		4362184F1A2F375C006FA27A /* libvtkRenderingFreeType-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217E51A2F375C006FA27A /* libvtkRenderingFreeType-6.2.a */; };
-		436218501A2F375C006FA27A /* libvtkRenderingFreeTypeOpenGL-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217E61A2F375C006FA27A /* libvtkRenderingFreeTypeOpenGL-6.2.a */; };
-		436218511A2F375D006FA27A /* libvtkRenderingGL2PS-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217E71A2F375C006FA27A /* libvtkRenderingGL2PS-6.2.a */; };
-		436218521A2F375D006FA27A /* libvtkRenderingImage-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217E81A2F375C006FA27A /* libvtkRenderingImage-6.2.a */; };
-		436218531A2F375D006FA27A /* libvtkRenderingLabel-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217E91A2F375C006FA27A /* libvtkRenderingLabel-6.2.a */; };
-		436218541A2F375D006FA27A /* libvtkRenderingLIC-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217EA1A2F375C006FA27A /* libvtkRenderingLIC-6.2.a */; };
-		436218551A2F375D006FA27A /* libvtkRenderingLOD-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217EB1A2F375C006FA27A /* libvtkRenderingLOD-6.2.a */; };
-		436218561A2F375D006FA27A /* libvtkRenderingOpenGL-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217EC1A2F375C006FA27A /* libvtkRenderingOpenGL-6.2.a */; };
-		436218571A2F375D006FA27A /* libvtkRenderingVolume-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217ED1A2F375C006FA27A /* libvtkRenderingVolume-6.2.a */; };
-		436218581A2F375D006FA27A /* libvtkRenderingVolumeOpenGL-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217EE1A2F375C006FA27A /* libvtkRenderingVolumeOpenGL-6.2.a */; };
-		436218591A2F375D006FA27A /* libvtksqlite-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217EF1A2F375C006FA27A /* libvtksqlite-6.2.a */; };
-		4362185A1A2F375D006FA27A /* libvtksys-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217F01A2F375C006FA27A /* libvtksys-6.2.a */; };
-		4362185B1A2F375D006FA27A /* libvtkverdict-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217F11A2F375C006FA27A /* libvtkverdict-6.2.a */; };
-		4362185C1A2F375D006FA27A /* libvtkViewsContext2D-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217F21A2F375C006FA27A /* libvtkViewsContext2D-6.2.a */; };
-		4362185D1A2F375D006FA27A /* libvtkViewsCore-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217F31A2F375C006FA27A /* libvtkViewsCore-6.2.a */; };
-		4362185E1A2F375D006FA27A /* libvtkViewsInfovis-6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436217F41A2F375C006FA27A /* libvtkViewsInfovis-6.2.a */; };
 		439B8C141A19CCC300F396D7 /* 3DconnexionClient.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 439B8C131A19CCC300F396D7 /* 3DconnexionClient.framework */; };
 		4F00A9E4139A778000ABD529 /* CPRStretchedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F00A9E3139A778000ABD529 /* CPRStretchedView.m */; };
 		4F00A9E8139A779200ABD529 /* CPRStretchedView.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F00A9E7139A779200ABD529 /* CPRStretchedView.h */; };
@@ -416,7 +240,6 @@
 		59A31D5211BF9371001D4844 /* N2TextField.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A31D5011BF9371001D4844 /* N2TextField.mm */; };
 		59B696641337C957009356ED /* N2DirectoryEnumerator.h in Headers */ = {isa = PBXBuildFile; fileRef = 59B696621337C957009356ED /* N2DirectoryEnumerator.h */; };
 		59B696651337C957009356ED /* N2DirectoryEnumerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59B696631337C957009356ED /* N2DirectoryEnumerator.mm */; };
-		59BDEC44117C9366007F1F2C /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59BDEC43117C9366007F1F2C /* main.mm */; };
 		59BDEF41117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59BDEF3F117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.h */; };
 		59BDEF42117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59BDEF40117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm */; };
 		59BDEF45117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59BDEF40117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm */; };
@@ -494,6 +317,12 @@
 		59FB643C1230EE4100EBA136 /* libpng12OsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64371230EE4100EBA136 /* libpng12OsiriX.a */; };
 		59FB64DD1231295400EBA136 /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */; };
 		59FB654F12312D8900EBA136 /* weasis in Resources */ = {isa = PBXBuildFile; fileRef = 59FB652912312D8900EBA136 /* weasis */; };
+		710BAF271FAB1A4D004909E4 /* ITK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 710BAF1C1FAB176C004909E4 /* ITK.framework */; };
+		710BAF281FAB1A4D004909E4 /* VTK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 710BAEFC1FAB124C004909E4 /* VTK.framework */; };
+		710BAF381FAB5847004909E4 /* CharLS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 710BAF311FAB2837004909E4 /* CharLS.framework */; };
+		710BAF441FAB8431004909E4 /* GDCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 710BAF411FAB7F10004909E4 /* GDCM.framework */; };
+		710BAF451FAC8126004909E4 /* GDCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 710BAF411FAB7F10004909E4 /* GDCM.framework */; };
+		710BAF461FAC8132004909E4 /* CharLS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 710BAF311FAB2837004909E4 /* CharLS.framework */; };
 		711849771590A377006AB447 /* SMTPClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 711849751590A377006AB447 /* SMTPClient.h */; };
 		711849781590A377006AB447 /* SMTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 711849761590A377006AB447 /* SMTPClient.m */; };
 		7128FD771487D54A00AB54A1 /* N2UnclickableSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7128FD751487D54A00AB54A1 /* N2UnclickableSplitView.h */; };
@@ -701,23 +530,9 @@
 		84E191FB1369966A008DCFC8 /* WADODownload.h in Headers */ = {isa = PBXBuildFile; fileRef = 84E191F91369966A008DCFC8 /* WADODownload.h */; };
 		84E191FC1369966A008DCFC8 /* WADODownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E191FA1369966A008DCFC8 /* WADODownload.m */; };
 		991B8B5C1BB8B279006AF439 /* O2HMigrationAssistant.png in Resources */ = {isa = PBXBuildFile; fileRef = 991B8B5B1BB8B279006AF439 /* O2HMigrationAssistant.png */; };
-		992DD75E1BCB095700369C09 /* libgdcmcharls.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7501BCB095700369C09 /* libgdcmcharls.a */; };
-		992DD7601BCB095700369C09 /* libgdcmCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7511BCB095700369C09 /* libgdcmCommon.a */; };
-		992DD7621BCB095700369C09 /* libgdcmDICT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7521BCB095700369C09 /* libgdcmDICT.a */; };
-		992DD7641BCB095700369C09 /* libgdcmDSED.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7531BCB095700369C09 /* libgdcmDSED.a */; };
-		992DD7661BCB095700369C09 /* libgdcmexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7541BCB095700369C09 /* libgdcmexpat.a */; };
-		992DD7681BCB095700369C09 /* libgdcmIOD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7551BCB095700369C09 /* libgdcmIOD.a */; };
-		992DD76A1BCB095700369C09 /* libgdcmjpeg8.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7561BCB095700369C09 /* libgdcmjpeg8.a */; };
-		992DD76C1BCB095700369C09 /* libgdcmjpeg12.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7571BCB095700369C09 /* libgdcmjpeg12.a */; };
-		992DD76E1BCB095700369C09 /* libgdcmjpeg16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7581BCB095700369C09 /* libgdcmjpeg16.a */; };
-		992DD7701BCB095700369C09 /* libgdcmMEXD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7591BCB095700369C09 /* libgdcmMEXD.a */; };
-		992DD7721BCB095700369C09 /* libgdcmMSFF.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75A1BCB095700369C09 /* libgdcmMSFF.a */; };
-		992DD7741BCB095700369C09 /* libgdcmopenjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75B1BCB095700369C09 /* libgdcmopenjpeg.a */; };
-		992DD7761BCB095700369C09 /* libgdcmuuid.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75C1BCB095700369C09 /* libgdcmuuid.a */; };
 		9939F7A91BCB0BF8009FEB69 /* FVTiff.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FC808F44724002A395F /* FVTiff.m */; };
 		993DB4A01C0243D50084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
 		993DB4A11C0244430084218A /* FeedbackReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		993DB4A21C024F7C0084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
 		993DB4A31C024FB40084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
 		994FABF11CEBF25800980A15 /* OnOffSwitchControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 994FABED1CEBF25800980A15 /* OnOffSwitchControl.h */; };
 		994FABF21CEBF25800980A15 /* OnOffSwitchControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 994FABEE1CEBF25800980A15 /* OnOffSwitchControl.m */; };
@@ -725,24 +540,11 @@
 		994FABF41CEBF25800980A15 /* OnOffSwitchControlCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 994FABF01CEBF25800980A15 /* OnOffSwitchControlCell.m */; };
 		994FABF71CEBFB8C00980A15 /* MiddleAlignedTextFieldCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 994FABF51CEBFB8C00980A15 /* MiddleAlignedTextFieldCell.h */; };
 		994FABF81CEBFB8C00980A15 /* MiddleAlignedTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 994FABF61CEBFB8C00980A15 /* MiddleAlignedTextFieldCell.m */; };
-		994FABF91CED3E1000980A15 /* libgdcmcharls.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7501BCB095700369C09 /* libgdcmcharls.a */; };
-		994FABFA1CED3E1000980A15 /* libgdcmCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7511BCB095700369C09 /* libgdcmCommon.a */; };
-		994FABFB1CED3E1000980A15 /* libgdcmDICT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7521BCB095700369C09 /* libgdcmDICT.a */; };
-		994FABFC1CED3E1000980A15 /* libgdcmDSED.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7531BCB095700369C09 /* libgdcmDSED.a */; };
-		994FABFD1CED3E1000980A15 /* libgdcmexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7541BCB095700369C09 /* libgdcmexpat.a */; };
-		994FABFE1CED3E1000980A15 /* libgdcmIOD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7551BCB095700369C09 /* libgdcmIOD.a */; };
-		994FABFF1CED3E1000980A15 /* libgdcmjpeg8.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7561BCB095700369C09 /* libgdcmjpeg8.a */; };
-		994FAC001CED3E1000980A15 /* libgdcmjpeg12.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7571BCB095700369C09 /* libgdcmjpeg12.a */; };
-		994FAC011CED3E1000980A15 /* libgdcmjpeg16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7581BCB095700369C09 /* libgdcmjpeg16.a */; };
-		994FAC021CED3E1000980A15 /* libgdcmMEXD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD7591BCB095700369C09 /* libgdcmMEXD.a */; };
-		994FAC031CED3E1000980A15 /* libgdcmMSFF.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75A1BCB095700369C09 /* libgdcmMSFF.a */; };
-		994FAC051CED3E1000980A15 /* libgdcmuuid.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992DD75C1BCB095700369C09 /* libgdcmuuid.a */; };
 		99529DF81E0DA8E70045981E /* OsiriX Report.pages09.pages in Resources */ = {isa = PBXBuildFile; fileRef = 99529DF71E0DA8E70045981E /* OsiriX Report.pages09.pages */; };
 		9953013E1CE8B03800B3FB2C /* ofthread.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E6709B6828B00545F5E /* ofthread.cc */; };
 		9953013F1CE8B06D00B3FB2C /* ofstring.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E6509B6828B00545F5E /* ofstring.cc */; };
 		9953FE521BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 9953FE4E1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx */; };
 		9953FE531BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 9953FE4F1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h */; };
-		9963031B1BCACF26009CE3E5 /* libGDCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 9963031A1BCACF26009CE3E5 /* libGDCM.h */; };
 		9966A1A11AE09D3F00F2D81A /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A01AE09D3F00F2D81A /* AddressBook.framework */; };
 		9966A1A31AE09D4800F2D81A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A21AE09D4800F2D81A /* AVFoundation.framework */; };
 		9966A1A51AE09D5100F2D81A /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A41AE09D5100F2D81A /* CoreMedia.framework */; };
@@ -763,7 +565,6 @@
 		998309121BB62D4100CAB197 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 998309101BB62D4100CAB197 /* JRSwizzle.m */; };
 		998B52E21AE0890300D317CF /* Horos.sdef in Resources */ = {isa = PBXBuildFile; fileRef = 998B52E11AE0890300D317CF /* Horos.sdef */; };
 		998B52E41AE0893D00D317CF /* Horos.icns in Resources */ = {isa = PBXBuildFile; fileRef = 998B52E31AE0893D00D317CF /* Horos.icns */; };
-		998B52E61AE0894E00D317CF /* Horos.icns in Resources */ = {isa = PBXBuildFile; fileRef = 998B52E31AE0893D00D317CF /* Horos.icns */; };
 		999901A41B52B24200921EA1 /* libdcmprintscu.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 999901A21B52B24200921EA1 /* libdcmprintscu.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		999901A51B52B24200921EA1 /* libxerces-c.27.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 999901A31B52B24200921EA1 /* libxerces-c.27.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		999B0B631BB70F0800AF018A /* O2HMigrationAssistant.h in Headers */ = {isa = PBXBuildFile; fileRef = 999B0B601BB70F0800AF018A /* O2HMigrationAssistant.h */; };
@@ -772,7 +573,6 @@
 		999B0B671BB711ED00AF018A /* CurvedArrowGrayLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = 999B0B661BB711ED00AF018A /* CurvedArrowGrayLeft.png */; };
 		999B0B681BB7309200AF018A /* Osirix.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9966A1AF1AE09FFE00F2D81A /* Osirix.icns */; };
 		99C32EEF1CFF78E7001E71F3 /* PluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = AB2C24E10677861300A08910 /* PluginFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		99CDC0F51ADF0D0900F34F19 /* libCharLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB451802149F464B006674BF /* libCharLS.a */; };
 		A0344496143DE4AA003E1AFA /* DCMUSRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = A085E104141E53210072BF0D /* DCMUSRegion.m */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
 		A90202BF0B980CD60001A00B /* PluginManagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90202BB0B980CD60001A00B /* PluginManagerController.m */; };
@@ -1137,22 +937,6 @@
 		AB3886AC0B2449CD00831F74 /* SagSmallOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB7598280AEE62CE005EE3A9 /* SagSmallOpposite.tif */; };
 		AB3F4A1F0672674000E61A6C /* Window3DController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3F4A1D0672674000E61A6C /* Window3DController.h */; };
 		AB3F4A200672674000E61A6C /* Window3DController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3F4A1E0672674000E61A6C /* Window3DController.m */; };
-		AB451815149F464B006674BF /* scan.h in Headers */ = {isa = PBXBuildFile; fileRef = AB451803149F464B006674BF /* scan.h */; };
-		AB451817149F464B006674BF /* util.h in Headers */ = {isa = PBXBuildFile; fileRef = AB451804149F464B006674BF /* util.h */; };
-		AB451819149F464B006674BF /* colortransform.h in Headers */ = {isa = PBXBuildFile; fileRef = AB451805149F464B006674BF /* colortransform.h */; };
-		AB45181B149F464B006674BF /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = AB451806149F464B006674BF /* config.h */; };
-		AB45181D149F464B006674BF /* context.h in Headers */ = {isa = PBXBuildFile; fileRef = AB451807149F464B006674BF /* context.h */; };
-		AB45181F149F464B006674BF /* contextrunmode.h in Headers */ = {isa = PBXBuildFile; fileRef = AB451808149F464B006674BF /* contextrunmode.h */; };
-		AB451821149F464B006674BF /* decoderstrategy.h in Headers */ = {isa = PBXBuildFile; fileRef = AB451809149F464B006674BF /* decoderstrategy.h */; };
-		AB451823149F464B006674BF /* defaulttraits.h in Headers */ = {isa = PBXBuildFile; fileRef = AB45180A149F464B006674BF /* defaulttraits.h */; };
-		AB451825149F464B006674BF /* encoderstrategy.h in Headers */ = {isa = PBXBuildFile; fileRef = AB45180B149F464B006674BF /* encoderstrategy.h */; };
-		AB451827149F464B006674BF /* header.h in Headers */ = {isa = PBXBuildFile; fileRef = AB45180C149F464B006674BF /* header.h */; };
-		AB451829149F464B006674BF /* interface.h in Headers */ = {isa = PBXBuildFile; fileRef = AB45180D149F464B006674BF /* interface.h */; };
-		AB45182B149F464B006674BF /* jpegmarker.h in Headers */ = {isa = PBXBuildFile; fileRef = AB45180E149F464B006674BF /* jpegmarker.h */; };
-		AB45182D149F464B006674BF /* lookuptable.h in Headers */ = {isa = PBXBuildFile; fileRef = AB45180F149F464B006674BF /* lookuptable.h */; };
-		AB45182F149F464B006674BF /* losslesstraits.h in Headers */ = {isa = PBXBuildFile; fileRef = AB451810149F464B006674BF /* losslesstraits.h */; };
-		AB451831149F464B006674BF /* processline.h in Headers */ = {isa = PBXBuildFile; fileRef = AB451811149F464B006674BF /* processline.h */; };
-		AB451833149F464B006674BF /* publictypes.h in Headers */ = {isa = PBXBuildFile; fileRef = AB451812149F464B006674BF /* publictypes.h */; };
 		AB451845149F47C0006674BF /* djcodecd.cc in Sources */ = {isa = PBXBuildFile; fileRef = AB451836149F47BF006674BF /* djcodecd.cc */; };
 		AB451847149F47C0006674BF /* djcodece.cc in Sources */ = {isa = PBXBuildFile; fileRef = AB451837149F47BF006674BF /* djcodece.cc */; };
 		AB451849149F47C0006674BF /* djcparam.cc in Sources */ = {isa = PBXBuildFile; fileRef = AB451838149F47BF006674BF /* djcparam.cc */; };
@@ -1175,7 +959,6 @@
 		AB451867149F47F0006674BF /* djdecode.cc in Sources */ = {isa = PBXBuildFile; fileRef = AB45183C149F47C0006674BF /* djdecode.cc */; };
 		AB451868149F47F0006674BF /* djencode.cc in Sources */ = {isa = PBXBuildFile; fileRef = AB45183E149F47C0006674BF /* djencode.cc */; };
 		AB451869149F47F0006674BF /* djrparam.cc in Sources */ = {isa = PBXBuildFile; fileRef = AB451844149F47C0006674BF /* djrparam.cc */; };
-		AB451871149F4B2C006674BF /* libCharLS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB451802149F464B006674BF /* libCharLS.a */; };
 		AB46648D09A331DF005A2766 /* Report.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB46648C09A331DF005A2766 /* Report.icns */; };
 		AB49C4831070AA8000706298 /* ViewerController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE17661056D2659009C93B5 /* ViewerController.h */; };
 		AB4CD7690F72619900699111 /* FlyThruController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 183C863D08563F3A000E6A68 /* FlyThruController.mm */; };
@@ -3194,12 +2977,68 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		59BDEE6A117CB393007F1F2C /* PBXContainerItemProxy */ = {
+		710BAF1D1FAB17C6004909E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 59BDEC2C117C92B2007F1F2C;
-			remoteInfo = "OsiriX Launcher";
+			remoteGlobalIDString = 710BAF141FAB176C004909E4;
+			remoteInfo = ITK;
+		};
+		710BAF1F1FAB17E8004909E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 710BAEFB1FAB124C004909E4;
+			remoteInfo = VTK;
+		};
+		710BAF211FAB17E8004909E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 710BAF141FAB176C004909E4;
+			remoteInfo = ITK;
+		};
+		710BAF231FAB17EF004909E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 710BAEFB1FAB124C004909E4;
+			remoteInfo = VTK;
+		};
+		710BAF251FAB17EF004909E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 710BAF141FAB176C004909E4;
+			remoteInfo = ITK;
+		};
+		710BAF321FAB28DF004909E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 710BAEFB1FAB124C004909E4;
+			remoteInfo = VTK;
+		};
+		710BAF341FAB28DF004909E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 710BAF291FAB2837004909E4;
+			remoteInfo = CharLS;
+		};
+		710BAF361FAB28EF004909E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 710BAF291FAB2837004909E4;
+			remoteInfo = CharLS;
+		};
+		710BAF421FAB8406004909E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 710BAF391FAB7F10004909E4;
+			remoteInfo = GDCM;
 		};
 		71C99E981D19A7FB00208F3B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -3283,7 +3122,6 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32E422140C97301600E193CA /* altivecFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = altivecFunctions.h; sourceTree = "<group>"; };
 		4307C62B1A2091900083877C /* url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = url.h; sourceTree = "<group>"; };
-		431BCC3F1A24AC94002B36FB /* libtiff.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtiff.a; path = Binaries/LibTiff/libtiff.a; sourceTree = "<group>"; };
 		433F9A7E1A1B18A500E52C6C /* VTKView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VTKView.mm; sourceTree = "<group>"; };
 		433F9A7F1A1B18A500E52C6C /* VTKViewOSIRIX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTKViewOSIRIX.h; sourceTree = "<group>"; };
 		433F9A871A1B7C1C00E52C6C /* vtkHorosFixedPointVolumeRayCastMapper.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vtkHorosFixedPointVolumeRayCastMapper.cxx; sourceTree = "<group>"; };
@@ -3293,190 +3131,7 @@
 		434B461C1A19F631008CF8CF /* OPJSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OPJSupport.h; path = Codecs/OPJSupport.h; sourceTree = "<group>"; };
 		434B47A11A1A18D3008CF8CF /* kdu_OsiriX_NO_Support.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = kdu_OsiriX_NO_Support.cpp; path = "Binaries/KDU SDK/kdu_OsiriX_NO_Support.cpp"; sourceTree = "<group>"; };
 		434B47AB1A1A1AD4008CF8CF /* libopenjp2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopenjp2.a; path = Binaries/openjpeg/libopenjp2.a; sourceTree = "<group>"; };
-		436216EF1A2F3730006FA27A /* libITKBiasCorrection-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKBiasCorrection-4.7.a"; path = "Binaries/ITKLibs/libITKBiasCorrection-4.7.a"; sourceTree = "<group>"; };
-		436216F01A2F3730006FA27A /* libITKBioCell-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKBioCell-4.7.a"; path = "Binaries/ITKLibs/libITKBioCell-4.7.a"; sourceTree = "<group>"; };
-		436216F11A2F3730006FA27A /* libITKCommon-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKCommon-4.7.a"; path = "Binaries/ITKLibs/libITKCommon-4.7.a"; sourceTree = "<group>"; };
-		436216F21A2F3730006FA27A /* libITKDICOMParser-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKDICOMParser-4.7.a"; path = "Binaries/ITKLibs/libITKDICOMParser-4.7.a"; sourceTree = "<group>"; };
-		436216F31A2F3730006FA27A /* libitkdouble-conversion-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkdouble-conversion-4.7.a"; path = "Binaries/ITKLibs/libitkdouble-conversion-4.7.a"; sourceTree = "<group>"; };
-		436216F41A2F3730006FA27A /* libITKEXPAT-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKEXPAT-4.7.a"; path = "Binaries/ITKLibs/libITKEXPAT-4.7.a"; sourceTree = "<group>"; };
-		436216F51A2F3730006FA27A /* libITKFEM-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKFEM-4.7.a"; path = "Binaries/ITKLibs/libITKFEM-4.7.a"; sourceTree = "<group>"; };
-		436216F61A2F3730006FA27A /* libitkgdcmCommon-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkgdcmCommon-4.7.a"; path = "Binaries/ITKLibs/libitkgdcmCommon-4.7.a"; sourceTree = "<group>"; };
-		436216F71A2F3730006FA27A /* libitkgdcmDICT-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkgdcmDICT-4.7.a"; path = "Binaries/ITKLibs/libitkgdcmDICT-4.7.a"; sourceTree = "<group>"; };
-		436216F81A2F3730006FA27A /* libitkgdcmDSED-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkgdcmDSED-4.7.a"; path = "Binaries/ITKLibs/libitkgdcmDSED-4.7.a"; sourceTree = "<group>"; };
-		436216F91A2F3730006FA27A /* libitkgdcmIOD-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkgdcmIOD-4.7.a"; path = "Binaries/ITKLibs/libitkgdcmIOD-4.7.a"; sourceTree = "<group>"; };
-		436216FA1A2F3730006FA27A /* libitkgdcmjpeg8-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkgdcmjpeg8-4.7.a"; path = "Binaries/ITKLibs/libitkgdcmjpeg8-4.7.a"; sourceTree = "<group>"; };
-		436216FB1A2F3730006FA27A /* libitkgdcmjpeg12-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkgdcmjpeg12-4.7.a"; path = "Binaries/ITKLibs/libitkgdcmjpeg12-4.7.a"; sourceTree = "<group>"; };
-		436216FC1A2F3730006FA27A /* libitkgdcmjpeg16-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkgdcmjpeg16-4.7.a"; path = "Binaries/ITKLibs/libitkgdcmjpeg16-4.7.a"; sourceTree = "<group>"; };
-		436216FD1A2F3730006FA27A /* libitkgdcmMSFF-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkgdcmMSFF-4.7.a"; path = "Binaries/ITKLibs/libitkgdcmMSFF-4.7.a"; sourceTree = "<group>"; };
-		436216FE1A2F3730006FA27A /* libitkgdcmuuid-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkgdcmuuid-4.7.a"; path = "Binaries/ITKLibs/libitkgdcmuuid-4.7.a"; sourceTree = "<group>"; };
-		436216FF1A2F3730006FA27A /* libITKgiftiio-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKgiftiio-4.7.a"; path = "Binaries/ITKLibs/libITKgiftiio-4.7.a"; sourceTree = "<group>"; };
-		436217001A2F3730006FA27A /* libitkhdf5_cpp-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkhdf5_cpp-4.7.a"; path = "Binaries/ITKLibs/libitkhdf5_cpp-4.7.a"; sourceTree = "<group>"; };
-		436217011A2F3730006FA27A /* libitkhdf5-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkhdf5-4.7.a"; path = "Binaries/ITKLibs/libitkhdf5-4.7.a"; sourceTree = "<group>"; };
-		436217021A2F3730006FA27A /* libITKIOBioRad-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOBioRad-4.7.a"; path = "Binaries/ITKLibs/libITKIOBioRad-4.7.a"; sourceTree = "<group>"; };
-		436217031A2F3730006FA27A /* libITKIOBMP-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOBMP-4.7.a"; path = "Binaries/ITKLibs/libITKIOBMP-4.7.a"; sourceTree = "<group>"; };
-		436217041A2F3730006FA27A /* libITKIOCSV-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOCSV-4.7.a"; path = "Binaries/ITKLibs/libITKIOCSV-4.7.a"; sourceTree = "<group>"; };
-		436217051A2F3730006FA27A /* libITKIOGDCM-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOGDCM-4.7.a"; path = "Binaries/ITKLibs/libITKIOGDCM-4.7.a"; sourceTree = "<group>"; };
-		436217061A2F3730006FA27A /* libITKIOGE-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOGE-4.7.a"; path = "Binaries/ITKLibs/libITKIOGE-4.7.a"; sourceTree = "<group>"; };
-		436217071A2F3730006FA27A /* libITKIOGIPL-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOGIPL-4.7.a"; path = "Binaries/ITKLibs/libITKIOGIPL-4.7.a"; sourceTree = "<group>"; };
-		436217081A2F3730006FA27A /* libITKIOHDF5-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOHDF5-4.7.a"; path = "Binaries/ITKLibs/libITKIOHDF5-4.7.a"; sourceTree = "<group>"; };
-		436217091A2F3730006FA27A /* libITKIOImageBase-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOImageBase-4.7.a"; path = "Binaries/ITKLibs/libITKIOImageBase-4.7.a"; sourceTree = "<group>"; };
-		4362170A1A2F3730006FA27A /* libITKIOIPL-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOIPL-4.7.a"; path = "Binaries/ITKLibs/libITKIOIPL-4.7.a"; sourceTree = "<group>"; };
-		4362170B1A2F3730006FA27A /* libITKIOJPEG-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOJPEG-4.7.a"; path = "Binaries/ITKLibs/libITKIOJPEG-4.7.a"; sourceTree = "<group>"; };
-		4362170C1A2F3730006FA27A /* libITKIOLSM-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOLSM-4.7.a"; path = "Binaries/ITKLibs/libITKIOLSM-4.7.a"; sourceTree = "<group>"; };
-		4362170D1A2F3730006FA27A /* libITKIOMesh-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOMesh-4.7.a"; path = "Binaries/ITKLibs/libITKIOMesh-4.7.a"; sourceTree = "<group>"; };
-		4362170E1A2F3730006FA27A /* libITKIOMeta-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOMeta-4.7.a"; path = "Binaries/ITKLibs/libITKIOMeta-4.7.a"; sourceTree = "<group>"; };
-		4362170F1A2F3730006FA27A /* libITKIOMRC-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOMRC-4.7.a"; path = "Binaries/ITKLibs/libITKIOMRC-4.7.a"; sourceTree = "<group>"; };
-		436217101A2F3730006FA27A /* libITKIONIFTI-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIONIFTI-4.7.a"; path = "Binaries/ITKLibs/libITKIONIFTI-4.7.a"; sourceTree = "<group>"; };
-		436217111A2F3730006FA27A /* libITKIONRRD-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIONRRD-4.7.a"; path = "Binaries/ITKLibs/libITKIONRRD-4.7.a"; sourceTree = "<group>"; };
-		436217121A2F3730006FA27A /* libITKIOPNG-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOPNG-4.7.a"; path = "Binaries/ITKLibs/libITKIOPNG-4.7.a"; sourceTree = "<group>"; };
-		436217131A2F3730006FA27A /* libITKIOSiemens-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOSiemens-4.7.a"; path = "Binaries/ITKLibs/libITKIOSiemens-4.7.a"; sourceTree = "<group>"; };
-		436217141A2F3730006FA27A /* libITKIOSpatialObjects-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOSpatialObjects-4.7.a"; path = "Binaries/ITKLibs/libITKIOSpatialObjects-4.7.a"; sourceTree = "<group>"; };
-		436217151A2F3730006FA27A /* libITKIOStimulate-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOStimulate-4.7.a"; path = "Binaries/ITKLibs/libITKIOStimulate-4.7.a"; sourceTree = "<group>"; };
-		436217161A2F3730006FA27A /* libITKIOTIFF-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOTIFF-4.7.a"; path = "Binaries/ITKLibs/libITKIOTIFF-4.7.a"; sourceTree = "<group>"; };
-		436217171A2F3730006FA27A /* libITKIOTransformBase-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOTransformBase-4.7.a"; path = "Binaries/ITKLibs/libITKIOTransformBase-4.7.a"; sourceTree = "<group>"; };
-		436217181A2F3730006FA27A /* libITKIOTransformHDF5-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOTransformHDF5-4.7.a"; path = "Binaries/ITKLibs/libITKIOTransformHDF5-4.7.a"; sourceTree = "<group>"; };
-		436217191A2F3730006FA27A /* libITKIOTransformInsightLegacy-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOTransformInsightLegacy-4.7.a"; path = "Binaries/ITKLibs/libITKIOTransformInsightLegacy-4.7.a"; sourceTree = "<group>"; };
-		4362171A1A2F3730006FA27A /* libITKIOTransformMatlab-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOTransformMatlab-4.7.a"; path = "Binaries/ITKLibs/libITKIOTransformMatlab-4.7.a"; sourceTree = "<group>"; };
-		4362171B1A2F3730006FA27A /* libITKIOVTK-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOVTK-4.7.a"; path = "Binaries/ITKLibs/libITKIOVTK-4.7.a"; sourceTree = "<group>"; };
-		4362171C1A2F3730006FA27A /* libITKIOXML-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKIOXML-4.7.a"; path = "Binaries/ITKLibs/libITKIOXML-4.7.a"; sourceTree = "<group>"; };
-		4362171D1A2F3730006FA27A /* libITKKLMRegionGrowing-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKKLMRegionGrowing-4.7.a"; path = "Binaries/ITKLibs/libITKKLMRegionGrowing-4.7.a"; sourceTree = "<group>"; };
-		4362171E1A2F3730006FA27A /* libITKLabelMap-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKLabelMap-4.7.a"; path = "Binaries/ITKLibs/libITKLabelMap-4.7.a"; sourceTree = "<group>"; };
-		4362171F1A2F3730006FA27A /* libITKMesh-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKMesh-4.7.a"; path = "Binaries/ITKLibs/libITKMesh-4.7.a"; sourceTree = "<group>"; };
-		436217201A2F3730006FA27A /* libITKMetaIO-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKMetaIO-4.7.a"; path = "Binaries/ITKLibs/libITKMetaIO-4.7.a"; sourceTree = "<group>"; };
-		436217211A2F3730006FA27A /* libitkNetlibSlatec-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkNetlibSlatec-4.7.a"; path = "Binaries/ITKLibs/libitkNetlibSlatec-4.7.a"; sourceTree = "<group>"; };
-		436217221A2F3730006FA27A /* libITKniftiio-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKniftiio-4.7.a"; path = "Binaries/ITKLibs/libITKniftiio-4.7.a"; sourceTree = "<group>"; };
-		436217231A2F3730006FA27A /* libITKNrrdIO-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKNrrdIO-4.7.a"; path = "Binaries/ITKLibs/libITKNrrdIO-4.7.a"; sourceTree = "<group>"; };
-		436217241A2F3730006FA27A /* libitkopenjpeg-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkopenjpeg-4.7.a"; path = "Binaries/ITKLibs/libitkopenjpeg-4.7.a"; sourceTree = "<group>"; };
-		436217251A2F3730006FA27A /* libITKOptimizers-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKOptimizers-4.7.a"; path = "Binaries/ITKLibs/libITKOptimizers-4.7.a"; sourceTree = "<group>"; };
-		436217261A2F3730006FA27A /* libITKOptimizersv4-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKOptimizersv4-4.7.a"; path = "Binaries/ITKLibs/libITKOptimizersv4-4.7.a"; sourceTree = "<group>"; };
-		436217271A2F3730006FA27A /* libITKPath-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKPath-4.7.a"; path = "Binaries/ITKLibs/libITKPath-4.7.a"; sourceTree = "<group>"; };
-		436217281A2F3730006FA27A /* libitkpng-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkpng-4.7.a"; path = "Binaries/ITKLibs/libitkpng-4.7.a"; sourceTree = "<group>"; };
-		436217291A2F3730006FA27A /* libITKPolynomials-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKPolynomials-4.7.a"; path = "Binaries/ITKLibs/libITKPolynomials-4.7.a"; sourceTree = "<group>"; };
-		4362172A1A2F3730006FA27A /* libITKQuadEdgeMesh-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKQuadEdgeMesh-4.7.a"; path = "Binaries/ITKLibs/libITKQuadEdgeMesh-4.7.a"; sourceTree = "<group>"; };
-		4362172B1A2F3730006FA27A /* libITKSpatialObjects-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKSpatialObjects-4.7.a"; path = "Binaries/ITKLibs/libITKSpatialObjects-4.7.a"; sourceTree = "<group>"; };
-		4362172C1A2F3730006FA27A /* libITKStatistics-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKStatistics-4.7.a"; path = "Binaries/ITKLibs/libITKStatistics-4.7.a"; sourceTree = "<group>"; };
-		4362172D1A2F3730006FA27A /* libitksys-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitksys-4.7.a"; path = "Binaries/ITKLibs/libitksys-4.7.a"; sourceTree = "<group>"; };
-		4362172E1A2F3730006FA27A /* libitktiff-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitktiff-4.7.a"; path = "Binaries/ITKLibs/libitktiff-4.7.a"; sourceTree = "<group>"; };
-		4362172F1A2F3730006FA27A /* libitkv3p_lsqr-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkv3p_lsqr-4.7.a"; path = "Binaries/ITKLibs/libitkv3p_lsqr-4.7.a"; sourceTree = "<group>"; };
-		436217301A2F3730006FA27A /* libitkv3p_netlib-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkv3p_netlib-4.7.a"; path = "Binaries/ITKLibs/libitkv3p_netlib-4.7.a"; sourceTree = "<group>"; };
-		436217311A2F3730006FA27A /* libitkvcl-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkvcl-4.7.a"; path = "Binaries/ITKLibs/libitkvcl-4.7.a"; sourceTree = "<group>"; };
-		436217321A2F3730006FA27A /* libITKVideoCore-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKVideoCore-4.7.a"; path = "Binaries/ITKLibs/libITKVideoCore-4.7.a"; sourceTree = "<group>"; };
-		436217331A2F3730006FA27A /* libITKVideoIO-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKVideoIO-4.7.a"; path = "Binaries/ITKLibs/libITKVideoIO-4.7.a"; sourceTree = "<group>"; };
-		436217341A2F3730006FA27A /* libitkvnl_algo-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkvnl_algo-4.7.a"; path = "Binaries/ITKLibs/libitkvnl_algo-4.7.a"; sourceTree = "<group>"; };
-		436217351A2F3730006FA27A /* libitkvnl-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkvnl-4.7.a"; path = "Binaries/ITKLibs/libitkvnl-4.7.a"; sourceTree = "<group>"; };
-		436217361A2F3730006FA27A /* libITKVNLInstantiation-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKVNLInstantiation-4.7.a"; path = "Binaries/ITKLibs/libITKVNLInstantiation-4.7.a"; sourceTree = "<group>"; };
-		436217371A2F3730006FA27A /* libITKVTK-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKVTK-4.7.a"; path = "Binaries/ITKLibs/libITKVTK-4.7.a"; sourceTree = "<group>"; };
-		436217381A2F3730006FA27A /* libITKVtkGlue-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKVtkGlue-4.7.a"; path = "Binaries/ITKLibs/libITKVtkGlue-4.7.a"; sourceTree = "<group>"; };
-		436217391A2F3730006FA27A /* libITKWatersheds-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKWatersheds-4.7.a"; path = "Binaries/ITKLibs/libITKWatersheds-4.7.a"; sourceTree = "<group>"; };
-		4362173A1A2F3730006FA27A /* libitkzlib-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libitkzlib-4.7.a"; path = "Binaries/ITKLibs/libitkzlib-4.7.a"; sourceTree = "<group>"; };
-		4362173B1A2F3730006FA27A /* libITKznz-4.7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libITKznz-4.7.a"; path = "Binaries/ITKLibs/libITKznz-4.7.a"; sourceTree = "<group>"; };
 		436217891A2F3741006FA27A /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = Binaries/LibTiff/libjpeg.a; sourceTree = "<group>"; };
-		4362178B1A2F375C006FA27A /* libvtkalglib-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkalglib-6.2.a"; path = "Binaries/VTKLibs/libvtkalglib-6.2.a"; sourceTree = "<group>"; };
-		4362178C1A2F375C006FA27A /* libvtkChartsCore-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkChartsCore-6.2.a"; path = "Binaries/VTKLibs/libvtkChartsCore-6.2.a"; sourceTree = "<group>"; };
-		4362178D1A2F375C006FA27A /* libvtkCommonColor-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkCommonColor-6.2.a"; path = "Binaries/VTKLibs/libvtkCommonColor-6.2.a"; sourceTree = "<group>"; };
-		4362178E1A2F375C006FA27A /* libvtkCommonComputationalGeometry-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkCommonComputationalGeometry-6.2.a"; path = "Binaries/VTKLibs/libvtkCommonComputationalGeometry-6.2.a"; sourceTree = "<group>"; };
-		4362178F1A2F375C006FA27A /* libvtkCommonCore-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkCommonCore-6.2.a"; path = "Binaries/VTKLibs/libvtkCommonCore-6.2.a"; sourceTree = "<group>"; };
-		436217901A2F375C006FA27A /* libvtkCommonDataModel-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkCommonDataModel-6.2.a"; path = "Binaries/VTKLibs/libvtkCommonDataModel-6.2.a"; sourceTree = "<group>"; };
-		436217911A2F375C006FA27A /* libvtkCommonExecutionModel-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkCommonExecutionModel-6.2.a"; path = "Binaries/VTKLibs/libvtkCommonExecutionModel-6.2.a"; sourceTree = "<group>"; };
-		436217921A2F375C006FA27A /* libvtkCommonMath-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkCommonMath-6.2.a"; path = "Binaries/VTKLibs/libvtkCommonMath-6.2.a"; sourceTree = "<group>"; };
-		436217931A2F375C006FA27A /* libvtkCommonMisc-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkCommonMisc-6.2.a"; path = "Binaries/VTKLibs/libvtkCommonMisc-6.2.a"; sourceTree = "<group>"; };
-		436217941A2F375C006FA27A /* libvtkCommonSystem-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkCommonSystem-6.2.a"; path = "Binaries/VTKLibs/libvtkCommonSystem-6.2.a"; sourceTree = "<group>"; };
-		436217951A2F375C006FA27A /* libvtkCommonTransforms-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkCommonTransforms-6.2.a"; path = "Binaries/VTKLibs/libvtkCommonTransforms-6.2.a"; sourceTree = "<group>"; };
-		436217961A2F375C006FA27A /* libvtkDICOMParser-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkDICOMParser-6.2.a"; path = "Binaries/VTKLibs/libvtkDICOMParser-6.2.a"; sourceTree = "<group>"; };
-		436217971A2F375C006FA27A /* libvtkDomainsChemistry-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkDomainsChemistry-6.2.a"; path = "Binaries/VTKLibs/libvtkDomainsChemistry-6.2.a"; sourceTree = "<group>"; };
-		436217981A2F375C006FA27A /* libvtkexoIIc-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkexoIIc-6.2.a"; path = "Binaries/VTKLibs/libvtkexoIIc-6.2.a"; sourceTree = "<group>"; };
-		436217991A2F375C006FA27A /* libvtkexpat-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkexpat-6.2.a"; path = "Binaries/VTKLibs/libvtkexpat-6.2.a"; sourceTree = "<group>"; };
-		4362179A1A2F375C006FA27A /* libvtkFiltersAMR-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersAMR-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersAMR-6.2.a"; sourceTree = "<group>"; };
-		4362179B1A2F375C006FA27A /* libvtkFiltersCore-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersCore-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersCore-6.2.a"; sourceTree = "<group>"; };
-		4362179C1A2F375C006FA27A /* libvtkFiltersExtraction-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersExtraction-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersExtraction-6.2.a"; sourceTree = "<group>"; };
-		4362179D1A2F375C006FA27A /* libvtkFiltersFlowPaths-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersFlowPaths-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersFlowPaths-6.2.a"; sourceTree = "<group>"; };
-		4362179E1A2F375C006FA27A /* libvtkFiltersGeneral-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersGeneral-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersGeneral-6.2.a"; sourceTree = "<group>"; };
-		4362179F1A2F375C006FA27A /* libvtkFiltersGeneric-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersGeneric-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersGeneric-6.2.a"; sourceTree = "<group>"; };
-		436217A01A2F375C006FA27A /* libvtkFiltersGeometry-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersGeometry-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersGeometry-6.2.a"; sourceTree = "<group>"; };
-		436217A11A2F375C006FA27A /* libvtkFiltersHybrid-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersHybrid-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersHybrid-6.2.a"; sourceTree = "<group>"; };
-		436217A21A2F375C006FA27A /* libvtkFiltersHyperTree-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersHyperTree-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersHyperTree-6.2.a"; sourceTree = "<group>"; };
-		436217A31A2F375C006FA27A /* libvtkFiltersImaging-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersImaging-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersImaging-6.2.a"; sourceTree = "<group>"; };
-		436217A41A2F375C006FA27A /* libvtkFiltersModeling-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersModeling-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersModeling-6.2.a"; sourceTree = "<group>"; };
-		436217A51A2F375C006FA27A /* libvtkFiltersParallel-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersParallel-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersParallel-6.2.a"; sourceTree = "<group>"; };
-		436217A61A2F375C006FA27A /* libvtkFiltersParallelImaging-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersParallelImaging-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersParallelImaging-6.2.a"; sourceTree = "<group>"; };
-		436217A71A2F375C006FA27A /* libvtkFiltersProgrammable-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersProgrammable-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersProgrammable-6.2.a"; sourceTree = "<group>"; };
-		436217A81A2F375C006FA27A /* libvtkFiltersSelection-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersSelection-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersSelection-6.2.a"; sourceTree = "<group>"; };
-		436217A91A2F375C006FA27A /* libvtkFiltersSMP-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersSMP-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersSMP-6.2.a"; sourceTree = "<group>"; };
-		436217AA1A2F375C006FA27A /* libvtkFiltersSources-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersSources-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersSources-6.2.a"; sourceTree = "<group>"; };
-		436217AB1A2F375C006FA27A /* libvtkFiltersStatistics-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersStatistics-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersStatistics-6.2.a"; sourceTree = "<group>"; };
-		436217AC1A2F375C006FA27A /* libvtkFiltersTexture-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersTexture-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersTexture-6.2.a"; sourceTree = "<group>"; };
-		436217AD1A2F375C006FA27A /* libvtkFiltersVerdict-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkFiltersVerdict-6.2.a"; path = "Binaries/VTKLibs/libvtkFiltersVerdict-6.2.a"; sourceTree = "<group>"; };
-		436217AE1A2F375C006FA27A /* libvtkfreetype-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkfreetype-6.2.a"; path = "Binaries/VTKLibs/libvtkfreetype-6.2.a"; sourceTree = "<group>"; };
-		436217AF1A2F375C006FA27A /* libvtkftgl-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkftgl-6.2.a"; path = "Binaries/VTKLibs/libvtkftgl-6.2.a"; sourceTree = "<group>"; };
-		436217B01A2F375C006FA27A /* libvtkGeovisCore-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkGeovisCore-6.2.a"; path = "Binaries/VTKLibs/libvtkGeovisCore-6.2.a"; sourceTree = "<group>"; };
-		436217B11A2F375C006FA27A /* libvtkgl2ps-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkgl2ps-6.2.a"; path = "Binaries/VTKLibs/libvtkgl2ps-6.2.a"; sourceTree = "<group>"; };
-		436217B21A2F375C006FA27A /* libvtkhdf5_hl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkhdf5_hl.a; path = Binaries/VTKLibs/libvtkhdf5_hl.a; sourceTree = "<group>"; };
-		436217B31A2F375C006FA27A /* libvtkhdf5.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkhdf5.a; path = Binaries/VTKLibs/libvtkhdf5.a; sourceTree = "<group>"; };
-		436217B41A2F375C006FA27A /* libvtkImagingColor-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkImagingColor-6.2.a"; path = "Binaries/VTKLibs/libvtkImagingColor-6.2.a"; sourceTree = "<group>"; };
-		436217B51A2F375C006FA27A /* libvtkImagingCore-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkImagingCore-6.2.a"; path = "Binaries/VTKLibs/libvtkImagingCore-6.2.a"; sourceTree = "<group>"; };
-		436217B61A2F375C006FA27A /* libvtkImagingFourier-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkImagingFourier-6.2.a"; path = "Binaries/VTKLibs/libvtkImagingFourier-6.2.a"; sourceTree = "<group>"; };
-		436217B71A2F375C006FA27A /* libvtkImagingGeneral-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkImagingGeneral-6.2.a"; path = "Binaries/VTKLibs/libvtkImagingGeneral-6.2.a"; sourceTree = "<group>"; };
-		436217B81A2F375C006FA27A /* libvtkImagingHybrid-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkImagingHybrid-6.2.a"; path = "Binaries/VTKLibs/libvtkImagingHybrid-6.2.a"; sourceTree = "<group>"; };
-		436217B91A2F375C006FA27A /* libvtkImagingMath-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkImagingMath-6.2.a"; path = "Binaries/VTKLibs/libvtkImagingMath-6.2.a"; sourceTree = "<group>"; };
-		436217BA1A2F375C006FA27A /* libvtkImagingMorphological-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkImagingMorphological-6.2.a"; path = "Binaries/VTKLibs/libvtkImagingMorphological-6.2.a"; sourceTree = "<group>"; };
-		436217BB1A2F375C006FA27A /* libvtkImagingSources-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkImagingSources-6.2.a"; path = "Binaries/VTKLibs/libvtkImagingSources-6.2.a"; sourceTree = "<group>"; };
-		436217BC1A2F375C006FA27A /* libvtkImagingStatistics-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkImagingStatistics-6.2.a"; path = "Binaries/VTKLibs/libvtkImagingStatistics-6.2.a"; sourceTree = "<group>"; };
-		436217BD1A2F375C006FA27A /* libvtkImagingStencil-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkImagingStencil-6.2.a"; path = "Binaries/VTKLibs/libvtkImagingStencil-6.2.a"; sourceTree = "<group>"; };
-		436217BE1A2F375C006FA27A /* libvtkInfovisCore-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkInfovisCore-6.2.a"; path = "Binaries/VTKLibs/libvtkInfovisCore-6.2.a"; sourceTree = "<group>"; };
-		436217BF1A2F375C006FA27A /* libvtkInfovisLayout-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkInfovisLayout-6.2.a"; path = "Binaries/VTKLibs/libvtkInfovisLayout-6.2.a"; sourceTree = "<group>"; };
-		436217C01A2F375C006FA27A /* libvtkInteractionImage-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkInteractionImage-6.2.a"; path = "Binaries/VTKLibs/libvtkInteractionImage-6.2.a"; sourceTree = "<group>"; };
-		436217C11A2F375C006FA27A /* libvtkInteractionStyle-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkInteractionStyle-6.2.a"; path = "Binaries/VTKLibs/libvtkInteractionStyle-6.2.a"; sourceTree = "<group>"; };
-		436217C21A2F375C006FA27A /* libvtkInteractionWidgets-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkInteractionWidgets-6.2.a"; path = "Binaries/VTKLibs/libvtkInteractionWidgets-6.2.a"; sourceTree = "<group>"; };
-		436217C31A2F375C006FA27A /* libvtkIOAMR-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOAMR-6.2.a"; path = "Binaries/VTKLibs/libvtkIOAMR-6.2.a"; sourceTree = "<group>"; };
-		436217C41A2F375C006FA27A /* libvtkIOCore-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOCore-6.2.a"; path = "Binaries/VTKLibs/libvtkIOCore-6.2.a"; sourceTree = "<group>"; };
-		436217C51A2F375C006FA27A /* libvtkIOEnSight-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOEnSight-6.2.a"; path = "Binaries/VTKLibs/libvtkIOEnSight-6.2.a"; sourceTree = "<group>"; };
-		436217C61A2F375C006FA27A /* libvtkIOExodus-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOExodus-6.2.a"; path = "Binaries/VTKLibs/libvtkIOExodus-6.2.a"; sourceTree = "<group>"; };
-		436217C71A2F375C006FA27A /* libvtkIOExport-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOExport-6.2.a"; path = "Binaries/VTKLibs/libvtkIOExport-6.2.a"; sourceTree = "<group>"; };
-		436217C81A2F375C006FA27A /* libvtkIOGeometry-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOGeometry-6.2.a"; path = "Binaries/VTKLibs/libvtkIOGeometry-6.2.a"; sourceTree = "<group>"; };
-		436217C91A2F375C006FA27A /* libvtkIOImage-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOImage-6.2.a"; path = "Binaries/VTKLibs/libvtkIOImage-6.2.a"; sourceTree = "<group>"; };
-		436217CA1A2F375C006FA27A /* libvtkIOImport-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOImport-6.2.a"; path = "Binaries/VTKLibs/libvtkIOImport-6.2.a"; sourceTree = "<group>"; };
-		436217CB1A2F375C006FA27A /* libvtkIOInfovis-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOInfovis-6.2.a"; path = "Binaries/VTKLibs/libvtkIOInfovis-6.2.a"; sourceTree = "<group>"; };
-		436217CC1A2F375C006FA27A /* libvtkIOLegacy-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOLegacy-6.2.a"; path = "Binaries/VTKLibs/libvtkIOLegacy-6.2.a"; sourceTree = "<group>"; };
-		436217CD1A2F375C006FA27A /* libvtkIOLSDyna-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOLSDyna-6.2.a"; path = "Binaries/VTKLibs/libvtkIOLSDyna-6.2.a"; sourceTree = "<group>"; };
-		436217CE1A2F375C006FA27A /* libvtkIOMINC-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOMINC-6.2.a"; path = "Binaries/VTKLibs/libvtkIOMINC-6.2.a"; sourceTree = "<group>"; };
-		436217CF1A2F375C006FA27A /* libvtkIOMovie-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOMovie-6.2.a"; path = "Binaries/VTKLibs/libvtkIOMovie-6.2.a"; sourceTree = "<group>"; };
-		436217D01A2F375C006FA27A /* libvtkIONetCDF-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIONetCDF-6.2.a"; path = "Binaries/VTKLibs/libvtkIONetCDF-6.2.a"; sourceTree = "<group>"; };
-		436217D11A2F375C006FA27A /* libvtkIOParallel-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOParallel-6.2.a"; path = "Binaries/VTKLibs/libvtkIOParallel-6.2.a"; sourceTree = "<group>"; };
-		436217D21A2F375C006FA27A /* libvtkIOParallelXML-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOParallelXML-6.2.a"; path = "Binaries/VTKLibs/libvtkIOParallelXML-6.2.a"; sourceTree = "<group>"; };
-		436217D31A2F375C006FA27A /* libvtkIOPLY-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOPLY-6.2.a"; path = "Binaries/VTKLibs/libvtkIOPLY-6.2.a"; sourceTree = "<group>"; };
-		436217D41A2F375C006FA27A /* libvtkIOSQL-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOSQL-6.2.a"; path = "Binaries/VTKLibs/libvtkIOSQL-6.2.a"; sourceTree = "<group>"; };
-		436217D51A2F375C006FA27A /* libvtkIOVideo-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOVideo-6.2.a"; path = "Binaries/VTKLibs/libvtkIOVideo-6.2.a"; sourceTree = "<group>"; };
-		436217D61A2F375C006FA27A /* libvtkIOXML-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOXML-6.2.a"; path = "Binaries/VTKLibs/libvtkIOXML-6.2.a"; sourceTree = "<group>"; };
-		436217D71A2F375C006FA27A /* libvtkIOXMLParser-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOXMLParser-6.2.a"; path = "Binaries/VTKLibs/libvtkIOXMLParser-6.2.a"; sourceTree = "<group>"; };
-		436217D81A2F375C006FA27A /* libvtkjsoncpp-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkjsoncpp-6.2.a"; path = "Binaries/VTKLibs/libvtkjsoncpp-6.2.a"; sourceTree = "<group>"; };
-		436217D91A2F375C006FA27A /* libvtklibxml2-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtklibxml2-6.2.a"; path = "Binaries/VTKLibs/libvtklibxml2-6.2.a"; sourceTree = "<group>"; };
-		436217DA1A2F375C006FA27A /* libvtkmetaio-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkmetaio-6.2.a"; path = "Binaries/VTKLibs/libvtkmetaio-6.2.a"; sourceTree = "<group>"; };
-		436217DB1A2F375C006FA27A /* libvtkNetCDF_cxx-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkNetCDF_cxx-6.2.a"; path = "Binaries/VTKLibs/libvtkNetCDF_cxx-6.2.a"; sourceTree = "<group>"; };
-		436217DC1A2F375C006FA27A /* libvtkNetCDF-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkNetCDF-6.2.a"; path = "Binaries/VTKLibs/libvtkNetCDF-6.2.a"; sourceTree = "<group>"; };
-		436217DD1A2F375C006FA27A /* libvtkoggtheora-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkoggtheora-6.2.a"; path = "Binaries/VTKLibs/libvtkoggtheora-6.2.a"; sourceTree = "<group>"; };
-		436217DE1A2F375C006FA27A /* libvtkParallelCore-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkParallelCore-6.2.a"; path = "Binaries/VTKLibs/libvtkParallelCore-6.2.a"; sourceTree = "<group>"; };
-		436217DF1A2F375C006FA27A /* libvtkpng-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkpng-6.2.a"; path = "Binaries/VTKLibs/libvtkpng-6.2.a"; sourceTree = "<group>"; };
-		436217E01A2F375C006FA27A /* libvtkproj4-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkproj4-6.2.a"; path = "Binaries/VTKLibs/libvtkproj4-6.2.a"; sourceTree = "<group>"; };
-		436217E11A2F375C006FA27A /* libvtkRenderingAnnotation-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkRenderingAnnotation-6.2.a"; path = "Binaries/VTKLibs/libvtkRenderingAnnotation-6.2.a"; sourceTree = "<group>"; };
-		436217E21A2F375C006FA27A /* libvtkRenderingContext2D-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkRenderingContext2D-6.2.a"; path = "Binaries/VTKLibs/libvtkRenderingContext2D-6.2.a"; sourceTree = "<group>"; };
-		436217E31A2F375C006FA27A /* libvtkRenderingContextOpenGL-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkRenderingContextOpenGL-6.2.a"; path = "Binaries/VTKLibs/libvtkRenderingContextOpenGL-6.2.a"; sourceTree = "<group>"; };
-		436217E41A2F375C006FA27A /* libvtkRenderingCore-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkRenderingCore-6.2.a"; path = "Binaries/VTKLibs/libvtkRenderingCore-6.2.a"; sourceTree = "<group>"; };
-		436217E51A2F375C006FA27A /* libvtkRenderingFreeType-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkRenderingFreeType-6.2.a"; path = "Binaries/VTKLibs/libvtkRenderingFreeType-6.2.a"; sourceTree = "<group>"; };
-		436217E61A2F375C006FA27A /* libvtkRenderingFreeTypeOpenGL-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkRenderingFreeTypeOpenGL-6.2.a"; path = "Binaries/VTKLibs/libvtkRenderingFreeTypeOpenGL-6.2.a"; sourceTree = "<group>"; };
-		436217E71A2F375C006FA27A /* libvtkRenderingGL2PS-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkRenderingGL2PS-6.2.a"; path = "Binaries/VTKLibs/libvtkRenderingGL2PS-6.2.a"; sourceTree = "<group>"; };
-		436217E81A2F375C006FA27A /* libvtkRenderingImage-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkRenderingImage-6.2.a"; path = "Binaries/VTKLibs/libvtkRenderingImage-6.2.a"; sourceTree = "<group>"; };
-		436217E91A2F375C006FA27A /* libvtkRenderingLabel-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkRenderingLabel-6.2.a"; path = "Binaries/VTKLibs/libvtkRenderingLabel-6.2.a"; sourceTree = "<group>"; };
-		436217EA1A2F375C006FA27A /* libvtkRenderingLIC-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkRenderingLIC-6.2.a"; path = "Binaries/VTKLibs/libvtkRenderingLIC-6.2.a"; sourceTree = "<group>"; };
-		436217EB1A2F375C006FA27A /* libvtkRenderingLOD-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkRenderingLOD-6.2.a"; path = "Binaries/VTKLibs/libvtkRenderingLOD-6.2.a"; sourceTree = "<group>"; };
-		436217EC1A2F375C006FA27A /* libvtkRenderingOpenGL-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkRenderingOpenGL-6.2.a"; path = "Binaries/VTKLibs/libvtkRenderingOpenGL-6.2.a"; sourceTree = "<group>"; };
-		436217ED1A2F375C006FA27A /* libvtkRenderingVolume-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkRenderingVolume-6.2.a"; path = "Binaries/VTKLibs/libvtkRenderingVolume-6.2.a"; sourceTree = "<group>"; };
-		436217EE1A2F375C006FA27A /* libvtkRenderingVolumeOpenGL-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkRenderingVolumeOpenGL-6.2.a"; path = "Binaries/VTKLibs/libvtkRenderingVolumeOpenGL-6.2.a"; sourceTree = "<group>"; };
-		436217EF1A2F375C006FA27A /* libvtksqlite-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtksqlite-6.2.a"; path = "Binaries/VTKLibs/libvtksqlite-6.2.a"; sourceTree = "<group>"; };
-		436217F01A2F375C006FA27A /* libvtksys-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtksys-6.2.a"; path = "Binaries/VTKLibs/libvtksys-6.2.a"; sourceTree = "<group>"; };
-		436217F11A2F375C006FA27A /* libvtkverdict-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkverdict-6.2.a"; path = "Binaries/VTKLibs/libvtkverdict-6.2.a"; sourceTree = "<group>"; };
-		436217F21A2F375C006FA27A /* libvtkViewsContext2D-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkViewsContext2D-6.2.a"; path = "Binaries/VTKLibs/libvtkViewsContext2D-6.2.a"; sourceTree = "<group>"; };
-		436217F31A2F375C006FA27A /* libvtkViewsCore-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkViewsCore-6.2.a"; path = "Binaries/VTKLibs/libvtkViewsCore-6.2.a"; sourceTree = "<group>"; };
-		436217F41A2F375C006FA27A /* libvtkViewsInfovis-6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkViewsInfovis-6.2.a"; path = "Binaries/VTKLibs/libvtkViewsInfovis-6.2.a"; sourceTree = "<group>"; };
 		439B8C131A19CCC300F396D7 /* 3DconnexionClient.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = 3DconnexionClient.framework; path = Binaries/3DconnexionClient.framework; sourceTree = "<group>"; };
 		4F00A9E3139A778000ABD529 /* CPRStretchedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRStretchedView.m; sourceTree = "<group>"; };
 		4F00A9E7139A779200ABD529 /* CPRStretchedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRStretchedView.h; sourceTree = "<group>"; };
@@ -3639,8 +3294,6 @@
 		59A31D5011BF9371001D4844 /* N2TextField.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2TextField.mm; path = nitrogen/Sources/N2TextField.mm; sourceTree = "<group>"; };
 		59B696621337C957009356ED /* N2DirectoryEnumerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2DirectoryEnumerator.h; path = nitrogen/Sources/N2DirectoryEnumerator.h; sourceTree = "<group>"; };
 		59B696631337C957009356ED /* N2DirectoryEnumerator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2DirectoryEnumerator.mm; path = nitrogen/Sources/N2DirectoryEnumerator.mm; sourceTree = "<group>"; };
-		59BDEC2D117C92B2007F1F2C /* Horos Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Horos Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		59BDEC43117C9366007F1F2C /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = main.mm; path = "Horos Launcher/main.mm"; sourceTree = "<group>"; };
 		59BDEF3F117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaultsController+OsiriX.h"; sourceTree = "<group>"; };
 		59BDEF40117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSUserDefaultsController+OsiriX.mm"; sourceTree = "<group>"; };
 		59BDF105117EE61E007F1F2C /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/PreferencesWindow.xib; sourceTree = "<group>"; };
@@ -3719,6 +3372,10 @@
 		59FB64771231101B00EBA136 /* mingpp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mingpp.h; path = Binaries/Ming/mingpp.h; sourceTree = "<group>"; };
 		59FB647D1231106000EBA136 /* ming.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ming.h; path = Binaries/Ming/ming.h; sourceTree = "<group>"; };
 		59FB652912312D8900EBA136 /* weasis */ = {isa = PBXFileReference; lastKnownFileType = folder; name = weasis; path = Binaries/weasis; sourceTree = "<group>"; };
+		710BAEFC1FAB124C004909E4 /* VTK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VTK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		710BAF1C1FAB176C004909E4 /* ITK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ITK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		710BAF311FAB2837004909E4 /* CharLS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CharLS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		710BAF411FAB7F10004909E4 /* GDCM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GDCM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		711849751590A377006AB447 /* SMTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SMTPClient.h; path = nitrogen/Sources/SMTPClient.h; sourceTree = "<group>"; };
 		711849761590A377006AB447 /* SMTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SMTPClient.m; path = nitrogen/Sources/SMTPClient.m; sourceTree = "<group>"; };
 		7128FD751487D54A00AB54A1 /* N2UnclickableSplitView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2UnclickableSplitView.h; path = nitrogen/Sources/N2UnclickableSplitView.h; sourceTree = "<group>"; };
@@ -3926,19 +3583,6 @@
 		84E191FA1369966A008DCFC8 /* WADODownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WADODownload.m; sourceTree = "<group>"; };
 		953DA3D517A1D194000C4BAC /* WebPortalDB 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 8.xcdatamodel"; sourceTree = "<group>"; };
 		991B8B5B1BB8B279006AF439 /* O2HMigrationAssistant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = O2HMigrationAssistant.png; sourceTree = "<group>"; };
-		992DD7501BCB095700369C09 /* libgdcmcharls.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmcharls.a; sourceTree = "<group>"; };
-		992DD7511BCB095700369C09 /* libgdcmCommon.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmCommon.a; sourceTree = "<group>"; };
-		992DD7521BCB095700369C09 /* libgdcmDICT.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmDICT.a; sourceTree = "<group>"; };
-		992DD7531BCB095700369C09 /* libgdcmDSED.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmDSED.a; sourceTree = "<group>"; };
-		992DD7541BCB095700369C09 /* libgdcmexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmexpat.a; sourceTree = "<group>"; };
-		992DD7551BCB095700369C09 /* libgdcmIOD.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmIOD.a; sourceTree = "<group>"; };
-		992DD7561BCB095700369C09 /* libgdcmjpeg8.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmjpeg8.a; sourceTree = "<group>"; };
-		992DD7571BCB095700369C09 /* libgdcmjpeg12.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmjpeg12.a; sourceTree = "<group>"; };
-		992DD7581BCB095700369C09 /* libgdcmjpeg16.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmjpeg16.a; sourceTree = "<group>"; };
-		992DD7591BCB095700369C09 /* libgdcmMEXD.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmMEXD.a; sourceTree = "<group>"; };
-		992DD75A1BCB095700369C09 /* libgdcmMSFF.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmMSFF.a; sourceTree = "<group>"; };
-		992DD75B1BCB095700369C09 /* libgdcmopenjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmopenjpeg.a; sourceTree = "<group>"; };
-		992DD75C1BCB095700369C09 /* libgdcmuuid.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgdcmuuid.a; sourceTree = "<group>"; };
 		993DB49F1C0243D50084218A /* FeedbackReporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FeedbackReporter.framework; path = Binaries/FeedbackReporter.framework; sourceTree = "<group>"; };
 		994FABED1CEBF25800980A15 /* OnOffSwitchControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnOffSwitchControl.h; sourceTree = "<group>"; };
 		994FABEE1CEBF25800980A15 /* OnOffSwitchControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnOffSwitchControl.m; sourceTree = "<group>"; };
@@ -3949,7 +3593,6 @@
 		99529DF71E0DA8E70045981E /* OsiriX Report.pages09.pages */ = {isa = PBXFileReference; lastKnownFileType = file; name = "OsiriX Report.pages09.pages"; path = "Binaries/OsiriX Report.pages09.pages"; sourceTree = "<group>"; };
 		9953FE4E1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vtkHorosFixedPointVolumeRayCastMIPHelper.cxx; sourceTree = "<group>"; };
 		9953FE4F1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkHorosFixedPointVolumeRayCastMIPHelper.h; sourceTree = "<group>"; };
-		9963031A1BCACF26009CE3E5 /* libGDCM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libGDCM.h; path = Binaries/GDCMHeaders/libGDCM.h; sourceTree = "<group>"; };
 		9966A19E1AE09B6F00F2D81A /* OsiriXHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXHeaders.mm; sourceTree = "<group>"; };
 		9966A1A01AE09D3F00F2D81A /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		9966A1A21AE09D4800F2D81A /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -3960,7 +3603,6 @@
 		9966A1AF1AE09FFE00F2D81A /* Osirix.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Osirix.icns; sourceTree = "<group>"; };
 		9966A1B01AE0A1BA00F2D81A /* OsiriX.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = OsiriX.sdef; sourceTree = "<group>"; };
 		9966A1B11AE0A47600F2D81A /* HorosAPI-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "HorosAPI-Info.plist"; sourceTree = "<group>"; };
-		9966A1B21AE0A66C00F2D81A /* OsiriXAPI-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "OsiriXAPI-Info.plist"; sourceTree = "<group>"; };
 		9966BCB41CEB5BA50086A8D7 /* osirixplugin.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = osirixplugin.icns; sourceTree = "<group>"; };
 		99676F1D1BF43C22007C7531 /* format_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = format_defs.h; path = Binaries/openjpeg/format_defs.h; sourceTree = "<group>"; };
 		99676F1E1BF43C22007C7531 /* openjpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = openjpeg.h; path = Binaries/openjpeg/openjpeg.h; sourceTree = "<group>"; };
@@ -4329,23 +3971,6 @@
 		AB3F4A1E0672674000E61A6C /* Window3DController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Window3DController.m; sourceTree = "<group>"; };
 		AB425D72058FC58E00224020 /* QueryController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = QueryController.h; sourceTree = "<group>"; };
 		AB425D73058FC58E00224020 /* QueryController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = QueryController.mm; sourceTree = "<group>"; };
-		AB451802149F464B006674BF /* libCharLS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libCharLS.a; path = Binaries/CharLS/libCharLS.a; sourceTree = "<group>"; };
-		AB451803149F464B006674BF /* scan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scan.h; path = Binaries/CharLS/scan.h; sourceTree = "<group>"; };
-		AB451804149F464B006674BF /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = util.h; path = Binaries/CharLS/util.h; sourceTree = "<group>"; };
-		AB451805149F464B006674BF /* colortransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = colortransform.h; path = Binaries/CharLS/colortransform.h; sourceTree = "<group>"; };
-		AB451806149F464B006674BF /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = Binaries/CharLS/config.h; sourceTree = "<group>"; };
-		AB451807149F464B006674BF /* context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = context.h; path = Binaries/CharLS/context.h; sourceTree = "<group>"; };
-		AB451808149F464B006674BF /* contextrunmode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = contextrunmode.h; path = Binaries/CharLS/contextrunmode.h; sourceTree = "<group>"; };
-		AB451809149F464B006674BF /* decoderstrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = decoderstrategy.h; path = Binaries/CharLS/decoderstrategy.h; sourceTree = "<group>"; };
-		AB45180A149F464B006674BF /* defaulttraits.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = defaulttraits.h; path = Binaries/CharLS/defaulttraits.h; sourceTree = "<group>"; };
-		AB45180B149F464B006674BF /* encoderstrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = encoderstrategy.h; path = Binaries/CharLS/encoderstrategy.h; sourceTree = "<group>"; };
-		AB45180C149F464B006674BF /* header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = header.h; path = Binaries/CharLS/header.h; sourceTree = "<group>"; };
-		AB45180D149F464B006674BF /* interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interface.h; path = Binaries/CharLS/interface.h; sourceTree = "<group>"; };
-		AB45180E149F464B006674BF /* jpegmarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jpegmarker.h; path = Binaries/CharLS/jpegmarker.h; sourceTree = "<group>"; };
-		AB45180F149F464B006674BF /* lookuptable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lookuptable.h; path = Binaries/CharLS/lookuptable.h; sourceTree = "<group>"; };
-		AB451810149F464B006674BF /* losslesstraits.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = losslesstraits.h; path = Binaries/CharLS/losslesstraits.h; sourceTree = "<group>"; };
-		AB451811149F464B006674BF /* processline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = processline.h; path = Binaries/CharLS/processline.h; sourceTree = "<group>"; };
-		AB451812149F464B006674BF /* publictypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = publictypes.h; path = Binaries/CharLS/publictypes.h; sourceTree = "<group>"; };
 		AB451836149F47BF006674BF /* djcodecd.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = djcodecd.cc; path = "Binaries/dcmtk-source/dcmjpls/djcodecd.cc"; sourceTree = SOURCE_ROOT; };
 		AB451837149F47BF006674BF /* djcodece.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = djcodece.cc; path = "Binaries/dcmtk-source/dcmjpls/djcodece.cc"; sourceTree = SOURCE_ROOT; };
 		AB451838149F47BF006674BF /* djcparam.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = djcparam.cc; path = "Binaries/dcmtk-source/dcmjpls/djcparam.cc"; sourceTree = SOURCE_ROOT; };
@@ -5810,19 +5435,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		59BDEC2B117C92B2007F1F2C /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				993DB4A21C024F7C0084218A /* FeedbackReporter.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7E0B3A3D067526CD00908593 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				99CDC0F51ADF0D0900F34F19 /* libCharLS.a in Frameworks */,
+				710BAF381FAB5847004909E4 /* CharLS.framework in Frameworks */,
 				434B47AE1A1A1AD4008CF8CF /* libopenjp2.a in Frameworks */,
 				BFE0652B06755B7200AC4B67 /* Cocoa.framework in Frameworks */,
 				7E47658007428C80000C9A74 /* Accelerate.framework in Frameworks */,
@@ -5841,226 +5458,42 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				994FABF91CED3E1000980A15 /* libgdcmcharls.a in Frameworks */,
-				994FABFA1CED3E1000980A15 /* libgdcmCommon.a in Frameworks */,
-				994FABFB1CED3E1000980A15 /* libgdcmDICT.a in Frameworks */,
-				994FABFC1CED3E1000980A15 /* libgdcmDSED.a in Frameworks */,
-				994FABFD1CED3E1000980A15 /* libgdcmexpat.a in Frameworks */,
-				994FABFE1CED3E1000980A15 /* libgdcmIOD.a in Frameworks */,
-				994FABFF1CED3E1000980A15 /* libgdcmjpeg8.a in Frameworks */,
-				994FAC001CED3E1000980A15 /* libgdcmjpeg12.a in Frameworks */,
-				994FAC011CED3E1000980A15 /* libgdcmjpeg16.a in Frameworks */,
-				994FAC021CED3E1000980A15 /* libgdcmMEXD.a in Frameworks */,
-				994FAC031CED3E1000980A15 /* libgdcmMSFF.a in Frameworks */,
-				994FAC051CED3E1000980A15 /* libgdcmuuid.a in Frameworks */,
+				710BAF461FAC8132004909E4 /* CharLS.framework in Frameworks */,
+				710BAF451FAC8126004909E4 /* GDCM.framework in Frameworks */,
+				710BAF271FAB1A4D004909E4 /* ITK.framework in Frameworks */,
+				710BAF281FAB1A4D004909E4 /* VTK.framework in Frameworks */,
 				9966A1AB1AE09D7C00F2D81A /* Quartz.framework in Frameworks */,
 				9966A1A91AE09D6800F2D81A /* InstantMessage.framework in Frameworks */,
 				9966A1A71AE09D5D00F2D81A /* DiskArbitration.framework in Frameworks */,
 				9966A1A51AE09D5100F2D81A /* CoreMedia.framework in Frameworks */,
 				9966A1A31AE09D4800F2D81A /* AVFoundation.framework in Frameworks */,
 				9966A1A11AE09D3F00F2D81A /* AddressBook.framework in Frameworks */,
-				436218411A2F375C006FA27A /* libvtkIOXMLParser-6.2.a in Frameworks */,
-				436217611A2F3730006FA27A /* libITKIOSpatialObjects-4.7.a in Frameworks */,
-				4362180D1A2F375C006FA27A /* libvtkFiltersImaging-6.2.a in Frameworks */,
-				436217641A2F3730006FA27A /* libITKIOTransformBase-4.7.a in Frameworks */,
-				436218501A2F375C006FA27A /* libvtkRenderingFreeTypeOpenGL-6.2.a in Frameworks */,
-				436217841A2F3730006FA27A /* libITKVTK-4.7.a in Frameworks */,
-				4362175E1A2F3730006FA27A /* libITKIONRRD-4.7.a in Frameworks */,
-				436218431A2F375C006FA27A /* libvtklibxml2-6.2.a in Frameworks */,
 				AB28B48805B7998800A9906C /* AppKit.framework in Frameworks */,
-				436217F81A2F375C006FA27A /* libvtkCommonComputationalGeometry-6.2.a in Frameworks */,
-				436217771A2F3730006FA27A /* libITKQuadEdgeMesh-4.7.a in Frameworks */,
-				436217FB1A2F375C006FA27A /* libvtkCommonExecutionModel-6.2.a in Frameworks */,
-				436218071A2F375C006FA27A /* libvtkFiltersFlowPaths-6.2.a in Frameworks */,
 				993DB4A01C0243D50084218A /* FeedbackReporter.framework in Frameworks */,
-				4362180C1A2F375C006FA27A /* libvtkFiltersHyperTree-6.2.a in Frameworks */,
-				4362181E1A2F375C006FA27A /* libvtkImagingColor-6.2.a in Frameworks */,
 				71C99EA61D1A81FE00208F3B /* Growl.framework in Frameworks */,
-				436218301A2F375C006FA27A /* libvtkIOExodus-6.2.a in Frameworks */,
-				436217721A2F3730006FA27A /* libITKOptimizers-4.7.a in Frameworks */,
-				4362180E1A2F375C006FA27A /* libvtkFiltersModeling-6.2.a in Frameworks */,
-				436217701A2F3730006FA27A /* libITKNrrdIO-4.7.a in Frameworks */,
 				AB28B48A05B7998A00A9906C /* AGL.framework in Frameworks */,
-				4362185B1A2F375D006FA27A /* libvtkverdict-6.2.a in Frameworks */,
 				AB28B48B05B7998A00A9906C /* OpenGL.framework in Frameworks */,
-				4362180B1A2F375C006FA27A /* libvtkFiltersHybrid-6.2.a in Frameworks */,
 				AB28B48C05B7998B00A9906C /* Foundation.framework in Frameworks */,
-				436217781A2F3730006FA27A /* libITKSpatialObjects-4.7.a in Frameworks */,
-				4362176A1A2F3730006FA27A /* libITKKLMRegionGrowing-4.7.a in Frameworks */,
 				AB28B93305B79D5B00A9906C /* Cocoa.framework in Frameworks */,
-				4362182A1A2F375C006FA27A /* libvtkInteractionImage-6.2.a in Frameworks */,
-				436218061A2F375C006FA27A /* libvtkFiltersExtraction-6.2.a in Frameworks */,
-				436217731A2F3730006FA27A /* libITKOptimizersv4-4.7.a in Frameworks */,
-				436218421A2F375C006FA27A /* libvtkjsoncpp-6.2.a in Frameworks */,
-				436218251A2F375C006FA27A /* libvtkImagingSources-6.2.a in Frameworks */,
-				436218581A2F375D006FA27A /* libvtkRenderingVolumeOpenGL-6.2.a in Frameworks */,
 				AB28B93405B79D5C00A9906C /* ApplicationServices.framework in Frameworks */,
-				436217591A2F3730006FA27A /* libITKIOLSM-4.7.a in Frameworks */,
-				436217521A2F3730006FA27A /* libITKIOGDCM-4.7.a in Frameworks */,
-				4362177D1A2F3730006FA27A /* libitkv3p_netlib-4.7.a in Frameworks */,
-				436218031A2F375C006FA27A /* libvtkexpat-6.2.a in Frameworks */,
-				436217531A2F3730006FA27A /* libITKIOGE-4.7.a in Frameworks */,
-				436218391A2F375C006FA27A /* libvtkIOMovie-6.2.a in Frameworks */,
-				436217791A2F3730006FA27A /* libITKStatistics-4.7.a in Frameworks */,
-				436218341A2F375C006FA27A /* libvtkIOImport-6.2.a in Frameworks */,
 				AB28B93505B79D5D00A9906C /* IOKit.framework in Frameworks */,
-				436218541A2F375D006FA27A /* libvtkRenderingLIC-6.2.a in Frameworks */,
-				436217761A2F3730006FA27A /* libITKPolynomials-4.7.a in Frameworks */,
-				4362175D1A2F3730006FA27A /* libITKIONIFTI-4.7.a in Frameworks */,
-				436217581A2F3730006FA27A /* libITKIOJPEG-4.7.a in Frameworks */,
 				AB28B93705B79D5E00A9906C /* Accelerate.framework in Frameworks */,
-				436218441A2F375C006FA27A /* libvtkmetaio-6.2.a in Frameworks */,
-				436218281A2F375C006FA27A /* libvtkInfovisCore-6.2.a in Frameworks */,
-				4362183B1A2F375C006FA27A /* libvtkIOParallel-6.2.a in Frameworks */,
-				436217801A2F3730006FA27A /* libITKVideoIO-4.7.a in Frameworks */,
 				CEF0E6DC06AEF5CB001FF9E5 /* Carbon.framework in Frameworks */,
-				436218561A2F375D006FA27A /* libvtkRenderingOpenGL-6.2.a in Frameworks */,
-				4362176D1A2F3730006FA27A /* libITKMetaIO-4.7.a in Frameworks */,
-				4362185E1A2F375D006FA27A /* libvtkViewsInfovis-6.2.a in Frameworks */,
 				7E3E38660715FFDC0049E72E /* PreferencePanes.framework in Frameworks */,
 				7E54303D07A05E7100500ABB /* DiscRecording.framework in Frameworks */,
 				7E54303E07A05E7100500ABB /* DiscRecordingUI.framework in Frameworks */,
 				CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */,
-				4362173C1A2F3730006FA27A /* libITKBiasCorrection-4.7.a in Frameworks */,
-				4362178A1A2F3741006FA27A /* libjpeg.a in Frameworks */,
-				436218091A2F375C006FA27A /* libvtkFiltersGeneric-6.2.a in Frameworks */,
-				436217851A2F3730006FA27A /* libITKVtkGlue-4.7.a in Frameworks */,
-				4362175A1A2F3730006FA27A /* libITKIOMesh-4.7.a in Frameworks */,
-				436218531A2F375D006FA27A /* libvtkRenderingLabel-6.2.a in Frameworks */,
-				436217FA1A2F375C006FA27A /* libvtkCommonDataModel-6.2.a in Frameworks */,
-				436218241A2F375C006FA27A /* libvtkImagingMorphological-6.2.a in Frameworks */,
 				BFBF3AA109B681F500545F5E /* libcrypto.a in Frameworks */,
-				436218041A2F375C006FA27A /* libvtkFiltersAMR-6.2.a in Frameworks */,
-				4362181B1A2F375C006FA27A /* libvtkgl2ps-6.2.a in Frameworks */,
-				436217501A2F3730006FA27A /* libITKIOBMP-4.7.a in Frameworks */,
-				436217F61A2F375C006FA27A /* libvtkChartsCore-6.2.a in Frameworks */,
-				436218361A2F375C006FA27A /* libvtkIOLegacy-6.2.a in Frameworks */,
-				4362185D1A2F375D006FA27A /* libvtkViewsCore-6.2.a in Frameworks */,
-				4362175F1A2F3730006FA27A /* libITKIOPNG-4.7.a in Frameworks */,
-				436217741A2F3730006FA27A /* libITKPath-4.7.a in Frameworks */,
-				4362176F1A2F3730006FA27A /* libITKniftiio-4.7.a in Frameworks */,
-				436217F51A2F375C006FA27A /* libvtkalglib-6.2.a in Frameworks */,
-				436218521A2F375D006FA27A /* libvtkRenderingImage-6.2.a in Frameworks */,
-				4362173E1A2F3730006FA27A /* libITKCommon-4.7.a in Frameworks */,
-				4362181D1A2F375C006FA27A /* libvtkhdf5.a in Frameworks */,
-				4362184E1A2F375C006FA27A /* libvtkRenderingCore-6.2.a in Frameworks */,
-				436217691A2F3730006FA27A /* libITKIOXML-4.7.a in Frameworks */,
-				4362183D1A2F375C006FA27A /* libvtkIOPLY-6.2.a in Frameworks */,
-				436217861A2F3730006FA27A /* libITKWatersheds-4.7.a in Frameworks */,
-				4362174F1A2F3730006FA27A /* libITKIOBioRad-4.7.a in Frameworks */,
-				436218231A2F375C006FA27A /* libvtkImagingMath-6.2.a in Frameworks */,
-				436217401A2F3730006FA27A /* libitkdouble-conversion-4.7.a in Frameworks */,
 				BFBF3AA209B681F500545F5E /* libssl.a in Frameworks */,
-				4362182E1A2F375C006FA27A /* libvtkIOCore-6.2.a in Frameworks */,
-				436218151A2F375C006FA27A /* libvtkFiltersStatistics-6.2.a in Frameworks */,
 				BFBF3AA309B681F500545F5E /* libxml2.dylib in Frameworks */,
-				436217821A2F3730006FA27A /* libitkvnl-4.7.a in Frameworks */,
-				4362175B1A2F3730006FA27A /* libITKIOMeta-4.7.a in Frameworks */,
-				436218021A2F375C006FA27A /* libvtkexoIIc-6.2.a in Frameworks */,
-				436218491A2F375C006FA27A /* libvtkpng-6.2.a in Frameworks */,
-				436218171A2F375C006FA27A /* libvtkFiltersVerdict-6.2.a in Frameworks */,
-				436217511A2F3730006FA27A /* libITKIOCSV-4.7.a in Frameworks */,
-				4362184C1A2F375C006FA27A /* libvtkRenderingContext2D-6.2.a in Frameworks */,
-				436218331A2F375C006FA27A /* libvtkIOImage-6.2.a in Frameworks */,
 				434B47AC1A1A1AD4008CF8CF /* libopenjp2.a in Frameworks */,
-				436218081A2F375C006FA27A /* libvtkFiltersGeneral-6.2.a in Frameworks */,
-				4362183E1A2F375C006FA27A /* libvtkIOSQL-6.2.a in Frameworks */,
-				436217541A2F3730006FA27A /* libITKIOGIPL-4.7.a in Frameworks */,
-				436218351A2F375C006FA27A /* libvtkIOInfovis-6.2.a in Frameworks */,
 				BFBF3AA409B681F500545F5E /* libz.dylib in Frameworks */,
-				4362183C1A2F375C006FA27A /* libvtkIOParallelXML-6.2.a in Frameworks */,
-				436217F91A2F375C006FA27A /* libvtkCommonCore-6.2.a in Frameworks */,
-				4362180A1A2F375C006FA27A /* libvtkFiltersGeometry-6.2.a in Frameworks */,
-				436217F71A2F375C006FA27A /* libvtkCommonColor-6.2.a in Frameworks */,
 				CE790A1B105D4DE200CE6AAF /* Security.framework in Frameworks */,
 				CE790A1C105D4DE200CE6AAF /* WebKit.framework in Frameworks */,
-				436218311A2F375C006FA27A /* libvtkIOExport-6.2.a in Frameworks */,
-				436218211A2F375C006FA27A /* libvtkImagingGeneral-6.2.a in Frameworks */,
-				436217FC1A2F375C006FA27A /* libvtkCommonMath-6.2.a in Frameworks */,
-				436218371A2F375C006FA27A /* libvtkIOLSDyna-6.2.a in Frameworks */,
 				8406956310B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */,
-				436218141A2F375C006FA27A /* libvtkFiltersSources-6.2.a in Frameworks */,
-				436218111A2F375C006FA27A /* libvtkFiltersProgrammable-6.2.a in Frameworks */,
-				4362176B1A2F3730006FA27A /* libITKLabelMap-4.7.a in Frameworks */,
-				436218461A2F375C006FA27A /* libvtkNetCDF-6.2.a in Frameworks */,
-				436217631A2F3730006FA27A /* libITKIOTIFF-4.7.a in Frameworks */,
-				4362174C1A2F3730006FA27A /* libITKgiftiio-4.7.a in Frameworks */,
-				436217571A2F3730006FA27A /* libITKIOIPL-4.7.a in Frameworks */,
 				A997B15710E0C412004C5BB1 /* SecurityInterface.framework in Frameworks */,
-				436217FE1A2F375C006FA27A /* libvtkCommonSystem-6.2.a in Frameworks */,
-				4362177E1A2F3730006FA27A /* libitkvcl-4.7.a in Frameworks */,
-				436218191A2F375C006FA27A /* libvtkftgl-6.2.a in Frameworks */,
-				436217681A2F3730006FA27A /* libITKIOVTK-4.7.a in Frameworks */,
-				4362183F1A2F375C006FA27A /* libvtkIOVideo-6.2.a in Frameworks */,
-				4362176E1A2F3730006FA27A /* libitkNetlibSlatec-4.7.a in Frameworks */,
-				436218571A2F375D006FA27A /* libvtkRenderingVolume-6.2.a in Frameworks */,
-				4362177B1A2F3730006FA27A /* libitktiff-4.7.a in Frameworks */,
-				436217831A2F3730006FA27A /* libITKVNLInstantiation-4.7.a in Frameworks */,
-				436217FF1A2F375C006FA27A /* libvtkCommonTransforms-6.2.a in Frameworks */,
-				436218451A2F375C006FA27A /* libvtkNetCDF_cxx-6.2.a in Frameworks */,
-				4362173F1A2F3730006FA27A /* libITKDICOMParser-4.7.a in Frameworks */,
-				436217551A2F3730006FA27A /* libITKIOHDF5-4.7.a in Frameworks */,
-				436218051A2F375C006FA27A /* libvtkFiltersCore-6.2.a in Frameworks */,
-				4362182C1A2F375C006FA27A /* libvtkInteractionWidgets-6.2.a in Frameworks */,
-				436217871A2F3730006FA27A /* libitkzlib-4.7.a in Frameworks */,
-				4362184A1A2F375C006FA27A /* libvtkproj4-6.2.a in Frameworks */,
-				436217421A2F3730006FA27A /* libITKFEM-4.7.a in Frameworks */,
-				4362173D1A2F3730006FA27A /* libITKBioCell-4.7.a in Frameworks */,
-				4362174D1A2F3730006FA27A /* libitkhdf5_cpp-4.7.a in Frameworks */,
-				436217FD1A2F375C006FA27A /* libvtkCommonMisc-6.2.a in Frameworks */,
-				436217661A2F3730006FA27A /* libITKIOTransformInsightLegacy-4.7.a in Frameworks */,
-				436218401A2F375C006FA27A /* libvtkIOXML-6.2.a in Frameworks */,
-				436217561A2F3730006FA27A /* libITKIOImageBase-4.7.a in Frameworks */,
-				436218471A2F375C006FA27A /* libvtkoggtheora-6.2.a in Frameworks */,
-				436218121A2F375C006FA27A /* libvtkFiltersSelection-6.2.a in Frameworks */,
 				841524C5113D6BDB008250E6 /* QuartzCore.framework in Frameworks */,
-				4362181C1A2F375C006FA27A /* libvtkhdf5_hl.a in Frameworks */,
-				436218181A2F375C006FA27A /* libvtkfreetype-6.2.a in Frameworks */,
-				4362177F1A2F3730006FA27A /* libITKVideoCore-4.7.a in Frameworks */,
-				4362182B1A2F375C006FA27A /* libvtkInteractionStyle-6.2.a in Frameworks */,
-				436217621A2F3730006FA27A /* libITKIOStimulate-4.7.a in Frameworks */,
-				436218011A2F375C006FA27A /* libvtkDomainsChemistry-6.2.a in Frameworks */,
-				436217751A2F3730006FA27A /* libitkpng-4.7.a in Frameworks */,
-				436217711A2F3730006FA27A /* libitkopenjpeg-4.7.a in Frameworks */,
-				4362183A1A2F375C006FA27A /* libvtkIONetCDF-6.2.a in Frameworks */,
-				4362180F1A2F375C006FA27A /* libvtkFiltersParallel-6.2.a in Frameworks */,
-				436217671A2F3730006FA27A /* libITKIOTransformMatlab-4.7.a in Frameworks */,
-				431BCC401A24AC94002B36FB /* libtiff.a in Frameworks */,
-				436218551A2F375D006FA27A /* libvtkRenderingLOD-6.2.a in Frameworks */,
-				436218261A2F375C006FA27A /* libvtkImagingStatistics-6.2.a in Frameworks */,
-				436218291A2F375C006FA27A /* libvtkInfovisLayout-6.2.a in Frameworks */,
-				4362184D1A2F375C006FA27A /* libvtkRenderingContextOpenGL-6.2.a in Frameworks */,
-				4362184F1A2F375C006FA27A /* libvtkRenderingFreeType-6.2.a in Frameworks */,
-				436217811A2F3730006FA27A /* libitkvnl_algo-4.7.a in Frameworks */,
-				436218321A2F375C006FA27A /* libvtkIOGeometry-6.2.a in Frameworks */,
-				4362182D1A2F375C006FA27A /* libvtkIOAMR-6.2.a in Frameworks */,
-				436218381A2F375C006FA27A /* libvtkIOMINC-6.2.a in Frameworks */,
-				436218201A2F375C006FA27A /* libvtkImagingFourier-6.2.a in Frameworks */,
-				436217881A2F3731006FA27A /* libITKznz-4.7.a in Frameworks */,
-				4362185A1A2F375D006FA27A /* libvtksys-6.2.a in Frameworks */,
-				436218271A2F375C006FA27A /* libvtkImagingStencil-6.2.a in Frameworks */,
-				436218101A2F375C006FA27A /* libvtkFiltersParallelImaging-6.2.a in Frameworks */,
-				4362177A1A2F3730006FA27A /* libitksys-4.7.a in Frameworks */,
-				4362176C1A2F3730006FA27A /* libITKMesh-4.7.a in Frameworks */,
-				4362184B1A2F375C006FA27A /* libvtkRenderingAnnotation-6.2.a in Frameworks */,
-				4362181F1A2F375C006FA27A /* libvtkImagingCore-6.2.a in Frameworks */,
-				4362174E1A2F3730006FA27A /* libitkhdf5-4.7.a in Frameworks */,
-				436218511A2F375D006FA27A /* libvtkRenderingGL2PS-6.2.a in Frameworks */,
-				436218161A2F375C006FA27A /* libvtkFiltersTexture-6.2.a in Frameworks */,
-				436218591A2F375D006FA27A /* libvtksqlite-6.2.a in Frameworks */,
-				436218001A2F375C006FA27A /* libvtkDICOMParser-6.2.a in Frameworks */,
-				436218221A2F375C006FA27A /* libvtkImagingHybrid-6.2.a in Frameworks */,
-				436218481A2F375C006FA27A /* libvtkParallelCore-6.2.a in Frameworks */,
-				436217601A2F3730006FA27A /* libITKIOSiemens-4.7.a in Frameworks */,
-				4362182F1A2F375C006FA27A /* libvtkIOEnSight-6.2.a in Frameworks */,
-				4362177C1A2F3730006FA27A /* libitkv3p_lsqr-4.7.a in Frameworks */,
-				4362185C1A2F375D006FA27A /* libvtkViewsContext2D-6.2.a in Frameworks */,
-				4362181A1A2F375C006FA27A /* libvtkGeovisCore-6.2.a in Frameworks */,
 				439B8C141A19CCC300F396D7 /* 3DconnexionClient.framework in Frameworks */,
-				436217411A2F3730006FA27A /* libITKEXPAT-4.7.a in Frameworks */,
-				436217651A2F3730006FA27A /* libITKIOTransformHDF5-4.7.a in Frameworks */,
-				4362175C1A2F3730006FA27A /* libITKIOMRC-4.7.a in Frameworks */,
-				436218131A2F375C006FA27A /* libvtkFiltersSMP-6.2.a in Frameworks */,
 				9966A2E71AE0C55600F2D81A /* HorosDCM.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6069,35 +5502,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				710BAF441FAB8431004909E4 /* GDCM.framework in Frameworks */,
 				993DB4A31C024FB40084218A /* FeedbackReporter.framework in Frameworks */,
-				992DD7701BCB095700369C09 /* libgdcmMEXD.a in Frameworks */,
 				9966A1AE1AE09DE200F2D81A /* Quartz.framework in Frameworks */,
 				9966A1AD1AE09DD000F2D81A /* CoreMedia.framework in Frameworks */,
-				992DD76A1BCB095700369C09 /* libgdcmjpeg8.a in Frameworks */,
-				992DD7761BCB095700369C09 /* libgdcmuuid.a in Frameworks */,
-				992DD7641BCB095700369C09 /* libgdcmDSED.a in Frameworks */,
 				9966A1AC1AE09DB300F2D81A /* AVFoundation.framework in Frameworks */,
 				434B47AF1A1A1AD4008CF8CF /* libopenjp2.a in Frameworks */,
 				AB724FEC0ADE6ECB00A212A0 /* Foundation.framework in Frameworks */,
-				992DD7601BCB095700369C09 /* libgdcmCommon.a in Frameworks */,
-				992DD7681BCB095700369C09 /* libgdcmIOD.a in Frameworks */,
-				992DD76C1BCB095700369C09 /* libgdcmjpeg12.a in Frameworks */,
 				AB724FEF0ADE6ECB00A212A0 /* Cocoa.framework in Frameworks */,
-				992DD7661BCB095700369C09 /* libgdcmexpat.a in Frameworks */,
 				AB724FF10ADE6ECB00A212A0 /* IOKit.framework in Frameworks */,
 				AB724FF20ADE6ECB00A212A0 /* libz.dylib in Frameworks */,
-				992DD7721BCB095700369C09 /* libgdcmMSFF.a in Frameworks */,
-				992DD76E1BCB095700369C09 /* libgdcmjpeg16.a in Frameworks */,
-				992DD75E1BCB095700369C09 /* libgdcmcharls.a in Frameworks */,
 				CE8D062C0FD8733C00165DDE /* Accelerate.framework in Frameworks */,
 				84DE8CD311AC227B0029396D /* WebKit.framework in Frameworks */,
 				59FB64391230EE4100EBA136 /* libfreetypeOsiriX.a in Frameworks */,
 				59FB643A1230EE4100EBA136 /* libgifOsiriX.a in Frameworks */,
-				992DD7741BCB095700369C09 /* libgdcmopenjpeg.a in Frameworks */,
-				992DD7621BCB095700369C09 /* libgdcmDICT.a in Frameworks */,
 				59FB643B1230EE4100EBA136 /* libmingOsiriX.a in Frameworks */,
 				59FB643C1230EE4100EBA136 /* libpng12OsiriX.a in Frameworks */,
-				AB451871149F4B2C006674BF /* libCharLS.a in Frameworks */,
 				7152C52F1D1D7BFF005526D8 /* HorosDCM.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -6239,7 +5659,10 @@
 				CEDF6DD00B46FE99008B45B8 /* DICOMPrint */,
 				844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */,
 				AB0F3A2C1046BD2B004129DD /* Horos.framework */,
-				59BDEC2D117C92B2007F1F2C /* Horos Launcher.app */,
+				710BAEFC1FAB124C004909E4 /* VTK.framework */,
+				710BAF1C1FAB176C004909E4 /* ITK.framework */,
+				710BAF311FAB2837004909E4 /* CharLS.framework */,
+				710BAF411FAB7F10004909E4 /* GDCM.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -6248,10 +5671,9 @@
 			isa = PBXGroup;
 			children = (
 				71C99EA41D1A7E9F00208F3B /* Info.plist */,
+				71BC461B1F272CA400FD6CCF /* Scripts */,
 				434B461A1A19F4E4008CF8CF /* OpenJPEG */,
-				AB451801149F44DD006674BF /* JPEG-LS (CharLS) */,
 				84A9D44712F7F8BE00DA1F99 /* KDU SDK */,
-				59BDEC17117C927D007F1F2C /* Horos Launcher */,
 				AB10FA9611293361009EB238 /* Nitrogen */,
 				CEDF6E1E0B46FF46008B45B8 /* DICOMPrint */,
 				AB724F1C0ADE6CFC00A212A0 /* DecompressDICOM */,
@@ -6266,9 +5688,7 @@
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				4A2F58D9078D119600C514A2 /* Dependencies */,
 				A98795CA16DB9FD100926023 /* Unit Tests */,
-				71BC461B1F272CA400FD6CCF /* Scripts */,
 				9966A1B11AE0A47600F2D81A /* HorosAPI-Info.plist */,
-				9966A1B21AE0A66C00F2D81A /* OsiriXAPI-Info.plist */,
 			);
 			name = OsiriX;
 			sourceTree = "<group>";
@@ -6411,15 +5831,11 @@
 			children = (
 				716DFABB1DE5AAB800440401 /* Cocoa.framework */,
 				59FB64331230EE2F00EBA136 /* Ming */,
-				CE11138608EDD5E2005B15E1 /* ITKLibs */,
-				CE11138108EDD5CE005B15E1 /* VTKLibs */,
-				996303191BCACEF9009CE3E5 /* GDCM */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				999901A21B52B24200921EA1 /* libdcmprintscu.dylib */,
 				999901A31B52B24200921EA1 /* libxerces-c.27.dylib */,
 				436217891A2F3741006FA27A /* libjpeg.a */,
-				431BCC3F1A24AC94002B36FB /* libtiff.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -6686,14 +6102,6 @@
 				5997895C11B7B3E9002DB107 /* AnonymizationViewController.mm */,
 			);
 			name = Anonymization;
-			sourceTree = "<group>";
-		};
-		59BDEC17117C927D007F1F2C /* Horos Launcher */ = {
-			isa = PBXGroup;
-			children = (
-				59BDEC43117C9366007F1F2C /* main.mm */,
-			);
-			name = "Horos Launcher";
 			sourceTree = "<group>";
 		};
 		59BDF10B117EE68F007F1F2C /* Preferences */ = {
@@ -7002,36 +6410,6 @@
 				84ADF471115B622D00FE18B2 /* Window3DController+StereoVision.m */,
 			);
 			name = StereoVision;
-			sourceTree = "<group>";
-		};
-		996303161BCACD70009CE3E5 /* GDCMLibs */ = {
-			isa = PBXGroup;
-			children = (
-				992DD7501BCB095700369C09 /* libgdcmcharls.a */,
-				992DD7511BCB095700369C09 /* libgdcmCommon.a */,
-				992DD7521BCB095700369C09 /* libgdcmDICT.a */,
-				992DD7531BCB095700369C09 /* libgdcmDSED.a */,
-				992DD7541BCB095700369C09 /* libgdcmexpat.a */,
-				992DD7551BCB095700369C09 /* libgdcmIOD.a */,
-				992DD7561BCB095700369C09 /* libgdcmjpeg8.a */,
-				992DD7571BCB095700369C09 /* libgdcmjpeg12.a */,
-				992DD7581BCB095700369C09 /* libgdcmjpeg16.a */,
-				992DD7591BCB095700369C09 /* libgdcmMEXD.a */,
-				992DD75A1BCB095700369C09 /* libgdcmMSFF.a */,
-				992DD75B1BCB095700369C09 /* libgdcmopenjpeg.a */,
-				992DD75C1BCB095700369C09 /* libgdcmuuid.a */,
-			);
-			name = GDCMLibs;
-			path = Binaries/GDCMLibs;
-			sourceTree = "<group>";
-		};
-		996303191BCACEF9009CE3E5 /* GDCM */ = {
-			isa = PBXGroup;
-			children = (
-				9963031A1BCACF26009CE3E5 /* libGDCM.h */,
-				996303161BCACD70009CE3E5 /* GDCMLibs */,
-			);
-			name = GDCM;
 			sourceTree = "<group>";
 		};
 		99B7AAD51BB70E2F00A0605C /* MigrationAssitant */ = {
@@ -7436,30 +6814,6 @@
 			);
 			name = iLifeControls;
 			path = Binaries/iLifeControls;
-			sourceTree = "<group>";
-		};
-		AB451801149F44DD006674BF /* JPEG-LS (CharLS) */ = {
-			isa = PBXGroup;
-			children = (
-				AB451802149F464B006674BF /* libCharLS.a */,
-				AB451803149F464B006674BF /* scan.h */,
-				AB451804149F464B006674BF /* util.h */,
-				AB451805149F464B006674BF /* colortransform.h */,
-				AB451806149F464B006674BF /* config.h */,
-				AB451807149F464B006674BF /* context.h */,
-				AB451808149F464B006674BF /* contextrunmode.h */,
-				AB451809149F464B006674BF /* decoderstrategy.h */,
-				AB45180A149F464B006674BF /* defaulttraits.h */,
-				AB45180B149F464B006674BF /* encoderstrategy.h */,
-				AB45180C149F464B006674BF /* header.h */,
-				AB45180D149F464B006674BF /* interface.h */,
-				AB45180E149F464B006674BF /* jpegmarker.h */,
-				AB45180F149F464B006674BF /* lookuptable.h */,
-				AB451810149F464B006674BF /* losslesstraits.h */,
-				AB451811149F464B006674BF /* processline.h */,
-				AB451812149F464B006674BF /* publictypes.h */,
-			);
-			name = "JPEG-LS (CharLS)";
 			sourceTree = "<group>";
 		};
 		AB451835149F4758006674BF /* dcmjpls */ = {
@@ -9131,203 +8485,6 @@
 			name = ThickSlabVR;
 			sourceTree = "<group>";
 		};
-		CE11138108EDD5CE005B15E1 /* VTKLibs */ = {
-			isa = PBXGroup;
-			children = (
-				4362178B1A2F375C006FA27A /* libvtkalglib-6.2.a */,
-				4362178C1A2F375C006FA27A /* libvtkChartsCore-6.2.a */,
-				4362178D1A2F375C006FA27A /* libvtkCommonColor-6.2.a */,
-				4362178E1A2F375C006FA27A /* libvtkCommonComputationalGeometry-6.2.a */,
-				4362178F1A2F375C006FA27A /* libvtkCommonCore-6.2.a */,
-				436217901A2F375C006FA27A /* libvtkCommonDataModel-6.2.a */,
-				436217911A2F375C006FA27A /* libvtkCommonExecutionModel-6.2.a */,
-				436217921A2F375C006FA27A /* libvtkCommonMath-6.2.a */,
-				436217931A2F375C006FA27A /* libvtkCommonMisc-6.2.a */,
-				436217941A2F375C006FA27A /* libvtkCommonSystem-6.2.a */,
-				436217951A2F375C006FA27A /* libvtkCommonTransforms-6.2.a */,
-				436217961A2F375C006FA27A /* libvtkDICOMParser-6.2.a */,
-				436217971A2F375C006FA27A /* libvtkDomainsChemistry-6.2.a */,
-				436217981A2F375C006FA27A /* libvtkexoIIc-6.2.a */,
-				436217991A2F375C006FA27A /* libvtkexpat-6.2.a */,
-				4362179A1A2F375C006FA27A /* libvtkFiltersAMR-6.2.a */,
-				4362179B1A2F375C006FA27A /* libvtkFiltersCore-6.2.a */,
-				4362179C1A2F375C006FA27A /* libvtkFiltersExtraction-6.2.a */,
-				4362179D1A2F375C006FA27A /* libvtkFiltersFlowPaths-6.2.a */,
-				4362179E1A2F375C006FA27A /* libvtkFiltersGeneral-6.2.a */,
-				4362179F1A2F375C006FA27A /* libvtkFiltersGeneric-6.2.a */,
-				436217A01A2F375C006FA27A /* libvtkFiltersGeometry-6.2.a */,
-				436217A11A2F375C006FA27A /* libvtkFiltersHybrid-6.2.a */,
-				436217A21A2F375C006FA27A /* libvtkFiltersHyperTree-6.2.a */,
-				436217A31A2F375C006FA27A /* libvtkFiltersImaging-6.2.a */,
-				436217A41A2F375C006FA27A /* libvtkFiltersModeling-6.2.a */,
-				436217A51A2F375C006FA27A /* libvtkFiltersParallel-6.2.a */,
-				436217A61A2F375C006FA27A /* libvtkFiltersParallelImaging-6.2.a */,
-				436217A71A2F375C006FA27A /* libvtkFiltersProgrammable-6.2.a */,
-				436217A81A2F375C006FA27A /* libvtkFiltersSelection-6.2.a */,
-				436217A91A2F375C006FA27A /* libvtkFiltersSMP-6.2.a */,
-				436217AA1A2F375C006FA27A /* libvtkFiltersSources-6.2.a */,
-				436217AB1A2F375C006FA27A /* libvtkFiltersStatistics-6.2.a */,
-				436217AC1A2F375C006FA27A /* libvtkFiltersTexture-6.2.a */,
-				436217AD1A2F375C006FA27A /* libvtkFiltersVerdict-6.2.a */,
-				436217AE1A2F375C006FA27A /* libvtkfreetype-6.2.a */,
-				436217AF1A2F375C006FA27A /* libvtkftgl-6.2.a */,
-				436217B01A2F375C006FA27A /* libvtkGeovisCore-6.2.a */,
-				436217B11A2F375C006FA27A /* libvtkgl2ps-6.2.a */,
-				436217B21A2F375C006FA27A /* libvtkhdf5_hl.a */,
-				436217B31A2F375C006FA27A /* libvtkhdf5.a */,
-				436217B41A2F375C006FA27A /* libvtkImagingColor-6.2.a */,
-				436217B51A2F375C006FA27A /* libvtkImagingCore-6.2.a */,
-				436217B61A2F375C006FA27A /* libvtkImagingFourier-6.2.a */,
-				436217B71A2F375C006FA27A /* libvtkImagingGeneral-6.2.a */,
-				436217B81A2F375C006FA27A /* libvtkImagingHybrid-6.2.a */,
-				436217B91A2F375C006FA27A /* libvtkImagingMath-6.2.a */,
-				436217BA1A2F375C006FA27A /* libvtkImagingMorphological-6.2.a */,
-				436217BB1A2F375C006FA27A /* libvtkImagingSources-6.2.a */,
-				436217BC1A2F375C006FA27A /* libvtkImagingStatistics-6.2.a */,
-				436217BD1A2F375C006FA27A /* libvtkImagingStencil-6.2.a */,
-				436217BE1A2F375C006FA27A /* libvtkInfovisCore-6.2.a */,
-				436217BF1A2F375C006FA27A /* libvtkInfovisLayout-6.2.a */,
-				436217C01A2F375C006FA27A /* libvtkInteractionImage-6.2.a */,
-				436217C11A2F375C006FA27A /* libvtkInteractionStyle-6.2.a */,
-				436217C21A2F375C006FA27A /* libvtkInteractionWidgets-6.2.a */,
-				436217C31A2F375C006FA27A /* libvtkIOAMR-6.2.a */,
-				436217C41A2F375C006FA27A /* libvtkIOCore-6.2.a */,
-				436217C51A2F375C006FA27A /* libvtkIOEnSight-6.2.a */,
-				436217C61A2F375C006FA27A /* libvtkIOExodus-6.2.a */,
-				436217C71A2F375C006FA27A /* libvtkIOExport-6.2.a */,
-				436217C81A2F375C006FA27A /* libvtkIOGeometry-6.2.a */,
-				436217C91A2F375C006FA27A /* libvtkIOImage-6.2.a */,
-				436217CA1A2F375C006FA27A /* libvtkIOImport-6.2.a */,
-				436217CB1A2F375C006FA27A /* libvtkIOInfovis-6.2.a */,
-				436217CC1A2F375C006FA27A /* libvtkIOLegacy-6.2.a */,
-				436217CD1A2F375C006FA27A /* libvtkIOLSDyna-6.2.a */,
-				436217CE1A2F375C006FA27A /* libvtkIOMINC-6.2.a */,
-				436217CF1A2F375C006FA27A /* libvtkIOMovie-6.2.a */,
-				436217D01A2F375C006FA27A /* libvtkIONetCDF-6.2.a */,
-				436217D11A2F375C006FA27A /* libvtkIOParallel-6.2.a */,
-				436217D21A2F375C006FA27A /* libvtkIOParallelXML-6.2.a */,
-				436217D31A2F375C006FA27A /* libvtkIOPLY-6.2.a */,
-				436217D41A2F375C006FA27A /* libvtkIOSQL-6.2.a */,
-				436217D51A2F375C006FA27A /* libvtkIOVideo-6.2.a */,
-				436217D61A2F375C006FA27A /* libvtkIOXML-6.2.a */,
-				436217D71A2F375C006FA27A /* libvtkIOXMLParser-6.2.a */,
-				436217D81A2F375C006FA27A /* libvtkjsoncpp-6.2.a */,
-				436217D91A2F375C006FA27A /* libvtklibxml2-6.2.a */,
-				436217DA1A2F375C006FA27A /* libvtkmetaio-6.2.a */,
-				436217DB1A2F375C006FA27A /* libvtkNetCDF_cxx-6.2.a */,
-				436217DC1A2F375C006FA27A /* libvtkNetCDF-6.2.a */,
-				436217DD1A2F375C006FA27A /* libvtkoggtheora-6.2.a */,
-				436217DE1A2F375C006FA27A /* libvtkParallelCore-6.2.a */,
-				436217DF1A2F375C006FA27A /* libvtkpng-6.2.a */,
-				436217E01A2F375C006FA27A /* libvtkproj4-6.2.a */,
-				436217E11A2F375C006FA27A /* libvtkRenderingAnnotation-6.2.a */,
-				436217E21A2F375C006FA27A /* libvtkRenderingContext2D-6.2.a */,
-				436217E31A2F375C006FA27A /* libvtkRenderingContextOpenGL-6.2.a */,
-				436217E41A2F375C006FA27A /* libvtkRenderingCore-6.2.a */,
-				436217E51A2F375C006FA27A /* libvtkRenderingFreeType-6.2.a */,
-				436217E61A2F375C006FA27A /* libvtkRenderingFreeTypeOpenGL-6.2.a */,
-				436217E71A2F375C006FA27A /* libvtkRenderingGL2PS-6.2.a */,
-				436217E81A2F375C006FA27A /* libvtkRenderingImage-6.2.a */,
-				436217E91A2F375C006FA27A /* libvtkRenderingLabel-6.2.a */,
-				436217EA1A2F375C006FA27A /* libvtkRenderingLIC-6.2.a */,
-				436217EB1A2F375C006FA27A /* libvtkRenderingLOD-6.2.a */,
-				436217EC1A2F375C006FA27A /* libvtkRenderingOpenGL-6.2.a */,
-				436217ED1A2F375C006FA27A /* libvtkRenderingVolume-6.2.a */,
-				436217EE1A2F375C006FA27A /* libvtkRenderingVolumeOpenGL-6.2.a */,
-				436217EF1A2F375C006FA27A /* libvtksqlite-6.2.a */,
-				436217F01A2F375C006FA27A /* libvtksys-6.2.a */,
-				436217F11A2F375C006FA27A /* libvtkverdict-6.2.a */,
-				436217F21A2F375C006FA27A /* libvtkViewsContext2D-6.2.a */,
-				436217F31A2F375C006FA27A /* libvtkViewsCore-6.2.a */,
-				436217F41A2F375C006FA27A /* libvtkViewsInfovis-6.2.a */,
-			);
-			name = VTKLibs;
-			sourceTree = "<group>";
-		};
-		CE11138608EDD5E2005B15E1 /* ITKLibs */ = {
-			isa = PBXGroup;
-			children = (
-				436216EF1A2F3730006FA27A /* libITKBiasCorrection-4.7.a */,
-				436216F01A2F3730006FA27A /* libITKBioCell-4.7.a */,
-				436216F11A2F3730006FA27A /* libITKCommon-4.7.a */,
-				436216F21A2F3730006FA27A /* libITKDICOMParser-4.7.a */,
-				436216F31A2F3730006FA27A /* libitkdouble-conversion-4.7.a */,
-				436216F41A2F3730006FA27A /* libITKEXPAT-4.7.a */,
-				436216F51A2F3730006FA27A /* libITKFEM-4.7.a */,
-				436216F61A2F3730006FA27A /* libitkgdcmCommon-4.7.a */,
-				436216F71A2F3730006FA27A /* libitkgdcmDICT-4.7.a */,
-				436216F81A2F3730006FA27A /* libitkgdcmDSED-4.7.a */,
-				436216F91A2F3730006FA27A /* libitkgdcmIOD-4.7.a */,
-				436216FA1A2F3730006FA27A /* libitkgdcmjpeg8-4.7.a */,
-				436216FB1A2F3730006FA27A /* libitkgdcmjpeg12-4.7.a */,
-				436216FC1A2F3730006FA27A /* libitkgdcmjpeg16-4.7.a */,
-				436216FD1A2F3730006FA27A /* libitkgdcmMSFF-4.7.a */,
-				436216FE1A2F3730006FA27A /* libitkgdcmuuid-4.7.a */,
-				436216FF1A2F3730006FA27A /* libITKgiftiio-4.7.a */,
-				436217001A2F3730006FA27A /* libitkhdf5_cpp-4.7.a */,
-				436217011A2F3730006FA27A /* libitkhdf5-4.7.a */,
-				436217021A2F3730006FA27A /* libITKIOBioRad-4.7.a */,
-				436217031A2F3730006FA27A /* libITKIOBMP-4.7.a */,
-				436217041A2F3730006FA27A /* libITKIOCSV-4.7.a */,
-				436217051A2F3730006FA27A /* libITKIOGDCM-4.7.a */,
-				436217061A2F3730006FA27A /* libITKIOGE-4.7.a */,
-				436217071A2F3730006FA27A /* libITKIOGIPL-4.7.a */,
-				436217081A2F3730006FA27A /* libITKIOHDF5-4.7.a */,
-				436217091A2F3730006FA27A /* libITKIOImageBase-4.7.a */,
-				4362170A1A2F3730006FA27A /* libITKIOIPL-4.7.a */,
-				4362170B1A2F3730006FA27A /* libITKIOJPEG-4.7.a */,
-				4362170C1A2F3730006FA27A /* libITKIOLSM-4.7.a */,
-				4362170D1A2F3730006FA27A /* libITKIOMesh-4.7.a */,
-				4362170E1A2F3730006FA27A /* libITKIOMeta-4.7.a */,
-				4362170F1A2F3730006FA27A /* libITKIOMRC-4.7.a */,
-				436217101A2F3730006FA27A /* libITKIONIFTI-4.7.a */,
-				436217111A2F3730006FA27A /* libITKIONRRD-4.7.a */,
-				436217121A2F3730006FA27A /* libITKIOPNG-4.7.a */,
-				436217131A2F3730006FA27A /* libITKIOSiemens-4.7.a */,
-				436217141A2F3730006FA27A /* libITKIOSpatialObjects-4.7.a */,
-				436217151A2F3730006FA27A /* libITKIOStimulate-4.7.a */,
-				436217161A2F3730006FA27A /* libITKIOTIFF-4.7.a */,
-				436217171A2F3730006FA27A /* libITKIOTransformBase-4.7.a */,
-				436217181A2F3730006FA27A /* libITKIOTransformHDF5-4.7.a */,
-				436217191A2F3730006FA27A /* libITKIOTransformInsightLegacy-4.7.a */,
-				4362171A1A2F3730006FA27A /* libITKIOTransformMatlab-4.7.a */,
-				4362171B1A2F3730006FA27A /* libITKIOVTK-4.7.a */,
-				4362171C1A2F3730006FA27A /* libITKIOXML-4.7.a */,
-				4362171D1A2F3730006FA27A /* libITKKLMRegionGrowing-4.7.a */,
-				4362171E1A2F3730006FA27A /* libITKLabelMap-4.7.a */,
-				4362171F1A2F3730006FA27A /* libITKMesh-4.7.a */,
-				436217201A2F3730006FA27A /* libITKMetaIO-4.7.a */,
-				436217211A2F3730006FA27A /* libitkNetlibSlatec-4.7.a */,
-				436217221A2F3730006FA27A /* libITKniftiio-4.7.a */,
-				436217231A2F3730006FA27A /* libITKNrrdIO-4.7.a */,
-				436217241A2F3730006FA27A /* libitkopenjpeg-4.7.a */,
-				436217251A2F3730006FA27A /* libITKOptimizers-4.7.a */,
-				436217261A2F3730006FA27A /* libITKOptimizersv4-4.7.a */,
-				436217271A2F3730006FA27A /* libITKPath-4.7.a */,
-				436217281A2F3730006FA27A /* libitkpng-4.7.a */,
-				436217291A2F3730006FA27A /* libITKPolynomials-4.7.a */,
-				4362172A1A2F3730006FA27A /* libITKQuadEdgeMesh-4.7.a */,
-				4362172B1A2F3730006FA27A /* libITKSpatialObjects-4.7.a */,
-				4362172C1A2F3730006FA27A /* libITKStatistics-4.7.a */,
-				4362172D1A2F3730006FA27A /* libitksys-4.7.a */,
-				4362172E1A2F3730006FA27A /* libitktiff-4.7.a */,
-				4362172F1A2F3730006FA27A /* libitkv3p_lsqr-4.7.a */,
-				436217301A2F3730006FA27A /* libitkv3p_netlib-4.7.a */,
-				436217311A2F3730006FA27A /* libitkvcl-4.7.a */,
-				436217321A2F3730006FA27A /* libITKVideoCore-4.7.a */,
-				436217331A2F3730006FA27A /* libITKVideoIO-4.7.a */,
-				436217341A2F3730006FA27A /* libitkvnl_algo-4.7.a */,
-				436217351A2F3730006FA27A /* libitkvnl-4.7.a */,
-				436217361A2F3730006FA27A /* libITKVNLInstantiation-4.7.a */,
-				436217371A2F3730006FA27A /* libITKVTK-4.7.a */,
-				436217381A2F3730006FA27A /* libITKVtkGlue-4.7.a */,
-				436217391A2F3730006FA27A /* libITKWatersheds-4.7.a */,
-				4362173A1A2F3730006FA27A /* libitkzlib-4.7.a */,
-				4362173B1A2F3730006FA27A /* libITKznz-4.7.a */,
-			);
-			name = ITKLibs;
-			sourceTree = "<group>";
-		};
 		CE234014119E7B1500D83C19 /* File Reading */ = {
 			isa = PBXGroup;
 			children = (
@@ -9884,7 +9041,6 @@
 				CEE73FD408F44749002A395F /* stringNumericCompare.h in Headers */,
 				CE97630108FABDA600E6F8B0 /* ROIManagerController.h in Headers */,
 				CE97630208FABDA600E6F8B0 /* PaletteController.h in Headers */,
-				9963031B1BCACF26009CE3E5 /* libGDCM.h in Headers */,
 				A9F6E4B808FEAF280060285A /* OrthogonalReslice.h in Headers */,
 				A9F6E4C208FEAF610060285A /* OrthogonalMPRView.h in Headers */,
 				A9F6E4CC08FEAF8E0060285A /* OrthogonalMPRController.h in Headers */,
@@ -10584,22 +9740,6 @@
 				713A00391467E2DC00194120 /* DicomDir.h in Headers */,
 				71353C511469260B00359CAB /* NSDate+N2.h in Headers */,
 				7128FD771487D54A00AB54A1 /* N2UnclickableSplitView.h in Headers */,
-				AB451815149F464B006674BF /* scan.h in Headers */,
-				AB451817149F464B006674BF /* util.h in Headers */,
-				AB451819149F464B006674BF /* colortransform.h in Headers */,
-				AB45181B149F464B006674BF /* config.h in Headers */,
-				AB45181D149F464B006674BF /* context.h in Headers */,
-				AB45181F149F464B006674BF /* contextrunmode.h in Headers */,
-				AB451821149F464B006674BF /* decoderstrategy.h in Headers */,
-				AB451823149F464B006674BF /* defaulttraits.h in Headers */,
-				AB451825149F464B006674BF /* encoderstrategy.h in Headers */,
-				AB451827149F464B006674BF /* header.h in Headers */,
-				AB451829149F464B006674BF /* interface.h in Headers */,
-				AB45182B149F464B006674BF /* jpegmarker.h in Headers */,
-				AB45182D149F464B006674BF /* lookuptable.h in Headers */,
-				AB45182F149F464B006674BF /* losslesstraits.h in Headers */,
-				AB451831149F464B006674BF /* processline.h in Headers */,
-				AB451833149F464B006674BF /* publictypes.h in Headers */,
 				AB45184B149F47C0006674BF /* djlsutil.h in Headers */,
 				AB45184F149F47C0006674BF /* djrparam.h in Headers */,
 				AB451853149F47C0006674BF /* djdecode.h in Headers */,
@@ -10669,23 +9809,77 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		59BDEC2C117C92B2007F1F2C /* Horos Launcher */ = {
+		710BAEFB1FAB124C004909E4 /* VTK */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 59BDEC33117C92B4007F1F2C /* Build configuration list for PBXNativeTarget "Horos Launcher" */;
+			buildConfigurationList = 710BAF071FAB124D004909E4 /* Build configuration list for PBXNativeTarget "VTK" */;
 			buildPhases = (
-				59BDEC29117C92B2007F1F2C /* Resources */,
-				59BDEDC8117CAB86007F1F2C /* Zip Horos Lite into Resources */,
-				59BDEC2A117C92B2007F1F2C /* Sources */,
-				59BDEC2B117C92B2007F1F2C /* Frameworks */,
+				710BAF0F1FAB158F004909E4 /* Submodule */,
+				710BAF101FAB15D3004909E4 /* CMake */,
+				710BAF111FAB15E8004909E4 /* Xcodebuild */,
+				710BAF121FAB160E004909E4 /* Framework */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = "Horos Launcher";
-			productName = "OsiriX Launcher\n";
-			productReference = 59BDEC2D117C92B2007F1F2C /* Horos Launcher.app */;
-			productType = "com.apple.product-type.application";
+			name = VTK;
+			productName = VTK;
+			productReference = 710BAEFC1FAB124C004909E4 /* VTK.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		710BAF141FAB176C004909E4 /* ITK */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 710BAF191FAB176C004909E4 /* Build configuration list for PBXNativeTarget "ITK" */;
+			buildPhases = (
+				710BAF151FAB176C004909E4 /* Submodule */,
+				710BAF161FAB176C004909E4 /* CMake */,
+				710BAF171FAB176C004909E4 /* Xcodebuild */,
+				710BAF181FAB176C004909E4 /* Framework */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ITK;
+			productName = VTK;
+			productReference = 710BAF1C1FAB176C004909E4 /* ITK.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		710BAF291FAB2837004909E4 /* CharLS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 710BAF2E1FAB2837004909E4 /* Build configuration list for PBXNativeTarget "CharLS" */;
+			buildPhases = (
+				710BAF2A1FAB2837004909E4 /* Submodule */,
+				710BAF2B1FAB2837004909E4 /* CMake */,
+				710BAF2C1FAB2837004909E4 /* Xcodebuild */,
+				710BAF2D1FAB2837004909E4 /* Framework */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CharLS;
+			productName = VTK;
+			productReference = 710BAF311FAB2837004909E4 /* CharLS.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		710BAF391FAB7F10004909E4 /* GDCM */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 710BAF3E1FAB7F10004909E4 /* Build configuration list for PBXNativeTarget "GDCM" */;
+			buildPhases = (
+				710BAF3A1FAB7F10004909E4 /* Submodule */,
+				710BAF3B1FAB7F10004909E4 /* CMake */,
+				710BAF3C1FAB7F10004909E4 /* Make */,
+				710BAF3D1FAB7F10004909E4 /* Framework */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GDCM;
+			productName = VTK;
+			productReference = 710BAF411FAB7F10004909E4 /* GDCM.framework */;
+			productType = "com.apple.product-type.framework";
 		};
 		7E0B3A3E067526CD00908593 /* Horos DCM */ = {
 			isa = PBXNativeTarget;
@@ -10699,6 +9893,9 @@
 			buildRules = (
 			);
 			dependencies = (
+				710BAF201FAB17E8004909E4 /* PBXTargetDependency */,
+				710BAF221FAB17E8004909E4 /* PBXTargetDependency */,
+				710BAF371FAB28EF004909E4 /* PBXTargetDependency */,
 			);
 			name = "Horos DCM";
 			productName = DCM;
@@ -10744,12 +9941,14 @@
 			buildRules = (
 			);
 			dependencies = (
+				710BAF331FAB28DF004909E4 /* PBXTargetDependency */,
+				710BAF1E1FAB17C6004909E4 /* PBXTargetDependency */,
+				710BAF351FAB28DF004909E4 /* PBXTargetDependency */,
 				99FE27FD1CF4A442003C32AB /* PBXTargetDependency */,
 				71C99E991D19A7FB00208F3B /* PBXTargetDependency */,
 				71C99E9B1D19A7FD00208F3B /* PBXTargetDependency */,
 				71C99EA11D19A80A00208F3B /* PBXTargetDependency */,
 				71C99EA31D19A80C00208F3B /* PBXTargetDependency */,
-				59BDEE6B117CB393007F1F2C /* PBXTargetDependency */,
 			);
 			name = Horos;
 			productName = Deployment;
@@ -10766,6 +9965,9 @@
 			buildRules = (
 			);
 			dependencies = (
+				710BAF431FAB8406004909E4 /* PBXTargetDependency */,
+				710BAF241FAB17EF004909E4 /* PBXTargetDependency */,
+				710BAF261FAB17EF004909E4 /* PBXTargetDependency */,
 			);
 			name = Decompress;
 			productName = SafeDBRebuild;
@@ -10799,8 +10001,8 @@
 				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = "The Horos Project";
 				TargetAttributes = {
-					59BDEC2C117C92B2007F1F2C = {
-						DevelopmentTeam = KM2Q4CB65V;
+					710BAEFB1FAB124C004909E4 = {
+						CreatedOnToolsVersion = 9.0;
 					};
 					AB0F3A2B1046BD2B004129DD = {
 						DevelopmentTeam = KM2Q4CB65V;
@@ -10812,7 +10014,7 @@
 				};
 			};
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "Horos" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -10837,7 +10039,6 @@
 			projectRoot = "";
 			targets = (
 				AB28B42E05B7921E00A9906C /* Horos */,
-				59BDEC2C117C92B2007F1F2C /* Horos Launcher */,
 				AB0F3A2B1046BD2B004129DD /* Horos API */,
 				7E0B3A3E067526CD00908593 /* Horos DCM */,
 				AB724F300ADE6ECB00A212A0 /* Decompress */,
@@ -10845,19 +10046,15 @@
 				4A2F5931078D148300C514A2 /* Unzip Binaries */,
 				434B46111A19ECD6008CF8CF /* Cleanup Binaries */,
 				BF7486A50CC6AA5C00198387 /* Documentation */,
+				710BAEFB1FAB124C004909E4 /* VTK */,
+				710BAF141FAB176C004909E4 /* ITK */,
+				710BAF391FAB7F10004909E4 /* GDCM */,
+				710BAF291FAB2837004909E4 /* CharLS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		59BDEC29117C92B2007F1F2C /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				998B52E61AE0894E00D317CF /* Horos.icns in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7E0B3A3B067526CD00908593 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -11339,20 +10536,6 @@
 			shellPath = /bin/sh;
 			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo GDCMLibs.zip\nunzip -uo GDCMHeaders.zip\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo ITKLibs.zip\nunzip -uo VTKLibs.zip\nunzip -uo VTKHeaders.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo FeedbackReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo libPapyrusToolkit.a.zip\nunzip -uo Ming.zip\n\nunzip -uo weasis-portable*.zip -d weasis\nchmod -R 755 weasis\nfind \"$SRCROOT/Binaries/weasis\" -name __MACOSX | xargs rm -Rf\n\ncd \"$SRCROOT/Binaries/ReportsToPDF/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\nexit 0";
 		};
-		59BDEDC8117CAB86007F1F2C /* Zip Horos Lite into Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Zip Horos Lite into Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "#cd \"${BUILT_PRODUCTS_DIR}\"\n#product=\"Horos Lite.app\"\n#dest=\"${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Horos Lite.zip\"\n#rm -f \"$dest\"\n#zip -qr \"$dest\" \"$product\"";
-		};
 		59BDEE70117CB3A6007F1F2C /* Zip Horos Launcher into Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -11380,6 +10563,230 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "sh \"$PROJECT_DIR/Scripts/Clean.sh\"";
+		};
+		710BAF0F1FAB158F004909E4 /* Submodule */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Submodule;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/1-Submodule.sh\"";
+		};
+		710BAF101FAB15D3004909E4 /* CMake */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = CMake;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/2-CMake.sh\"";
+		};
+		710BAF111FAB15E8004909E4 /* Xcodebuild */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Xcodebuild;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/3-Xcodebuild.sh\"";
+		};
+		710BAF121FAB160E004909E4 /* Framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Framework;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/4-Framework.sh\"";
+		};
+		710BAF151FAB176C004909E4 /* Submodule */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Submodule;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/1-Submodule.sh\"";
+		};
+		710BAF161FAB176C004909E4 /* CMake */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = CMake;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/2-CMake.sh\"";
+		};
+		710BAF171FAB176C004909E4 /* Xcodebuild */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Xcodebuild;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/3-Xcodebuild.sh\"";
+		};
+		710BAF181FAB176C004909E4 /* Framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Framework;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/4-Framework.sh\"";
+		};
+		710BAF2A1FAB2837004909E4 /* Submodule */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Submodule;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/1-Submodule.sh\"";
+		};
+		710BAF2B1FAB2837004909E4 /* CMake */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = CMake;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/2-CMake.sh\"";
+		};
+		710BAF2C1FAB2837004909E4 /* Xcodebuild */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Xcodebuild;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/3-Xcodebuild.sh\"";
+		};
+		710BAF2D1FAB2837004909E4 /* Framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Framework;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/4-Framework.sh\"";
+		};
+		710BAF3A1FAB7F10004909E4 /* Submodule */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Submodule;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/1-Submodule.sh\"";
+		};
+		710BAF3B1FAB7F10004909E4 /* CMake */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = CMake;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/2-CMake.sh\"";
+		};
+		710BAF3C1FAB7F10004909E4 /* Make */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Make;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/3-Make.sh\"";
+		};
+		710BAF3D1FAB7F10004909E4 /* Framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Framework;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/4-Framework.sh\"";
 		};
 		7183153F161065BE0098576F /* Replace Weasis ext-config.properties */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -11421,7 +10828,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /usr/bin/perl;
-			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen Horos_h, \">\", \"$destination/Horos.h\" or die $!;\n\nprint Horos_h \"#ifndef __Horos_API\\n#define __Horos_API\\n\\n\";\n\n\n# TODO TODO TODO\n# -------------------------------------------------------------------------------------------------- #\n\n# \"$ENV{PROJECT_DIR}/cocoahttpserver\",\n# \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/config\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmsr\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmdata\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/ofstd\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmnet,\n\n# -------------------------------------------------------------------------------------------------- #\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/nitrogen/Sources\", \"$ENV{PROJECT_DIR}/nitrogen/Sources/JSON\", $ENV{PROJECT_DIR} );\n\nforeach my $root (@fromdirs) {\n    opendir(DIR, $root);\n    \n    my @files = readdir(DIR);\n    foreach (@files) {\n        my $filename = $_;\n        next unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n        my @args = ( \"cp\", \"-fp\", \"$root/$filename\", \"$destination/\".(basename $filename) );\n        system(@args) == 0 or die \"Copy failed: $?\";\n        print Horos_h \"#include <Horos/$filename>\\n\";\n    }\n    \n    closedir(DIR);\n}\n\nprint Horos_h \"\\n#endif\\n\";\nclose Horos_h;\n\n\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/Binaries/VTKHeaders\" );\n\nforeach my $root (@fromdirs) {\n    my @args = ( \"cp\", \"-Rfp\", \"$root\", \"$destination/\" );\n    system(@args) == 0 or die \"Copy failed: $?\";\n}\n\n\n\n\nchdir \"$ENV{TARGET_BUILD_DIR}/$ENV{FULL_PRODUCT_NAME}\";\nsymlink \"Versions/Current/Headers\", \"Headers\";\n\nexit 0;\n";
+			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen Horos_h, \">\", \"$destination/Horos.h\" or die $!;\n\nprint Horos_h \"#ifndef __Horos_API\\n#define __Horos_API\\n\\n\";\n\n\n# TODO TODO TODO\n# -------------------------------------------------------------------------------------------------- #\n\n# \"$ENV{PROJECT_DIR}/cocoahttpserver\",\n# \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/config\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmsr\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmdata\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/ofstd\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmnet,\n\n# -------------------------------------------------------------------------------------------------- #\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/nitrogen/Sources\", \"$ENV{PROJECT_DIR}/nitrogen/Sources/JSON\", $ENV{PROJECT_DIR} );\n\nforeach my $root (@fromdirs) {\n    opendir(DIR, $root);\n    \n    my @files = readdir(DIR);\n    foreach (@files) {\n        my $filename = $_;\n        next unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n        my @args = ( \"cp\", \"-fp\", \"$root/$filename\", \"$destination/\".(basename $filename) );\n        system(@args) == 0 or die \"Copy failed: $?\";\n        print Horos_h \"#include <Horos/$filename>\\n\";\n    }\n    \n    closedir(DIR);\n}\n\nprint Horos_h \"\\n#endif\\n\";\nclose Horos_h;\n\n\n\n\nmy @fromdirs = ( );\n\nforeach my $root (@fromdirs) {\n    my @args = ( \"cp\", \"-Rfp\", \"$root\", \"$destination/\" );\n    system(@args) == 0 or die \"Copy failed: $?\";\n}\n\n\n\n\nchdir \"$ENV{TARGET_BUILD_DIR}/$ENV{FULL_PRODUCT_NAME}\";\nsymlink \"Versions/Current/Headers\", \"Headers\";\n\nexit 0;\n";
 		};
 		ABF307FB1443330100BBC96A /* Copy odt2pdf script */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -11495,14 +10902,6 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		59BDEC2A117C92B2007F1F2C /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				59BDEC44117C9366007F1F2C /* main.mm in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7E0B3A3C067526CD00908593 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -13062,10 +12461,50 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		59BDEE6B117CB393007F1F2C /* PBXTargetDependency */ = {
+		710BAF1E1FAB17C6004909E4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 59BDEC2C117C92B2007F1F2C /* Horos Launcher */;
-			targetProxy = 59BDEE6A117CB393007F1F2C /* PBXContainerItemProxy */;
+			target = 710BAF141FAB176C004909E4 /* ITK */;
+			targetProxy = 710BAF1D1FAB17C6004909E4 /* PBXContainerItemProxy */;
+		};
+		710BAF201FAB17E8004909E4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 710BAEFB1FAB124C004909E4 /* VTK */;
+			targetProxy = 710BAF1F1FAB17E8004909E4 /* PBXContainerItemProxy */;
+		};
+		710BAF221FAB17E8004909E4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 710BAF141FAB176C004909E4 /* ITK */;
+			targetProxy = 710BAF211FAB17E8004909E4 /* PBXContainerItemProxy */;
+		};
+		710BAF241FAB17EF004909E4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 710BAEFB1FAB124C004909E4 /* VTK */;
+			targetProxy = 710BAF231FAB17EF004909E4 /* PBXContainerItemProxy */;
+		};
+		710BAF261FAB17EF004909E4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 710BAF141FAB176C004909E4 /* ITK */;
+			targetProxy = 710BAF251FAB17EF004909E4 /* PBXContainerItemProxy */;
+		};
+		710BAF331FAB28DF004909E4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 710BAEFB1FAB124C004909E4 /* VTK */;
+			targetProxy = 710BAF321FAB28DF004909E4 /* PBXContainerItemProxy */;
+		};
+		710BAF351FAB28DF004909E4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 710BAF291FAB2837004909E4 /* CharLS */;
+			targetProxy = 710BAF341FAB28DF004909E4 /* PBXContainerItemProxy */;
+		};
+		710BAF371FAB28EF004909E4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 710BAF291FAB2837004909E4 /* CharLS */;
+			targetProxy = 710BAF361FAB28EF004909E4 /* PBXContainerItemProxy */;
+		};
+		710BAF431FAB8406004909E4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 710BAF391FAB7F10004909E4 /* GDCM */;
+			targetProxy = 710BAF421FAB8406004909E4 /* PBXContainerItemProxy */;
 		};
 		71C99E991D19A7FB00208F3B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -13613,8 +13052,6 @@
 		434B46141A19ECD6008CF8CF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_ALTIVEC_EXTENSIONS = YES;
@@ -13649,7 +13086,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -13669,7 +13107,7 @@
 					Binaries,
 					"$(BUILT_PRODUCTS_DIR)",
 				);
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -13690,12 +13128,10 @@
 				IBC_FLATTEN_NIBS = NO;
 				LIBRARY_SEARCH_PATHS = (
 					AYDicomPrint,
-					Binaries/CharLS,
 					Binaries/openjpeg,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "-fvisibility=default";
-				OTHER_LDFLAGS = "-Wno-deprecated";
 				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
@@ -13705,8 +13141,6 @@
 		43E98D1A1A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_WARN_EMPTY_BODY = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -13731,12 +13165,9 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				KEEP_PRIVATE_EXTERNS = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					Binaries/GDCMLibs,
-					Binaries/ITKLibs,
-					Binaries/VTKLibs,
-					Binaries/LibTiff,
 					Binaries/openssl/libs,
 				);
 				OTHER_CFLAGS = "-fvisibility=default";
@@ -13758,42 +13189,13 @@
 				PRODUCT_NAME = Horos;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_STYLE = debugging;
-				USER_HEADER_SEARCH_PATHS = "Binaries/GDCMHeaders Binaries/ITKHeaders Binaries/VTKHeaders Binaries/openjpeg/** Binaries/LibTiff Binaries/openssl/include";
-			};
-			name = Release;
-		};
-		43E98D1B1A32BF6A001B9E51 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "Horos Launcher/Info.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.horosproject.horos-launcher";
-				PRODUCT_NAME = "Horos Launcher";
-				SKIP_INSTALL = YES;
+				USER_HEADER_SEARCH_PATHS = "Binaries/openjpeg/** Binaries/openssl/include";
 			};
 			name = Release;
 		};
 		43E98D1C1A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = "";
@@ -13826,8 +13228,6 @@
 		43E98D1D1A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_ALTIVEC_EXTENSIONS = YES;
@@ -13861,8 +13261,6 @@
 		43E98D1E1A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_ALTIVEC_EXTENSIONS = YES;
@@ -13896,8 +13294,6 @@
 		43E98D201A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -13910,7 +13306,6 @@
 		43E98D211A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = YES;
@@ -13924,7 +13319,6 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					Binaries/GDCMLibs,
 					Binaries/Ming,
 				);
 				OTHER_LDFLAGS = (
@@ -13938,7 +13332,7 @@
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
 				SYMROOT = build;
-				USER_HEADER_SEARCH_PATHS = "Binaries/GDCMHeaders Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
 			};
 			name = Release;
 		};
@@ -13946,7 +13340,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
@@ -13973,8 +13366,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -14001,38 +13392,81 @@
 			};
 			name = Release;
 		};
-		59BDEC30117C92B3007F1F2C /* Debug */ = {
+		710BAF051FAB124D004909E4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "Horos Launcher/Info.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.horosproject.horos-launcher";
-				PRODUCT_NAME = "Horos Launcher";
+				PRODUCT_BUNDLE_IDENTIFIER = io.volz.vtk;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
+		710BAF061FAB124D004909E4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_BUNDLE_IDENTIFIER = io.volz.vtk;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		710BAF1A1FAB176C004909E4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_BUNDLE_IDENTIFIER = io.volz.itk;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		710BAF1B1FAB176C004909E4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_BUNDLE_IDENTIFIER = io.volz.itk;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		710BAF2F1FAB2837004909E4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_BUNDLE_IDENTIFIER = io.volz.charls;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		710BAF301FAB2837004909E4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_BUNDLE_IDENTIFIER = io.volz.charls;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		710BAF3F1FAB7F10004909E4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_BUNDLE_IDENTIFIER = io.volz.gdcm;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		710BAF401FAB7F10004909E4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_BUNDLE_IDENTIFIER = io.volz.gdcm;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		7E76BEC1085757B60073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "";
@@ -14063,10 +13497,7 @@
 		7E76BEC7085757B70073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
 				CLANG_WARN_EMPTY_BODY = YES;
-				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = R8G9BDMT59;
@@ -14087,12 +13518,9 @@
 				IBC_FLATTEN_NIBS = NO;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(USER_APPS_DIR)";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					Binaries/GDCMLibs,
-					Binaries/ITKLibs,
-					Binaries/VTKLibs,
-					Binaries/LibTiff,
 					Binaries/openssl/libs,
 				);
 				OTHER_CFLAGS = "-fvisibility=default";
@@ -14113,15 +13541,13 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.volz.horos;
 				PRODUCT_NAME = Horos;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				USER_HEADER_SEARCH_PATHS = "Binaries/GDCMHeaders Binaries/ITKHeaders Binaries/VTKHeaders Binaries/openjpeg/** Binaries/LibTiff Binaries/openssl/include";
+				USER_HEADER_SEARCH_PATHS = "Binaries/openjpeg/** Binaries/openssl/include";
 			};
 			name = Debug;
 		};
 		7E76BED0085757B70073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_ALTIVEC_EXTENSIONS = YES;
@@ -14156,7 +13582,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
@@ -14177,7 +13604,7 @@
 					Binaries,
 					"$(BUILT_PRODUCTS_DIR)",
 				);
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -14202,7 +13629,6 @@
 				IBC_FLATTEN_NIBS = NO;
 				LIBRARY_SEARCH_PATHS = (
 					AYDicomPrint,
-					Binaries/CharLS,
 					Binaries/openjpeg,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
@@ -14217,8 +13643,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -14248,7 +13672,6 @@
 		AB724FF40ADE6ECB00A212A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = YES;
@@ -14260,7 +13683,6 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					Binaries/GDCMLibs,
 					Binaries/Ming,
 				);
 				OTHER_LDFLAGS = (
@@ -14274,15 +13696,13 @@
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
 				SYMROOT = build;
-				USER_HEADER_SEARCH_PATHS = "Binaries/GDCMHeaders Binaries/VTKHeaders $(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/Binaries/openjpeg/** $(SRCROOT)/Binaries/LibTiff";
 			};
 			name = Debug;
 		};
 		BF7486A60CC6AA5D00198387 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -14296,7 +13716,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
@@ -14332,11 +13751,38 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		59BDEC33117C92B4007F1F2C /* Build configuration list for PBXNativeTarget "Horos Launcher" */ = {
+		710BAF071FAB124D004909E4 /* Build configuration list for PBXNativeTarget "VTK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				59BDEC30117C92B3007F1F2C /* Debug */,
-				43E98D1B1A32BF6A001B9E51 /* Release */,
+				710BAF051FAB124D004909E4 /* Debug */,
+				710BAF061FAB124D004909E4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		710BAF191FAB176C004909E4 /* Build configuration list for PBXNativeTarget "ITK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				710BAF1A1FAB176C004909E4 /* Debug */,
+				710BAF1B1FAB176C004909E4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		710BAF2E1FAB2837004909E4 /* Build configuration list for PBXNativeTarget "CharLS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				710BAF2F1FAB2837004909E4 /* Debug */,
+				710BAF301FAB2837004909E4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		710BAF3E1FAB7F10004909E4 /* Build configuration list for PBXNativeTarget "GDCM" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				710BAF3F1FAB7F10004909E4 /* Debug */,
+				710BAF401FAB7F10004909E4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

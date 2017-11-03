@@ -48,10 +48,7 @@
 #import "N2Debug.h"
 #import "DicomDatabase.h"
 #import "ROI.h"
-
-#if __LP64__
-#import "vtkConfigure.h"
-#endif
+#import <VTK/vtkConfigure.h>
 
 #define D2R 0.01745329251994329576923690768    // degrees to radians
 #define R2D 57.2957795130823208767981548141    // radians to degrees

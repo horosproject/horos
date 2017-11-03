@@ -37,10 +37,10 @@
 #import <Cocoa/Cocoa.h>
 
 #ifdef __cplusplus
-#define id Id
-	#include "itkImage.h"
-	#include "itkImportImageFilter.h"
-#undef id
+//#define id Id
+#include <ITK/itkImage.h>
+#include <ITK/itkImportImageFilter.h>
+//#undef id
 #import "ITK.h"
 #else
 @class ITK;
@@ -75,9 +75,9 @@
 + (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height numPoints:(long) numPoints;
 + (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height numPoints:(long) numPoints largestRegion:(BOOL) largestRegion;
 
-#ifdef redefineID
-#define id Id
-#undef redefineID
-#endif
+//#ifdef redefineID
+//#define id Id
+//#undef redefineID
+//#endif
 
 @end

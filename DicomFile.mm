@@ -56,7 +56,7 @@
 #ifdef VTK_USE_SYSTEM_TIFF
 #include <tiffio.h>
 #else
-#include "tiffio.h"
+#include <VTK/tiffio.h>
 //#include "vtktiff/tiffio.h"
 #endif
 #endif
@@ -80,7 +80,7 @@
 #endif
 #endif
 
-#include "libGDCM.h"
+#include <GDCM/gdcmScanner.h>
 
 extern NSString * convertDICOM( NSString *inputfile);
 extern NSRecursiveLock *PapyrusLock;

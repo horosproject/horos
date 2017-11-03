@@ -40,7 +40,7 @@
 #ifdef VTK_USE_SYSTEM_TIFF
 #include <tiffio.h>
 #else
-#include "tiffio.h"
+#include <VTK/tiffio.h>
 //#include "vtktiff/tiffio.h"
 #endif
 

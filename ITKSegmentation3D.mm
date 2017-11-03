@@ -38,44 +38,42 @@
 #import "Notifications.h"
 
 
-#define id Id
+//#define id Id
 
-#include "itkMultiThreader.h"
-#include "itkImage.h"
-#include "itkMesh.h"
-#include "itkImportImageFilter.h"
-#include "itkConnectedThresholdImageFilter.h"
-#include "itkNeighborhoodConnectedImageFilter.h"
-#include "itkConfidenceConnectedImageFilter.h"
-#include "itkCurvatureFlowImageFilter.h"
-#include "itkCastImageFilter.h"
-#include "itkBinaryMaskToNarrowBandPointSetFilter.h"
-//#include "itkBinaryMask3DMeshSource.h"
-#include "itkVTKImageExport.h"
-#include "itkVTKImageExportBase.h"
-#include "itkGrayscaleDilateImageFilter.h" 
-#include "itkBinaryBallStructuringElement.h"
+#include <ITK/itkMultiThreader.h>
+#include <ITK/itkImage.h>
+#include <ITK/itkMesh.h>
+#include <ITK/itkImportImageFilter.h>
+#include <ITK/itkConnectedThresholdImageFilter.h>
+#include <ITK/itkNeighborhoodConnectedImageFilter.h>
+#include <ITK/itkConfidenceConnectedImageFilter.h>
+#include <ITK/itkCurvatureFlowImageFilter.h>
+#include <ITK/itkCastImageFilter.h>
+#include <ITK/itkBinaryMaskToNarrowBandPointSetFilter.h>
+//#include <ITK/itkBinaryMask3DMeshSource.h>
+#include <ITK/itkVTKImageExport.h>
+#include <ITK/itkVTKImageExportBase.h>
+#include <ITK/itkGrayscaleDilateImageFilter.h>
+#include <ITK/itkBinaryBallStructuringElement.h>
 
-#include "itkAffineTransform.h" 
-#include "itkNearestNeighborInterpolateImageFunction.h" 
-#include "itkResampleImageFilter.h"
+#include <ITK/itkAffineTransform.h>
+#include <ITK/itkNearestNeighborInterpolateImageFunction.h>
+#include <ITK/itkResampleImageFilter.h>
 
-
-#include "vtkImageImport.h"
-#include "vtkMarchingSquares.h"
-#include "vtkPolyData.h"
-#include "vtkCleanPolyData.h"
-#include "vtkPolyDataConnectivityFilter.h"
-#include "vtkCell.h"
-#include "vtkContourFilter.h"
-#include "vtkImageData.h"
-#include "vtkDecimatePro.h"
-#include "vtkSmoothPolyDataFilter.h"
+#include <VTK/vtkImageImport.h>
+#include <VTK/vtkMarchingSquares.h>
+#include <VTK/vtkPolyData.h>
+#include <VTK/vtkCleanPolyData.h>
+#include <VTK/vtkPolyDataConnectivityFilter.h>
+#include <VTK/vtkCell.h>
+#include <VTK/vtkContourFilter.h>
+#include <VTK/vtkImageData.h>
+#include <VTK/vtkDecimatePro.h>
+#include <VTK/vtkSmoothPolyDataFilter.h>
 #include "vtkPowerCrustSurfaceReconstruction.h"
-#include <vtkMarchingCubes.h>
+#include <VTK/vtkMarchingCubes.h>
 
-
-#undef id
+//#undef id
 
 #import "ViewerController.h"
 #import "WaitRendering.h"

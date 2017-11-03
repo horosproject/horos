@@ -36,7 +36,7 @@
 #import "DCMPixelDataAttribute.h"
 #import "DCM.h"
 
-#include "interface.h"
+#include <CharLS/charls.h>
 
 #import "jpeglib12.h"
 #import <stdio.h>
@@ -1431,17 +1431,17 @@ void info_callback(const char *msg, void *a) {
         processors = [[NSProcessInfo processInfo] processorCount] /2;
     
     JlsParameters jlsParameters = {};
-    JLS_ERROR readHeaderResult = JpegLsReadHeader([jpegLsData bytes], [jpegLsData length], &jlsParameters);
+    charls::ApiResult readHeaderResult = JpegLsReadHeader([jpegLsData bytes], [jpegLsData length], &jlsParameters, NULL);
     
-    if (readHeaderResult == 0)
+    if (readHeaderResult == charls::ApiResult::OK)
     {
-        size_t uncompressedLength = jlsParameters.height * jlsParameters.bytesperline;
+        size_t uncompressedLength = jlsParameters.height * jlsParameters.stride;
         void *uncompressedData = (void*) malloc(uncompressedLength);
         
         if (uncompressedData)
         {
-            JLS_ERROR decodeResult = JpegLsDecode(uncompressedData, uncompressedLength, [jpegLsData bytes],[jpegLsData length], NULL);
-            if (decodeResult != 0)
+            charls::ApiResult decodeResult = JpegLsDecode(uncompressedData, uncompressedLength, [jpegLsData bytes], [jpegLsData length], NULL, NULL);
+            if (decodeResult != charls::ApiResult::OK)
             {
                 free(uncompressedData);
             }

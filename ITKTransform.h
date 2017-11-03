@@ -67,9 +67,9 @@
 + (float*) resampleWithParameters: (double*)theParameters firstObject: (DCMPix*) firstObject firstObjectOriginal: (DCMPix*)  firstObjectOriginal noOfImages: (int) noOfImages length: (long*) length itkImage: (ITK*) itkImage rescale: (BOOL) rescale;
 + (float*) reorient2Dimage: (double*) theParameters firstObject: (DCMPix*) firstObject firstObjectOriginal: (DCMPix*) firstObjectOriginal length: (long*) length;
 
-#ifdef redefineID
-#define id Id
-#undef redefineID
-#endif
+//#ifdef redefineID
+//#define id Id
+//#undef redefineID
+//#endif
 
 @end

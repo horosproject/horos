@@ -49,7 +49,7 @@
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/CGLCurrent.h>
 #include "math.h"
-#include "vtkImageFlip.h"
+#include <VTK/vtkImageFlip.h>
 #import "QuicktimeExport.h"
 #import "AppController.h"
 #import "BrowserController.h"
@@ -57,34 +57,34 @@
 #import "DicomStudy.h"
 #import "DicomSeries.h"
 #import "DicomImage.h"
-#include "vtkRIBExporter.h"
-#include "vtkIVExporter.h"
-#include "vtkOBJExporter.h"
-#include "vtkSTLWriter.h"
-#include "vtkVRMLExporter.h"
-#include "vtkInteractorStyleFlight.h"
+#include <VTK/vtkRIBExporter.h>
+#include <VTK/vtkIVExporter.h>
+#include <VTK/vtkOBJExporter.h>
+#include <VTK/vtkSTLWriter.h>
+#include <VTK/vtkVRMLExporter.h>
+#include <VTK/vtkInteractorStyleFlight.h>
 
-#include "vtkAbstractPropPicker.h"
-#include "vtkInteractorStyle.h"
-#include "vtkWorldPointPicker.h"
+#include <VTK/vtkAbstractPropPicker.h>
+#include <VTK/vtkInteractorStyle.h>
+#include <VTK/vtkWorldPointPicker.h>
 
-#include "vtkSphereSource.h"
-#include "vtkAssemblyPath.h"
+#include <VTK/vtkSphereSource.h>
+#include <VTK/vtkAssemblyPath.h>
 
-#include "vtkVectorText.h"
-#include "vtkFollower.h"
+#include <VTK/vtkVectorText.h>
+#include <VTK/vtkFollower.h>
 #ifdef _STEREO_VISION_
 // ****************************
 // Added SilvanWidmer 03-08-09
-#import "vtkCocoaGLView.h"
-#include "vtkRenderer.h"
-#include "vtkRenderWindow.h"
-#include "vtkRenderWindowInteractor.h"
-#include "vtkCocoaRenderWindowInteractor.h"
-#include "vtkCocoaRenderWindow.h"
-#include "vtkInteractorStyleTrackballCamera.h"
-#include "vtkParallelRenderManager.h"
-#include "vtkRendererCollection.h"
+#import <VTK/vtkCocoaGLView.h>
+#include <VTK/vtkRenderer.h>
+#include <VTK/vtkRenderWindow.h>
+#include <VTK/vtkRenderWindowInteractor.h>
+#include <VTK/vtkCocoaRenderWindowInteractor.h>
+#include <VTK/vtkCocoaRenderWindow.h>
+#include <VTK/vtkInteractorStyleTrackballCamera.h>
+#include <VTK/vtkParallelRenderManager.h>
+#include <VTK/vtkRendererCollection.h>
 // ****************************
 #endif
 

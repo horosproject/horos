@@ -41,7 +41,7 @@
 #import "VTKViewOSIRIX.h"
 
 //#import "vtkCocoaWindow.h"
-#define id Id
+//#define id Id
 #include "vtkCamera.h"
 #include "vtkRenderer.h"
 #include "vtkRenderWindow.h"
@@ -49,7 +49,7 @@
 #include "vtkCocoaRenderWindowInteractor.h"
 #include "vtkCocoaRenderWindow.h"
 
-#undef id
+//#undef id
 #else
 typedef char* vtkCocoaWindow;
 typedef char* vtkRenderer;

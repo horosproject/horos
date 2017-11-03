@@ -54,7 +54,7 @@
 
 #ifdef OSIRIX_VIEWER
 #ifndef OSIRIX_LIGHT
-#include "NrrdIO.h"
+#include <ITK/NrrdIO.h>
 #endif
 #endif
 
