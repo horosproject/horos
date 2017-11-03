@@ -34,7 +34,7 @@
 
 
 
-#import "iPhoto.h"
+#import "Photos.h"
 #import "NSAppleScript+N2.h"
 
 
@@ -76,7 +76,7 @@
 //	return [NSString stringWithFormat:@"[unconverted AEDesc, type=\"%c%c%c%c\"]", ((char *)&(desc->descriptorType))[0], ((char *)&(desc->descriptorType))[1], ((char *)&(desc->descriptorType))[2], ((char *)&(desc->descriptorType))[3]];
 //}
 
-@implementation iPhoto
+@implementation Photos
 
 - (NSString *) scriptBody:(NSArray*) files
 {
@@ -85,28 +85,25 @@
 	
 	NSMutableString *s = [NSMutableString stringWithCapacity:1000];
 	
-	[s appendString:@"tell application \"iPhoto\"\n"];
+    [s appendString:@"tell application \"Photos\"\n"];
 //	[s appendString:@"activate\n"];
 	
-	[s appendString:[NSString stringWithFormat:@"if not (exists album \"%@\") then \n", albumNameStr]];
-	[s appendString:[NSString stringWithFormat:@"new album name \"%@\" \n", albumNameStr]];
-	[s appendString:@"end if \n"];
-	[s appendString:[NSString stringWithFormat:@"set this_album to album \"%@\" \n", albumNameStr]];
-	[s appendString:@"select this_album \n"];
-	
-	for( id loopItem in files)
-	{
-		[s appendString:[NSString stringWithFormat:@"set this_path to \"%@\" \n",loopItem]];
-		[s appendString:@"import from this_path to this_album \n"];
-	}
-	
-	[s appendString:@"end tell \n"];
-	
+    [s appendString:[NSString stringWithFormat:@"if not (exists album \"%@\") then \n", albumNameStr]];
+    [s appendString:[NSString stringWithFormat:@"make new album named \"%@\" \n", albumNameStr]];
+    [s appendString:@"end if \n"];
+    [s appendString:[NSString stringWithFormat:@"set this_album to album \"%@\" \n", albumNameStr]];
+//    [s appendString:@"select this_album \n"]; // not supported in Photos.app
+    
+    for (id loopItem in files)
+        [s appendString:[NSString stringWithFormat:@"import (POSIX file \"%@\" as alias) into this_album skip check duplicates yes \n", loopItem]];
+    
+    [s appendString:@"end tell \n"];
+
 return s;
 }
 
 
-- (BOOL)importIniPhoto: (NSArray*) files
+- (BOOL)importInPhotos: (NSArray*) files
 {
 	[self runScript:[self scriptBody:files]];
 	return YES;

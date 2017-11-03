@@ -69,7 +69,7 @@
 #import "ITKSegmentation3DController.h"
 #import "ITKSegmentation3D.h"
 #import "OSIWindow.h"
-#import "iPhoto.h"
+#import "Photos.h"
 #import "CurvedMPR.h"
 #import "SeriesView.h"
 #import "DICOMExport.h"
@@ -134,7 +134,7 @@ static	BOOL SYNCSERIES = NO, ViewBoundsDidChangeProtect = NO, recursiveCloseWind
 
 static NSString* ViewerToolbarIdentifier				= @"Viewer Toolbar Identifier";
 static NSString*	QTSaveToolbarItemIdentifier			= @"QTExport.pdf";
-static NSString*	iPhotoToolbarItemIdentifier			= @"iPhoto2";
+static NSString*	PhotosToolbarItemIdentifier			= @"iPhoto2";
 static NSString*	PlayToolbarItemIdentifier			= @"Play.pdf";
 static NSString*	PauseToolbarItemIdentifier			= @"Pause.pdf";
 static NSString*	XMLToolbarItemIdentifier			= @"XML.icns";
@@ -6128,13 +6128,12 @@ static ViewerController *draggedController = nil;
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(printDICOM:)];
     }
-    else  if ([itemIdent isEqualToString: iPhotoToolbarItemIdentifier]) {
+    else  if ([itemIdent isEqualToString: PhotosToolbarItemIdentifier]) {
         
-        [toolbarItem setLabel: NSLocalizedString(@"iPhoto", nil)];
-        [toolbarItem setPaletteLabel: NSLocalizedString(@"iPhoto", nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Export this image to iPhoto", nil)];
-        
-        [toolbarItem setImage: [NSImage imageNamed: @"iPhoto"]];
+        [toolbarItem setLabel:NSLocalizedString(@"Photos", nil)];
+        [toolbarItem setPaletteLabel:NSLocalizedString(@"Photos", nil)];
+        [toolbarItem setToolTip:NSLocalizedString(@"Export this image to Photos", nil)];
+        [toolbarItem setImage:[NSImage imageNamed:@"Photos"]];
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(export2iPhoto:)];
     }
@@ -6712,7 +6711,7 @@ static ViewerController *draggedController = nil;
                              Send2PACSToolbarItemIdentifier,
                              PrintToolbarItemIdentifier,
                              ExportToolbarItemIdentifier,
-                             iPhotoToolbarItemIdentifier,
+                             PhotosToolbarItemIdentifier,
                              QTSaveToolbarItemIdentifier,
                              XMLToolbarItemIdentifier,
                              ReconstructionToolbarItemIdentifier,
@@ -19784,7 +19783,7 @@ static float oldsetww, oldsetwl;
     {
         BOOL pathOK = YES;
         
-        if( [[imageFormat selectedCell] tag] != 2 && [[imageFormat selectedCell] tag] != 3)		//Mail or iPhoto
+        if( [[imageFormat selectedCell] tag] != 2 && [[imageFormat selectedCell] tag] != 3)		//Mail or Photos
         {
             NSString *defaultExportName = [[fileList[ curMovieIndex] objectAtIndex:0] valueForKeyPath:@"series.name"];
             
@@ -19845,7 +19844,7 @@ static float oldsetww, oldsetwl;
                     
                     representations = [im representations];
                     
-                    if( [[imageFormat selectedCell] tag] == 2 || [[imageFormat selectedCell] tag] == 3)		//Mail or iPhoto
+                    if( [[imageFormat selectedCell] tag] == 2 || [[imageFormat selectedCell] tag] == 3)		//Mail or Photos
                     {
                         //						if( [[NSUserDefaults standardUserDefaults] boolForKey: @"exportImageInGrayColorSpace"] && ) // 8-bit
                         //						{
@@ -19921,10 +19920,10 @@ static float oldsetww, oldsetwl;
             
             NSString *root = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"EXPORT"];
             
-            if( [[imageFormat selectedCell] tag] == 2) // iPhoto
+            if( [[imageFormat selectedCell] tag] == 2) // Photos
             {
-                iPhoto	*ifoto = [[iPhoto alloc] init];
-                [ifoto importIniPhoto: [NSArray arrayWithObject: root]];
+                Photos	*ifoto = [[Photos alloc] init];
+                [ifoto importInPhotos: [NSArray arrayWithObject: root]];
                 [ifoto release];
             }
             
@@ -20049,8 +20048,8 @@ static float oldsetww, oldsetwl;
         //
         //					[JPEGExif addExif: [NSURL fileURLWithPath: jpegFile] properties: exifDict format:@"jpeg"];
         //					
-        //					iPhoto	*ifoto = [[iPhoto alloc] init];
-        //					[ifoto importIniPhoto: [NSArray arrayWithObject: jpegFile]];
+        //					Photos	*ifoto = [[Photos alloc] init];
+        //					[ifoto importInPhotos: [NSArray arrayWithObject: jpegFile]];
         //					[ifoto release];
         //				}
         //				else

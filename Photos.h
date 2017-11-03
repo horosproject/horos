@@ -37,11 +37,11 @@
 #import <Foundation/Foundation.h>
 #import <Carbon/Carbon.h>
 
-/** \brief Import into iPhoto*/
-@interface iPhoto : NSObject
+/** \brief Import into Photos*/
+@interface Photos : NSObject
 {
 }
 
 - (void)runScript:(NSString *)txt;
-- (BOOL)importIniPhoto: (NSArray*) files;
+- (BOOL)importInPhotos: (NSArray*) files;
 @end
