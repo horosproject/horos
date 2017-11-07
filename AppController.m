@@ -111,7 +111,7 @@
 #include <stdlib.h>
 
 #import "url.h"
-#include "opj_config.h"	 
+#include <OpenJPEG/opj_config.h>
 #define BUILTIN_DCMTK YES
 
 #define MAXSCREENS 10

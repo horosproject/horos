@@ -10,13 +10,14 @@ libs_dir="$cmake_dir/bin"
 export CC=clang
 export CXX=clang
 
-if [ ! -f "$libs_dir/libgdcmCommon.a" ] || [ -f "$cmake_dir/.incomplete" ]; then
+if [ ! -f "$libs_dir/libopenjpg.a" ] || [ -f "$cmake_dir/.incomplete" ]; then
     touch "$cmake_dir/.incomplete"
 
     args=( -j 8 )
 
     cd "$cmake_dir"
     make "${args[@]}"
+    make install
 
     rm -f "$cmake_dir/.incomplete"
 fi

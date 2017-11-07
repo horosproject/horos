@@ -4,7 +4,7 @@
 
 set -e; set -o xtrace
 
-cmake_dir="$PROJECT_DIR/Build/Intermediates/$TARGET_NAME-$CONFIGURATION.cmake"
+cmake_dir="$TARGET_TEMP_DIR/CMake"
 
 xcodebuild -project "$cmake_dir/$TARGET_NAME.xcodeproj" \
 -target vtkIOImage -target vtkFiltersGeneral -target vtkImagingStencil \

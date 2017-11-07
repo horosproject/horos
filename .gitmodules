@@ -13,3 +13,6 @@
 [submodule "GDCM"]
 	path = GDCM
 	url = git://git.code.sf.net/p/gdcm/gdcm
+[submodule "OpenJPEG"]
+	path = OpenJPEG
+	url = git@github.com:uclouvain/openjpeg.git

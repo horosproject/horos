@@ -7,7 +7,7 @@ hash="$(find . \( -name CMakeLists.txt -o -name '*.cmake' \) -type f -exec md5 -
 
 set -e; set -o xtrace
 
-cmake_dir="$PROJECT_DIR/Build/Intermediates/$TARGET_NAME-$CONFIGURATION.cmake"
+cmake_dir="$TARGET_TEMP_DIR/CMake"
 mkdir -p "$cmake_dir"; cd "$cmake_dir"
 
 if [ -e "$TARGET_NAME.xcodeproj" -a -f .cmakehash ] && [ "$(cat '.cmakehash')" = "$hash" ]; then
@@ -23,7 +23,7 @@ mkdir -p "$cmake_dir"; cd "$cmake_dir"
 echo "$hash" > .cmakehash
 
 args=("$PROJECT_DIR/$TARGET_NAME" -G Xcode)
-cxxfs=()
+cxxfs=( -fvisibility=hidden -fvisibility-inlines-hidden )
 args+=(-DITK_USE_64BITS_IDS=ON)
 args+=(-DBUILD_DOCUMENTATION=OFF)
 args+=(-DBUILD_EXAMPLES=OFF)

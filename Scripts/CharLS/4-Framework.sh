@@ -4,8 +4,8 @@
 
 set -e; set -o xtrace
 
-cmake_dir="$PROJECT_DIR/Build/Intermediates/$TARGET_NAME-$CONFIGURATION.cmake"
-libs_dir="$cmake_dir/$CONFIGURATION"
+cmake_dir="$TARGET_TEMP_DIR/CMake"
+libs_dir="$cmake_dir"
 framework="$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME"
 
 cd "$libs_dir"

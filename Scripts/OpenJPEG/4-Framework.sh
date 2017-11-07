@@ -1,12 +1,12 @@
 #!/bin/sh
 
-# VTK libraries are merged into a framework, along with the headers
+# libraries are merged into a framework, along with the headers
 
 set -e; set -o xtrace
 
 source_dir="$PROJECT_DIR/$TARGET_NAME"
 cmake_dir="$TARGET_TEMP_DIR/CMake"
-libs_dir="$cmake_dir/bin"
+libs_dir="$cmake_dir"
 framework_path="$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME"
 
 cd "$libs_dir"
@@ -31,12 +31,10 @@ if [ ! -d "$framework_path" -o ! -f "$cmake_dir/.frameworkhash" ] || [ "$(cat "$
 
     cd Headers
 
-    find "$source_dir/Source" \( -name '*.h*' -o -name '*.t*' \) -exec sh -c 'p="${0#*$source_dir/Source/}"; cp -an "{}" "$(basename $p)"' {} \;
-#    find "$source_dir/Utilities/gdcmopenjpeg/src/lib/openjp2" -name '*.h*' -exec sh -c 'p="${0#*$source_dir/Source/}"; cp -an "{}" "$(basename $p)"' {} \;
-    find "$cmake_dir/Source" -name '*.h*' -exec sh -c 'p="${0#*$source_dir/Source/}"; cp -an "{}" "$(basename $p)"' {} \;
-#    find "$cmake_dir/Utilities/gdcmopenjpeg/src/lib/openjp2" -name '*.h*' -exec sh -c 'p="${0#*$source_dir/Source/}"; cp -an "{}" "$(basename $p)"' {} \;
+    find "$source_dir/src" \( -name '*.h*' -o -name '*.t*' \) -exec sh -c 'p="${0#*$source_dir/Source/}"; cp -an "{}" "$(basename $p)"' {} \;
+    find "$cmake_dir/src" \( -name '*.h*' -o -name '*.t*' \) -exec sh -c 'p="${0#*$source_dir/Source/}"; cp -an "{}" "$(basename $p)"' {} \;
 
-    find . \( -name '*.htm*' -o -name '*.h.in' -o -name '*.txt' \) -delete
+    find . \( -name '*.htm*' -o -name '*.in' -o -name '*.txt' \) -delete
 
     echo "$hash" > "$cmake_dir/.frameworkhash"
 fi

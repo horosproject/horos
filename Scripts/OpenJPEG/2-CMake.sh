@@ -7,48 +7,62 @@ hash="$(find . \( -name CMakeLists.txt -o -name '*.cmake' \) -type f -exec md5 -
 
 set -e; set -o xtrace
 
+source_dir="$PROJECT_DIR/$TARGET_NAME"
 cmake_dir="$TARGET_TEMP_DIR/CMake"
-mkdir -p "$cmake_dir"; cd "$cmake_dir"
 
+mkdir -p "$cmake_dir"; cd "$cmake_dir"
 if [ -e "$TARGET_NAME.xcodeproj" -a -f .cmakehash ] && [ "$(cat '.cmakehash')" = "$hash" ]; then
     exit 0
 fi
 
 command -v cmake >/dev/null 2>&1 || { echo >&2 "error: building $TARGET_NAME requires CMake. Please install CMake. Aborting."; exit 1; }
 
-cd ..
 mv "$cmake_dir" "$cmake_dir.tmp"; rm -Rf "$cmake_dir.tmp"
-mkdir -p "$cmake_dir"; cd "$cmake_dir"
+mkdir -p "$cmake_dir"
 
-echo "$hash" > .cmakehash
+export CC=clang
+export CXX=clang
 
-args=("$PROJECT_DIR/$TARGET_NAME" -G Xcode)
-cxxfs=( -w -fvisibility=hidden -fvisibility-inlines-hidden )
-args+=(-DVTK_USE_OFFSCREEN_EGL:BOOL=OFF)
-args+=(-DVTK_USE_X:BOOL=OFF)
-args+=(-DVTK_USE_COCOA:BOOL=ON)
-args+=(-DVTK_USE_64BITS_IDS=ON)
-args+=(-DBUILD_DOCUMENTATION=OFF)
-args+=(-DBUILD_EXAMPLES=OFF)
-args+=(-DBUILD_SHARED_LIBS=OFF)
-args+=(-DBUILD_TESTING=OFF)
+args=("$source_dir")
+cfs=($OTHER_CFLAGS)
+cxxfs=($OTHER_CPLUSPLUSFLAGS)
+
 args+=(-DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET")
 args+=(-DCMAKE_OSX_ARCHITECTURES="$ARCHS")
-args+=(-DCMAKE_INSTALL_PREFIX=/usr/local)
+args+=(-DCMAKE_INSTALL_PREFIX="$TARGET_TEMP_DIR/Install")
+
+args+=(-DBUILD_DOC=OFF)
+args+=(-DBUILD_EXAMPLES=OFF)
+args+=(-DBUILD_SHARED_LIBS=OFF)
+args+=(-DBUILD_STATIC_LIBS=ON)
+args+=(-DBUILD_TESTING=OFF)
+
+if [ "$CONFIGURATION" = 'Debug' ]; then
+    cxxfs+=( -g )
+else
+    cxxfs+=( -O2 )
+fi
+
 if [ ! -z "$CLANG_CXX_LIBRARY" ] && [ "$CLANG_CXX_LIBRARY" != 'compiler-default' ]; then
-    args+=(-DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY="$CLANG_CXX_LIBRARY")
     cxxfs+=(-stdlib="$CLANG_CXX_LIBRARY")
 fi
+
 if [ ! -z "$CLANG_CXX_LANGUAGE_STANDARD" ]; then
-    args+=(-DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD="$CLANG_CXX_LANGUAGE_STANDARD")
     cxxfs+=(-std="$CLANG_CXX_LANGUAGE_STANDARD")
 fi
 
+if [ ${#cfs[@]} -ne 0 ]; then
+    cfss="${cfs[@]}"
+    args+=(-DCMAKE_C_FLAGS="$cfss")
+fi
 if [ ${#cxxfs[@]} -ne 0 ]; then
     cxxfss="${cxxfs[@]}"
     args+=(-DCMAKE_CXX_FLAGS="$cxxfss")
 fi
 
+cd "$cmake_dir"
 cmake "${args[@]}"
+
+echo "$hash" > "$cmake_dir/.cmakehash"
 
 exit 0

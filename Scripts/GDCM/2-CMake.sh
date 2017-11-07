@@ -8,9 +8,9 @@ hash="$(find . \( -name CMakeLists.txt -o -name '*.cmake' \) -type f -exec md5 -
 set -e; set -o xtrace
 
 source_dir="$PROJECT_DIR/$TARGET_NAME"
-build_dir="$PROJECT_DIR/Build/Intermediates/$TARGET_NAME-$CONFIGURATION.cmake"
+cmake_dir="$TARGET_TEMP_DIR/CMake"
 
-mkdir -p "$build_dir"; cd "$build_dir"
+mkdir -p "$cmake_dir"; cd "$cmake_dir"
 
 if [ -e "$TARGET_NAME.xcodeproj" -a -f .cmakehash ] && [ "$(cat '.cmakehash')" = "$hash" ]; then
     exit 0
@@ -19,16 +19,20 @@ fi
 export CC=clang
 export CXX=clang
 
-if [ ! -e "$build_dir/Makefile" -o ! -f "$build_dir/.buildhash" ] || [ "$(cat "$build_dir/.buildhash")" != "$hash" ]; then
-    mv "$build_dir" "$build_dir.tmp"; rm -Rf "$build_dir.tmp"
-    mkdir -p "$build_dir";
+if [ ! -e "$cmake_dir/Makefile" -o ! -f "$cmake_dir/.buildhash" ] || [ "$(cat "$cmake_dir/.buildhash")" != "$hash" ]; then
+    mv "$cmake_dir" "$cmake_dir.tmp"; rm -Rf "$cmake_dir.tmp"
+    mkdir -p "$cmake_dir";
 
     args=( "$source_dir" )
-    cxxfs=( -w -fvisibility=hidden -fvisibility-inlines-hidden )
+    cfs=( $OTHER_CFLAGS )
+    cxxfs=( $OTHER_CPLUSPLUSFLAGS )
 
     args+=(-DGDCM_DOCUMENTATION=OFF)
     args+=(-DGDCM_BUILD_TESTING=OFF)
     args+=(-DGDCM_BUILD_DOCBOOK_MANPAGES=OFF)
+    #args+=(-DCMAKE_MODULE_PATH="$TARGET_TEMP_DIR/../OpenJPEG.build/Install/lib;$TARGET_TEMP_DIR/../CharLS.build/Install/lib")
+    #args+=(-DGDCM_USE_SYSTEM_OPENJPEG=ON -DOPENJPEG_LIBRARIES="") #(-DGDCM_OPENJPEG_LIBRARIES="$TARGET_TEMP_DIR/../OpenJPEG.build/Install")
+    #args+=(-DGDCM_USE_SYSTEM_CHARLS=ON) #(-DGDCM_CHARLS_LIBRARIES="$TARGET_TEMP_DIR/../CharLS.build/Install")
 
     args+=(-DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET")
     args+=(-DCMAKE_OSX_ARCHITECTURES="$ARCHS")
@@ -48,15 +52,19 @@ if [ ! -e "$build_dir/Makefile" -o ! -f "$build_dir/.buildhash" ] || [ "$(cat "$
         cxxfs+=(-std="$CLANG_CXX_LANGUAGE_STANDARD")
     fi
 
+    if [ ${#cfs[@]} -ne 0 ]; then
+        cfss="${cfs[@]}"
+        args+=( -DCMAKE_C_FLAGS="$cfss" )
+    fi
     if [ ${#cxxfs[@]} -ne 0 ]; then
         cxxfss="${cxxfs[@]}"
-        args+=(-DCMAKE_CXX_FLAGS="$cxxfss")
+        args+=( -DCMAKE_CXX_FLAGS="$cxxfss" )
     fi
 
-    cd "$build_dir"
+    cd "$cmake_dir"
     cmake "${args[@]}"
 
-    echo "$hash" > "$build_dir/.buildhash"
+    echo "$hash" > "$cmake_dir/.buildhash"
 fi
 
 exit 0
