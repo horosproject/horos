@@ -3619,7 +3619,6 @@
 		9966A1AA1AE09D7C00F2D81A /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		9966A1AF1AE09FFE00F2D81A /* Osirix.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Osirix.icns; sourceTree = "<group>"; };
 		9966A1B01AE0A1BA00F2D81A /* OsiriX.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = OsiriX.sdef; sourceTree = "<group>"; };
-		9966A1B11AE0A47600F2D81A /* HorosAPI-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "HorosAPI-Info.plist"; sourceTree = "<group>"; };
 		9966BCB41CEB5BA50086A8D7 /* osirixplugin.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = osirixplugin.icns; sourceTree = "<group>"; };
 		9983090F1BB62D4100CAB197 /* JRSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRSwizzle.h; sourceTree = "<group>"; };
 		998309101BB62D4100CAB197 /* JRSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRSwizzle.m; sourceTree = "<group>"; };
@@ -5702,7 +5701,6 @@
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				4A2F58D9078D119600C514A2 /* Dependencies */,
 				A98795CA16DB9FD100926023 /* Unit Tests */,
-				9966A1B11AE0A47600F2D81A /* HorosAPI-Info.plist */,
 			);
 			name = OsiriX;
 			sourceTree = "<group>";
