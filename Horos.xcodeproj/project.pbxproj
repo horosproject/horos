@@ -321,6 +321,8 @@
 		710BAF451FAC8126004909E4 /* GDCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 710BAF411FAB7F10004909E4 /* GDCM.framework */; };
 		710BAF461FAC8132004909E4 /* CharLS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 710BAF311FAB2837004909E4 /* CharLS.framework */; };
 		710BAF6B1FB1D40B004909E4 /* OpenJPEG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 710BAF601FB1A418004909E4 /* OpenJPEG.framework */; };
+		710BAF6F1FB322A4004909E4 /* OpenJPEG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 710BAF601FB1A418004909E4 /* OpenJPEG.framework */; };
+		710BAF701FB322B9004909E4 /* OpenJPEG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 710BAF601FB1A418004909E4 /* OpenJPEG.framework */; };
 		711849771590A377006AB447 /* SMTPClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 711849751590A377006AB447 /* SMTPClient.h */; };
 		711849781590A377006AB447 /* SMTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 711849761590A377006AB447 /* SMTPClient.m */; };
 		7128FD771487D54A00AB54A1 /* N2UnclickableSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7128FD751487D54A00AB54A1 /* N2UnclickableSplitView.h */; };
@@ -5489,6 +5491,7 @@
 				AB28B93405B79D5C00A9906C /* ApplicationServices.framework in Frameworks */,
 				AB28B93505B79D5D00A9906C /* IOKit.framework in Frameworks */,
 				AB28B93705B79D5E00A9906C /* Accelerate.framework in Frameworks */,
+				710BAF6F1FB322A4004909E4 /* OpenJPEG.framework in Frameworks */,
 				CEF0E6DC06AEF5CB001FF9E5 /* Carbon.framework in Frameworks */,
 				7E3E38660715FFDC0049E72E /* PreferencePanes.framework in Frameworks */,
 				7E54303D07A05E7100500ABB /* DiscRecording.framework in Frameworks */,
@@ -5519,6 +5522,7 @@
 				9966A1AC1AE09DB300F2D81A /* AVFoundation.framework in Frameworks */,
 				AB724FEC0ADE6ECB00A212A0 /* Foundation.framework in Frameworks */,
 				AB724FEF0ADE6ECB00A212A0 /* Cocoa.framework in Frameworks */,
+				710BAF701FB322B9004909E4 /* OpenJPEG.framework in Frameworks */,
 				AB724FF10ADE6ECB00A212A0 /* IOKit.framework in Frameworks */,
 				AB724FF20ADE6ECB00A212A0 /* libz.dylib in Frameworks */,
 				CE8D062C0FD8733C00165DDE /* Accelerate.framework in Frameworks */,
@@ -9932,6 +9936,7 @@
 				AB0F3A2A1046BD2B004129DD /* Frameworks */,
 				AB0F3A3F1046BE51004129DD /* Copy Headers and Create Horos.h */,
 				CED7488F158F07B500120143 /* Code Signing */,
+				710BAF711FB33751004909E4 /* Store Product Path */,
 			);
 			buildRules = (
 			);
@@ -10867,6 +10872,20 @@
 			shellPath = /bin/sh;
 			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/4-Framework.sh\"";
 		};
+		710BAF711FB33751004909E4 /* Store Product Path */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Store Product Path";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME\" > \"$TARGET_TEMP_DIR/Product.path\"";
+		};
 		7183153F161065BE0098576F /* Replace Weasis ext-config.properties */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -10893,7 +10912,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "rsync --exclude=\".DS_Store\" -rtlv \"$TARGET_BUILD_DIR/Horos.framework\" \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/\"";
+			shellScript = "path=$(cat \"$TARGET_TEMP_DIR/../Horos API.build/Product.path\")\nrsync --exclude=\".DS_Store\" -rtlv \"$path\" \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/\"";
 		};
 		AB0F3A3F1046BE51004129DD /* Copy Headers and Create Horos.h */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -13153,7 +13172,6 @@
 				GCC_MODEL_CPU = "";
 				GCC_MODEL_PPC64 = NO;
 				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = 1;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_SHADOW = NO;
@@ -13192,7 +13210,6 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -13210,7 +13227,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = NO;
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
@@ -13226,7 +13242,6 @@
 					"-fvisibility=hidden",
 					"-fvisibility-inlines-hidden",
 				);
-				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
@@ -13240,7 +13255,6 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = R8G9BDMT59;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_FAST_MATH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -13250,7 +13264,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
-				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
 				GCC_WARN_SHADOW = NO;
@@ -13258,7 +13271,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				IBC_FLATTEN_NIBS = YES;
 				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "$(USER_APPS_DIR)";
+				INSTALL_PATH = /Applications;
 				KEEP_PRIVATE_EXTERNS = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -13280,7 +13293,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.volz.horos;
 				PRODUCT_NAME = Horos;
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRIP_STYLE = debugging;
 				USER_HEADER_SEARCH_PATHS = Binaries/openssl/include;
 			};
@@ -13292,13 +13304,10 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCM Framework/DCM Framework_Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -13328,7 +13337,6 @@
 				GCC_MODEL_CPU = "";
 				GCC_MODEL_PPC64 = NO;
 				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = 1;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_SHADOW = NO;
@@ -13361,7 +13369,6 @@
 				GCC_MODEL_CPU = "";
 				GCC_MODEL_PPC64 = NO;
 				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = 1;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_SHADOW = NO;
@@ -13390,7 +13397,6 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				PRODUCT_NAME = Documentation;
 			};
@@ -13399,14 +13405,12 @@
 		43E98D211A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = YES;
 				DEPLOYMENT_LOCATION = NO;
 				GCC_FAST_MATH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREFIX_HEADER = Decompres_Prefix.pch;
 				GCC_UNROLL_LOOPS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -13433,13 +13437,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -13460,13 +13462,10 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -13603,13 +13602,10 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCM Framework/DCM Framework_Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -13635,24 +13631,20 @@
 				CLANG_WARN_EMPTY_BODY = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = R8G9BDMT59;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREFIX_HEADER = Horos_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
-				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
-				GCC_WARN_MISSING_PARENTHESES = NO;
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				IBC_FLATTEN_NIBS = NO;
 				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "$(USER_APPS_DIR)";
+				INSTALL_PATH = /Applications;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -13673,7 +13665,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.volz.horos;
 				PRODUCT_NAME = Horos;
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				USER_HEADER_SEARCH_PATHS = Binaries/openssl/include;
 			};
 			name = Debug;
@@ -13688,7 +13679,6 @@
 				GCC_MODEL_CPU = "";
 				GCC_MODEL_PPC64 = NO;
 				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = 1;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_SHADOW = NO;
@@ -13727,7 +13717,6 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -13742,12 +13731,11 @@
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -13778,13 +13766,10 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -13805,13 +13790,11 @@
 		AB724FF40ADE6ECB00A212A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = YES;
 				DEPLOYMENT_LOCATION = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREFIX_HEADER = Decompres_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				LIBRARY_SEARCH_PATHS = (
@@ -13839,7 +13822,6 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				PRODUCT_NAME = Documentation;
 			};
@@ -13849,13 +13831,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_RESOURCE_RULES_PATH = "";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (

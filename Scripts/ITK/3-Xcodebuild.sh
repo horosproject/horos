@@ -1,7 +1,5 @@
 #!/bin/sh
 
-# This script uses the xcodebuild command to build ITK through the CMake-generated xcodeproj. Only specific parts of ITK are built.
-
 set -e; set -o xtrace
 
 cmake_dir="$TARGET_TEMP_DIR/CMake"

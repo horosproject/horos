@@ -1,7 +1,5 @@
 #!/bin/sh
 
-# VTK libraries are merged into a framework, along with the headers
-
 set -e; set -o xtrace
 
 source_dir="$PROJECT_DIR/$TARGET_NAME"
@@ -10,35 +8,32 @@ libs_dir="$cmake_dir/bin"
 framework_path="$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME"
 
 cd "$libs_dir"
+
 hash="$(find -s . -type f -name '*.a' -exec md5 -q {} \; | md5)-$(md5 -q "$0")"
+[ -d "$framework_path" -a -f "$cmake_dir/.frameworkhash" ] && [ "$(cat "$cmake_dir/.frameworkhash")" == "$hash" ] && exit 0
 
-if [ ! -d "$framework_path" -o ! -f "$cmake_dir/.frameworkhash" ] || [ "$(cat "$cmake_dir/.frameworkhash")" != "$hash" ]; then
-    rm -Rf "$framework_path"
+rm -Rf "$framework_path"
 
-    mkdir -p "$framework_path/Versions/A"
+mkdir -p "$framework_path/Versions/A"
+cd "$framework_path/Versions"
+ln -s A Current
 
-    cd "$framework_path/Versions"
-    ln -s A Current
+ars=$(find "$libs_dir" -name '*.a' -type f)
+libtool -static -o "$framework_path/Versions/A/$PRODUCT_NAME" $ars
 
-    ars=$(find "$libs_dir" -name '*.a' -type f)
-    libtool -static -o "$framework_path/Versions/A/$PRODUCT_NAME" $ars
+cd "$framework_path"
+ln -s "Versions/Current/$PRODUCT_NAME" "$PRODUCT_NAME"
+mkdir -p "Versions/A/Headers" # "Versions/A/Resources"
+ln -s Versions/Current/Headers Headers
+# ln -s Versions/Current/Resources Resources
 
-    cd "$framework_path"
-    ln -s "Versions/Current/$PRODUCT_NAME" "$PRODUCT_NAME"
-    mkdir -p "Versions/A/Headers" # "Versions/A/Resources"
-    ln -s Versions/Current/Headers Headers
-    # ln -s Versions/Current/Resources Resources
+cd Headers
 
-    cd Headers
+find "$source_dir/Source" \( -name '*.h*' -o -name '*.t*' \) -exec sh -c 'p="${0#*$source_dir/Source/}"; cp -an "{}" "$(basename $p)"' {} \;
+find "$cmake_dir/Source" -name '*.h*' -exec sh -c 'p="${0#*$source_dir/Source/}"; cp -an "{}" "$(basename $p)"' {} \;
 
-    find "$source_dir/Source" \( -name '*.h*' -o -name '*.t*' \) -exec sh -c 'p="${0#*$source_dir/Source/}"; cp -an "{}" "$(basename $p)"' {} \;
-#    find "$source_dir/Utilities/gdcmopenjpeg/src/lib/openjp2" -name '*.h*' -exec sh -c 'p="${0#*$source_dir/Source/}"; cp -an "{}" "$(basename $p)"' {} \;
-    find "$cmake_dir/Source" -name '*.h*' -exec sh -c 'p="${0#*$source_dir/Source/}"; cp -an "{}" "$(basename $p)"' {} \;
-#    find "$cmake_dir/Utilities/gdcmopenjpeg/src/lib/openjp2" -name '*.h*' -exec sh -c 'p="${0#*$source_dir/Source/}"; cp -an "{}" "$(basename $p)"' {} \;
+find . \( -name '*.htm*' -o -name '*.h.in' -o -name '*.txt' \) -delete
 
-    find . \( -name '*.htm*' -o -name '*.h.in' -o -name '*.txt' \) -delete
-
-    echo "$hash" > "$cmake_dir/.frameworkhash"
-fi
+echo "$hash" > "$cmake_dir/.frameworkhash"
 
 exit 0

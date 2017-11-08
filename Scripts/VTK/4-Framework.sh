@@ -1,53 +1,44 @@
 #!/bin/sh
 
-# VTK libraries are merged into a framework, along with the headers
-
 set -e; set -o xtrace
 
+source_dir="$PROJECT_DIR/$TARGET_NAME"
 cmake_dir="$TARGET_TEMP_DIR/CMake"
 libs_dir="$cmake_dir/lib/$CONFIGURATION"
-framework="$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME"
+framework_path="$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME"
 
 cd "$libs_dir"
-hash=$(find -s . -type f -name '*.a' -exec md5 -q {} \; | md5)
-if [ -e "$framework" -a -f .frameworkhash ]; then
-    frameworkhash=$(cat ".frameworkhash")
-    if [ "$frameworkhash" = "$hash" ]; then
-        exit 0
-    fi
-fi
 
-rm -Rf "$framework"
-echo "$hash" > .frameworkhash
+hash="$(find -s . -type f -name '*.a' -exec md5 -q {} \; | md5)-$(md5 -q "$0")"
+[ -d "$framework_path" -a -f "$cmake_dir/.frameworkhash" ] && [ "$(cat "$cmake_dir/.frameworkhash")" == "$hash" ] && exit 0
 
-mkdir -p "$framework/Versions/A"
-cd "$framework/Versions"
+rm -Rf "$framework_path"
+
+mkdir -p "$framework_path/Versions/A"
+cd "$framework_path/Versions"
 ln -s A Current
 
-ls -al .
+ars=$(find "$libs_dir" -name '*.a' -type f)
+libtool -static -o "$framework_path/Versions/A/$PRODUCT_NAME" $ars
 
-cd "$libs_dir"
-ars=$(ls *.a)
-libtool -static -o "$framework/Versions/A/VTK" $ars
-
-cd "$framework"
-ln -s Versions/Current/VTK VTK
+cd "$framework_path"
+ln -s "Versions/Current/$PRODUCT_NAME" "$PRODUCT_NAME"
 mkdir -p "Versions/A/Headers" # "Versions/A/Resources"
 ln -s Versions/Current/Headers Headers
-# ln -s Versions/Current/Resources Resources
+#ln -s Versions/Current/Resources Resources
 
 cd Headers
 
-find "$PROJECT_DIR/VTK" \
--not \( -path "$PROJECT_DIR/VTK/Utilities" -prune \) \
--not \( -path "$PROJECT_DIR/VTK/Rendering/OpenGL" -prune \) \
--not \( -path "$PROJECT_DIR/VTK/Rendering/VolumeOpenGL" -prune \) \
--not \( -path "$PROJECT_DIR/VTK/Rendering/ContextOpenGL" -prune \) \
+find "$source_dir" \
+-not \( -path "$source_dir/Utilities" -prune \) \
+-not \( -path "$source_dir/Rendering/OpenGL" -prune \) \
+-not \( -path "$source_dir/Rendering/VolumeOpenGL" -prune \) \
+-not \( -path "$source_dir/Rendering/ContextOpenGL" -prune \) \
 \( -name '*.h*' -o -name '*.txx' \) \
 -exec cp -an {} . \;
 
 mkdir -p vtkkwiml
-find "$PROJECT_DIR/VTK/Utilities/KWIML/vtkkwiml/include" -name '*.h*' -exec cp -an {} vtkkwiml \;
+find "$source_dir/Utilities/KWIML/vtkkwiml/include" -name '*.h*' -exec cp -an {} vtkkwiml \;
 
 find "$cmake_dir" -name '*.h*' -exec cp -an {} . \;
 
@@ -55,5 +46,7 @@ find . -type f \( -name '*.hmap' -o -name '*.in' -o -name '*.htm*' -o -name '*.m
 
 sed -i '' -e 's/#include <vtkRenderingVolumeModule.h>/#include "vtkRenderingVolumeModule.h"/g' 'vtkGPUVolumeRayCastMapper.h'
 sed -i '' -e 's/typedef TIFF_UINT64_T uint64;//g' -e 's/uint64 tiff_diroff;/TIFF_UINT64_T tiff_diroff;/g' 'tiff.h'
+
+echo "$hash" > "$cmake_dir/.frameworkhash"
 
 exit 0

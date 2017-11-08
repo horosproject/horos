@@ -1,15 +1,13 @@
 #!/bin/sh
 
-# To avoid excess CMake calls (because these take a long time to execute), this script stores the current git description and md5 hash of the repository CMake directory; when available, it compares the stored values to the current values and exits if nothing has changed.
-
 cd "$TARGET_NAME"; pwd
 hash="$(find . \( -name CMakeLists.txt -o -name '*.cmake' \) -type f -exec md5 -q {} \; | md5)-$(md5 -q "$0")-$(md5 -qs "$(env | sort)")"
 
 set -e; set -o xtrace
 
 cmake_dir="$TARGET_TEMP_DIR/CMake"
-mkdir -p "$cmake_dir"; cd "$cmake_dir"
 
+mkdir -p "$cmake_dir"; cd "$cmake_dir"
 if [ -e "$TARGET_NAME.xcodeproj" -a -f .cmakehash ] && [ "$(cat '.cmakehash')" = "$hash" ]; then
     exit 0
 fi

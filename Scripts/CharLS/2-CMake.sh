@@ -1,13 +1,10 @@
 #!/bin/sh
 
-# To avoid excess CMake calls (because these take a long time to execute), this script stores the current git description and md5 hash of the repository CMake directory; when available, it compares the stored values to the current values and exits if nothing has changed.
-
 cd "$TARGET_NAME"; pwd
 hash="$(find . \( -name CMakeLists.txt -o -name '*.cmake' \) -type f -exec md5 -q {} \; | md5)-$(md5 -q "$0")-$(md5 -qs "$(env | sort)")"
 
 set -e; set -o xtrace
 
-source_dir="$PROJECT_DIR/$TARGET_NAME"
 cmake_dir="$TARGET_TEMP_DIR/CMake"
 
 mkdir -p "$cmake_dir"; cd "$cmake_dir"
@@ -23,7 +20,7 @@ mkdir -p "$cmake_dir"
 export CC=clang
 export CXX=clang
 
-args=("$source_dir")
+args=("$PROJECT_DIR/$TARGET_NAME")
 cxxfs=($OTHER_CPLUSPLUSFLAGS)
 
 args+=(-DBUILD_SHARED_LIBS=OFF)
@@ -34,12 +31,12 @@ args+=(-DCMAKE_OSX_ARCHITECTURES="$ARCHS")
 args+=(-DCMAKE_INSTALL_PREFIX="$TARGET_TEMP_DIR/Install")
 
 if [ ! -z "$CLANG_CXX_LIBRARY" ] && [ "$CLANG_CXX_LIBRARY" != 'compiler-default' ]; then
-    args+=(-DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY="$CLANG_CXX_LIBRARY")
+#  args+=(-DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY="$CLANG_CXX_LIBRARY")
     cxxfs+=(-stdlib="$CLANG_CXX_LIBRARY")
 fi
 
 if [ ! -z "$CLANG_CXX_LANGUAGE_STANDARD" ]; then
-    args+=(-DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD="$CLANG_CXX_LANGUAGE_STANDARD")
+#    args+=(-DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD="$CLANG_CXX_LANGUAGE_STANDARD")
     cxxfs+=(-std="$CLANG_CXX_LANGUAGE_STANDARD")
 fi
 
