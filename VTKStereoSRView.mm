@@ -40,14 +40,14 @@
 #import "Notifications.h"
 #import "SRView.h"
 
-#define id Id
+//#define id Id
 #include "vtkRenderer.h"
 #include "vtkCocoaRenderWindow.h"
 #include "vtkCocoaRenderWindowInteractor.h"
 #include "vtkCommand.h"
 #include "vtkCamera.h"
 #include "vtkInteractorStyleTrackballCamera.h"
-#undef id
+//#undef id
 
 
 

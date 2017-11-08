@@ -34,8 +34,9 @@
 #import "DicomSeries.h"
 #import "DicomStudy.h"
 #import "DicomImage.h"
-#import <OsiriX/DCMAbstractSyntaxUID.h>
-#import <OsiriX/DCM.h>
+#import "DicomDatabase.h"
+#import "DCMAbstractSyntaxUID.h"
+#import "DCM.h"
 #import "NSImage+OsiriX.h"
 #import "DCMPix.h"
 #import "BrowserController.h"
@@ -159,7 +160,7 @@
         
         for( id loopItem in files)
         {
-            [[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:nil];
+            [[NSFileManager defaultManager] removeItemAtPath:[loopItem stringByAppendingString:@".bak"] error:NULL];
         }
         
         
@@ -189,7 +190,7 @@
 				[XMLController modifyDicom: params encoding: encoding];
 				
 				for( id loopItem in files)
-					[[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
+					[[NSFileManager defaultManager] removeItemAtPath: [loopItem stringByAppendingString:@".bak"] error:NULL];
 			}
 			@catch (NSException * e)
 			{
@@ -216,7 +217,7 @@
 	#ifndef OSIRIX_LIGHT
 	@try 
 	{
-		if( [self.study.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"]  && [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] == NO)
+		if( [self.study.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"]  && [[DicomDatabase databaseForContext:self.managedObjectContext] isLocal])
 		{
 			if( c == nil)
 				c = @"";
@@ -403,8 +404,8 @@
                         if (image.frameID)
                             frame = image.frameID.intValue;
                         
-                        NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
-                        [[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
+                        NSString *recoveryPath = [[[DicomDatabase databaseForContext:self.managedObjectContext] baseDirPath] stringByAppendingPathComponent:@"ThumbnailPath"];
+                        [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error:NULL];
                         [[[[self.study objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
                         
                         NSImage *thumbnail = nil;
@@ -434,7 +435,7 @@
                         }
                         else if( [DCMAbstractSyntaxUID isImageStorage: seriesSOPClassUID] || [DCMAbstractSyntaxUID isRadiotherapy: seriesSOPClassUID] || [seriesSOPClassUID length] == 0)
                         {
-                            DCMPix* dcmPix = [[DCMPix alloc] initWithPath: image.completePath :0 :1 :nil :frame :self.id.intValue isBonjour: [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] imageObj:image];
+                            DCMPix* dcmPix = [[DCMPix alloc] initWithPath: image.completePath :0 :1 :nil :frame :self.id.intValue isBonjour: ![[DicomDatabase databaseForContext:self.managedObjectContext] isLocal] imageObj:image];
                             [dcmPix CheckLoad];
                             
                             //Set the default series level window-width&level
@@ -461,7 +462,7 @@
                             thumbnailData = [[thumbnail TIFFRepresentation] retain]; // autoreleased when returning
                         }
                         
-                        [[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
+                        [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error:NULL];
                     }
                 }
 
@@ -785,7 +786,7 @@
 #ifndef OSIRIX_LIGHT
             NSString *vrFile = [VRController getUniqueFilenameScissorStateFor: self];
             if( vrFile && [[NSFileManager defaultManager] fileExistsAtPath: vrFile])
-                [[NSFileManager defaultManager] removeFileAtPath: vrFile handler: nil];
+                [[NSFileManager defaultManager] removeItemAtPath: vrFile error:NULL];
 #endif
 
         }

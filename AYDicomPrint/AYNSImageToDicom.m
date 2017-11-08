@@ -357,7 +357,7 @@ extern BOOL FULL32BITPIPELINE;
 	BOOL isDir = YES;
 	
 	if (![[NSFileManager defaultManager] fileExistsAtPath:destinationPath isDirectory:&isDir] && isDir)
-		[[NSFileManager defaultManager] createDirectoryAtPath:destinationPath attributes:nil];
+		[[NSFileManager defaultManager] createDirectoryAtPath:destinationPath withIntermediateDirectories:YES attributes:nil error:NULL];
 	
 	NSString *tempFilePath;
 	
@@ -842,7 +842,7 @@ extern BOOL FULL32BITPIPELINE;
 	dummyShort = [[patientDict objectForKey:@"series.modality"] length];
 	dummyShort = CFSwapInt16HostToLittle(dummyShort);
 	fwrite(&dummyShort, 2, 1, outFile);
-	fwrite([[patientDict objectForKey:@"series.modality"] cString], [[patientDict objectForKey:@"series.modality"] length], 1, outFile);
+	fwrite([[patientDict objectForKey:@"series.modality"] UTF8String], [[patientDict objectForKey:@"series.modality"] length], 1, outFile);
 	
 	//Manufacturer
 	fwrite(&group, 2, 1, outFile);

@@ -426,7 +426,7 @@
 
 - (float)rotation
 {
-    return [[self reformationView] rotation];
+    return [(DCMView *)[self reformationView] rotation];
 }
 
 - (void)setScaleValue: (float) scaleValue

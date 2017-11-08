@@ -300,7 +300,7 @@
     {
         xprev = value;
         value += step;
-    } while ( value < maxi && inputHisto[xprev] >= inputHisto[value] && abs(inputHisto[xprev] - inputHisto[value]) > epsilon);
+    } while ( value < maxi && inputHisto[xprev] >= inputHisto[value] && abs((int)inputHisto[xprev] - (int)inputHisto[value]) > epsilon);
     
     return xprev;
 }
@@ -400,7 +400,7 @@
 
 - (void) mmClosing:(vImage_Buffer *) buffer :(vImagePixelCount) x :(vImagePixelCount) y
 {
-    vImage_Buffer tmpResult, result;
+    vImage_Buffer tmpResult;//, result;
     tmpResult.width     = buffer->width;
     tmpResult.height    = buffer->height;
     tmpResult.rowBytes  = buffer->rowBytes;

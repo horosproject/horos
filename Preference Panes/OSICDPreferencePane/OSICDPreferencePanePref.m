@@ -40,7 +40,7 @@
 	if( self = [super init])
 	{
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSICDPreferencePanePref" bundle: nil] autorelease];
-		[nib instantiateNibWithOwner:self topLevelObjects: nil];
+		[nib instantiateWithOwner:self topLevelObjects:&_tlos];
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
@@ -58,7 +58,9 @@
 
 - (void) dealloc
 {
-	NSLog(@"dealloc OSICDPreferencePanePref");
+    NSLog(@"dealloc OSICDPreferencePanePref");
+    
+    [_tlos release]; _tlos = nil;
 	
 	[super dealloc];
 }
@@ -70,19 +72,16 @@
 
 - (IBAction)chooseSupplementaryBurnPath: (id)sender
 {
-	NSOpenPanel				*openPanel;
-	NSString				*filename;
-	BOOL					result;
-	
-	openPanel=[NSOpenPanel openPanel];
+	NSOpenPanel *openPanel = [NSOpenPanel openPanel];
 	[openPanel setCanChooseDirectories: YES];
 	[openPanel setCanChooseFiles: NO];
-	result=[openPanel runModalForDirectory: Nil file: Nil types: Nil];
-	if (result)
-	{
-		filename = [[[openPanel filenames] objectAtIndex: 0] stringByAbbreviatingWithTildeInPath];
-		[[NSUserDefaults standardUserDefaults] setObject: filename forKey:@"SupplementaryBurnPath"];
-	}
+    
+    [openPanel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
+        [[NSUserDefaults standardUserDefaults] setObject:openPanel.URL.path forKey:@"SupplementaryBurnPath"];
+    }];
 }
 
 @end

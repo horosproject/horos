@@ -1,6 +1,1 @@
-//
-// Prefix header for all source files of the 'Unit Tests' target in the 'Unit Tests' project
-//
-
-
 #define OSIRIX_VIEWER

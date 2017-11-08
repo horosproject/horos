@@ -42,22 +42,22 @@
 
 #import "options.h"
 
-#include <vtkAutoInit.h>
-VTK_MODULE_INIT(vtkRenderingOpenGL);
-VTK_MODULE_INIT(vtkRenderingVolumeOpenGL);
+#include <VTK/vtkAutoInit.h>
+VTK_MODULE_INIT(vtkRenderingOpenGL2);
+VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
 VTK_MODULE_INIT(vtkRenderingFreeType);
 
 #import <AppKit/AppKit.h>
 
 #ifdef __cplusplus
-#import "vtkCocoaGLView.h"
-#define id Id
-#include "vtkRenderer.h"
-#include "vtkRenderWindow.h"
-#include "vtkRenderWindowInteractor.h"
-#include "vtkCocoaRenderWindowInteractor.h"
-#include "vtkCocoaRenderWindow.h"
-#undef id
+#import <VTK/vtkCocoaGLView.h>
+//#define id Id
+#include <VTK/vtkRenderer.h>
+#include <VTK/vtkRenderWindow.h>
+#include <VTK/vtkRenderWindowInteractor.h>
+#include <VTK/vtkCocoaRenderWindowInteractor.h>
+#include <VTK/vtkCocoaRenderWindow.h>
+//#undef id
 #else
 typedef char* vtkCocoaWindow;
 typedef char* vtkRenderer;

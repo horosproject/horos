@@ -38,6 +38,12 @@
 NSString* N2ViewBoundsSizeDidChangeNotification = @"N2ViewBoundsSizeDidChangeNotification";
 NSString* N2ViewBoundsSizeDidChangeNotificationOldBoundsSize = @"oldBoundsSize";
 
+@interface N2View (Dummy)
+
+- (id)additionalSubviews;
+
+@end
+
 @implementation N2View
 @synthesize controlSize = _controlSize, minSize = _minSize, maxSize = _maxSize, layout = _layout, foreColor = _foreColor, backColor = _backColor;
 

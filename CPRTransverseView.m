@@ -31,7 +31,7 @@
      PURPOSE.
  ============================================================================*/
 
-#import "options.h"d
+#import "options.h"
 
 #import "N3Geometry.h"
 #import "CPRTransverseView.h"
@@ -663,7 +663,7 @@ extern int splitPosition[ 3];
 		{
 			r.pix = curDCM;
 			[r setOriginAndSpacing :curDCM.pixelSpacingX : curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY) :NO :NO];
-			[r setRoiView :self];
+			[r setCurView:self];
 		}
 		
 		[[self curRoiList] addObjectsFromArray: roiArray];

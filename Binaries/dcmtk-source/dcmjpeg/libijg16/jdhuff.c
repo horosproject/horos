@@ -167,12 +167,12 @@ jpeg_make_d_derived_tbl (j_decompress_ptr cinfo, boolean isDC, int tblno,
 
 GLOBAL(boolean)
 jpeg_fill_bit_buffer (bitread_working_state * state,
-		      register bit_buf_type get_buffer, register int bits_left,
+		      register bit_buf_type get_buffer, int bits_left,
 		      int nbits)
 /* Load up the bit buffer to a depth of at least nbits */
 {
   /* Copy heavily used state fields into locals (hopefully registers) */
-  register const JOCTET * next_input_byte = state->next_input_byte;
+  const JOCTET * next_input_byte = state->next_input_byte;
   register size_t bytes_in_buffer = state->bytes_in_buffer;
   j_decompress_ptr cinfo = state->cinfo;
 
@@ -182,7 +182,7 @@ jpeg_fill_bit_buffer (bitread_working_state * state,
 
   if (cinfo->unread_marker == 0) {	/* cannot advance past a marker */
     while (bits_left < MIN_GET_BITS) {
-      register int c;
+      int c;
 
       /* Attempt to read a byte */
       if (bytes_in_buffer == 0) {
@@ -278,10 +278,10 @@ jpeg_fill_bit_buffer (bitread_working_state * state,
 
 GLOBAL(int)
 jpeg_huff_decode (bitread_working_state * state,
-		  register bit_buf_type get_buffer, register int bits_left,
+		  register bit_buf_type get_buffer, int bits_left,
 		  d_derived_tbl * htbl, int min_bits)
 {
-  register int l = min_bits;
+  int l = min_bits;
   register IJG_INT32 code;
 
   /* HUFF_DECODE has determined that the code is at least min_bits */

@@ -47,7 +47,9 @@
 	
 	IBOutlet NSWindow* mainWindow;
 	
-	IBOutlet NSTableView* usersTable;
+    IBOutlet NSTableView* usersTable;
+    
+    id _tlos;
 }
 @property (retain) NSString *TLSAuthenticationCertificate;
 

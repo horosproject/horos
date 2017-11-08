@@ -66,7 +66,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 	[mutable replaceOccurrencesOfString:@"\n" withString:@"" options:0 range:NSMakeRange(0, [mutable length])]; 
 	[mutable replaceOccurrencesOfString:@"\"" withString:@"'" options:0 range:NSMakeRange(0, [mutable length])];
 	
-	int i = [mutable length];
+	int i = (int)[mutable length];
 	while( --i > 0)
 	{
 		if( [mutable characterAtIndex: i]==' ') [mutable deleteCharactersInRange: NSMakeRange( i, 1)];
@@ -89,7 +89,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 	else
     {
         NSLog( @"***** warning DCMCharacterSet stringWithBytes, length == 0, use C String length");
-        fromLength = strlen( str);
+        fromLength = (int)strlen(str);
     }
     
 	NSMutableString	*result = [NSMutableString string];
@@ -109,7 +109,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
         
         if (isEscape || isDelimiter)
         {
-            int convertLength = currentChar - firstChar - 1;
+            int convertLength = (int)(currentChar-firstChar) - 1;
 			
             if( convertLength - (escLength+1) >= 0)
             {
@@ -245,10 +245,10 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 	
     // convert any remaining characters from the input string
     {
-        int convertLength = currentChar - firstChar;
+        int convertLength = (int)(currentChar - firstChar);
         if (convertLength > 0)
         {
-            int convertLength = currentChar - firstChar;
+            int convertLength = (int)(currentChar - firstChar);
             
             if( firstChar + convertLength <= str + fromLength && ( convertLength - (escLength+1) >= 0))
             {

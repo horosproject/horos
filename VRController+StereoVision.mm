@@ -38,7 +38,7 @@
 #import "AppController.h"
 #import "VRController.h"
 #import "DCMView.h"
-#import "dicomFile.h"
+#import "DicomFile.h"
 #import "NSFullScreenWindow.h"
 #import "BrowserController.h"
 #include <Accelerate/Accelerate.h>
@@ -54,9 +54,6 @@
 #import "VRPresetPreview.h"
 #import "Notifications.h"
 #import "OSIWindow.h"
-
-#define PRESETS_DIRECTORY @"/3DPRESETS/"
-#define CLUTDATABASE @"/CLUTs/"
 
 static NSString* 	VRStandardToolbarIdentifier = @"VR Toolbar Identifier";
 static NSString* 	VRPanelToolbarIdentifier = @"VRPanel Toolbar Identifier";
@@ -291,7 +288,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		[toolbarItem setLabel: NSLocalizedString(@"Photos",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Photos",nil)];
 		[toolbarItem setToolTip:NSLocalizedString(@"Export this image to Photos",nil)];
-		[toolbarItem setImage: [NSImage imageNamed:"Photos"]];
+		[toolbarItem setImage: [NSImage imageNamed:@"Photos"]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(export2iPhoto:)];
     }

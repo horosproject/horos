@@ -37,8 +37,8 @@
 #import "DicomStudy.h"
 
 #import <AVFoundation/AVFoundation.h>
-#import <OsiriX/DCM.h>
-#import <OsiriX/DCMAbstractSyntaxUID.h>
+#import "DCM.h"
+#import "DCMAbstractSyntaxUID.h"
 #import "BrowserController.h"
 #import "BrowserControllerDCMTKCategory.h"
 #import "PluginManager.h"
@@ -63,7 +63,7 @@
 #import <DCMView.h>
 
 #import "ThickSlabController.h"
-#import "dicomFile.h"
+#import "DicomFile.h"
 #import "PluginFileFormatDecoder.h"
 
 #import "url.h"
@@ -71,9 +71,10 @@
 #ifdef VTK_USE_SYSTEM_TIFF
 #include <tiffio.h>
 #else
-#include "tiffio.h"
+//#include "tiffio.h"
 //#include "vtktiff/tiffio.h"
 //#include "vtktiff/vtk_tiff_mangle.h"
+#include <VTK/tiffio.h>
 #endif
 
 #ifndef OSIRIX_LIGHT
@@ -139,7 +140,7 @@ typedef struct NSPointInt NSPointInt;
 NSString* filenameWithDate( NSString *inputfile);
 
 extern NSRecursiveLock *PapyrusLock;
-extern short Altivec;
+//extern short Altivec;
 
 void PapyrusLockFunction( int lock)
 {
@@ -465,7 +466,7 @@ static inline long sgn( long x)
 
 static inline void FillEdges( NSPointInt *p, long no, struct edge *edgeTable[])
 {
-    int n = no;
+    int n = (int)no;
     
     memset( edgeTable, 0, sizeof(char*) * MAXVERTICAL);
     
@@ -990,7 +991,7 @@ static inline long pnpoly( NSPoint *p, long count, float x, float y)
 {
     long	c = 0;
     
-    for ( int i = 0, j = count-1; i < count; j = i++)
+    for ( int i = 0, j = (int)count-1; i < count; j = i++)
     {
         if ((((p[i].y <= y) && (y < p[j].y)) ||
              ((p[j].y <= y) && (y < p[i].y))) &&
@@ -1004,7 +1005,7 @@ inline long pnpolyInt( struct NSPointInt *p, long count, long x, long y)
 {
     long	c = 0;
     
-    for ( int i = 0, j = count-1; i < count; j = i++)
+    for ( int i = 0, j = (int)count-1; i < count; j = i++)
     {
         if ((((p[i].y <= y) && (y < p[j].y)) ||
              ((p[j].y <= y) && (y < p[i].y))) &&
@@ -1292,12 +1293,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         int startLine = [[dict valueForKey:@"start"] intValue];
                         int endLine = [[dict valueForKey:@"end"] intValue];
                         
-                        register int			ii = (endLine - startLine) * [o pwidth];
-                        register unsigned char	*dst8Ptr = (unsigned char*) [o baseAddr] + startLine * [o pwidth];
-                        register float			*src32Ptr = (float*) [[dict valueForKey:@"src"] pointerValue];
-                        register float			from = [o wl] - [o ww]/2.;
-                        register float			ratio = 4096. / [o ww];
-                        register float			*tfPtr = [o transferFunctionPtr];
+                        int			ii = (endLine - startLine) * (int)[o pwidth];
+                        unsigned char	*dst8Ptr = (unsigned char*) [o baseAddr] + startLine * [o pwidth];
+                        float			*src32Ptr = (float*) [[dict valueForKey:@"src"] pointerValue];
+                        float			from = [o wl] - [o ww]/2.;
+                        float			ratio = 4096. / [o ww];
+                        float			*tfPtr = [o transferFunctionPtr];
                         
                         src32Ptr += startLine * [o pwidth];
                         
@@ -1418,7 +1419,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 +(int) maxProcessors
 {
-    int numberOfThreadsForCompute =[[NSProcessInfo processInfo] processorCount];
+    int numberOfThreadsForCompute = (int)[[NSProcessInfo processInfo] processorCount];
     if( numberOfThreadsForCompute > 12)
         numberOfThreadsForCompute = 12;
     
@@ -1455,7 +1456,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         
         gUSEPAPYRUSDCMPIX = NO; //[[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX4"];
         gUseJPEGColorSpace = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseJPEGColorSpace"];
-        gSUVAcquisitionTimeField = [[NSUserDefaults standardUserDefaults] integerForKey:@"SUVAcquisitionTimeField"];
+        gSUVAcquisitionTimeField = (int)[[NSUserDefaults standardUserDefaults] integerForKey:@"SUVAcquisitionTimeField"];
         
         if( gCUSTOM_IMAGE_ANNOTATIONS == nil)
             gCUSTOM_IMAGE_ANNOTATIONS = [[NSMutableDictionary alloc] init];
@@ -1612,7 +1613,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     float ratio = [currentImage size].height / (minHeight);
                     imageRect = NSMakeRect(0.0, 0.0, (int) ([currentImage size].width/ratio), (int) ([currentImage size].height/ratio));
                 }
+                
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
                 [currentImage setScalesWhenResized:YES];
+#pragma clang diagnostic pop
                 
                 NSImage *compositingImage = [[NSImage alloc] initWithSize: imageRect.size];
                 
@@ -2327,7 +2332,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             
             if( roi.type == tROI) return YES;
             
-            int no = ptsTemp.count;
+            int no = (int)ptsTemp.count;
             pts = (NSPoint*) malloc( no * sizeof(NSPoint));
             int i = 0;
             for( MyPoint *pt in ptsTemp) pts[ i++] = [pt point];
@@ -2357,7 +2362,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         {
             DCMPix	*s = [pixArray objectAtIndex:i];
             
-            restoreImageCache[ i ] = [[DCMPix alloc] initWithPath: s.sourceFile : i : pixArray.count : nil : s.frameNo : 0];
+            restoreImageCache[ i ] = [[DCMPix alloc] initWithPath: s.srcFile : i : pixArray.count : nil : s.frameNo : 0];
         }
         
         NSLog( @"prepare Restore cache");
@@ -2393,7 +2398,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     {
         NSArray *ptsTemp = [roi points];
         
-        int no = ptsTemp.count;
+        int no = (int)ptsTemp.count;
         struct NSPointInt *ptsInt = (struct NSPointInt*) malloc( no * sizeof(struct NSPointInt));
         
         if( no == 0) NSLog( @"******** ERROR no == 0 getMapFromPolygonROI");
@@ -2407,17 +2412,17 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             
             if( i == 0)
             {
-                minX = ptsInt[ 0].x;
-                maxX = ptsInt[ 0].x;
-                minY = ptsInt[ 0].y;
-                maxY = ptsInt[ 0].y;
+                minX = (int)ptsInt[0].x;
+                maxX = (int)ptsInt[0].x;
+                minY = (int)ptsInt[0].y;
+                maxY = (int)ptsInt[0].y;
             }
             else
             {
-                if( ptsInt[ i].x < minX) minX = ptsInt[ i].x;
-                if( ptsInt[ i].x > maxX) maxX = ptsInt[ i].x;
-                if( ptsInt[ i].y < minY) minY = ptsInt[ i].y;
-                if( ptsInt[ i].y > maxY) maxY = ptsInt[ i].y;
+                if (ptsInt[ i].x < minX) minX = (int)ptsInt[i].x;
+                if (ptsInt[ i].x > maxX) maxX = (int)ptsInt[i].x;
+                if (ptsInt[ i].y < minY) minY = (int)ptsInt[i].y;
+                if (ptsInt[ i].y > maxY) maxY = (int)ptsInt[i].y;
             }
         }
         
@@ -4764,7 +4769,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         if( fExternalOwnedImage) fImage = fExternalOwnedImage;
         else fImage = malloc(width*height*sizeof(float) + 100);
         
-        int numPixels = height * width;
+        int numPixels = (int)(height * width);
         
         // GJ: Move to correct location for image data
         fseek(fp, imageDataOffsetForThisFrame, SEEK_SET);
@@ -5335,7 +5340,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     {
         short *signedSrc = (short*) src;
         
-        i = width * height;
+        i = (int)(width * height);
         while( i-- > 0)
         {
             index = signedSrc[ i] - first;
@@ -5348,7 +5353,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     }
     else
     {
-        i = width * height;
+        i = (int)(width * height);
         while( i-- > 0)
         {
             index = src[ i] - first;
@@ -5672,6 +5677,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         [usRegions release];
         usRegions = [[NSMutableArray array] retain];
         
+#ifdef OSIRIX_VIEWER
         for ( DCMObject *sequenceItem in seq.sequence)
         {
             /* US Regions --->
@@ -5704,7 +5710,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
              }
              <--- US Regions */
             // US Regions --->
-#ifdef OSIRIX_VIEWER
             
             // Read US Region Calibration Attributes
             DCMUSRegion *usRegion = [[[DCMUSRegion alloc] init] autorelease];
@@ -5742,9 +5747,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             [usRegions addObject:usRegion];
             
             //NSLog (@"dcmFrameworkLoad0x0028 - US REGION is [%@]", [usRegion toString]);
-#endif
             // <--- US Regions
         }
+#endif
     }
     
     //PixelAspectRatio
@@ -6184,15 +6189,15 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     oData = calloc( oRows*oColumns, 1);
                     if( oData)
                     {
-                        register unsigned short *pixels = (unsigned short*) [data bytes];
-                        register unsigned char *oD = oData;
-                        register char mask = 1;
-                        register long t = oColumns*oRows/16;
+                        unsigned short *pixels = (unsigned short*) [data bytes];
+                        unsigned char *oD = oData;
+                        char mask = 1;
+                        long t = oColumns*oRows/16;
                         
                         while( t-->0)
                         {
-                            register unsigned short	octet = *pixels++;
-                            register int x = 16;
+                            unsigned short	octet = *pixels++;
+                            int x = 16;
                             while( x-->0)
                             {
                                 char v = octet & mask ? 1 : 0;
@@ -6505,7 +6510,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     if( bitsAllocated == 16)
                     {
                         short *bufPtr = (short*) oImage, *tmpImage;
-                        long loop, totSize;
+                        long loop;//, totSize;
                         const int shift = bitsAllocated - bitsStored;
                         
                         tmpImage = malloc( height * width * 2L);
@@ -6925,7 +6930,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 
                 unsigned char *argbImage = nil, *srcPtr = nil, *tmpPtr = nil;
                 
-                int totSize = height * width * 4;
+                int totSize = (int)(height * width * 4);
                 if( fExternalOwnedImage)
                     argbImage =	(unsigned char*) fExternalOwnedImage;
                 else
@@ -6943,7 +6948,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                             {
                                 srcPtr = srcImage + y*[TIFFRep bytesPerRow];
                                 
-                                x = width;
+                                x = (int)width;
                                 while( x-->0)
                                 {
                                     tmpPtr++;
@@ -6961,7 +6966,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                             {
                                 srcPtr = srcImage + y*[TIFFRep bytesPerRow];
                                 
-                                x = width;
+                                x = (int)width;
                                 while( x-->0)
                                 {
                                     unsigned char alpha = srcPtr[ 3];
@@ -6992,7 +6997,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                             {
                                 srcPtr = srcImage + y*[TIFFRep bytesPerRow];
                                 
-                                x = width;
+                                x = (int)width;
                                 while( x-->0)
                                 {
                                     tmpPtr++;
@@ -7012,7 +7017,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                             {
                                 srcPtr = srcImage + y*[TIFFRep bytesPerRow];
                                 
-                                x = width;
+                                x = (int)width;
                                 while( x-->0)
                                 {
                                     tmpPtr++;
@@ -7099,7 +7104,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
                         // Only do it, if it failed: writing a file takes time... and slow down reading performances
                         
-                        NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
+                        NSString *recoveryPath = [[[[BrowserController currentBrowser] database] baseDirPath] stringByAppendingPathComponent:@"ThumbnailPath"];
                         
                         [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
                         
@@ -8155,7 +8160,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     if( t == NO)
     {
         float *f = (float*) dst->data;
-        int i = dst->height * dst->width;
+        int i = (int)(dst->height * dst->width);
         while( i-->0) *f++ = b;
     }
     
@@ -8844,7 +8849,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 +(int) nearestSliceInPixelList: (NSArray*)pixList withDICOMCoords: (float*)dicomCoords sliceCoords: (float*)nearestSliceCoords
 {
     
-    unsigned int count = pixList.count, nearestSliceIndx = 0;
+    unsigned int count = (unsigned int)pixList.count, nearestSliceIndx = 0;
     
     float minDist = MAXFLOAT;
     
@@ -9342,7 +9347,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 -(float*) subtractImages:(float*)input :(float*)subfImage
 {
     long	firstPixel = subPixOffset.y * width - subPixOffset.x;			
-    long	firstPixelAbs = abs(subPixOffset.y * width) + abs(subPixOffset.x);
+    long	firstPixelAbs = labs((int)subPixOffset.y * width) + labs((int)subPixOffset.x);
     float	*firstSourcePixel = subfImage + (firstPixelAbs + firstPixel)/2;
     long	i = height * width;	
     float	*result = malloc( i * sizeof(float));
@@ -9477,7 +9482,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 
                 if( shutterCircular_radius)
                 {
-                    erase_outside_circle( tempMem, width, height, shutterCircular.x, shutterCircular.y, shutterCircular_radius, blackIndex);
+                    erase_outside_circle(tempMem, (int)width, (int)height, shutterCircular.x, shutterCircular.y, (int)shutterCircular_radius, blackIndex);
                 }
                 
                 if( shutterPolygonal)
@@ -9550,7 +9555,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 // check the first line to avoid nan value....
                 
                 float *ptr = result;
-                int x = width;
+                int x = (int)width;
                 while( x-- > 0)
                     *ptr++ = m;
             }
@@ -10151,7 +10156,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             newWL = wl;
         }
         
-        CreateIconFrom16( fImage, [bitmapRep bitmapData], height, width, destWidth, newWL, newWW, isRGB);
+        CreateIconFrom16( fImage, [bitmapRep bitmapData], (int)height, (int)width, destWidth, newWL, newWW, isRGB);
         
         image = [[[NSImage alloc] initWithSize:NSMakeSize(destWidth, destHeight)] autorelease];
         [image addRepresentation:bitmapRep];
@@ -10594,16 +10599,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         if(![key isEqualToString:@"sameAsDefault"])
         {
             NSArray *annotations = [annotationsForModality objectForKey: key];
-            NSMutableArray *annotationsOUT = [NSMutableArray array];
+//            NSMutableArray *annotationsOUT = [NSMutableArray array];
             
             @try
             {
                 for ( NSDictionary *annot in annotations)
                 {
                     NSArray *content = [annot objectForKey:@"fullContent"];
-                    NSMutableArray *contentOUT = [NSMutableArray array];
+//                    NSMutableArray *contentOUT = [NSMutableArray array];
                     
-                    BOOL contentForLine = NO;
+//                    BOOL contentForLine = NO;
                     
                     for ( int f=0; f<[content count]; f++)
                     {

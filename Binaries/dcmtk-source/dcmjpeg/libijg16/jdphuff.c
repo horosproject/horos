@@ -212,10 +212,10 @@ static const int extend_test[16] =   /* entry n is 2**(n-1) */
     0x0100, 0x0200, 0x0400, 0x0800, 0x1000, 0x2000, 0x4000 };
 
 static const int extend_offset[16] = /* entry n is (-1 << n) + 1 */
-  { 0, ((-1)<<1) + 1, ((-1)<<2) + 1, ((-1)<<3) + 1, ((-1)<<4) + 1,
-    ((-1)<<5) + 1, ((-1)<<6) + 1, ((-1)<<7) + 1, ((-1)<<8) + 1,
-    ((-1)<<9) + 1, ((-1)<<10) + 1, ((-1)<<11) + 1, ((-1)<<12) + 1,
-    ((-1)<<13) + 1, ((-1)<<14) + 1, ((-1)<<15) + 1 };
+{ 0, (0xffffffff<<1) + 1, (0xffffffff<<2) + 1, (0xffffffff<<3) + 1, (0xffffffff<<4) + 1,
+    (0xffffffff<<5) + 1, (0xffffffff<<6) + 1, (0xffffffff<<7) + 1, (0xffffffff<<8) + 1,
+    (0xffffffff<<9) + 1, (0xffffffff<<10) + 1, (0xffffffff<<11) + 1, (0xffffffff<<12) + 1,
+    (0xffffffff<<13) + 1, (0xffffffff<<14) + 1, (0xffffffff<<15) + 1 };
 
 #endif /* AVOID_TABLES */
 
@@ -290,7 +290,7 @@ decode_mcu_DC_first (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
   j_lossy_d_ptr lossyd = (j_lossy_d_ptr) cinfo->codec;
   phuff_entropy_ptr entropy = (phuff_entropy_ptr) lossyd->entropy_private;
   int Al = cinfo->Al;
-  register int s, r;
+  int s, r;
   int blkn, ci;
   JBLOCKROW block;
   BITREAD_STATE_VARS;
@@ -363,7 +363,7 @@ decode_mcu_AC_first (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
   phuff_entropy_ptr entropy = (phuff_entropy_ptr) lossyd->entropy_private;
   int Se = cinfo->Se;
   int Al = cinfo->Al;
-  register int s, k, r;
+  int s, k, r;
   unsigned int EOBRUN;
   JBLOCKROW block;
   BITREAD_STATE_VARS;
@@ -500,7 +500,7 @@ decode_mcu_AC_refine (j_decompress_ptr cinfo, JBLOCKROW *MCU_data)
   int Se = cinfo->Se;
   int p1 = 1 << cinfo->Al;	/* 1 in the bit position being coded */
   int m1 = (-1) << cinfo->Al;	/* -1 in the bit position being coded */
-  register int s, k, r;
+  int s, k, r;
   unsigned int EOBRUN;
   JBLOCKROW block;
   JCOEFPTR thiscoef;

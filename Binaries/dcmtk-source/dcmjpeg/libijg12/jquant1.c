@@ -462,12 +462,12 @@ color_quantize (j_decompress_ptr cinfo, JSAMPARRAY input_buf,
 {
   my_cquantize_ptr cquantize = (my_cquantize_ptr) cinfo->cquantize;
   JSAMPARRAY colorindex = cquantize->colorindex;
-  register int pixcode, ci;
+  int pixcode, ci;
   register JSAMPROW ptrin, ptrout;
   int row;
   JDIMENSION col;
   JDIMENSION width = cinfo->output_width;
-  register int nc = cinfo->out_color_components;
+  int nc = cinfo->out_color_components;
 
   for (row = 0; row < num_rows; row++) {
     ptrin = input_buf[row];
@@ -489,7 +489,7 @@ color_quantize3 (j_decompress_ptr cinfo, JSAMPARRAY input_buf,
 /* Fast path for out_color_components==3, no dithering */
 {
   my_cquantize_ptr cquantize = (my_cquantize_ptr) cinfo->cquantize;
-  register int pixcode;
+  int pixcode;
   register JSAMPROW ptrin, ptrout;
   JSAMPROW colorindex0 = cquantize->colorindex[0];
   JSAMPROW colorindex1 = cquantize->colorindex[1];
@@ -567,7 +567,7 @@ quantize3_ord_dither (j_decompress_ptr cinfo, JSAMPARRAY input_buf,
 /* Fast path for out_color_components==3, with ordered dithering */
 {
   my_cquantize_ptr cquantize = (my_cquantize_ptr) cinfo->cquantize;
-  register int pixcode;
+  int pixcode;
   register JSAMPROW input_ptr;
   register JSAMPROW output_ptr;
   JSAMPROW colorindex0 = cquantize->colorindex[0];

@@ -136,7 +136,7 @@ static const char base64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijk
 			bytes[length++] = (buffer[2] << 6) | buffer[3];
 	}
 	
-	realloc(bytes, length);
+	bytes = (char *)realloc(bytes, length);
 	return [self initWithBytesNoCopy:bytes length:length];
 }
 

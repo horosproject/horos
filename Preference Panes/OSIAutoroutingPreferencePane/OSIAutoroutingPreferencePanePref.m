@@ -31,10 +31,10 @@
      PURPOSE.
  ============================================================================*/
 
-#import <OsiriX/DCMObject.h>
+#import "DCMObject.h"
 #import "OSIAutoroutingPreferencePanePref.h"
-#import <HorosAPI/NSPreferencePane+OsiriX.h>
-#import <HorosAPI/AppController.h>
+#import "NSPreferencePane+OsiriX.h"
+#import "AppController.h"
 
 #define CURRENTVERSION 1
 
@@ -49,7 +49,7 @@
     if( self = [super init])
     {
         NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIAutoroutingPreferencePanePref" bundle: nil] autorelease];
-        [nib instantiateNibWithOwner:self topLevelObjects: nil];
+        [nib instantiateWithOwner:self topLevelObjects:&_tlos];
         
         [self setMainView: [mainWindow contentView]];
         [self mainViewDidLoad];
@@ -133,6 +133,8 @@
     
     [routesArray release];
     [serversArray release];
+    
+    [_tlos release]; _tlos = nil;
     
     [super dealloc];
 }

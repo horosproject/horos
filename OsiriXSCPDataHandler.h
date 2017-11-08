@@ -32,7 +32,7 @@
  ============================================================================*/
 
 #import <Cocoa/Cocoa.h>
-#import <OsiriX/DCM.h>
+#import "DCM.h"
 
 #undef verify
 #include "dcdatset.h"

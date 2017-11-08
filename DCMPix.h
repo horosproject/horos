@@ -311,6 +311,8 @@ extern "C"
 @property(retain) NSString *generatedName;
 
 @property(retain) NSString *srcFile;
+- (NSString *)sourceFile __deprecated;
+- (void)setSourceFile:(NSString *)sf __deprecated;
 
 @property(readonly) unsigned int* VOILUT_table;
 
@@ -650,6 +652,8 @@ extern "C"
 /** Calls CheckLoadIn when needed */
 - (void) CheckLoad;
 - (BOOL) isLoaded;
+
+-(void) CheckLoadFromThread:(NSThread*) loadingThread;
 
 /** Compute the float pointer for the image data */
 - (float*) computefImage;

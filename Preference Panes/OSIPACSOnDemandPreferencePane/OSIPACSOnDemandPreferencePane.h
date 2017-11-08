@@ -52,6 +52,8 @@
     NSMutableArray *smartAlbumModality;
     NSString *smartAlbumFilter;
     int smartAlbumDate;
+    
+    id _tlos;
 }
 
 @property (retain) NSMutableArray *smartAlbumsArray, *smartAlbumModality;

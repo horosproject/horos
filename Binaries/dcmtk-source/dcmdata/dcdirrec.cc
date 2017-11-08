@@ -542,7 +542,7 @@ static void hostToDicomFilename(char *fname)
     ** Elmiminate any invalid characters.
     ** Most commonly there is a '.' at the end of a filename.
     */
-    int len = strlen(fname);
+    int len = (int)strlen(fname);
     int k = 0;
     char c = '\0';
     for (int i = 0; i < len; i++)

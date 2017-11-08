@@ -56,14 +56,14 @@
 #import "DCMCursor.h"
 #import "DICOMExport.h"
 #import "Notifications.h"
-#import "wait.h"
+#import "Wait.h"
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/CGLCurrent.h>
 #include "math.h"
 #include "vtkImageFlip.h"
 #import "QuicktimeExport.h"
 #import "AppController.h"
-#import "browserController.h"
+#import "BrowserController.h"
 #include "vtkRIBExporter.h"
 #include "vtkIVExporter.h"
 #include "vtkOBJExporter.h"
@@ -1055,7 +1055,7 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 			else
 				newpath = [QuicktimeExport generateQTVR: path frames: numberOfFrames];
 			
-			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+			[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
 			[[NSFileManager defaultManager] moveItemAtPath: newpath  toPath: path error:NULL];
 			
 			[[NSWorkspace sharedWorkspace] openFile:path withApplication: nil andDeactivate: YES];

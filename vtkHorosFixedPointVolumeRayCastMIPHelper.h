@@ -57,8 +57,8 @@
 #ifndef vtkHorosFixedPointVolumeRayCastMIPHelper_h
 #define vtkHorosFixedPointVolumeRayCastMIPHelper_h
 
-#include "vtkRenderingVolumeModule.h" // For export macro
-#include "vtkFixedPointVolumeRayCastMIPHelper.h"
+#include <VTK/vtkRenderingVolumeModule.h> // For export macro
+#include <VTK/vtkFixedPointVolumeRayCastMIPHelper.h>
 
 class vtkFixedPointVolumeRayCastMapper;
 class vtkVolume;
@@ -68,12 +68,12 @@ class VTKRENDERINGVOLUME_EXPORT vtkHorosFixedPointVolumeRayCastMIPHelper : publi
 public:
   static vtkHorosFixedPointVolumeRayCastMIPHelper *New();
   vtkTypeMacro(vtkHorosFixedPointVolumeRayCastMIPHelper,vtkFixedPointVolumeRayCastHelper);
-  void PrintSelf( ostream& os, vtkIndent indent );
+  void PrintSelf( ostream& os, vtkIndent indent ) override;
 
   virtual void  GenerateImage( int threadID,
                                int threadCount,
                                vtkVolume *vol,
-                               vtkFixedPointVolumeRayCastMapper *mapper);
+                               vtkFixedPointVolumeRayCastMapper *mapper) override;
 
 protected:
   vtkHorosFixedPointVolumeRayCastMIPHelper();

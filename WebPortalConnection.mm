@@ -60,7 +60,7 @@
 #import "N2Debug.h"
 #import "NSString+N2.h"
 #import "NSUserDefaultsController+N2.h"
-#import <OsiriX/DCMAbstractSyntaxUID.h>
+#import "DCMAbstractSyntaxUID.h"
 #import "NSString+N2.h"
 #import "DDData.h"
 #import "NSData+N2.h"
@@ -278,7 +278,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			char buffer[256];
 			if (inet_ntop(AF_INET, &service.sin_addr, buffer, sizeof(buffer)))
 			{
-				if ([[NSString stringWithCString:buffer] isEqualToString:[asyncSocket connectedHost]]) // TODO: this may fail because of comparaisons between ipv6 and ipv4 addys
+				if ([[NSString stringWithUTF8String:buffer] isEqualToString:[asyncSocket connectedHost]]) // TODO: this may fail because of comparaisons between ipv6 and ipv4 addys
 				{
 					DLog( @"\tFound! %@:%d", [asyncSocket connectedHost], dicomNodePort);
 					return dicomNodePort;
@@ -391,8 +391,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		NSString* value = [dict objectForKey:key];
 		if ([value isKindOfClass: [NSArray class]])
 			for (NSString* v2 in (NSArray*)value)
-				[str appendFormat:@"%@%@=%@", str.length?@"&":@"", [key urlEncodedString], [v2 urlEncodedString]];
-		else [str appendFormat:@"%@%@=%@", str.length?@"&":@"", [key urlEncodedString], [value urlEncodedString]];
+				[str appendFormat:@"%@%@=%@", str.length?@"&":@"", [key stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [v2 stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+		else [str appendFormat:@"%@%@=%@", str.length?@"&":@"", [key stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [value stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 	} return str;
 }
 
@@ -757,7 +757,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		
 		if( f)
 		{
-			file = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+			file = [[[BrowserController currentBrowser] database] uniquePathForNewDataFileWithExtension:@"dcm"];
 				
 			[[NSFileManager defaultManager] moveItemAtPath: oFile toPath: file error: nil];
 			
@@ -1125,9 +1125,9 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
                 {
                     id plugin = [[PluginManager plugins] objectForKey:key];
                     
-                    if ([plugin respondsToSelector:@selector(authenticateConnection: parameters:)])
+                    if ([plugin respondsToSelector:@selector(authenticateConnection:parameters:)])
                     {
-                        WebPortalUser *u = [plugin performSelector: @selector(authenticateConnection: parameters:) withObject: self withObject: params];
+                        WebPortalUser *u = [plugin performSelector: @selector(authenticateConnection:parameters:) withObject: self withObject: params];
                         
                         if( u)
                         {

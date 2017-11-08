@@ -34,6 +34,7 @@
 
 #import "NSFileManager+N2.h"
 #import "NSString+N2.h"
+#import "NSString+SymlinksAndAliases.h"
 #import <sys/stat.h>
 
 @implementation NSFileManager (N2)
@@ -66,21 +67,27 @@
 }
 
 -(NSString*)userApplicationSupportFolderForApp {
-	NSString* path = [[self findSystemFolderOfType:kApplicationSupportFolderType forDomain:kUserDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]];
+    NSURL *url = [[self URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] firstObject];
+	NSString* path = url.path;
 	[self confirmDirectoryAtPath:path];
 	return path;
 }
 
 -(NSString*)tmpFilePathInDir:(NSString*)dirPath {
-	NSString* prefix = [NSString stringWithFormat:@"%@_%@_%u_%lu_", [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey], [[NSDate date] descriptionWithCalendarFormat:@"%Y%m%d%H%M%S" timeZone:NULL locale:NULL], getpid(), (long) [NSThread currentThread]];
-	char* path = tempnam(dirPath.UTF8String, prefix.UTF8String);
-	NSString* nsPath = [NSString stringWithUTF8String:path];
-	free(path);
-	return nsPath;
+    NSString *pre = [dirPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_%@_%u_%lu_XXXXXX", [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey], [[NSDate date] descriptionWithCalendarFormat:@"%Y%m%d%H%M%S" timeZone:NULL locale:NULL], getpid(), (long)[NSThread currentThread]]];
+    
+    NSUInteger len = pre.length+1;
+    char temp[len];
+    [pre getBytes:temp maxLength:len usedLength:&len encoding:NSUTF8StringEncoding options:0 range:NSMakeRange(0, pre.length) remainingRange:NULL];
+    temp[len] = 0;
+    
+    mkstemp(temp);
+    
+	return [NSString stringWithUTF8String:temp];
 }
 
 -(NSString*)tmpDirPath {
-    NSString* path = [NSString stringWithFormat:@"/tmp/%@_%@", [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey], NSUserName()];
+    NSString* path = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_%@", [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey], NSUserName()]];
     [self confirmDirectoryAtPath:path];
     return path;
 }
@@ -311,7 +318,7 @@
 
 -(NSString*)destinationOfAliasOrSymlinkAtPath:(NSString*)path resolved:(BOOL*)r {
 	//if (![self fileExistsAtPath:path]) {
-		NSString* temp = [self destinationOfAliasAtPath:path];
+		NSString* temp = [path stringByConditionallyResolvingAlias];
 		if (temp) {
 			if (r) *r = YES;
 			return temp;

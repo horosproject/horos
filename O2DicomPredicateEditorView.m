@@ -69,7 +69,7 @@ static NSMutableArray* menuItemsCache = nil;
 
 @synthesize tagsSortKey = _tagsSortKey;
 
-@synthesize tag = _tag;
+@synthesize DCMAttributeTag = _DCMAttributeTag;
 @synthesize operator = _operator;
 @synthesize stringValue = _stringValue;
 @synthesize numberValue = _numberValue;
@@ -537,7 +537,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     
     [_menuItems release];
     
-    self.tag = nil;
+    self.DCMAttributeTag = nil;
     
     self.tags = nil;
     
@@ -562,7 +562,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
             [self review];
 
         if ([keyPath isEqualToString:@"tag"]) {
-            switch ([[self class] valueRepresentationFromVR:self.tag.vr]) {
+            switch ([[self class] valueRepresentationFromVR:self.DCMAttributeTag.vr]) {
                 case DCM_SH:
                 case DCM_LO:
                 case DCM_ST:
@@ -697,11 +697,11 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
 }
 
 - (void)setSelectedTag:(NSInteger)tag {
-    self.tag = [self tagWithGroup:tag>>16 element:tag&0xffff];
+    self.DCMAttributeTag = [self tagWithGroup:tag>>16 element:tag&0xffff];
 }
 
 - (NSInteger)selectedTag {
-    return [[self class] tagForTag:self.tag];
+    return [[self class] tagForTag:self.DCMAttributeTag];
 }
 
 - (void)_contextualMenuSortTags:(NSMenuItem*)sender {
@@ -913,7 +913,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
 - (NSArray*)views {
     NSMutableArray* views = [NSMutableArray arrayWithObject:_tagsPopUp];
     
-    DCMAttributeTag* tag = self.tag;
+    DCMAttributeTag* tag = self.DCMAttributeTag;
     O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
 
 #define N(x) [NSNumber numberWithInteger:x]
@@ -1024,7 +1024,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
 //            [self setAvailableOperators: N(NSContainsPredicateOperatorType), N(NSBeginsWithPredicateOperatorType), N(NSEndsWithPredicateOperatorType), N(NSEqualToPredicateOperatorType), N(NSNotEqualToPredicateOperatorType), nil];
             // .. popup
             [_codeStringPopUp.menu removeAllItems];
-            NSDictionary* dic = [O2DicomPredicateEditorCodeStrings codeStringsForTag:self.tag];
+            NSDictionary* dic = [O2DicomPredicateEditorCodeStrings codeStringsForTag:self.DCMAttributeTag];
             NSInteger i = 0;
             for (NSString* k in dic) {
                 NSString* t = nil;
@@ -1105,11 +1105,12 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     [self resizeSubviewsWithOldSize:self.bounds.size];
 }
 
-- (double)matchForPredicate:(id)predicate {
+- (double)matchForPredicate:(id)p {
 //    NSLog(@"matchForPredicate: %@", predicate);
 
-    if ([predicate isKindOfClass:[NSComparisonPredicate class]])
+    if ([p isKindOfClass:[NSComparisonPredicate class]])
         @try {
+            NSComparisonPredicate *predicate = p;
 //            NSExpression* eleft = [predicate leftExpression];
 //            NSExpression* eright = [predicate rightExpression];
             NSPredicateOperatorType otype = [predicate predicateOperatorType];
@@ -1193,8 +1194,9 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         } @catch (...) {
         }
     
-    if ([predicate isKindOfClass:[NSCompoundPredicate class]] && [predicate compoundPredicateType] == NSAndPredicateType)
+    if ([p isKindOfClass:[NSCompoundPredicate class]] && [p compoundPredicateType] == NSAndPredicateType)
         @try {
+            NSCompoundPredicate *predicate = p;
             NSArray* subpredicates = [predicate subpredicates];
 //            if (subpredicates.count > 1) {
                 // subpredicates must be of same KeyPath
@@ -1239,7 +1241,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         } @catch (...) {
         }
     
-    if ([predicate isKindOfClass:[NSPredicate class]] && [[predicate predicateFormat] isEqualToString:@"TRUEPREDICATE"])
+    if ([p isKindOfClass:[NSPredicate class]] && [[p predicateFormat] isEqualToString:@"TRUEPREDICATE"])
         return 0.6;
     
     return 0;
@@ -1249,22 +1251,24 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     return [NSSet setWithObjects: @"tag", @"operator", @"value", @"within", nil];
 }*/
 
-- (void)setPredicate:(id)predicate {
+- (void)setPredicate:(id)p {
 //    NSLog(@"setPredicate: %@", predicate);
     
-    if ([predicate isKindOfClass:[NSPredicate class]] && [[predicate predicateFormat] isEqualToString:@"TRUEPREDICATE"]) {
-        [self setTag:nil];
+    if ([p isKindOfClass:[NSPredicate class]] && [[p predicateFormat] isEqualToString:@"TRUEPREDICATE"]) {
+        [self setDCMAttributeTag:nil];
         return;
     }
     
-    if ([predicate isKindOfClass:[NSComparisonPredicate class]]) {
+    if ([p isKindOfClass:[NSComparisonPredicate class]]) {
+        NSComparisonPredicate *predicate = p;
+        
         DCMAttributeTag* tag = [self tagWithKeyPath:[predicate keyPath]];
         O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
 
         NSPredicateOperatorType otype = [predicate predicateOperatorType];
 //        NSExpression* eright = [predicate rightExpression];
         
-        [self setTag:tag];
+        [self setDCMAttributeTag:tag];
         
         switch (vr) {
             case DCM_SH:
@@ -1344,12 +1348,14 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
         }
     }
     
-    if ([predicate isKindOfClass:[NSCompoundPredicate class]] && [predicate compoundPredicateType] == NSAndPredicateType) {
+    if ([p isKindOfClass:[NSCompoundPredicate class]] && [p compoundPredicateType] == NSAndPredicateType) {
+        NSCompoundPredicate *predicate = p;
+        
         NSArray* subpredicates = [predicate subpredicates];
         DCMAttributeTag* tag = [self tagWithKeyPath:[[subpredicates objectAtIndex:0] keyPath]];
         O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
         
-        [self setTag:tag];
+        [self setDCMAttributeTag:tag];
         
         NSComparisonPredicate* sp0 = [subpredicates objectAtIndex:0];
         NSComparisonPredicate* sp1 = [subpredicates objectAtIndex:1];
@@ -1383,7 +1389,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
 }
 
 - (NSPredicate*)predicate {
-    DCMAttributeTag* tag = self.tag;
+    DCMAttributeTag* tag = self.DCMAttributeTag;
     O2ValueRepresentation vr = [[self class] valueRepresentationFromVR:tag.vr];
     
     NSExpression* tagNameExpression = [NSExpression expressionForKeyPath:tag.name];
@@ -1553,7 +1559,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
 }*/
 
 - (NSInteger)tagForCodeString:(NSString*)str {
-    NSDictionary* dic = [O2DicomPredicateEditorCodeStrings codeStringsForTag:self.tag];
+    NSDictionary* dic = [O2DicomPredicateEditorCodeStrings codeStringsForTag:self.DCMAttributeTag];
     if (!dic)
         return 0;
     
@@ -1565,7 +1571,7 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
 }
 
 - (NSString*)codeStringForTag:(NSInteger)cst {
-    NSDictionary* dic = [O2DicomPredicateEditorCodeStrings codeStringsForTag:self.tag];
+    NSDictionary* dic = [O2DicomPredicateEditorCodeStrings codeStringsForTag:self.DCMAttributeTag];
     
     if (cst > 0 && dic.count >= cst)
         return [dic.allKeys objectAtIndex:cst-1];
@@ -1573,6 +1579,17 @@ enum /*typedef NS_ENUM(NSUInteger, O2ValueRepresentation)*/ {
     return [self stringValue];
 }
 
++ (NSSet *)keyPathsForValuesAffectingTag {
+    return [NSSet setWithObject:@"DCMAttributeTag"];
+}
+
+- (void)setTag:(DCMAttributeTag *)tag {
+    self.DCMAttributeTag = tag;
+}
+
+- (DCMAttributeTag *)tag {
+    return self.DCMAttributeTag;
+}
 
 @end
 

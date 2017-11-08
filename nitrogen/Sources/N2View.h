@@ -39,6 +39,7 @@
 extern NSString* N2ViewBoundsSizeDidChangeNotification;
 extern NSString* N2ViewBoundsSizeDidChangeNotificationOldBoundsSize;
 
+__deprecated
 @interface N2View : NSView {
 	NSControlSize _controlSize;
 	NSSize _minSize, _maxSize;

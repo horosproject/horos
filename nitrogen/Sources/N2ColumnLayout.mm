@@ -381,7 +381,7 @@ typedef struct ConstrainedFloat {
 			newSize.height = y;
 		// apply
 		NSWindow* window = [_view window];
-		if (_view == [window contentView]) {
+		if (_view == (id)[window contentView]) {
 			NSRect frame = [window frame];
 			NSSize oldFrameSize = frame.size;
 			frame.size = [window frameRectForContentRect:NSMakeRect(NSZeroPoint, newSize)].size;

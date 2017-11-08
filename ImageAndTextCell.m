@@ -37,7 +37,7 @@
 
 @implementation ImageAndTextCell
 
-- (NSUInteger) hitTestForEvent:(NSEvent *)theEvent inRect:(NSRect)cellFrame ofView:(NSView *)controlView
+- (NSCellHitResult)hitTestForEvent:(NSEvent *)theEvent inRect:(NSRect)cellFrame ofView:(NSView *)controlView
 {
 	if (lastImage != nil)
 	{

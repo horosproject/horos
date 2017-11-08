@@ -43,6 +43,12 @@
 #import "NSUserDefaultsController+OsiriX.h"
 #import "DicomDatabase.h"
 
+@interface Window3DController (Dummy)
+
+- (void)noAction:(id)dummy;
+
+@end
+
 @implementation Window3DController
 
 #ifndef OSIRIX_LIGHT
@@ -168,7 +174,7 @@
 	
 	NSString	*tmpFolder = [NSString stringWithFormat:@"/tmp/print"];
 	
-	[[NSFileManager defaultManager] removeFileAtPath: tmpFolder handler:nil];
+	[[NSFileManager defaultManager] removeItemAtPath: tmpFolder error:NULL];
 }
 
 - (void) print:(id) sender
@@ -183,8 +189,8 @@
 	
 	NSMutableArray	*files = [NSMutableArray array];
 
-	[[NSFileManager defaultManager] removeFileAtPath: tmpFolder handler:nil];
-	[[NSFileManager defaultManager] createDirectoryAtPath:tmpFolder attributes:nil];
+	[[NSFileManager defaultManager] removeItemAtPath: tmpFolder error:NULL];
+	[[NSFileManager defaultManager] createDirectoryAtPath:tmpFolder withIntermediateDirectories:YES attributes:nil error:NULL];
 
 	NSImage *im = ( [[self view] respondsToSelector: @selector(nsimageQuicktime:)] ) ?
 		[(VRView*) [self view] nsimageQuicktime] : nil;
@@ -229,11 +235,11 @@
 
 	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 
-	[bitmapData writeToFile:[[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"OsiriX.jpg"] atomically:YES];
+	[bitmapData writeToFile:[[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"Horos.jpg"] atomically:YES];
 				
 	email = [[Mailer alloc] init];
 	
-	[email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"OsiriX.jpg"]];
+	[email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"Horos.jpg"]];
 	
 	[email release];
 }

@@ -33,11 +33,11 @@
 
 #import <N2Step.h>
 
-NSString* N2StepDidBecomeActiveNotification = @"N2StepDidBecomeActiveNotification";
-NSString* N2StepDidBecomeInactiveNotification = @"N2StepDidBecomeInactiveNotification";
-NSString* N2StepDidBecomeEnabledNotification = @"N2StepDidBecomeEnabledNotification";
-NSString* N2StepDidBecomeDisabledNotification = @"N2StepDidBecomeDisabledNotification";
-NSString* N2StepTitleDidChangeNotification = @"N2StepTitleDidChangeNotification";
+NSString * const N2StepDidBecomeActiveNotification = @"N2StepDidBecomeActiveNotification";
+NSString * const N2StepDidBecomeInactiveNotification = @"N2StepDidBecomeInactiveNotification";
+NSString * const N2StepDidBecomeEnabledNotification = @"N2StepDidBecomeEnabledNotification";
+NSString * const N2StepDidBecomeDisabledNotification = @"N2StepDidBecomeDisabledNotification";
+NSString * const N2StepTitleDidChangeNotification = @"N2StepTitleDidChangeNotification";
 
 @implementation N2Step
 @synthesize enclosedView = _enclosedView, title = _title, active = _active, necessary = _necessary, done = _done, enabled = _enabled, shouldStayVisibleWhenInactive = _shouldStayVisibleWhenInactive;

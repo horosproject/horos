@@ -141,7 +141,7 @@ NSXMLDocument * XML_from_FVTiff(NSString* srcFile)
 						line[lineLen - 5] = 0;
 						line++;
 						
-						NSXMLNode *element = [NSXMLNode elementWithName:[NSString stringWithCString:line] children:elements attributes:nil];
+						NSXMLNode *element = [NSXMLNode elementWithName:[NSString stringWithUTF8String:line] children:elements attributes:nil];
 						[rootElement addChild:element];
 						elements = [NSMutableArray array];
 					}
@@ -155,13 +155,13 @@ NSXMLDocument * XML_from_FVTiff(NSString* srcFile)
 							value[0] = 0;
 							value++;
 
-							element = [NSXMLNode elementWithName:[NSString stringWithCString:line] children:nil attributes:nil];
-							[element setStringValue:[NSString stringWithCString:value]];
+							element = [NSXMLNode elementWithName:[NSString stringWithUTF8String:line] children:nil attributes:nil];
+							[element setStringValue:[NSString stringWithUTF8String:value]];
 						}
 						else
 						{
 							element = [NSXMLNode elementWithName:@"Comment" children:nil attributes:nil];
-							[element setStringValue:[NSString stringWithCString:line]];							
+							[element setStringValue:[NSString stringWithUTF8String:line]];							
 						}
 						[elements addObject:element];
 					}

@@ -32,8 +32,9 @@
  ============================================================================*/
 
 #import "LogWindowController.h"
-#import "browserController.h"
+#import "BrowserController.h"
 #import "DicomDatabase.h"
+#import "NSUserDefaults+OsiriX.h"
 
 @implementation LogWindowController
 
@@ -73,7 +74,7 @@
 			if( [o valueForKey: name])
 			{
 				if( [[o valueForKey: name] isKindOfClass: [NSDate class]])
-					[line appendString: [[BrowserController DateTimeFormat: [o valueForKey: name]] stringByReplacingOccurrencesOfString: @"," withString: @" "]];
+					[line appendString:[[[NSUserDefaults dateTimeFormatter] stringFromDate:[o valueForKey:name]] stringByReplacingOccurrencesOfString: @"," withString: @" "]];
 				else
 					[line appendString: [[[o valueForKey: name] description] stringByReplacingOccurrencesOfString: @"," withString: @" "]];
 			}
@@ -90,12 +91,16 @@
 	
 	NSSavePanel *savePanel = [NSSavePanel savePanel];
 	
-	[savePanel setRequiredFileType:@"csv"];
+	[savePanel setAllowedFileTypes:@[@"csv"]];
 	
-	if([savePanel runModalForDirectory: nil file: filename] == NSFileHandlingPanelOKButton)
-	{
-		[csv writeToURL: [savePanel URL] atomically: YES];
-	}
+    savePanel.nameFieldStringValue = filename;
+    
+    [savePanel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
+        [csv writeToURL: [savePanel URL] atomically: YES encoding:NSUTF8StringEncoding error:NULL];
+    }];
 }
 
 -(id) init

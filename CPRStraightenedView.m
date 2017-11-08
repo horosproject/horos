@@ -1179,7 +1179,7 @@ extern int splitPosition[ 3];
 		[self.curvedVolumeData releaseInlineBuffer:&inlineBuffer];
 
 		[newPix setImageObjectID: [[[self windowController] originalPix] imageObjectID]];
-		[newPix setSourceFile: [[[self windowController] originalPix] sourceFile]];
+		[newPix setSrcFile: [[[self windowController] originalPix] srcFile]];
 		[newPix setAnnotationsDictionary: [[[self windowController] originalPix] annotationsDictionary]];
 		
 		
@@ -1212,7 +1212,7 @@ extern int splitPosition[ 3];
 		{
 			r.pix = curDCM;
 			[r setOriginAndSpacing :curDCM.pixelSpacingX : curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY) :NO :NO];
-			[r setRoiView :self];
+			[r setCurView:self];
 		}
 		
 		[[self curRoiList] addObjectsFromArray: roiArray];

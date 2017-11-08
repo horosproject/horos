@@ -35,9 +35,9 @@
 #import <N2Step.h>
 #import <N2StepView.h>
 
-NSString* N2StepsDidAddStepNotification = @"N2StepsDidAddStepNotification";
-NSString* N2StepsWillRemoveStepNotification = @"N2StepsWillRemoveStepNotification";
-NSString* N2StepsNotificationStep = @"N2StepsNotificationStep";
+NSString * const N2StepsDidAddStepNotification = @"N2StepsDidAddStepNotification";
+NSString * const N2StepsWillRemoveStepNotification = @"N2StepsWillRemoveStepNotification";
+NSString * const N2StepsNotificationStep = @"N2StepsNotificationStep";
 
 @implementation N2Steps
 @synthesize delegate = _delegate, currentStep = _currentStep;//, view = _view;

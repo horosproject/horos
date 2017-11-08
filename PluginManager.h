@@ -60,7 +60,7 @@
 
 #ifdef OSIRIX_VIEWER
 
-+ (NSString*) pathResolved:(NSString*) inPath;
++ (NSString*) pathResolved:(NSString*) inPath __deprecated;
 + (void)discoverPlugins;
 + (void) unloadPluginWithName: (NSString*) name;
 + (void) loadPluginAtPath: (NSString*) path;

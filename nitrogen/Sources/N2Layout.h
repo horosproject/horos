@@ -37,6 +37,7 @@
 
 @class N2View;
 
+__deprecated
 @interface N2Layout : NSObject<OptimalSize> {
 	N2View* _view;
 	NSControlSize _controlSize;

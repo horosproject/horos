@@ -23,7 +23,7 @@
 
 #import "O2HMigrationAssistant.h"
 
-#import "browserController.h"
+#import "BrowserController.h"
 #import "AppController.h"
 
 enum

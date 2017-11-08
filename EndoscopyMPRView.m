@@ -498,11 +498,12 @@
 
 	bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 
-	[bitmapData writeToFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"] atomically:YES];
+    NSString *path = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"Horos.jpg"];
+	[bitmapData writeToFile:path atomically:YES];
 				
 	email = [[Mailer alloc] init];
 	
-	[email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriX.jpg"]];
+	[email sendMail:@"--" to:@"--" subject:@"" isMIME:YES name:@"--" sendNow:NO image: path];
 	
 	[email release];
 }
@@ -510,26 +511,30 @@
 - (void) exportJPEG:(id) sender
 {
     NSSavePanel     *panel = [NSSavePanel savePanel];
-	NSWorkspace		*ws = [NSWorkspace sharedWorkspace];
 	
 	[panel setCanSelectHiddenExtension:YES];
-	[panel setRequiredFileType:@"jpg"];
+	[panel setAllowedFileTypes:@[@"jpg"]];
 	
-	if( [panel runModalForDirectory:nil file:[[[controller originalDCMFilesList] objectAtIndex:0] valueForKeyPath:@"series.name"]] == NSFileHandlingPanelOKButton)
-	{		
-			NSImage *im = [self nsimage:NO];
-						
-			NSArray *representations;
-			NSData *bitmapData;
-			
-			representations = [im representations];
-			
-			bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-			
-			[bitmapData writeToFile:[panel filename] atomically:YES];
-			
-			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"]) [ws openFile:[panel filename]];
-	}
+    panel.nameFieldStringValue = [[[controller originalDCMFilesList] objectAtIndex:0] valueForKeyPath:@"series.name"];
+    
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+        if (result != NSFileHandlingPanelOKButton)
+            return;
+        
+        NSImage *im = [self nsimage:NO];
+        
+        NSArray *representations;
+        NSData *bitmapData;
+        
+        representations = [im representations];
+        
+        bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+        
+        [bitmapData writeToFile:panel.URL.path atomically:YES];
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"OPENVIEWER"])
+            [[NSWorkspace sharedWorkspace] openURL:panel.URL];
+    }];
 }
 
 - (void) exportDICOMFile:(id) sender

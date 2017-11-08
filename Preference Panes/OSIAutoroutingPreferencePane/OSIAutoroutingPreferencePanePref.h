@@ -64,6 +64,8 @@
     IBOutlet NSTextField* delayTime;
     IBOutlet NSDatePicker* fromTimePicker;
     IBOutlet NSDatePicker* toTimePicker;
+    
+    id _tlos;
 }
 
 @property int filterType;

@@ -36,7 +36,7 @@
 #import "DCMPixelDataAttribute.h"
 #import "DCM.h"
 
-#include "interface.h"
+#include <CharLS/charls.h>
 
 #import "jpeglib12.h"
 #import <stdio.h>
@@ -78,11 +78,11 @@ union  vectorFloat {
 };
 
 
-void SwapShorts( register vector unsigned short *unaligned_input, register long size)
+void SwapShorts( vector unsigned short *unaligned_input, long size)
 {
-    register long						i = size / 8;
-    register vector unsigned char		identity = vec_lvsl(0, (int*) NULL );
-    register vector unsigned char		byteSwapShorts = vec_xor( identity, vec_splat_u8(sizeof( short) - 1) );
+    long						i = size / 8;
+    vector unsigned char		identity = vec_lvsl(0, (int*) NULL );
+    vector unsigned char		byteSwapShorts = vec_xor( identity, vec_splat_u8(sizeof( short) - 1) );
     
     while(i-- > 0)
     {
@@ -90,11 +90,11 @@ void SwapShorts( register vector unsigned short *unaligned_input, register long 
     }
 }
 
-void SwapLongs( register vector unsigned int *unaligned_input, register long size)
+void SwapLongs( vector unsigned int *unaligned_input, long size)
 {
-    register long i = size / 4;
-    register vector unsigned char identity = vec_lvsl(0, (int*) NULL );
-    register vector unsigned char byteSwapLongs = vec_xor( identity, vec_splat_u8(sizeof( int )- 1 ) );
+    long i = size / 4;
+    vector unsigned char identity = vec_lvsl(0, (int*) NULL );
+    vector unsigned char byteSwapLongs = vec_xor( identity, vec_splat_u8(sizeof( int )- 1 ) );
     while(i-- > 0)
     {
         *unaligned_input++ = vec_perm( *unaligned_input, *unaligned_input, byteSwapLongs);
@@ -336,9 +336,9 @@ void info_callback(const char *msg, void *a) {
     //	NSLog( @"%s", msg);
 }
 
-static inline int int_ceildivpow2(int a, int b) {
-    return (a + (1 << b) - 1) >> b;
-}
+//static inline int int_ceildivpow2(int a, int b) {
+//    return (a + (1 << b) - 1) >> b;
+//}
 
 //void* dcm_read_JPEG2000_file (char *inputdata, size_t inputlength, size_t *outputLength, int *width, int *height, int *samplePerPixel)
 //{
@@ -680,7 +680,7 @@ static inline int int_ceildivpow2(int a, int b) {
         _framesDecoded = nil;
         
         if (dicomData)
-            _values = [[self valuesForVR:_vr length:_valueLength data:dicomData] mutableCopy];
+            _values = [[self valuesForVR:_vr length:(int)_valueLength data:dicomData] mutableCopy];
         else
             _values = [[NSMutableArray array] retain];
         
@@ -960,14 +960,14 @@ static inline int int_ceildivpow2(int a, int b) {
             if (_pixelDepth <= 16 && _pixelDepth > 8)
             {
                 unsigned short *shortsToSwap = (unsigned short *) ptr;
-                int length = [data length]/2;
+                int length = (int)[data length]/2;
                 while( length-- > 0)
                     shortsToSwap[ length] = NSSwapShort( shortsToSwap[ length]);
             }
             else if (_pixelDepth > 16)
             {
                 unsigned long *longsToSwap = (unsigned long *) ptr;
-                int length = [data length]/4;
+                int length = (int)[data length]/4;
                 while( length-- > 0)
                     longsToSwap[ length] = NSSwapLong(longsToSwap[ length]);
             }
@@ -994,14 +994,14 @@ static inline int int_ceildivpow2(int a, int b) {
             if (_pixelDepth <= 16 && _pixelDepth > 8)
             {
                 unsigned short *shortsToSwap = (unsigned short *) ptr;
-                int length = [data length]/2;
+                int length = (int)[data length]/2;
                 while( length-- > 0)
                     shortsToSwap[ length] = NSSwapShort(shortsToSwap[ length]);
             }
             else if (_pixelDepth > 16)
             {
                 unsigned long *longsToSwap = (unsigned long *) ptr;
-                int length = [data length]/4;
+                int length = (int)[data length]/4;
                 while( length-- > 0)
                     longsToSwap[ length] = NSSwapLong(longsToSwap[ length]);
             }
@@ -1022,7 +1022,7 @@ static inline int int_ceildivpow2(int a, int b) {
             if (_pixelDepth <= 16) {
                 unsigned short *shortsToSwap = (unsigned short *) [data mutableBytes];
                 //signed short *signedShort = [data mutableBytes];
-                unsigned int length = [data length]/2;
+                unsigned int length = (unsigned int)[data length]/2;
                 for ( unsigned i = 0; i < length; i++) {
                     shortsToSwap[i] = NSSwapShort(shortsToSwap[i]);
                 }
@@ -1030,7 +1030,7 @@ static inline int int_ceildivpow2(int a, int b) {
             else {
                 unsigned long *longsToSwap = (unsigned long *) [data mutableBytes];
                 //signed short *signedShort = [data mutableBytes];
-                unsigned int length = [data length]/4;
+                unsigned int length = (unsigned int)[data length]/4;
                 for ( unsigned int i = 0; i < length; i++) {
                     longsToSwap[i] = NSSwapLong(longsToSwap[i]);
                 }
@@ -1053,7 +1053,7 @@ static inline int int_ceildivpow2(int a, int b) {
                 {
                     unsigned short *shortsToSwap = (unsigned short *) [data mutableBytes];
                     //signed short *signedShort = [data mutableBytes];
-                    unsigned int length = [data length]/2;
+                    unsigned int length = (unsigned int)[data length]/2;
                     for ( unsigned int i = 0; i < length; i++ ) {
                         shortsToSwap[i] = NSSwapShort(shortsToSwap[i]);
                     }
@@ -1069,7 +1069,7 @@ static inline int int_ceildivpow2(int a, int b) {
                 {
                     unsigned long *longsToSwap = (unsigned long *) [data mutableBytes];
                     //signed short *signedShort = [data mutableBytes];
-                    unsigned int length = [data length]/4;
+                    unsigned int length = (unsigned int)[data length]/4;
                     for ( unsigned int i = 0; i < length; i++) {
                         longsToSwap[i] = NSSwapLong(longsToSwap[i]);
                     }
@@ -1094,7 +1094,7 @@ static inline int int_ceildivpow2(int a, int b) {
                 //				#endif
                 {
                     unsigned short *shortsToSwap = (unsigned short *) [data mutableBytes];
-                    unsigned int length = [data length]/2;
+                    unsigned int length = (unsigned int)[data length]/2;
                     while (length--) {
                         *shortsToSwap = NSSwapShort(*shortsToSwap);
                         shortsToSwap++;
@@ -1111,7 +1111,7 @@ static inline int int_ceildivpow2(int a, int b) {
                 {
                     unsigned long *longsToSwap = (unsigned long *) [data mutableBytes];
                     //signed short *signedShort = [data mutableBytes];
-                    unsigned int length = [data length]/4;
+                    unsigned int length = (unsigned int)[data length]/4;
                     for ( unsigned int i = 0; i < length; i++ ) {
                         longsToSwap[i] = NSSwapLong(longsToSwap[i]);
                     }
@@ -1431,17 +1431,17 @@ static inline int int_ceildivpow2(int a, int b) {
         processors = [[NSProcessInfo processInfo] processorCount] /2;
     
     JlsParameters jlsParameters = {};
-    JLS_ERROR readHeaderResult = JpegLsReadHeader([jpegLsData bytes], [jpegLsData length], &jlsParameters);
+    charls::ApiResult readHeaderResult = JpegLsReadHeader([jpegLsData bytes], [jpegLsData length], &jlsParameters, NULL);
     
-    if (readHeaderResult == 0)
+    if (readHeaderResult == charls::ApiResult::OK)
     {
-        size_t uncompressedLength = jlsParameters.height * jlsParameters.bytesperline;
+        size_t uncompressedLength = jlsParameters.height * jlsParameters.stride;
         void *uncompressedData = (void*) malloc(uncompressedLength);
         
         if (uncompressedData)
         {
-            JLS_ERROR decodeResult = JpegLsDecode(uncompressedData, uncompressedLength, [jpegLsData bytes],[jpegLsData length], NULL);
-            if (decodeResult != 0)
+            charls::ApiResult decodeResult = JpegLsDecode(uncompressedData, uncompressedLength, [jpegLsData bytes], [jpegLsData length], NULL, NULL);
+            if (decodeResult != charls::ApiResult::OK)
             {
                 free(uncompressedData);
             }
@@ -2160,7 +2160,7 @@ static inline int int_ceildivpow2(int a, int b) {
     unsigned long offset = 0;
     [offsetTable appendBytes:&offset length:4];
     int i;
-    int count = [_values count];
+    int count = (int)[_values count];
     for (i = 1; i < count; i++) {
         offset += NSSwapHostLongToLittle([(NSData *)[_values objectAtIndex:i -1] length] + 8);
         [offsetTable appendBytes:&offset length:4];
@@ -2317,11 +2317,11 @@ static inline int int_ceildivpow2(int a, int b) {
     float max,  min;
     
     if (_bitsAllocated <= 8)
-        length = [data length];
+        length = (int)[data length];
     else if (_bitsAllocated <= 16)
-        length = [data length]/2;
+        length = (int)[data length]/2;
     else
-        length = [data length]/4;
+        length = (int)[data length]/4;
     
     float *fBuffer = (float*) malloc(length * 4);
     if( fBuffer)
@@ -2649,7 +2649,7 @@ static inline int int_ceildivpow2(int a, int b) {
                 NSData *redCLUT = [_dcmObject attributeValueWithName:@"RedPaletteColorLookupTableData"];
                 if (redCLUT) {
                     if (clutEntryR == 0)
-                        clutEntryR = [redCLUT length] / 2;
+                        clutEntryR = (int)[redCLUT length] / 2;
                     
                     //NSLog(@"Red CLUT length: %d %d ", clutEntryR, lutLength);
                     unsigned short  *ptrs =  (unsigned short*) [redCLUT bytes];
@@ -2663,7 +2663,7 @@ static inline int int_ceildivpow2(int a, int b) {
                 NSData *greenCLUT = [_dcmObject attributeValueWithName:@"GreenPaletteColorLookupTableData"];
                 if (greenCLUT) {
                     if (clutEntryG == 0)
-                        clutEntryG = [greenCLUT length] / 2;
+                        clutEntryG = (int)[greenCLUT length] / 2;
                     unsigned short  *ptrs =  (unsigned short*) [greenCLUT bytes];
                     for (j = 0; j < clutEntryG; j++, ptrs++) clutGreen [j] = (int) (NSSwapLittleShortToHost(*ptrs)/256);
                 }//endif green
@@ -2672,7 +2672,7 @@ static inline int int_ceildivpow2(int a, int b) {
                 NSData *blueCLUT = [_dcmObject attributeValueWithName:@"BluePaletteColorLookupTableData"];
                 if (blueCLUT) {
                     if (clutEntryB == 0)
-                        clutEntryB = [blueCLUT length] / 2;
+                        clutEntryB = (int)[blueCLUT length] / 2;
                     unsigned short  *ptrs =  (unsigned short*) [blueCLUT bytes];
                     for (j = 0; j < clutEntryB; j++, ptrs++) clutBlue [j] = (int) (NSSwapLittleShortToHost(*ptrs)/256);
                 } //endif blue
@@ -3257,7 +3257,7 @@ static inline int int_ceildivpow2(int a, int b) {
                 int i;
                 NSData *offsetData = [_values objectAtIndex:0];
                 unsigned long *offsets = (unsigned long *)[offsetData bytes];
-                int numberOfOffsets = [offsetData length]/4;
+                int numberOfOffsets = (int)[offsetData length]/4;
                 for ( i = 0; i < numberOfOffsets; i++)
                 {
                     if ( transferSyntax.isLittleEndian ) 
@@ -3282,10 +3282,10 @@ static inline int int_ceildivpow2(int a, int b) {
             }
             else
             {
-                int currentOffset = [[offsetTable objectAtIndex:index] longValue];
+                int currentOffset = (int)[[offsetTable objectAtIndex:index] longValue];
                 int currentLength = 0;
                 if (index < _numberOfFrames - 1 && index < [offsetTable count] - 1)
-                    currentLength =  [[offsetTable objectAtIndex:index + 1] longValue] - currentOffset;
+                    currentLength = (int)[[offsetTable objectAtIndex:index + 1] longValue] - currentOffset;
                 else{
                     //last offset - currentLength =  total length of items 
                     int itemsLength = 0;
@@ -3306,7 +3306,7 @@ static inline int int_ceildivpow2(int a, int b) {
                     startingItem++;
                 }
                 endItem = startingItem;
-                dataLength = ([(NSData *)[values objectAtIndex:endItem] length] + 8);
+                dataLength = (int)([(NSData *)[values objectAtIndex:endItem] length] + 8);
                 while ((dataLength < currentLength) && (endItem < [values count])) {
                     endItem++;
                     dataLength += ([(NSData *)[values objectAtIndex:endItem] length] + 8);
@@ -3382,7 +3382,7 @@ static inline int int_ceildivpow2(int a, int b) {
                 int i;
                 NSData *offsetData = [_values objectAtIndex:0];
                 unsigned long *offsets = (unsigned long *)[offsetData bytes];
-                int numberOfOffsets = [offsetData length]/4;
+                int numberOfOffsets = (int)[offsetData length]/4;
                 for ( i = 0; i < numberOfOffsets; i++) {
                     if ( transferSyntax.isLittleEndian ) 
                         offset = NSSwapLittleLongToHost(offsets[i]);
@@ -3418,10 +3418,10 @@ static inline int int_ceildivpow2(int a, int b) {
                 //need to figure out where the data starts and ends
                 else{
                     
-                    int currentOffset = [[offsetTable objectAtIndex:i] longValue];
+                    int currentOffset = (int)[[offsetTable objectAtIndex:i] longValue];
                     int currentLength = 0;
                     if (i < _numberOfFrames - 1)
-                        currentLength =  [[offsetTable objectAtIndex:i + 1] longValue] - currentOffset;
+                        currentLength =  (int)[[offsetTable objectAtIndex:i + 1] longValue] - currentOffset;
                     else{
                         //last offset - currentLength =  total length of items 
                         int itemsLength = 0;
@@ -3442,7 +3442,7 @@ static inline int int_ceildivpow2(int a, int b) {
                         startingItem++;
                     }
                     endItem = startingItem;
-                    dataLength = ([(NSData *)[values objectAtIndex:endItem] length] + 8);
+                    dataLength = (int)([(NSData *)[values objectAtIndex:endItem] length] + 8);
                     while ((dataLength < currentLength) && (endItem < [values count])) {
                         endItem++;
                         dataLength += ([(NSData *)[values objectAtIndex:endItem] length] + 8);
@@ -3539,7 +3539,7 @@ static inline int int_ceildivpow2(int a, int b) {
         }
         else if( [_framesDecoded count] != _numberOfFrames)
         {
-            int s = [_framesDecoded count];
+            int s = (int)[_framesDecoded count];
             for( int i = s; i <= _numberOfFrames; i++)
                 [_framesDecoded addObject: [NSNumber numberWithBool: NO]];
         }

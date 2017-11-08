@@ -54,7 +54,7 @@
 		NSMutableString* paramsString = [NSMutableString stringWithCapacity:512];
 		
 		for (NSString* key in params)
-			[paramsString appendFormat:@"&%@=%@", key, [params objectForKey:key]]; // ToDo: urlencode
+			[paramsString appendFormat:@"&%@=%@", [key stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [[params objectForKey:key] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 		
 		return paramsString;
 	}

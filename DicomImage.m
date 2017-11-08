@@ -35,8 +35,8 @@
 #import "DicomSeries.h"
 #import "DicomStudy.h"
 #import "DicomFileDCMTKCategory.h"
-#import <OsiriX/DCM.h>
-#import <OsiriX/DCMAbstractSyntaxUID.h>
+#import "DCM.h"
+#import "DCMAbstractSyntaxUID.h"
 #import "DCMObjectPixelDataImport.h"
 #import "DCMView.h"
 #import "MutableArrayCategory.h"
@@ -53,7 +53,7 @@
 #import "DCMPix.h"
 #import "SRAnnotation.h"
 #import "VRController.h"
-#import "browserController.h"
+#import "BrowserController.h"
 #import "BonjourBrowser.h"
 #import "ThreadsManager.h"
 #import "DCMView.h"
@@ -598,7 +598,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
         
         for( id loopItem in files)
         {
-            [[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:nil];
+            [[NSFileManager defaultManager] removeItemAtPath:[loopItem stringByAppendingString:@".bak"] error:NULL];
         }
         
         
@@ -628,7 +628,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 				[XMLController modifyDicom: params encoding: encoding];
 				
 				for( id loopItem in files)
-					[[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
+					[[NSFileManager defaultManager] removeItemAtPath: [loopItem stringByAppendingString:@".bak"] error:NULL];
 			}
 			@catch (NSException * e)
 			{
@@ -683,7 +683,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
         {
             #ifdef OSIRIX_VIEWER
             #ifndef OSIRIX_LIGHT
-            if( [self.series.study.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"]  && [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] == NO)
+            if( [self.series.study.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"]  && [[DicomDatabase databaseForContext:self.managedObjectContext] isLocal])
             {
                 NSString *c = nil;
                 

@@ -39,7 +39,9 @@
 	NSArray *_actions;
 	IBOutlet NSTextFieldCell *keyTextFieldCell;
 	IBOutlet HotKeyArrayController *arrayController;
-	IBOutlet NSWindow *mainWindow;
+    IBOutlet NSWindow *mainWindow;
+    
+    id _tlos;
 }
 
 + (OSIHotKeysPref*) currentKeysPref;

@@ -546,7 +546,7 @@ enum SMTPSubstatuses {
 	char hostname[128];
 	gethostname(hostname, 127);
 	hostname[127] = 0;
-	NSString* string = [NSString stringWithCString:hostname encoding:NSUTF8StringEncoding];
+	NSString* string = [NSString stringWithUTF8String:hostname];
     if (![string rangeOfString:@"."].length) string = [string stringByAppendingString:@".local"];
     return string;
 }

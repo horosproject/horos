@@ -34,7 +34,7 @@
 
 
 #import <Cocoa/Cocoa.h>
-#import <OsiriX/DCMObject.h>
+#import "DCMObject.h"
 
 @interface DCMObjectDBImport : DCMObject {
 

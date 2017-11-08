@@ -34,15 +34,15 @@
 
 #include "options.h"
 
-#define id Id
-#include "vtkRenderer.h"
-#include "vtkCocoaRenderWindow.h"
-#include "vtkCocoaRenderWindowInteractor.h"
-#include "vtkCommand.h"
-#include "vtkCamera.h"
-#include "vtkInteractorStyleTrackballCamera.h"
-#include "vtkOpenGLRenderer.h"
-#undef id
+//#define id Id
+#include <VTK/vtkRenderer.h>
+#include <VTK/vtkCocoaRenderWindow.h>
+#include <VTK/vtkCocoaRenderWindowInteractor.h>
+#include <VTK/vtkCommand.h>
+#include <VTK/vtkCamera.h>
+#include <VTK/vtkInteractorStyleTrackballCamera.h>
+#include <VTK/vtkOpenGLRenderer.h>
+//#undef id
 
 #import "VTKViewOSIRIX.h"
 

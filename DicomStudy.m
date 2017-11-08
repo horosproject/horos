@@ -36,19 +36,20 @@
 #import "DicomSeries.h"
 #import "DicomImage.h"
 #import "DicomAlbum.h"
-#import <OsiriX/DCMAbstractSyntaxUID.h>
-#import <OsiriX/DCM.h>
+#import "DCMAbstractSyntaxUID.h"
+#import "DCM.h"
 #import "MutableArrayCategory.h"
 #import "SRAnnotation.h"
 #import "DicomDatabase.h"
 #import "N2Debug.h"
 #import "N2Stuff.h"
+#import "stringAdditions.h"
 
 #ifdef OSIRIX_VIEWER
 #import "DCMView.h"
 #import "DCMPix.h"
 #import "VRController.h"
-#import "browserController.h"
+#import "BrowserController.h"
 #import "BonjourBrowser.h"
 #import "DicomFileDCMTKCategory.h"
 #import "DICOMToNSString.h"
@@ -640,7 +641,7 @@ static NSRecursiveLock *dbModifyLock = nil;
             NSString *dstPath = [archivedAnnotations valueForKey: @"completePath"];
             
             if( dstPath == nil)
-                dstPath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
+                dstPath = isMainDB? [[DicomDatabase databaseForContext:self.managedObjectContext] uniquePathForNewDataFileWithExtension:@"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
             
             NSDictionary *annotationsDict = [self annotationsAsDictionary];
             
@@ -648,7 +649,7 @@ static NSRecursiveLock *dbModifyLock = nil;
             if( [[w annotations] isEqualToDictionary: annotationsDict] == NO)
             {
                 if( w)
-                    dstPath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
+                    dstPath = isMainDB? [[DicomDatabase databaseForContext:self.managedObjectContext] uniquePathForNewDataFileWithExtension:@"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
                 
                 // Save or Re-Save it as DICOM SR
                 SRAnnotation *r = [[[SRAnnotation alloc] initWithDictionary: annotationsDict path: dstPath forImage: [[[self.series anyObject] valueForKey:@"images"] anyObject]] autorelease];
@@ -744,7 +745,7 @@ static NSRecursiveLock *dbModifyLock = nil;
             dstPath = [reportImage valueForKey: @"completePathResolved"];
             
             if( dstPath == nil)
-                dstPath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
+                dstPath = isMainDB? [[DicomDatabase databaseForContext:self.managedObjectContext] uniquePathForNewDataFileWithExtension:@"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
             
             if( [self.reportURL hasPrefix: @"http://"] || [self.reportURL hasPrefix: @"https://"])
             {
@@ -870,14 +871,14 @@ static NSRecursiveLock *dbModifyLock = nil;
             SC = YES;
         else if( [mod isEqualToString:@"PR"])
             PR = YES;
-        else if( [mod isEqualToString:@"RTSTRUCT"] && [r containsString: mod] == NO)
+        else if( [mod isEqualToString:@"RTSTRUCT"] && ![r containsObject:mod])
             [r addObject: @"RT"];
         else if( [mod isEqualToString:@"OT"])
             OT = YES;
         else if( [mod isEqualToString:@"KO"])
         {
         }
-        else if([r containsString: mod] == NO)
+        else if (![r containsObject:mod])
             [r addObject: mod];
     }
     
@@ -998,7 +999,7 @@ static NSRecursiveLock *dbModifyLock = nil;
         
         for( id loopItem in files)
         {
-            [[NSFileManager defaultManager] removeFileAtPath:[loopItem stringByAppendingString:@".bak"] handler:nil];
+            [[NSFileManager defaultManager] removeItemAtPath:[loopItem stringByAppendingString:@".bak"] error:NULL];
         }
         
         
@@ -1031,7 +1032,7 @@ static NSRecursiveLock *dbModifyLock = nil;
                 
                 for( id loopItem in files)
                 {
-                    [[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
+                    [[NSFileManager defaultManager] removeItemAtPath: [loopItem stringByAppendingString:@".bak"] error:NULL];
                 }
             }
             @catch (NSException * e)
@@ -1138,7 +1139,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 #ifndef OSIRIX_LIGHT
     @try
     {
-        if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] && [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] == NO)
+        if( [self.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"] && [[DicomDatabase databaseForContext:self.managedObjectContext] isLocal])
         {
             if( c == nil)
                 c = [NSNumber numberWithInt: 0];
@@ -1162,7 +1163,7 @@ static NSRecursiveLock *dbModifyLock = nil;
             {
                 BOOL isMainDB = self.managedObjectContext.persistentStoreCoordinator == BrowserController.currentBrowser.database.managedObjectContext.persistentStoreCoordinator;
                 
-                NSString *filePath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
+                NSString *filePath = isMainDB? [[[BrowserController currentBrowser] database] uniquePathForNewDataFileWithExtension:@"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
                 
                 @try {
                     [self saveReportAsDicomAtPath: filePath];
@@ -1212,17 +1213,17 @@ static NSRecursiveLock *dbModifyLock = nil;
 - (void) setReportURL: (NSString*) url
 {
 #ifdef OSIRIX_VIEWER
-    BrowserController *cB = [BrowserController currentBrowser];
+    DicomDatabase *db = [[BrowserController currentBrowser] database];
     
     if( url)
     {
         if( [url hasPrefix: @"http://"] == NO && [url hasPrefix: @"https://"] == NO)
         {
-            NSString *commonPath = [[cB fixedDocumentsDirectory] commonPrefixWithString: url options: NSLiteralSearch];
+            NSString *commonPath = [db.baseDirPath commonPrefixWithString: url options: NSLiteralSearch];
             
-            if( [commonPath isEqualToString: [cB fixedDocumentsDirectory]])
+            if( [commonPath isEqualToString: db.baseDirPath])
             {
-                url = [url substringFromIndex: [[cB fixedDocumentsDirectory] length]];
+                url = [url substringFromIndex: [db.baseDirPath length]];
                 
                 if( [url hasPrefix: @"TEMP.noindex/"])
                     url = [url stringByReplacingOccurrencesOfString: @"TEMP.noindex/" withString: @"REPORTS/"];
@@ -1249,26 +1250,26 @@ static NSRecursiveLock *dbModifyLock = nil;
     {
         if( [url hasPrefix: @"http://"] == NO && [url hasPrefix: @"https://"] == NO)
         {
-            BrowserController *cB = [BrowserController currentBrowser];
+            DicomDatabase *db = [[BrowserController currentBrowser] database];
             
-            if( [cB isBonjour: [self managedObjectContext]])
+            if (!db.isLocal)
             {
                 // We will give a path with TEMP.noindex, instead of REPORTS
                 if( [url characterAtIndex: 0] != '/')
                 {
                     if( [url hasPrefix: @"REPORTS/"])
                         url = [url stringByReplacingOccurrencesOfString: @"REPORTS/" withString: @"TEMP.noindex/"];
-                    url = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: url];
+                    url = [db.baseDirPath stringByAppendingPathComponent:url];
                 }
             }
             else
             {
                 if( [url characterAtIndex: 0] != '/')
-                    url = [[cB fixedDocumentsDirectory] stringByAppendingPathComponent: url];
+                    url = [db.baseDirPath stringByAppendingPathComponent:url];
                 else
                 {	// Should we convert it to a local path?
-                    NSString *commonPath = [[cB fixedDocumentsDirectory] commonPrefixWithString: url options: NSLiteralSearch];
-                    if( [commonPath isEqualToString: [cB fixedDocumentsDirectory]])
+                    NSString *commonPath = [db.baseDirPath commonPrefixWithString:url options:NSLiteralSearch];
+                    if( [commonPath isEqualToString: db.baseDirPath])
                     {
                         [self willChangeValueForKey: @"reportURL"];
                         [self setPrimitiveValue: url forKey: @"reportURL"];
@@ -2146,7 +2147,7 @@ static NSRecursiveLock *dbModifyLock = nil;
                 {
                     @try
                     {
-                        if( [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]])
+                        if (![[DicomDatabase databaseForContext:self.managedObjectContext] isLocal])
                         {
                             // Not modified on the 'bonjour client side'?
                             if( [[i valueForKey:@"inDatabaseFolder"] boolValue])
@@ -2185,7 +2186,7 @@ static NSRecursiveLock *dbModifyLock = nil;
             }
         }
         
-        if( [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]])
+        if(![[DicomDatabase databaseForContext:self.managedObjectContext] isLocal])
         {
             // Not modified on the 'bonjour client side'?
             if( [[[found lastObject] valueForKey:@"inDatabaseFolder"] boolValue])

@@ -44,7 +44,7 @@
 #include "djerror.h"                 /* for private class DJLSError */
 
 // JPEG-LS library (CharLS) includes
-#include "interface.h"
+#include <CharLS/charls.h>
 
 E_TransferSyntax DJLSLosslessDecoder::supportedTransferSyntax() const
 {
@@ -384,9 +384,9 @@ OFCondition DJLSDecoderBase::decodeFrame(
   if (result.good())
   {
     JlsParameters params;
-    JLS_ERROR err;
+    charls::ApiResult err;
 
-    err = JpegLsReadHeader(jlsData, compressedSize, &params);
+    err = JpegLsReadHeader(jlsData, compressedSize, &params, NULL);
     result = DJLSError::convert(err);
 
     if (result.good())
@@ -394,8 +394,8 @@ OFCondition DJLSDecoderBase::decodeFrame(
       if (params.width != imageColumns) result = EC_JLSImageDataMismatch;
       else if (params.height != imageRows) result = EC_JLSImageDataMismatch;
       else if (params.components != imageSamplesPerPixel) result = EC_JLSImageDataMismatch;
-      else if ((bytesPerSample == 1) && (params.bitspersample > 8)) result = EC_JLSImageDataMismatch;
-      else if ((bytesPerSample == 2) && (params.bitspersample <= 8)) result = EC_JLSImageDataMismatch;
+      else if ((bytesPerSample == 1) && (params.bitsPerSample > 8)) result = EC_JLSImageDataMismatch;
+      else if ((bytesPerSample == 2) && (params.bitsPerSample <= 8)) result = EC_JLSImageDataMismatch;
     }
 
     if (!result.good())
@@ -404,13 +404,13 @@ OFCondition DJLSDecoderBase::decodeFrame(
     }
     else
     {
-      err = JpegLsDecode(buffer, bufSize, jlsData, compressedSize, &params);
+      err = JpegLsDecode(buffer, bufSize, jlsData, compressedSize, &params, NULL);
       result = DJLSError::convert(err);
       delete[] jlsData;
 
       if (result.good() && imageSamplesPerPixel == 3)
       {
-        if (imagePlanarConfiguration == 1 && params.ilv != ILV_NONE)
+          if (imagePlanarConfiguration == 1 && params.interleaveMode != charls::InterleaveMode::None)
         {
           // The dataset says this should be planarConfiguration == 1, but
           // it isn't -> convert it.
@@ -420,7 +420,7 @@ OFCondition DJLSDecoderBase::decodeFrame(
           else
             result = createPlanarConfiguration1Word(OFreinterpret_cast(Uint16*, buffer), imageColumns, imageRows);
         }
-        else if (imagePlanarConfiguration == 0 && params.ilv != ILV_SAMPLE && params.ilv != ILV_LINE)
+        else if (imagePlanarConfiguration == 0 && params.interleaveMode != charls::InterleaveMode::Sample && params.interleaveMode != charls::InterleaveMode::Line)
         {
           // The dataset says this should be planarConfiguration == 0, but
           // it isn't -> convert it.
@@ -527,7 +527,7 @@ Uint32 DJLSDecoderBase::computeNumberOfFragments(
   if ((numberOfFrames <= 1) || (currentFrame + 1 == OFstatic_cast(Uint32, numberOfFrames)))
   {
     // single-frame image or last frame. All remaining fragments belong to this frame
-    return (numItems - startItem);
+    return (Uint32)(numItems - startItem);
   }
   if (OFstatic_cast(Uint32, numberOfFrames + 1) == numItems)
   {
@@ -644,11 +644,11 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration1Byte(
   if (buf)
   {
     memcpy(buf, imageFrame, (size_t)(3*numPixels));
-    register Uint8 *s = buf;                        // source
-    register Uint8 *r = imageFrame;                 // red plane
-    register Uint8 *g = imageFrame + numPixels;     // green plane
-    register Uint8 *b = imageFrame + (2*numPixels); // blue plane
-    for (register unsigned long i=numPixels; i; i--)
+    Uint8 *s = buf;                        // source
+    Uint8 *r = imageFrame;                 // red plane
+    Uint8 *g = imageFrame + numPixels;     // green plane
+    Uint8 *b = imageFrame + (2*numPixels); // blue plane
+    for (unsigned long i=numPixels; i; i--)
     {
       *r++ = *s++;
       *g++ = *s++;
@@ -674,11 +674,11 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration1Word(
   if (buf)
   {
     memcpy(buf, imageFrame, (size_t)(3*numPixels*sizeof(Uint16)));
-    register Uint16 *s = buf;                        // source
-    register Uint16 *r = imageFrame;                 // red plane
-    register Uint16 *g = imageFrame + numPixels;     // green plane
-    register Uint16 *b = imageFrame + (2*numPixels); // blue plane
-    for (register unsigned long i=numPixels; i; i--)
+    Uint16 *s = buf;                        // source
+    Uint16 *r = imageFrame;                 // red plane
+    Uint16 *g = imageFrame + numPixels;     // green plane
+    Uint16 *b = imageFrame + (2*numPixels); // blue plane
+    for (unsigned long i=numPixels; i; i--)
     {
       *r++ = *s++;
       *g++ = *s++;
@@ -703,11 +703,11 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration0Byte(
   if (buf)
   {
     memcpy(buf, imageFrame, (size_t)(3*numPixels));
-    register Uint8 *t = imageFrame;          // target
-    register Uint8 *r = buf;                 // red plane
-    register Uint8 *g = buf + numPixels;     // green plane
-    register Uint8 *b = buf + (2*numPixels); // blue plane
-    for (register unsigned long i=numPixels; i; i--)
+    Uint8 *t = imageFrame;          // target
+    Uint8 *r = buf;                 // red plane
+    Uint8 *g = buf + numPixels;     // green plane
+    Uint8 *b = buf + (2*numPixels); // blue plane
+    for (unsigned long i=numPixels; i; i--)
     {
       *t++ = *r++;
       *t++ = *g++;
@@ -733,11 +733,11 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration0Word(
   if (buf)
   {
     memcpy(buf, imageFrame, (size_t)(3*numPixels*sizeof(Uint16)));
-    register Uint16 *t = imageFrame;          // target
-    register Uint16 *r = buf;                 // red plane
-    register Uint16 *g = buf + numPixels;     // green plane
-    register Uint16 *b = buf + (2*numPixels); // blue plane
-    for (register unsigned long i=numPixels; i; i--)
+    Uint16 *t = imageFrame;          // target
+    Uint16 *r = buf;                 // red plane
+    Uint16 *g = buf + numPixels;     // green plane
+    Uint16 *b = buf + (2*numPixels); // blue plane
+    for (unsigned long i=numPixels; i; i--)
     {
       *t++ = *r++;
       *t++ = *g++;

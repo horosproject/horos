@@ -39,7 +39,9 @@
 //	IBOutlet NSTextField					*bestRenderingString, *max3DTextureString, *max3DTextureStringShading;
 //	IBOutlet NSTextField					*recommandations;
 
-	IBOutlet NSWindow *mainWindow;
+    IBOutlet NSWindow *mainWindow;
+    
+    id _tlos;
 }
 
 - (void) mainViewDidLoad;

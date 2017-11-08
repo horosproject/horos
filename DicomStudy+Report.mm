@@ -32,6 +32,7 @@
  ============================================================================*/
 
 #import "DicomStudy+Report.h"
+#import "DicomSeries.h"
 #import "N2Shell.h"
 #import "NSString+N2.h"
 #import "N2Debug.h"
@@ -316,7 +317,7 @@
 {
     NSString* sourcePath = nil;
     for (DicomSeries* series in self.series.allObjects) {
-        for (DicomImage* image in self.images.allObjects) {
+        for (DicomImage* image in series.sortedImages) {
             if ([NSFileManager.defaultManager fileExistsAtPath:image.completePath])
                 sourcePath = image.completePath;
             if (sourcePath)

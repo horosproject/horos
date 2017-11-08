@@ -228,7 +228,7 @@ h2v1_merged_upsample (j_decompress_ptr cinfo,
 		      JSAMPARRAY output_buf)
 {
   my_upsample_ptr upsample = (my_upsample_ptr) cinfo->upsample;
-  register int y, cred, cgreen, cblue;
+  int y, cred, cgreen, cblue;
   int cb, cr;
   register JSAMPROW outptr;
   JSAMPROW inptr0, inptr1, inptr2;
@@ -290,7 +290,7 @@ h2v2_merged_upsample (j_decompress_ptr cinfo,
 		      JSAMPARRAY output_buf)
 {
   my_upsample_ptr upsample = (my_upsample_ptr) cinfo->upsample;
-  register int y, cred, cgreen, cblue;
+  int y, cred, cgreen, cblue;
   int cb, cr;
   register JSAMPROW outptr0, outptr1;
   JSAMPROW inptr00, inptr01, inptr1, inptr2;

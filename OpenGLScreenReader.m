@@ -199,8 +199,11 @@
 		
 		// Specify attributes of the GL graphics context
 		NSOpenGLPixelFormatAttribute attributes[] = {
-			NSOpenGLPFAFullScreen,
-			NSOpenGLPFAScreenMask,
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            NSOpenGLPFAFullScreen,
+#pragma clang diagnostic pop
+            NSOpenGLPFAScreenMask,
 			CGDisplayIDToOpenGLDisplayMask(kCGDirectMainDisplay),
 			(NSOpenGLPixelFormatAttribute) 0
 			};
@@ -228,7 +231,10 @@
         // Set our context as the current OpenGL context
         [mGLContext makeCurrentContext];
         // Set full-screen mode
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         [mGLContext setFullScreen];
+#pragma clang diagnostic pop
 
 		NSRect mainScreenRect = [[NSScreen mainScreen] frame];
 		mWidth = mainScreenRect.size.width;

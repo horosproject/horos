@@ -220,7 +220,7 @@ NSString *CopiedRowsType = @"COPIED_ROWS_TYPE";
     // if drag source is self, it's a move
     if ([info draggingSource] == tableView) {
         
-        [self setSortDescriptors: nil];
+        [self setSortDescriptors: @[]];
         
         NSArray *rows = [[info draggingPasteboard] propertyListForType:MovedRowsType];
         NSIndexSet  *indexSet = [self indexSetFromRows:rows];

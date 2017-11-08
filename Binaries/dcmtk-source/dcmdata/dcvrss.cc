@@ -117,7 +117,7 @@ void DcmSignedShort::print(ostream &out,
                 else
                     sprintf(buffer, "\\%hd", *sintVals);
                 /* check whether current value sticks to the length limit */
-                newLength = printedLength + strlen(buffer);
+                newLength = printedLength + (unsigned int)strlen(buffer);
                 if ((newLength <= maxLength) && ((i + 1 == count) || (newLength + 3 <= maxLength)))
                 {
                     out << buffer;

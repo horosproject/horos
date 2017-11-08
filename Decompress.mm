@@ -32,11 +32,11 @@
  ============================================================================*/
 
 #import <Foundation/Foundation.h>
-//#import <OsiriX/DCMObject.h>
-//#import <OsiriX/DCM.h>
-//#import <OsiriX/DCMTransferSyntax.h>
-//#import <OsiriX/DCMPixelDataAttribute.h>
-//#import <OsiriX/DCMAbstractSyntaxUID.h>
+//#import "DCMObject.h"
+//#import "DCM.h"
+//#import "DCMTransferSyntax.h"
+//#import "DCMPixelDataAttribute.h"
+//#import "DCMAbstractSyntaxUID.h"
 #import "DefaultsOsiriX.h"
 #import "AppController.h"
 //#import "QTKit/QTMovie.h"
@@ -84,7 +84,7 @@ NSLock					*PapyrusLock = 0L;
 NSThread				*mainThread = 0L;
 BOOL					NEEDTOREBUILD = NO;
 NSMutableDictionary		*DATABASECOLUMNS = 0L;
-short					Altivec = 0;
+//short					Altivec = 0;
 short					UseOpenJpeg = 1, Use_kdu_IfAvailable = 0;
 
 extern void dcmtkSetJPEGColorSpace( int);
@@ -149,7 +149,7 @@ void createSwfMovie(NSArray* inputFiles, NSString* path, float frameRate);
 
 int main(int argc, const char *argv[])
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	[[NSAutoreleasePool alloc] init]; // yes, the Decompress tool will exit anyway
     
 	// To avoid:
 	// http://lists.apple.com/archives/quicktime-api/2007/Aug/msg00008.html
@@ -244,8 +244,7 @@ int main(int argc, const char *argv[])
 			else
 				destDirec = path;
 			
-			int i;
-			for( i = fileListFirstItemIndex; i < argc; i++)
+			for (int i = (int)fileListFirstItemIndex; i < argc; i++)
 			{
 				NSString *curFile = [NSString stringWithUTF8String:argv[ i]];
 				OFBool status = YES;
@@ -570,8 +569,7 @@ int main(int argc, const char *argv[])
 			UseOpenJpeg = [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue];
 			Use_kdu_IfAvailable = [[dict objectForKey:@"UseKDUForJPEG2000"] intValue];
 			
-			int i;
-			for( i = fileListFirstItemIndex; i < argc ; i++)
+			for(int i = (int)fileListFirstItemIndex; i < argc ; i++)
 			{
 				NSString *curFile = [NSString stringWithUTF8String: argv[ i]];
 				
@@ -603,8 +601,7 @@ int main(int argc, const char *argv[])
 			UseOpenJpeg = [[dict objectForKey:@"UseOpenJpegForJPEG2000"] intValue];
 			Use_kdu_IfAvailable = [[dict objectForKey:@"UseKDUForJPEG2000"] intValue];
 			
-			int i;
-			for( i = fileListFirstItemIndex; i < argc ; i++)
+			for(int i = (int)fileListFirstItemIndex; i < argc ; i++)
 			{
 				NSString *curFile = [NSString stringWithUTF8String:argv[ i]];
 				NSString *curFileDest;
@@ -838,8 +835,8 @@ int main(int argc, const char *argv[])
 					
 					[printInfoDict setObject: NSPrintSaveJob forKey: NSPrintJobDisposition];
 					
-					[[NSFileManager defaultManager] removeItemAtPath: [path stringByAppendingPathExtension: @"pdf"] error: nil];
-					[printInfoDict setObject: [path stringByAppendingPathExtension: @"pdf"] forKey: NSPrintSavePath];
+					[[NSFileManager defaultManager] removeItemAtPath:[path stringByAppendingPathExtension: @"pdf"] error:NULL];
+					[printInfoDict setObject:[NSURL fileURLWithPath:[path stringByAppendingPathExtension:@"pdf"]] forKey: NSPrintJobSavingURL];
 					
 					NSPrintInfo *printInfo = [[NSPrintInfo alloc] initWithDictionary: printInfoDict];
 					

@@ -54,9 +54,10 @@ static int gTotalN2ManagedObjectContext = 0;
 
 @synthesize database = _database;
 
--(id)initWithDatabase: (N2ManagedDatabase*) db
+- (id)initWithDatabase:(N2ManagedDatabase *)db concurrencyType:(NSManagedObjectContextConcurrencyType)ct
 {
-    self = [super init];
+    if (!(self = [super initWithConcurrencyType:ct]))
+        return nil;
     
     _database = db;
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector( N2ManagedDatabaseDealloced:) name: @"N2ManagedDatabaseDealloced" object: db];
@@ -283,7 +284,7 @@ static int gTotalN2ManagedObjectContext = 0;
     if( sqlFilePath.length == 0)
         return nil;
     
-    N2ManagedObjectContext* moc = [[[N2ManagedObjectContext alloc] initWithDatabase: self] autorelease];
+    N2ManagedObjectContext* moc = [[[N2ManagedObjectContext alloc] initWithDatabase:self concurrencyType:NSConfinementConcurrencyType] autorelease];
     //	NSLog(@"---------- NEW %@ at %@", moc, sqlFilePath);
 	moc.undoManager = nil;
 	

@@ -85,7 +85,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 }
 
 -(void)observeDatabaseAddNotification:(NSNotification*)notification {
-	[self refreshDatabase:[[notification userInfo] objectForKey:OsirixAddToDBCompleteNotificationImagesArray]];
+	[self refreshDatabase:[[notification userInfo] objectForKey:OsirixAddToDBNotificationImagesArray]];
 }
 
 -(void)observeManagedObjectContextObjectsDidChangeNotification:(NSNotification*)notification {
@@ -108,7 +108,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 		if( [pix seriesObj])
 			[[BrowserController currentBrowser] selectThisStudy: [[pix seriesObj] valueForKey: @"study"]];
 		
-		[[BrowserController currentBrowser] pasteImageForSourceFile: [pix sourceFile]];
+		[[BrowserController currentBrowser] pasteImageForSourceFile: [pix srcFile]];
 	}
 }
 #endif
@@ -145,7 +145,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 	protectedReentryWindowDidResize = YES;
 	if( magneticWindowActivated)
 	{
-		if( dontEnterMagneticFunctions == NO && Button() != 0)
+		if( dontEnterMagneticFunctions == NO && GetCurrentButtonState() != 0)
 		{
 			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"])
 			{
@@ -347,7 +347,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 		{
 			savedWindowsFrameO = [[self window] frame];
 			
-			if( Button()) windowIsMovedByTheUserO = YES;
+			if( GetCurrentButtonState()) windowIsMovedByTheUserO = YES;
 		}
 	}
 }
@@ -358,7 +358,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 	{
 		if(/*!Button() && */windowIsMovedByTheUserO == YES && dontEnterMagneticFunctions == NO && [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] && NSIsEmptyRect( savedWindowsFrameO) == NO)
 		{
-			if( Button() == 0) windowIsMovedByTheUserO = NO;
+			if( GetCurrentButtonState() == 0) windowIsMovedByTheUserO = NO;
 			
 			NSEnumerator	*e;
 			NSWindow		*theWindow, *window;
@@ -480,7 +480,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 							dontEnterMagneticFunctions = NO;
 							
                             if( [self isKindOfClass: [ViewerController class]])
-                                [theWindow.windowController windowDidChangeScreen:nil];
+                                [theWindow.windowController windowDidChangeScreen:[NSNotification notificationWithName:NSWindowDidChangeScreenNotification object:theWindow]];
                             
 		//					[window makeKeyAndOrderFront: self];
 		//					[theWindow makeKeyAndOrderFront: self];

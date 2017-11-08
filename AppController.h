@@ -181,7 +181,7 @@ extern AppController* OsiriX;
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame;
 + (void) pause __deprecated;
 + (ThumbnailsListPanel*)thumbnailsListPanelForScreen:(NSScreen*)screen;
-+ (NSString*)printStackTrace:(NSException*)e __deprecated; // use -[NSException printStackTrace] form NSException+N2
++ (NSString*)printStackTrace:(NSException*)e __deprecated; // use -[NSException printStackTrace] from NSException+N2
 + (BOOL) isKDUEngineAvailable;
 
 #pragma mark-
@@ -226,6 +226,7 @@ extern AppController* OsiriX;
 - (IBAction) openHorosWebPage: (id) sender;  /**<  Open Horos web page */
 - (IBAction) openHorosDiscussion: (id) sender; /**< Open Horos discussion web page */
 - (IBAction) osirix64bit: (id) sender;
+- (IBAction)userManual:(id)sender;
 //---------------------------------------------
 - (IBAction) help: (id) sender;  /**< Open help window */
 //=============================================
@@ -304,6 +305,8 @@ extern AppController* OsiriX;
 -(void)setBadgeLabel:(NSString*)label;
 
 - (void)playGrabSound;
+
+- (void)displayError:(NSString *)err;
 
 @end
 

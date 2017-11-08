@@ -253,7 +253,7 @@
     BOOL methodSelectorIsValidated = NO;
     NSString* methodSelectorString = [self selectorStringForXMLRPCRequestMethodName:methodName isValidated:&methodSelectorIsValidated];
     SEL methodSelector = NSSelectorFromString(methodSelectorString);
-    if (!methodSelectorIsValidated && (![_delegate respondsToSelector:methodSelector] || ([_delegate respondsToSelector:@selector(isMethodAvailableToXMLRPC:)] && ![_delegate isSelectorAvailableToXMLRPC:methodSelectorString])))
+    if (!methodSelectorIsValidated && (![_delegate respondsToSelector:methodSelector] || ([_delegate respondsToSelector:@selector(isSelectorAvailableToXMLRPC:)] && ![_delegate isSelectorAvailableToXMLRPC:methodSelectorString])))
         [NSException raise:NSGenericException format:@"invalid XMLRPC method call: %@", methodName];
 
     //		DLog(@"\tHandled by: %@", methodSelectorString);

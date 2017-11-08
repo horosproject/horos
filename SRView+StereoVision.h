@@ -59,7 +59,7 @@
 
 #ifdef __cplusplus
 #import "VTKViewOSIRIX.h"
-#define id Id
+//#define id Id
 #include "vtkCommand.h"
 #include "vtkProperty.h"
 #include "vtkActor.h"
@@ -136,7 +136,7 @@
 #include "vtkCallbackCommand.h"
 // ****************************
 
-#undef id
+//#undef id
 
 class vtkMyCallback;
 

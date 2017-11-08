@@ -32,7 +32,7 @@
  ============================================================================*/
 
 
-#import <OsiriX/DCMAttributeTag.h>
+#import "DCMAttributeTag.h"
 
 
 @interface O2DicomPredicateEditorDCMAttributeTag : DCMAttributeTag {

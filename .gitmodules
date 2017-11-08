@@ -1,0 +1,18 @@
+[submodule "ITK"]
+	path = ITK
+	url = git@github.com:InsightSoftwareConsortium/ITK.git
+[submodule "VTK"]
+	path = VTK
+	url = git@github.com:Kitware/VTK.git
+[submodule "CharLS"]
+	path = CharLS
+	url = git@github.com:team-charls/charls.git
+[submodule "DCMTK"]
+	path = DCMTK
+	url = git@github.com:commontk/DCMTK.git
+[submodule "GDCM"]
+	path = GDCM
+	url = git://git.code.sf.net/p/gdcm/gdcm
+[submodule "OpenJPEG"]
+	path = OpenJPEG
+	url = git@github.com:uclouvain/openjpeg.git

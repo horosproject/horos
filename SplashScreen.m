@@ -40,31 +40,31 @@
 #include <mach/machine.h>
 #include <sys/sysctl.h>
 
-BOOL IsPPC()
+//BOOL IsPPC()
+//
+//{
+//   host_basic_info_data_t hostInfo;
+//   mach_msg_type_number_t infoCount;
+//
+//   infoCount = HOST_BASIC_INFO_COUNT;
+//   host_info(mach_host_self(), HOST_BASIC_INFO, 
+//(host_info_t)&hostInfo, &infoCount);
+//
+//	return (hostInfo.cpu_type == CPU_TYPE_POWERPC);
+//} 
 
-{
-   host_basic_info_data_t hostInfo;
-   mach_msg_type_number_t infoCount;
-
-   infoCount = HOST_BASIC_INFO_COUNT;
-   host_info(mach_host_self(), HOST_BASIC_INFO, 
-(host_info_t)&hostInfo, &infoCount);
-
-	return (hostInfo.cpu_type == CPU_TYPE_POWERPC);
-} 
-
-int GetAltiVecTypeAvailable( void )
-{
-
-int sels[2] = { CTL_HW, HW_VECTORUNIT };
-int vType = 0; //0 == scalar only
-size_t length = sizeof(vType);
-int error = sysctl(sels, 2, &vType, &length, NULL, 0);
-if( 0 == error ) return vType;
-
-return 0;
-
-}
+//int GetAltiVecTypeAvailable( void )
+//{
+//
+//int sels[2] = { CTL_HW, HW_VECTORUNIT };
+//int vType = 0; //0 == scalar only
+//size_t length = sizeof(vType);
+//int error = sysctl(sels, 2, &vType, &length, NULL, 0);
+//if( 0 == error ) return vType;
+//
+//return 0;
+//
+//}
 
 long vramSize()
 {
@@ -108,7 +108,7 @@ long vramSize()
 BOOL useQuartz() {
 	return NO;				// Disable quartz about screen:  DDP (060224)
 	
-	
+	/*
 	if (vramSize() >= 32)
 		return YES;
 	else 
@@ -118,6 +118,7 @@ BOOL useQuartz() {
 		return YES;
 		
 	return GetAltiVecTypeAvailable();
+     */
 }
 @implementation SplashScreen
 

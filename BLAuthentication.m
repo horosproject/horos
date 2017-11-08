@@ -104,8 +104,10 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
 	/* printf ("Exec:\n%s", "/bin/sh"); for (i = 0; args[i] != 0; ++i) { printf (" \"%s\"", args[i]); } printf ("\n"); */
     
 	/* Execute command */
-	result = AuthorizationExecuteWithPrivileges( 
-                                                authorization, "/bin/sh",  options, args, &commPipe );
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+	result = AuthorizationExecuteWithPrivileges(authorization, "/bin/sh",  options, args, &commPipe );
+#pragma clang diagnostic pop
 	if (result != noErr) {
 		unlink (stderrpath);
         free( args);
@@ -222,11 +224,11 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
 	}
 
 	while( i < numItems && i < 20 ) {
-		 [[forCommands objectAtIndex:i] getCString:paths[i]];
+		 [[forCommands objectAtIndex:i] getCString:paths[i] maxLength:128 encoding:NSUTF8StringEncoding];
 		
 		items[i].name = kAuthorizationRightExecute;
 		items[i].value = paths[i];
-		items[i].valueLength = [[forCommands objectAtIndex:i] cStringLength];
+		items[i].valueLength = strlen(paths[i]);
 		items[i].flags = 0;
 		
 		i++;
@@ -290,11 +292,11 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
 	}
     
 	while( i < numItems && i < 20 ) {
-		[[forCommands objectAtIndex:i] getCString:paths[i]];
+		[[forCommands objectAtIndex:i] getCString:paths[i] maxLength:128 encoding:NSUTF8StringEncoding];
 		
 		items[i].name = kAuthorizationRightExecute;
 		items[i].value = paths[i];
-		items[i].valueLength = [[forCommands objectAtIndex:i] cStringLength];
+		items[i].valueLength = strlen(paths[i]);
 		items[i].flags = 0;
 		
 		i++;
@@ -453,7 +455,7 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
 	{
 		while( i < [arguments count] && i < 19)
 		{
-			args[i] = (char*)[[arguments objectAtIndex:i] cString];
+			args[i] = (char*)[[arguments objectAtIndex:i] UTF8String];
 			i++;
 		}
 		args[i] = NULL;

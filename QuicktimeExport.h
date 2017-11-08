@@ -48,12 +48,14 @@
 	NSArray					*exportTypes;
 	
 	IBOutlet NSView			*view;
-	IBOutlet NSPopUpButton	*type;
+    IBOutlet NSPopUpButton	*type;
+    
+    id _tlos;
 }
 
 + (CVPixelBufferRef) CVPixelBufferFromNSImage:(NSImage *)image;
 - (id) initWithSelector:(id) o :(SEL) s :(long) f;
-- (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name;
-- (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name :(NSInteger)framesPerSecond;
+- (NSString *) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name;
+- (NSString *) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name :(NSInteger)framesPerSecond;
 @end
 

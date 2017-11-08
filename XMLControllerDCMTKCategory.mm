@@ -49,11 +49,14 @@
 #include "ofstdinc.h"
 
 
-#import "dicomFile.h"
+#import "DicomFile.h"
 #import "DICOMToNSString.h"
 #import "DicomFileDCMTKCategory.h"
 #import "DCMAttributeTag.h"
-#include "libGDCM.h"
+#include <GDCM/gdcmReader.h>
+#include <GDCM/gdcmDefs.h>
+#include <GDCM/gdcmAnonymizer.h>
+#include <GDCM/gdcmWriter.h>
 
 extern NSRecursiveLock *PapyrusLock;
 

@@ -239,8 +239,8 @@ static const NSUInteger colWidth = 80, colSeparator = 1, rowHeight = 101, titleH
 //	[[self backgroundColor] setFill];
 //	[NSBezierPath fillRect:frame];
 	
-	[[NSColor colorWithCalibratedWhite:230./255 alpha:1] setFill];
-	[[NSColor colorWithCalibratedWhite:207./255 alpha:1] setStroke];
+    [[NSColor colorWithCalibratedWhite:.89 alpha:1] setFill];
+    [[NSColor colorWithCalibratedWhite:.80 alpha:1] setStroke];
 	[NSBezierPath setDefaultLineWidth:1];
 	for (NSUInteger r = 1; r < groups.count; r += 2) {
 		NSRect rect = NSMakeRect(0, frame.size.height-rowHeight*r-rowHeight-padding[0], frame.size.width, rowHeight);

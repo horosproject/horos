@@ -31,13 +31,13 @@
      PURPOSE.
  ============================================================================*/
 
-#define id Id
+//#define id Id
 #include <Accelerate/Accelerate.h>
-#include "itkImage.h"
-#include "itkImportImageFilter.h"
-#include "itkAffineTransform.h"
-#include "itkResampleImageFilter.h"
-#undef id
+#include <ITK/itkImage.h>
+#include <ITK/itkImportImageFilter.h>
+#include <ITK/itkAffineTransform.h>
+#include <ITK/itkResampleImageFilter.h>
+//#undef id
 
 #import "ITKTransform.h"
 #import "DCMPix.h"

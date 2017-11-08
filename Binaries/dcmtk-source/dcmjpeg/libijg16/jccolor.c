@@ -143,7 +143,7 @@ rgb_ycc_convert (j_compress_ptr cinfo,
 		 JDIMENSION output_row, int num_rows)
 {
   my_cconvert_ptr cconvert = (my_cconvert_ptr) cinfo->cconvert;
-  register int r, g, b;
+  int r, g, b;
   register IJG_INT32 * ctab = cconvert->rgb_ycc_tab;
   register JSAMPROW inptr;
   register JSAMPROW outptr0, outptr1, outptr2;
@@ -199,7 +199,7 @@ rgb_gray_convert (j_compress_ptr cinfo,
 		  JDIMENSION output_row, int num_rows)
 {
   my_cconvert_ptr cconvert = (my_cconvert_ptr) cinfo->cconvert;
-  register int r, g, b;
+  int r, g, b;
   register IJG_INT32 * ctab = cconvert->rgb_ycc_tab;
   register JSAMPROW inptr;
   register JSAMPROW outptr;
@@ -238,7 +238,7 @@ cmyk_ycck_convert (j_compress_ptr cinfo,
 		   JDIMENSION output_row, int num_rows)
 {
   my_cconvert_ptr cconvert = (my_cconvert_ptr) cinfo->cconvert;
-  register int r, g, b;
+  int r, g, b;
   register IJG_INT32 * ctab = cconvert->rgb_ycc_tab;
   register JSAMPROW inptr;
   register JSAMPROW outptr0, outptr1, outptr2, outptr3;
@@ -324,7 +324,7 @@ null_convert (j_compress_ptr cinfo,
   register JSAMPROW inptr;
   register JSAMPROW outptr;
   register JDIMENSION col;
-  register int ci;
+  int ci;
   int nc = cinfo->num_components;
   JDIMENSION num_cols = cinfo->image_width;
 

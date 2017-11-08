@@ -51,7 +51,11 @@
 #import "DicomFileDCMTKCategory.h"
 #import "XMLControllerDCMTKCategory.h"
 #import "N2Debug.h"
-#import "libGDCM.h"
+#import "NSUserDefaultsController+N2.h"
+#include <GDCM/gdcmReader.h>
+#include <GDCM/gdcmDefs.h>
+#include <GDCM/gdcmAnonymizer.h>
+#include <GDCM/gdcmWriter.h>
 
 static NSString *templateDicomFile = nil;
 

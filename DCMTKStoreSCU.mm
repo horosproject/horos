@@ -34,7 +34,7 @@
 #import "LogManager.h"
 #import "AppController.h"
 #import "DCMTKStoreSCU.h"
-#import "browserController.h"
+#import "BrowserController.h"
 #import "DicomFile.h"
 #import "Notifications.h"
 #import "MutableArrayCategory.h"
@@ -103,11 +103,11 @@ END_EXTERN_C
 #include <zlib.h>          /* for zlibVersion() */
 #endif
 
-#include "browserController.h"
+#import "BrowserController.h"
 #import "DICOMToNSString.h"
-#import <OsiriX/DCMObject.h>
-#import <OsiriX/DCM.h>
-#import <OsiriX/DCMTransferSyntax.h>
+#import "DCMObject.h"
+#import "DCM.h"
+#import "DCMTransferSyntax.h"
 #import "SendController.h"
 
 #import "OpenGLScreenReader.h"
@@ -528,8 +528,8 @@ static OFBool decompressFile(DcmFileFormat fileformat, const char *fname, char *
 	BOOL useDCMTKForJP2K = [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"];
 	if( useDCMTKForJP2K == NO && (filexfer.getXfer() == EXS_JPEG2000LosslessOnly || filexfer.getXfer() == EXS_JPEG2000))
 	{
-		NSString *path = [NSString stringWithCString: fname encoding: NSUTF8StringEncoding];
-		NSString *outpath = [NSString stringWithCString: outfname encoding: NSUTF8StringEncoding];
+		NSString *path = [NSString stringWithUTF8String:fname];
+		NSString *outpath = [NSString stringWithUTF8String:outfname];
 		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: path decodingPixelData: NO];
 		
 		unlink( outfname);
@@ -581,8 +581,8 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
         if( useDCMTKForJP2K == NO && opt_networkTransferSyntax == EXS_JPEG2000)
         {
             NSLog(@"SEND - Compress JPEG 2000 Lossy (%d) : %s", opt_Quality, fname);
-            NSString *path = [NSString stringWithCString:fname encoding:NSUTF8StringEncoding];
-            NSString *outpath = [NSString stringWithCString:outfname encoding:NSUTF8StringEncoding];
+            NSString *path = [NSString stringWithUTF8String:fname];
+            NSString *outpath = [NSString stringWithUTF8String:outfname];
             
             DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
             
@@ -604,8 +604,8 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
         {
             NSLog(@"SEND - Compress JPEG 2000 Lossless: %s", fname);
             
-            NSString *path = [NSString stringWithCString:fname encoding:NSUTF8StringEncoding];
-            NSString *outpath = [NSString stringWithCString:outfname encoding:NSUTF8StringEncoding];
+            NSString *path = [NSString stringWithUTF8String:fname];
+            NSString *outpath = [NSString stringWithUTF8String:outfname];
             
             DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
             
@@ -712,7 +712,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     DcmDataset *statusDetail = NULL;
 	char outfname[ 4096];
 	
-	sprintf( outfname, "%s/%ld.dcm", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], seed++);
+	sprintf( outfname, "%s/%ld.dcm", [[DicomDatabase activeLocalDatabase] tempDirPathC], seed++);
 
     OFBool unsuccessfulStoreEncountered = OFTrue; // assumption
 	
@@ -1051,7 +1051,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 				
 				if (fileformat.getDataset()->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != nil)
 				{
-					NSArray	*c = [[NSString stringWithCString:string] componentsSeparatedByString:@"\\"];
+					NSArray	*c = [[NSString stringWithUTF8String:string] componentsSeparatedByString:@"\\"];
 
 					if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
 
@@ -1107,7 +1107,7 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
 	
 	//delete if necessary and create temp folder. Allows us to compress and deompress files. Wish we could do on the fly
 //	NSFileManager *fileManager = [NSFileManager defaultManager];
-//	if ([fileManager fileExistsAtPath:tempFolder]) [fileManager removeFileAtPath:tempFolder handler:nil];
+//	if ([fileManager fileExistsAtPath:tempFolder]) [fileManager removeItemAtPath:tempFolder error:NULL];
 //	
 //	if ([fileManager createDirectoryAtPath:tempFolder attributes:nil]) NSLog(@"created Folder: %@", tempFolder);
 	
@@ -1803,9 +1803,9 @@ static OFCondition cstore(T_ASC_Association * assoc, const OFString& fname)
         if( _secureConnection)
         {
     //		[DDKeychain unlockTmpFiles];
-            [[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS keyPathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID] handler:nil];
-            [[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS certificatePathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID] handler:nil];
-            [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, uniqueStringID] handler:nil];				
+            [[NSFileManager defaultManager] removeItemAtPath:[DICOMTLS keyPathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID] error:NULL];
+            [[NSFileManager defaultManager] removeItemAtPath:[DICOMTLS certificatePathForServerAddress:_hostname port:_port AETitle:_calledAET withStringID:uniqueStringID] error:NULL];
+            [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, uniqueStringID] error:NULL];
         }
     }
 #endif

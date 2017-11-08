@@ -123,6 +123,9 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 -(NSString*)dumpDirPath;
 -(NSString*)pagesDirPath;
 -(NSString*)htmlTemplatesDirPath;
+- (NSString *)statesDirPath;
+- (NSString *)clutsDirPath;
+- (NSString *)presetsDirPath;
 // these paths are used from the DICOM listener
 -(const char*)baseDirPathC;
 -(const char*)incomingDirPathC;
@@ -186,5 +189,7 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 // methods to overload when one needs to ask for confirmation about autorouting
 -(BOOL)allowAutoroutingWithPostNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems;
 -(void)alertToApplyRoutingRules:(NSArray*)routingRules toImages:(NSArray*)images;
+
+-(void)copyFilesThread:(NSDictionary*)dict;
 
 @end

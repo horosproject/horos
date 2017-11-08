@@ -54,7 +54,7 @@ readFromData8(NSData *data, JOCTET *buffer, int currentPosition, int length){
 		lengthToRead = length;
 	}
 	else{
-		lengthToRead = [data length] - currentPosition;
+		lengthToRead = (int)[data length] - currentPosition;
 		range = NSMakeRange(currentPosition, lengthToRead);
 	}
 	
@@ -90,9 +90,9 @@ METHODDEF(void) JPEG8ErrorExit(j_common_ptr cinfo)
 	char buffer[JMSG_LENGTH_MAX]; 
 	(*cinfo->err->format_message) (cinfo, buffer);
 	NSLog(@"JPEG error %s", buffer);
-	[NSException raise:@"DCM JPEG Encoding error" format:@"%@", [NSString stringWithCString:buffer encoding: NSISOLatin1StringEncoding]];
-	//dcmException = [NSException exceptionWithName:@"DCM JPEG Encoding error" reason:[NSString stringWithCString:buffer] userInfo:nil];
-	//localException = [NSException exceptionWithName:@"DCM JPEG Encoding error" reason:[NSString stringWithCString:buffer] userInfo:nil];
+	[NSException raise:@"DCM JPEG Encoding error" format:@"%@", [NSString stringWithCString:buffer encoding:NSISOLatin1StringEncoding]];
+	//dcmException = [NSException exceptionWithName:@"DCM JPEG Encoding error" reason:[NSString stringWithUTF8String:buffer] userInfo:nil];
+	//localException = [NSException exceptionWithName:@"DCM JPEG Encoding error" reason:[NSString stringWithUTF8String:buffer] userInfo:nil];
 }
 
 METHODDEF(void) JPEG8OutputMessage(j_common_ptr cinfo)
@@ -188,7 +188,7 @@ fill_input_buffer (j_decompress_ptr cinfo)
 	
   data8_src_ptr src = (data8_src_ptr) cinfo->src;
   size_t nbytes;
-	nbytes = readFromData8(src->data, src->buffer, src->currentPosition, INPUT_BUF_SIZE);
+	nbytes = readFromData8(src->data, src->buffer, (int)src->currentPosition, INPUT_BUF_SIZE);
   //nbytes = JFREAD(src->infile, src->buffer, INPUT_BUF_SIZE);
 
   if (nbytes <= 0) {
@@ -379,7 +379,7 @@ term_destination8 (j_compress_ptr cinfo)
   /* Write any data remaining in the buffer */
  
   if (datacount > 0) {
-    if (writeToData8(dest->data, dest->buffer,  datacount) != datacount) {
+    if (writeToData8(dest->data, dest->buffer, (int)datacount) != datacount) {
 	}
   //    ERREXIT(cinfo, JERR_FILE_WRITE);
   }

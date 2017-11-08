@@ -33,6 +33,7 @@
 
 #import "DicomDatabase.h"
 #import "NSString+N2.h"
+#import "NSString+SymlinksAndAliases.h"
 #import "Notifications.h"
 #import "DicomAlbum.h"
 #import "NSException+N2.h"
@@ -129,7 +130,7 @@ NSString* const O2ScreenCapturesSeriesName = NSLocalizedString(@"OsiriX Screen C
 +(NSString*)baseDirPathForMode:(int)mode path:(NSString*)path {
     switch (mode) {
         case 0:
-            path = [NSFileManager.defaultManager findSystemFolderOfType:kDocumentsFolderType forDomain:kOnAppropriateDisk];
+            path = [[[NSFileManager.defaultManager URLsForDirectory:NSDocumentDirectory inDomains:kUserDomain] firstObject] path];
 #ifdef MACAPPSTORE
             NSString* temp = [self baseDirPathForPath:path];
             BOOL isDir;
@@ -192,7 +193,7 @@ static DicomDatabase* defaultDatabase = nil;
             
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"eraseEntireDBAtStartup"])
             {
-                NSString *databaseDir = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[[self defaultBaseDirPath] stringByAppendingPathComponent:@"DATABASE.noindex"]];
+                NSString *databaseDir = [[[self defaultBaseDirPath] stringByAppendingPathComponent:@"DATABASE.noindex"] stringByResolvingSymlinksAndAliases];
                 
                 if( [NSThread isMainThread])
                 {
@@ -395,7 +396,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 {
     @try {
         p = [DicomDatabase baseDirPathForPath:p];
-        p = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:p];
+        p = [p stringByResolvingSymlinksAndAliases];
         
         if (!mainDbReference)
             mainDbReference = [DicomDatabase existingDatabaseAtPath:p];
@@ -445,7 +446,7 @@ static DicomDatabase* activeLocalDatabase = nil;
             // if a TOBEINDEXED dir exists, move it into INCOMING so we will import the data
             
             if ([NSFileManager.defaultManager fileExistsAtPath:self.toBeIndexedDirPath])
-                [NSFileManager.defaultManager moveItemAtPath:self.toBeIndexedDirPath toPath:[self.incomingDirPath stringByAppendingPathComponent:@"TOBEINDEXED.noindex"] error:NULL];
+                [NSFileManager.defaultManager moveItemAtPath:self.toBeIndexedDirPath toPath:[self.incomingDirPath stringByAppendingPathComponent:self.toBeIndexedDirPath.lastPathComponent] error:NULL];
             
             // report templates
 #ifndef MACAPPSTORE
@@ -547,7 +548,7 @@ static DicomDatabase* activeLocalDatabase = nil;
     
 #ifndef NDEBUG
     if( databasesDictionary.count > 50)
-        NSLog( @"******** WARNING databasesDictionary.count is very high = %d", databasesDictionary.count);
+        NSLog( @"******** WARNING databasesDictionary.count is very high = %lu", (unsigned long)databasesDictionary.count);
 #endif
     
     [databasesDictionaryLock unlock]; //We are locked from -(oneway void) release
@@ -756,47 +757,59 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
  }*/
 
 -(NSString*)dataDirPath {
-    return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"DATABASE.noindex"]];
+    return [[self.dataBaseDirPath stringByAppendingPathComponent:@"DATABASE.noindex"] stringByResolvingSymlinksAndAliases];
 }
 
 -(NSString*)incomingDirPath {
-    return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"INCOMING.noindex"]];
+    return [[self.dataBaseDirPath stringByAppendingPathComponent:@"INCOMING.noindex"] stringByResolvingSymlinksAndAliases];
 }
 
 -(NSString*)decompressionDirPath {
-    return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"DECOMPRESSION.noindex"]];
+    return [[self.dataBaseDirPath stringByAppendingPathComponent:@"DECOMPRESSION.noindex"] stringByResolvingSymlinksAndAliases];
 }
 
 -(NSString*)toBeIndexedDirPath {
-    return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"TOBEINDEXED.noindex"]];
+    return [[self.dataBaseDirPath stringByAppendingPathComponent:@"TOBEINDEXED.noindex"] stringByResolvingSymlinksAndAliases];
 }
 
 -(NSString*)tempDirPath {
-    return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"TEMP.noindex"]];
+    return [[self.dataBaseDirPath stringByAppendingPathComponent:@"TEMP.noindex"] stringByResolvingSymlinksAndAliases];
 }
 
 -(NSString*)dumpDirPath {
-    return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"DUMP"]];
+    return [[self.dataBaseDirPath stringByAppendingPathComponent:@"DUMP"] stringByResolvingSymlinksAndAliases];
 }
 
 -(NSString*)errorsDirPath {
-    return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"NOT READABLE"]];
+    return [[self.dataBaseDirPath stringByAppendingPathComponent:@"NOT READABLE"] stringByResolvingSymlinksAndAliases];
 }
 
 -(NSString*)reportsDirPath {
-    return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"REPORTS"]];
+    return [[self.dataBaseDirPath stringByAppendingPathComponent:@"REPORTS"] stringByResolvingSymlinksAndAliases];
 }
 
 -(NSString*)pagesDirPath {
-    return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"PAGES"]];
+    return [[self.dataBaseDirPath stringByAppendingPathComponent:@"PAGES"] stringByResolvingSymlinksAndAliases];
 }
 
 -(NSString*)roisDirPath {
-    return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"ROIs"]];
+    return [[self.dataBaseDirPath stringByAppendingPathComponent:@"ROIs"] stringByResolvingSymlinksAndAliases];
 }
 
 -(NSString*)htmlTemplatesDirPath {
-    return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"HTML_TEMPLATES"]];
+    return [[self.dataBaseDirPath stringByAppendingPathComponent:@"HTML_TEMPLATES"] stringByResolvingSymlinksAndAliases];
+}
+
+- (NSString *)statesDirPath {
+    return [[self.dataBaseDirPath stringByAppendingPathComponent:@"3DSTATE"] stringByResolvingSymlinksAndAliases];
+}
+
+- (NSString *)clutsDirPath {
+    return [[self.dataBaseDirPath stringByAppendingPathComponent:@"CLUTs"] stringByResolvingSymlinksAndAliases];
+}
+
+- (NSString *)presetsDirPath {
+    return [[self.dataBaseDirPath stringByAppendingPathComponent:@"3DPRESETS"] stringByResolvingSymlinksAndAliases];
 }
 
 -(NSString*)modelVersionFilePath {
@@ -1137,17 +1150,17 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     NSCalendarDate* now = [NSCalendarDate calendarDate];
     NSDate *start = [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]] timeIntervalSinceReferenceDate]];
     
-    NSDictionary	*sub = [NSDictionary dictionaryWithObjectsAndKeys:	[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*1] timeIntervalSinceReferenceDate]],			@"$LASTHOUR",
-                            [NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*6] timeIntervalSinceReferenceDate]],			@"$LAST6HOURS",
-                            [NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*12] timeIntervalSinceReferenceDate]],			@"$LAST12HOURS",
+    NSDictionary	*sub = [NSDictionary dictionaryWithObjectsAndKeys:	[NSString stringWithFormat:@"%lf", [[now dateByAddingTimeInterval: -60*60*1] timeIntervalSinceReferenceDate]],			@"$LASTHOUR",
+                            [NSString stringWithFormat:@"%lf", [[now dateByAddingTimeInterval:-60*60*6] timeIntervalSinceReferenceDate]],			@"$LAST6HOURS",
+                            [NSString stringWithFormat:@"%lf", [[now dateByAddingTimeInterval: -60*60*12] timeIntervalSinceReferenceDate]],			@"$LAST12HOURS",
                             [NSString stringWithFormat:@"%lf", [start timeIntervalSinceReferenceDate]],										@"$TODAY",
-                            [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24] timeIntervalSinceReferenceDate]],			@"$YESTERDAY",
-                            [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*2] timeIntervalSinceReferenceDate]],		@"$2DAYS",
-                            [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*7] timeIntervalSinceReferenceDate]],		@"$WEEK",
-                            [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31] timeIntervalSinceReferenceDate]],		@"$MONTH",
-                            [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31*2] timeIntervalSinceReferenceDate]],	@"$2MONTHS",
-                            [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31*3] timeIntervalSinceReferenceDate]],	@"$3MONTHS",
-                            [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*365] timeIntervalSinceReferenceDate]],		@"$YEAR",
+                            [NSString stringWithFormat:@"%lf", [[start dateByAddingTimeInterval: -60*60*24] timeIntervalSinceReferenceDate]],			@"$YESTERDAY",
+                            [NSString stringWithFormat:@"%lf", [[start dateByAddingTimeInterval: -60*60*24*2] timeIntervalSinceReferenceDate]],		@"$2DAYS",
+                            [NSString stringWithFormat:@"%lf", [[start dateByAddingTimeInterval: -60*60*24*7] timeIntervalSinceReferenceDate]],		@"$WEEK",
+                            [NSString stringWithFormat:@"%lf", [[start dateByAddingTimeInterval: -60*60*24*31] timeIntervalSinceReferenceDate]],		@"$MONTH",
+                            [NSString stringWithFormat:@"%lf", [[start dateByAddingTimeInterval: -60*60*24*31*2] timeIntervalSinceReferenceDate]],	@"$2MONTHS",
+                            [NSString stringWithFormat:@"%lf", [[start dateByAddingTimeInterval: -60*60*24*31*3] timeIntervalSinceReferenceDate]],	@"$3MONTHS",
+                            [NSString stringWithFormat:@"%lf", [[start dateByAddingTimeInterval: -60*60*24*365] timeIntervalSinceReferenceDate]],		@"$YEAR",
                             nil];
     
     NSEnumerator *enumerator = [sub keyEnumerator];
@@ -1256,7 +1269,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     NSTimeInterval currentTime = NSDate.timeIntervalSinceReferenceDate;
     if (currentTime-_timeOfLastIsFileSystemFreeSizeLimitReachedVerification > 20) {
         // refresh _isFileSystemFreeSizeLimitReached
-        NSDictionary* dataBasePathAttrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:self.dataBaseDirPath];
+        NSDictionary* dataBasePathAttrs = [[NSFileManager defaultManager] attributesOfFileSystemForPath:self.dataBaseDirPath error:NULL];
         NSNumber* dataBasePathSize = [dataBasePathAttrs objectForKey:NSFileSystemSize];
         NSNumber* dataBasePathFreeSize = [dataBasePathAttrs objectForKey:NSFileSystemFreeSize];
         if (dataBasePathFreeSize && dataBasePathSize) {
@@ -1299,7 +1312,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 //          N2LogExceptionWithStackTrace(e);
 //		}
 //
-//		[[NSFileManager defaultManager] removeFileAtPath: file handler: nil];
+//		[[NSFileManager defaultManager] removeItemAtPath: file error:NULL];
 //		[[NSFileManager defaultManager] movePath:destPath toPath: file handler: nil];
 //	}
 //#endif
@@ -1520,10 +1533,10 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         NSMutableArray *dicomFilesArray = [NSMutableArray arrayWithCapacity:chunkRange.length];
         
         if ([[NSFileManager defaultManager] fileExistsAtPath: dataDirPath] == NO)
-            [[NSFileManager defaultManager] createDirectoryAtPath: dataDirPath attributes:nil];
+            [[NSFileManager defaultManager] createDirectoryAtPath: dataDirPath withIntermediateDirectories:YES attributes:nil error:NULL];
         
         if ([[NSFileManager defaultManager] fileExistsAtPath: reportsDirPath] == NO)
-            [[NSFileManager defaultManager] createDirectoryAtPath: reportsDirPath attributes:nil];
+            [[NSFileManager defaultManager] createDirectoryAtPath: reportsDirPath withIntermediateDirectories:YES attributes:nil error:NULL];
         
         if (chunkRange.length == 0)
             break;
@@ -1580,14 +1593,14 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                             
                             if ( DELETEFILELISTENER)
                             {
-                                [[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+                                [[NSFileManager defaultManager] removeItemAtPath: newFile error:NULL];
                             }
                             else
                             {
                                 NSLog(@"**** This file in the DATABASE folder: move it to the unreadable folder");
                                 
                                 if ([[NSFileManager defaultManager] moveItemAtPath:newFile toPath:[errorsDirPath stringByAppendingPathComponent:[newFile lastPathComponent]] error:NULL] == NO)
-                                    [[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+                                    [[NSFileManager defaultManager] removeItemAtPath: newFile error:NULL];
                             }
                         }
                     }
@@ -1639,7 +1652,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         
         [DicomFile setFilesAreFromCDMedia: NO];
         
-        //	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/dicomsr_osirix" handler: nil]; // nooooooo because other threads may be using it
+        //	[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/dicomsr_osirix" error:NULL]; // nooooooo because other threads may be using it
         
         if (addFailed)
         {
@@ -2132,7 +2145,7 @@ static BOOL protectionAgainstReentry = NO;
                                         if (local)	// Delete this file, it's already in the DB folder
                                         {
                                             if ([[image valueForKey:@"path"] isEqualToString: [newFile lastPathComponent]] == NO)
-                                                [[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+                                                [[NSFileManager defaultManager] removeItemAtPath: newFile error:NULL];
                                         }
                                         
                                         newObject = NO;
@@ -2146,7 +2159,7 @@ static BOOL protectionAgainstReentry = NO;
                                         if ([[image valueForKey:@"inDatabaseFolder"] boolValue] && [imPath isEqualToString: newFile] == NO)
                                         {
                                             if ([[NSFileManager defaultManager] fileExistsAtPath: imPath])
-                                                [[NSFileManager defaultManager] removeFileAtPath: imPath handler:nil];
+                                                [[NSFileManager defaultManager] removeItemAtPath: imPath error:NULL];
                                         }
                                     }
                                 }
@@ -2471,12 +2484,12 @@ static BOOL protectionAgainstReentry = NO;
                             
                             if ( DELETEFILELISTENER)
                             {
-                                [[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+                                [[NSFileManager defaultManager] removeItemAtPath: newFile error:NULL];
                             }
                             else
                             {
                                 if ([[NSFileManager defaultManager] moveItemAtPath: newFile toPath:[errorsDirPath stringByAppendingPathComponent: [newFile lastPathComponent]]  error:NULL] == NO)
-                                    [[NSFileManager defaultManager] removeFileAtPath: newFile handler:nil];
+                                    [[NSFileManager defaultManager] removeItemAtPath: newFile error:NULL];
                             }
                         }
                     }
@@ -2706,7 +2719,7 @@ static BOOL protectionAgainstReentry = NO;
                                     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"] && [[dict objectForKey: @"mountedVolume"] boolValue] == NO) // mountedVolume : it's too slow to test the files now from a CD
                                     {
                                         // Pre-load for faster validating
-                                        NSData *d = [NSData dataWithContentsOfFile: srcPath];
+                                        /*NSData *d =*/ [NSData dataWithContentsOfFile: srcPath];
                                     }
                                     [copiedFiles addObject: srcPath];
                                 }
@@ -2887,7 +2900,7 @@ static BOOL protectionAgainstReentry = NO;
         listenerCompressionSettings = 0;
 #endif
         
-        [AppController createNoIndexDirectoryIfNecessary:self.dataDirPath];
+        [[NSFileManager defaultManager] confirmNoIndexDirectoryAtPath:self.dataDirPath];
         
         int maxNumberOfFiles = [[NSUserDefaults standardUserDefaults] integerForKey:@"maxNumberOfFilesForCheckIncoming"];
         if (maxNumberOfFiles < 100) maxNumberOfFiles = 100;
@@ -2946,8 +2959,9 @@ static BOOL protectionAgainstReentry = NO;
                 continue; // don't handle this file, it's probably a busy file
             }
             
-            BOOL isAlias = NO;
-            srcPath = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:srcPath resolved:&isAlias];
+            NSString * originalSrcPath = srcPath;
+            srcPath = [srcPath stringByResolvingSymlinksAndAliases];
+            BOOL isAlias = ![srcPath isEqualToString:originalSrcPath];
             
             if( filesArray.count && !activityFeedbackShown && showGUI.boolValue) {
                 [ThreadsManager.defaultManager addThreadAndStart:thread];
@@ -2967,14 +2981,10 @@ static BOOL protectionAgainstReentry = NO;
                 {
                     // if alias assume nested folders should stay
                     if (!isAlias) { // Is this directory empty?? If yes, delete it!
-                        BOOL dirContainsStuff = NO;
-                        for (NSString* f in [[NSFileManager defaultManager] enumeratorAtPath:srcPath filesOnly:NO]) {
-                            dirContainsStuff = YES;
-                            break;
-                        }
+                        BOOL dirContainsStuff = ([[[NSFileManager defaultManager] enumeratorAtPath:srcPath filesOnly:NO] nextObject] != nil);
                         
                         if (!dirContainsStuff)
-                            [[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
+                            [[NSFileManager defaultManager] removeItemAtPath:srcPath error:NULL];
                     }
                 }
                 else if ([[fattrs objectForKey:NSFileSize] longLongValue] > 0)
@@ -3075,7 +3085,7 @@ static BOOL protectionAgainstReentry = NO;
                             }
                         }
                         [file closeFile];
-                        if (dicomFileCreated)[[NSFileManager defaultManager] removeFileAtPath:srcPath handler:nil];
+                        if (dicomFileCreated)[[NSFileManager defaultManager] removeItemAtPath:srcPath error:NULL];
                         
                     }
                     //===========================
@@ -3131,8 +3141,8 @@ static BOOL protectionAgainstReentry = NO;
                             
                             if (isAlias)
                             {
-                                result = [[NSFileManager defaultManager] copyPath:srcPath toPath: dstPath handler:nil];
-                                [[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
+                                result = [[NSFileManager defaultManager] copyItemAtPath:srcPath toPath: dstPath error:NULL];
+                                [[NSFileManager defaultManager] removeItemAtPath:originalPath error:NULL];
                             }
                             else
                             {
@@ -3150,7 +3160,7 @@ static BOOL protectionAgainstReentry = NO;
                                 [[NSFileManager defaultManager] removeItemAtPath:srcPath error:NULL];
                             else {
                                 if (![NSFileManager.defaultManager moveItemAtPath:srcPath toPath:[self.errorsDirPath stringByAppendingPathComponent:lastPathComponent] error:NULL])
-                                    [NSFileManager.defaultManager removeFileAtPath:srcPath handler:nil];
+                                    [NSFileManager.defaultManager removeItemAtPath:srcPath error:NULL];
                             }
                         }
                     }
@@ -3993,22 +4003,22 @@ static BOOL protectionAgainstReentry = NO;
         
         // In the DATABASE FOLDER, we have only folders! Move all files that are wrongly there to the INCOMING folder.... and then scan these folders containing the DICOM files
         
-        NSArray	*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
+        NSArray	*dirContent = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:aPath error:NULL];
         @autoreleasepool
         {
             for( NSString *dir in dirContent)
             {
                 NSString * itemPath = [aPath stringByAppendingPathComponent: dir];
-                id fileType = [[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: YES] objectForKey:NSFileType];
+                id fileType = [[[NSFileManager defaultManager] attributesOfItemAtPath:itemPath error:NULL] objectForKey:NSFileType];
                 if ([fileType isEqual:NSFileTypeRegular])
                 {
                     [[NSFileManager defaultManager] moveItemAtPath:itemPath toPath:[incomingPath stringByAppendingPathComponent: [itemPath lastPathComponent]] error:NULL];
                 }
-                else totalFiles += [[[[NSFileManager defaultManager] fileAttributesAtPath: itemPath traverseLink: YES] objectForKey: NSFileReferenceCount] intValue];
+                else totalFiles += [[[[NSFileManager defaultManager] attributesOfItemAtPath:itemPath error:NULL] objectForKey: NSFileReferenceCount] intValue];
             }
         }
         
-        dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
+        dirContent = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:aPath error:NULL];
         
         NSLog( @"Start Rebuild");
         
@@ -4017,7 +4027,7 @@ static BOOL protectionAgainstReentry = NO;
             @autoreleasepool
             {
                 NSString *curDir = [aPath stringByAppendingPathComponent: name];
-                NSArray *subDir = [[NSFileManager defaultManager] directoryContentsAtPath: [aPath stringByAppendingPathComponent: name]];
+                NSArray *subDir = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: [aPath stringByAppendingPathComponent: name] error:NULL];
                 
                 for( NSString *subName in subDir)
                 {
@@ -4030,7 +4040,7 @@ static BOOL protectionAgainstReentry = NO;
         // ** DICOM ROI SR FOLDER
         @autoreleasepool
         {
-            dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:self.roisDirPath];
+            dirContent = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.roisDirPath error:NULL];
             for (NSString *name in dirContent)
                 if ([name characterAtIndex:0] != '.')
                     [filesArray addObject: [self.roisDirPath stringByAppendingPathComponent: name]];
@@ -4182,8 +4192,7 @@ static BOOL protectionAgainstReentry = NO;
             //[theTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
             
             if ([theTask terminationStatus] == 0) {
-                NSInteger tag = 0;
-                [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:self.sqlFilePath.stringByDeletingLastPathComponent destination:nil files:[NSArray arrayWithObject:self.sqlFilePath.lastPathComponent] tag:&tag];
+                [[NSFileManager defaultManager] trashItemAtURL:[NSURL fileURLWithPath:self.sqlFilePath] resultingItemURL:NULL error:NULL];
                 [NSFileManager.defaultManager moveItemAtPath:repairedDBFinalFile toPath:self.sqlFilePath error:nil];
             }
             
@@ -4219,7 +4228,7 @@ static BOOL protectionAgainstReentry = NO;
     // directory
     NSString* htmlTemplatesDirectory = [self htmlTemplatesDirPath];
     if ([[NSFileManager defaultManager] fileExistsAtPath:htmlTemplatesDirectory] == NO)
-        [[NSFileManager defaultManager] createDirectoryAtPath:htmlTemplatesDirectory attributes:nil];
+        [[NSFileManager defaultManager] createDirectoryAtPath:htmlTemplatesDirectory withIntermediateDirectories:YES attributes:nil error:NULL];
     
     // HTML templates
     NSString *templateFile;
@@ -4227,27 +4236,27 @@ static BOOL protectionAgainstReentry = NO;
     templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"];
     //	NSLog( @"%@", templateFile);
     if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-        [[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"] toPath:templateFile handler:nil];
+        [[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"] toPath:templateFile error:NULL];
     
     templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"];
     //	NSLog( @"%@", templateFile);
     if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-        [[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"] toPath:templateFile handler:nil];
+        [[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"] toPath:templateFile error:NULL];
     
     templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportSeriesTemplate.html"];
     //	NSLog( @"%@", templateFile);
     if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-        [[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportSeriesTemplate.html"] toPath:templateFile handler:nil];
+        [[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportSeriesTemplate.html"] toPath:templateFile error:NULL];
     
     // HTML-extra directory
     NSString *htmlExtraDirectory = [htmlTemplatesDirectory stringByAppendingPathComponent:@"html-extra/"];
     if ([[NSFileManager defaultManager] fileExistsAtPath:htmlExtraDirectory] == NO)
-        [[NSFileManager defaultManager] createDirectoryAtPath:htmlExtraDirectory attributes:nil];
+        [[NSFileManager defaultManager] createDirectoryAtPath:htmlExtraDirectory withIntermediateDirectories:YES attributes:nil error:NULL];
     
     // CSS file
     NSString *cssFile = [htmlExtraDirectory stringByAppendingPathComponent:@"style.css"];
     if ([[NSFileManager defaultManager] fileExistsAtPath:cssFile] == NO)
-        [[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportStyle.css"] toPath:cssFile handler:nil];
+        [[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"QTExportStyle.css"] toPath:cssFile error:NULL];
     
 }
 

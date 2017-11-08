@@ -35,9 +35,9 @@
 #import "SRAnnotation.h"
 #import "DCMView.h"
 #import "DCMPix.h"
-#import "browserController.h"
+#import "BrowserController.h"
 #import "DicomFile.h"
-#import <OsiriX/DCMCalendarDate.h>
+#import "DCMCalendarDate.h"
 #import "DicomStudy.h"
 #import "DicomSeries.h"
 #import "N2Debug.h"

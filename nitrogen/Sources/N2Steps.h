@@ -35,10 +35,11 @@
 
 @class N2Step; //, N2StepsView;
 
-extern NSString* N2StepsDidAddStepNotification;
-extern NSString* N2StepsWillRemoveStepNotification;
-extern NSString* N2StepsNotificationStep;
+extern NSString * const __deprecated N2StepsDidAddStepNotification;
+extern NSString * const __deprecated N2StepsWillRemoveStepNotification;
+extern NSString * const __deprecated N2StepsNotificationStep;
 
+__deprecated
 @interface N2Steps : NSArrayController {
 //	IBOutlet N2StepsView* _view;
 	N2Step* _currentStep;
@@ -67,9 +68,9 @@ extern NSString* N2StepsNotificationStep;
 
 @interface NSObject (N2StepsDelegate)
 
--(void)steps:(N2Steps*)steps willBeginStep:(N2Step*)step;
--(void)steps:(N2Steps*)steps valueChanged:(id)sender;
--(BOOL)steps:(N2Steps*)steps shouldValidateStep:(N2Step*)step;
--(void)steps:(N2Steps*)steps validateStep:(N2Step*)step;
+-(void)steps:(N2Steps*)steps willBeginStep:(N2Step*)step __deprecated;
+-(void)steps:(N2Steps*)steps valueChanged:(id)sender __deprecated;
+-(BOOL)steps:(N2Steps*)steps shouldValidateStep:(N2Step*)step __deprecated;
+-(void)steps:(N2Steps*)steps validateStep:(N2Step*)step __deprecated;
 
 @end

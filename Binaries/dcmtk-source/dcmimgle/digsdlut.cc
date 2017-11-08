@@ -126,9 +126,9 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
         if (jidx != NULL)
         {
             const double dist = (jnd_max - jnd_min) / (gin_ctn - 1);    // distance between two entries
-            register unsigned int i;
-            register double *s = jidx;
-            register double value = jnd_min;                            // first value is fixed !
+            unsigned int i;
+            double *s = jidx;
+            double value = jnd_min;                            // first value is fixed !
             for (i = gin_ctn; i > 1; --i)                               // initialize scaled JND index array
             {
                 *(s++) = value;
@@ -151,12 +151,12 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                         if (DataBuffer != NULL)
                         {
                             const double amb = getAmbientLightValue();
-                            register Uint16 *q = DataBuffer;
-                            register unsigned int j = 0;
+                            Uint16 *q = DataBuffer;
+                            unsigned int j = 0;
                             /* check whether to apply the inverse transformation */
                             if (inverse)
                             {
-                                register double v;
+                                double v;
                                 const double factor = OFstatic_cast(double, ddl_cnt - 1) / OFstatic_cast(double, Count - 1);
                                 /* convert DDL to P-Value */
                                 for (i = 0; i < Count; ++i)
@@ -191,7 +191,7 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                                     ddl_max = j;
                                 }
                                 j = ddl_min;
-                                register const double *r = gsdf;
+                                const double *r = gsdf;
                                 /* convert P-Value to DDL */
                                 for (i = Count; i != 0; --i, ++r)
                                 {

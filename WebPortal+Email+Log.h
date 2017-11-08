@@ -47,4 +47,6 @@
 
 -(WebPortalUser*)newUserWithEmail:(NSString*)email;
 
+- (void) deleteTemporaryUsers:(NSTimer*)timer;
+
 @end

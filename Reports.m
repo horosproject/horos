@@ -33,9 +33,10 @@
 
 #import "Reports.h"
 #import "DicomFile.h"
-#import "OsiriX/DCM.h"
+#import "DCM.h"
 #import "BrowserController.h"
 #import "NSString+N2.h"
+#import "NSString+SymlinksAndAliases.h"
 #import "NSFileManager+N2.h"
 #import "NSAppleScript+N2.h"
 #import "DicomDatabase.h"
@@ -213,7 +214,7 @@
 			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"rtf"];
 			[[NSFileManager defaultManager] removeItemAtPath: destinationFile error: nil];
 			
-			[[NSFileManager defaultManager] copyPath:[BrowserController.currentBrowser.database.baseDirPath stringByAppendingFormat:@"/ReportTemplate.rtf"] toPath:destinationFile handler: nil];
+			[[NSFileManager defaultManager] copyItemAtPath:[BrowserController.currentBrowser.database.baseDirPath stringByAppendingFormat:@"/ReportTemplate.rtf"] toPath:destinationFile error:NULL];
 			
 			NSDictionary                *attr;
 			NSMutableAttributedString	*rtf = [[NSMutableAttributedString alloc] initWithRTF: [NSData dataWithContentsOfFile:destinationFile] documentAttributes:&attr];
@@ -323,7 +324,7 @@
 			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"odt"];
 			[[NSFileManager defaultManager] removeItemAtPath: destinationFile error: nil];
 			
-			[[NSFileManager defaultManager] copyPath:[BrowserController.currentBrowser.database.baseDirPath stringByAppendingFormat:@"/ReportTemplate.odt"] toPath:destinationFile handler: nil];
+			[[NSFileManager defaultManager] copyItemAtPath:[BrowserController.currentBrowser.database.baseDirPath stringByAppendingPathComponent:@"ReportTemplate.odt"] toPath:destinationFile error:NULL];
 			[self createNewOpenDocumentReportForStudy:study toDestinationPath:destinationFile];
 			
 		}
@@ -547,7 +548,7 @@
 }
 
 +(NSString*)resolvedDatabaseWordTemplatesDirPath {
-    return [[NSFileManager defaultManager] destinationOfAliasOrSymlinkAtPath:[self databaseWordTemplatesDirPath]];
+    return [[self databaseWordTemplatesDirPath] stringByResolvingSymlinksAndAliases];
 }
 
 + (NSMutableArray*)wordTemplatesList
@@ -610,11 +611,11 @@
 	
 	NSString *path = [BrowserController.currentBrowser.database.baseDirPath stringByAppendingFormat:@"/TEMP.noindex/Report.rtf"];
 	
-	[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+	[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
 	
 	NSMutableAttributedString	*rtf = [[[NSMutableAttributedString alloc] initWithString: file] autorelease];
 	
-	[[rtf RTFFromRange:rtf.range documentAttributes: nil] writeToFile: path atomically:YES]; // To support full encoding in MicroSoft Word
+    [[rtf RTFFromRange:rtf.range documentAttributes:@{}] writeToFile: path atomically:YES]; // To support full encoding in MicroSoft Word
 	
 	return path;
 }
@@ -792,7 +793,7 @@ static int Pages5orHigher = -1;
 	// Pages template
     NSString *defaultReport = [templatesDirPath stringByAppendingPathComponent:@"/Horos Basic Report.pages"];
 	if ([[NSFileManager defaultManager] fileExistsAtPath: defaultReport] == NO)
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Horos Report.pages"] toPath:defaultReport handler:nil];
+        [[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Horos Report.pages"] toPath:defaultReport error:NULL];
 	
 #endif
 #endif
