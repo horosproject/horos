@@ -7,17 +7,6 @@
 	objects = {
 
 /* Begin PBXAggregateTarget section */
-		434B46111A19ECD6008CF8CF /* Cleanup Binaries */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 434B46131A19ECD6008CF8CF /* Build configuration list for PBXAggregateTarget "Cleanup Binaries" */;
-			buildPhases = (
-				434B46121A19ECD6008CF8CF /* Run Script */,
-			);
-			dependencies = (
-			);
-			name = "Cleanup Binaries";
-			productName = "Unzip Binaries";
-		};
 		4A2F5931078D148300C514A2 /* Unzip Binaries */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 7E76BECF085757B70073649A /* Build configuration list for PBXAggregateTarget "Unzip Binaries" */;
@@ -348,6 +337,7 @@
 		7154B80F14ED5402000EF7E4 /* N2Stuff.h in Headers */ = {isa = PBXBuildFile; fileRef = 7154B80E14ED5402000EF7E4 /* N2Stuff.h */; };
 		716DBDBD173920AF00BDB1E4 /* ViewerController+CPP.h in Headers */ = {isa = PBXBuildFile; fileRef = 716DBDBB173920AF00BDB1E4 /* ViewerController+CPP.h */; };
 		716DBDBF173920AF00BDB1E4 /* ViewerController+CPP.mm in Sources */ = {isa = PBXBuildFile; fileRef = 716DBDBC173920AF00BDB1E4 /* ViewerController+CPP.mm */; };
+		717C19D61FB44D61005A5834 /* OpenSSL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 717C19D31FB3712E005A5834 /* OpenSSL.framework */; };
 		718416071654022400180467 /* DownArrowGreyRev.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 718416061654022400180467 /* DownArrowGreyRev.pdf */; };
 		7188E85616301A61006105BE /* KBPopUpToolbarItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7188E85416301A61006105BE /* KBPopUpToolbarItem.h */; };
 		7188E85816301A61006105BE /* KBPopUpToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7188E85516301A61006105BE /* KBPopUpToolbarItem.m */; };
@@ -1848,8 +1838,6 @@
 		BFAFEE9508F2220B002AD789 /* PluginFileFormatDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = BFAFEE9308F2220B002AD789 /* PluginFileFormatDecoder.m */; };
 		BFBCD8A709E4C2E40078ABB6 /* DCMTKServiceClassUser.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */; };
 		BFBCD8A809E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFBCD8A609E4C2E40078ABB6 /* DCMTKServiceClassUser.mm */; };
-		BFBF3AA109B681F500545F5E /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9D09B681F500545F5E /* libcrypto.a */; };
-		BFBF3AA209B681F500545F5E /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9E09B681F500545F5E /* libssl.a */; };
 		BFBF3AA309B681F500545F5E /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9F09B681F500545F5E /* libxml2.dylib */; };
 		BFBF3AA409B681F500545F5E /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3AA009B681F500545F5E /* libz.dylib */; };
 		BFBF3E6E09B6828D00545F5E /* cfunix.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3AB809B6827D00545F5E /* cfunix.h */; };
@@ -3057,6 +3045,13 @@
 			remoteGlobalIDString = 7E0B3A3E067526CD00908593;
 			remoteInfo = "Horos DCM";
 		};
+		717C19D41FB372DD005A5834 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 717C19CB1FB3712E005A5834;
+			remoteInfo = OpenSSL;
+		};
 		71C99E981D19A7FB00208F3B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -3419,6 +3414,7 @@
 		716DBDBC173920AF00BDB1E4 /* ViewerController+CPP.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "ViewerController+CPP.mm"; sourceTree = "<group>"; };
 		716DFAB81DE5A9F700440401 /* OsiriXDCMFrameworkHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXDCMFrameworkHeaders.mm; sourceTree = "<group>"; };
 		716DFABB1DE5AAB800440401 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		717C19D31FB3712E005A5834 /* OpenSSL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OpenSSL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7183153D1610651E0098576F /* weasis-ext-config.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = "weasis-ext-config.properties"; path = "Binaries/weasis-ext-config.properties"; sourceTree = "<group>"; };
 		718416061654022400180467 /* DownArrowGreyRev.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = DownArrowGreyRev.pdf; sourceTree = "<group>"; };
 		7188E85416301A61006105BE /* KBPopUpToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KBPopUpToolbarItem.h; path = nitrogen/Sources/KBPopUpToolbarItem.h; sourceTree = "<group>"; };
@@ -4244,8 +4240,6 @@
 		BFAFEE9308F2220B002AD789 /* PluginFileFormatDecoder.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginFileFormatDecoder.m; sourceTree = "<group>"; };
 		BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMTKServiceClassUser.h; sourceTree = "<group>"; };
 		BFBCD8A609E4C2E40078ABB6 /* DCMTKServiceClassUser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMTKServiceClassUser.mm; sourceTree = "<group>"; };
-		BFBF3A9D09B681F500545F5E /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = /Users/ale/Work/Horos/Binaries/openssl/libs/libcrypto.a; sourceTree = "<absolute>"; };
-		BFBF3A9E09B681F500545F5E /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = /Users/ale/Work/Horos/Binaries/openssl/libs/libssl.a; sourceTree = "<absolute>"; };
 		BFBF3A9F09B681F500545F5E /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = /usr/lib/libxml2.dylib; sourceTree = "<absolute>"; };
 		BFBF3AA009B681F500545F5E /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		BFBF3AB809B6827D00545F5E /* cfunix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = cfunix.h; sourceTree = "<group>"; };
@@ -5496,8 +5490,6 @@
 				7E54303D07A05E7100500ABB /* DiscRecording.framework in Frameworks */,
 				7E54303E07A05E7100500ABB /* DiscRecordingUI.framework in Frameworks */,
 				CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */,
-				BFBF3AA109B681F500545F5E /* libcrypto.a in Frameworks */,
-				BFBF3AA209B681F500545F5E /* libssl.a in Frameworks */,
 				BFBF3AA309B681F500545F5E /* libxml2.dylib in Frameworks */,
 				BFBF3AA409B681F500545F5E /* libz.dylib in Frameworks */,
 				CE790A1B105D4DE200CE6AAF /* Security.framework in Frameworks */,
@@ -5505,6 +5497,7 @@
 				8406956310B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */,
 				A997B15710E0C412004C5BB1 /* SecurityInterface.framework in Frameworks */,
 				841524C5113D6BDB008250E6 /* QuartzCore.framework in Frameworks */,
+				717C19D61FB44D61005A5834 /* OpenSSL.framework in Frameworks */,
 				439B8C141A19CCC300F396D7 /* 3DconnexionClient.framework in Frameworks */,
 				9966A2E71AE0C55600F2D81A /* HorosDCM.framework in Frameworks */,
 			);
@@ -5605,8 +5598,6 @@
 				7E54303C07A05E7100500ABB /* DiscRecordingUI.framework */,
 				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
 				AB6D320C05B3159D0002F793 /* IOKit.framework */,
-				BFBF3A9D09B681F500545F5E /* libcrypto.a */,
-				BFBF3A9E09B681F500545F5E /* libssl.a */,
 				BFBF3A9F09B681F500545F5E /* libxml2.dylib */,
 				BFBF3AA009B681F500545F5E /* libz.dylib */,
 				AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */,
@@ -5676,6 +5667,7 @@
 				710BAF311FAB2837004909E4 /* CharLS.framework */,
 				710BAF411FAB7F10004909E4 /* GDCM.framework */,
 				710BAF601FB1A418004909E4 /* OpenJPEG.framework */,
+				717C19D31FB3712E005A5834 /* OpenSSL.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -9903,6 +9895,24 @@
 			productReference = 710BAF601FB1A418004909E4 /* OpenJPEG.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		717C19CB1FB3712E005A5834 /* OpenSSL */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 717C19D01FB3712E005A5834 /* Build configuration list for PBXNativeTarget "OpenSSL" */;
+			buildPhases = (
+				717C19CC1FB3712E005A5834 /* Submodule */,
+				717C19CD1FB3712E005A5834 /* Config */,
+				717C19CE1FB3712E005A5834 /* Make */,
+				717C19CF1FB3712E005A5834 /* Framework */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OpenSSL;
+			productName = VTK;
+			productReference = 717C19D31FB3712E005A5834 /* OpenSSL.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		7E0B3A3E067526CD00908593 /* Horos DCM */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7E76BEC0085757B60073649A /* Build configuration list for PBXNativeTarget "Horos DCM" */;
@@ -9965,6 +9975,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				717C19D51FB372DD005A5834 /* PBXTargetDependency */,
 				710BAF331FAB28DF004909E4 /* PBXTargetDependency */,
 				710BAF1E1FAB17C6004909E4 /* PBXTargetDependency */,
 				710BAF351FAB28DF004909E4 /* PBXTargetDependency */,
@@ -10069,13 +10080,13 @@
 				AB724F300ADE6ECB00A212A0 /* Decompress */,
 				CEDF6C600B46FE99008B45B8 /* DICOMPrint */,
 				4A2F5931078D148300C514A2 /* Unzip Binaries */,
-				434B46111A19ECD6008CF8CF /* Cleanup Binaries */,
 				BF7486A50CC6AA5C00198387 /* Documentation */,
 				710BAEFB1FAB124C004909E4 /* VTK */,
 				710BAF141FAB176C004909E4 /* ITK */,
 				710BAF391FAB7F10004909E4 /* GDCM */,
 				710BAF291FAB2837004909E4 /* CharLS */,
 				710BAF581FB1A418004909E4 /* OpenJPEG */,
+				717C19CB1FB3712E005A5834 /* OpenSSL */,
 			);
 		};
 /* End PBXProject section */
@@ -10534,20 +10545,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		434B46121A19ECD6008CF8CF /* Run Script */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run Script";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Binaries\"\nrm -rf GDCMLibs\nrm -rf GDCMHeaders\nrm -rf ITKLibs\nrm -rf VTKLibs\nrm -rf VTKHeaders\nrm -rf openjpeg\n\nexit 0\n";
-		};
 		4A2F5930078D148300C514A2 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -10883,6 +10880,62 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "echo \"$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME\" > \"$TARGET_TEMP_DIR/Product.path\"";
+		};
+		717C19CC1FB3712E005A5834 /* Submodule */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Submodule;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/1-Submodule.sh\"";
+		};
+		717C19CD1FB3712E005A5834 /* Config */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Config;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/2-Config.sh\"";
+		};
+		717C19CE1FB3712E005A5834 /* Make */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Make;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/3-Make.sh\"";
+		};
+		717C19CF1FB3712E005A5834 /* Framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Framework;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/4-Framework.sh\"";
 		};
 		7183153F161065BE0098576F /* Replace Weasis ext-config.properties */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -12617,6 +12670,11 @@
 			target = 7E0B3A3E067526CD00908593 /* Horos DCM */;
 			targetProxy = 710BAF6D1FB2438E004909E4 /* PBXContainerItemProxy */;
 		};
+		717C19D51FB372DD005A5834 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 717C19CB1FB3712E005A5834 /* OpenSSL */;
+			targetProxy = 717C19D41FB372DD005A5834 /* PBXContainerItemProxy */;
+		};
 		71C99E991D19A7FB00208F3B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = AB0F3A2B1046BD2B004129DD /* Horos API */;
@@ -13160,38 +13218,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		434B46141A19ECD6008CF8CF /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				GCC_ALTIVEC_EXTENSIONS = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_CPU = "";
-				GCC_MODEL_PPC64 = NO;
-				GCC_MODEL_TUNING = "";
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_SHADOW = NO;
-				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				OTHER_CFLAGS = (
-					"-falign-functions=32",
-					"-falign-labels=32",
-					"-falign-loops=32",
-					"-falign-jumps=32",
-				);
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "Cleanup Binaries";
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = Debug;
-		};
 		43E98D191A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -13223,7 +13249,6 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = NO;
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
@@ -13241,7 +13266,6 @@
 					"-fvisibility-inlines-hidden",
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
-				OTHER_LDFLAGS = "";
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -13272,10 +13296,7 @@
 				INSTALL_PATH = /Applications;
 				KEEP_PRIVATE_EXTERNS = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					Binaries/openssl/libs,
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -13292,7 +13313,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.horos;
 				PRODUCT_NAME = Horos;
 				STRIP_STYLE = debugging;
-				USER_HEADER_SEARCH_PATHS = Binaries/openssl/include;
 			};
 			name = Release;
 		};
@@ -13348,38 +13368,6 @@
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = "Unzip Binaries";
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = Release;
-		};
-		43E98D1E1A32BF6A001B9E51 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				GCC_ALTIVEC_EXTENSIONS = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_CPU = "";
-				GCC_MODEL_PPC64 = NO;
-				GCC_MODEL_TUNING = "";
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_SHADOW = NO;
-				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				OTHER_CFLAGS = (
-					"-falign-functions=32",
-					"-falign-labels=32",
-					"-falign-loops=32",
-					"-falign-jumps=32",
-				);
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "Cleanup Binaries";
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -13594,6 +13582,32 @@
 			};
 			name = Release;
 		};
+		717C19D11FB3712E005A5834 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(inherited)",
+					"-w",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.openssl;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		717C19D21FB3712E005A5834 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(inherited)",
+					"-w",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.openssl;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		7E76BEC1085757B60073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -13643,10 +13657,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Applications;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					Binaries/openssl/libs,
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -13662,7 +13673,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.horos;
 				PRODUCT_NAME = Horos;
-				USER_HEADER_SEARCH_PATHS = Binaries/openssl/include;
 			};
 			name = Debug;
 		};
@@ -13730,7 +13740,6 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -13851,15 +13860,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		434B46131A19ECD6008CF8CF /* Build configuration list for PBXAggregateTarget "Cleanup Binaries" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				434B46141A19ECD6008CF8CF /* Debug */,
-				43E98D1E1A32BF6A001B9E51 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		710BAF071FAB124D004909E4 /* Build configuration list for PBXNativeTarget "VTK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -13901,6 +13901,15 @@
 			buildConfigurations = (
 				710BAF5E1FB1A418004909E4 /* Debug */,
 				710BAF5F1FB1A418004909E4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		717C19D01FB3712E005A5834 /* Build configuration list for PBXNativeTarget "OpenSSL" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				717C19D11FB3712E005A5834 /* Debug */,
+				717C19D21FB3712E005A5834 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

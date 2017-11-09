@@ -16,3 +16,6 @@
 [submodule "OpenJPEG"]
 	path = OpenJPEG
 	url = git@github.com:uclouvain/openjpeg.git
+[submodule "OpenSSL"]
+	path = OpenSSL
+	url = git://git.openssl.org/openssl.git
