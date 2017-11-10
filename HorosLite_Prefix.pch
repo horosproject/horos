@@ -1,9 +1,0 @@
-#ifdef __OBJC__
-    #import <Cocoa/Cocoa.h>
-#endif
-
-#define HOROS_VIEWER
-#define HOROS_LIGHT
-
-#define OSIRIX_VIEWER
-#define OSIRIX_LIGHT

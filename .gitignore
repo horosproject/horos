@@ -12,13 +12,11 @@ build/
 xcuserdata
 *.moved-aside
 *.xcsettings
-
 __MACOSX
 
-AYDicomPrint/
-AYDicomPrint/xercesc
-AYDicomPrint/libxerces-c.27.dylib
-AYDicomPrint/libdcmprintscu.dylib
+DICOMPrint/xercesc
+DICOMPrint/libxerces-c.27.dylib
+DICOMPrint/libdcmprintscu.dylib
 
 Binaries/3DconnexionClient.framework/
 Binaries/DB_Previous_Models/
@@ -26,11 +24,8 @@ Binaries/DCMTK/
 Binaries/dciodvfy
 Binaries/Growl.framework/
 Binaries/ILCrashReporter.framework/
-Binaries/KDU SDK/libkdu_v73R.a
 Binaries/libPapyrusToolkit.a
 Binaries/Ming/
-Binaries/openjpeg/
-Binaries/openssl
 Binaries/OsiriX Report.template
 Binaries/PAGES/
 Binaries/ReportsToPDF/odt2pdf/build/odt2pdf
