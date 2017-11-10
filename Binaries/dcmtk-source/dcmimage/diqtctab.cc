@@ -152,8 +152,8 @@ OFCondition DcmQuantColorTable::medianCut(
   for (unsigned int xx=0; xx < numberOfColors; xx++) array[xx] = new DcmQuantHistogramItem();
   numColors = numberOfColors;
 
-  register int i;
-  register unsigned int bi;
+  int i;
+  unsigned int bi;
   DcmQuantPixelBoxArray bv(numberOfColors);
 
   // Set up the initial box.
@@ -165,9 +165,9 @@ OFCondition DcmQuantColorTable::medianCut(
   // Main loop: split boxes until we have enough.
   while ( boxes < numberOfColors )
   {
-      register int indx, clrs;
+      int indx, clrs;
       unsigned int sm;
-      register int minr, maxr, ming, maxg, minb, maxb, v;
+      int minr, maxr, ming, maxg, minb, maxb, v;
       unsigned int halfsum, lowersum;
 
       // Find the first splittable box.
@@ -270,9 +270,9 @@ OFCondition DcmQuantColorTable::medianCut(
   {
       for ( bi = 0; bi < boxes; ++bi )
       {
-          register int indx = bv[bi].ind;
-          register int clrs = bv[bi].colors;
-          register int minr, maxr, ming, maxg, minb, maxb, v;
+          int indx = bv[bi].ind;
+          int clrs = bv[bi].colors;
+          int minr, maxr, ming, maxg, minb, maxb, v;
 
           minr = maxr = histogram.array[indx]->getRed();
           ming = maxg = histogram.array[indx]->getGreen();
@@ -296,9 +296,9 @@ OFCondition DcmQuantColorTable::medianCut(
   {
       for ( bi = 0; bi < boxes; ++bi )
       {
-          register int indx = bv[bi].ind;
-          register int clrs = bv[bi].colors;
-          register long r = 0, g = 0, b = 0;
+          int indx = bv[bi].ind;
+          int clrs = bv[bi].colors;
+          long r = 0, g = 0, b = 0;
 
           for ( i = 0; i < clrs; ++i )
           {
@@ -316,9 +316,9 @@ OFCondition DcmQuantColorTable::medianCut(
   {
       for ( bi = 0; bi < boxes; ++bi )
       {
-          register int indx = bv[bi].ind;
-          register int clrs = bv[bi].colors;
-          register unsigned int r = 0, g = 0, b = 0, sumVal = 0;
+          int indx = bv[bi].ind;
+          int clrs = bv[bi].colors;
+          unsigned int r = 0, g = 0, b = 0, sumVal = 0;
 
           for ( i = 0; i < clrs; ++i )
           {

@@ -1,0 +1,9 @@
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
+
+#define HOROS_VIEWER
+#define OSIRIX_VIEWER
+
+//#define _STEREO_VISION_
+//#define EXPORTTOOLBARITEM

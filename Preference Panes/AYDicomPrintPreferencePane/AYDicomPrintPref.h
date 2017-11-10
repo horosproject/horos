@@ -45,6 +45,8 @@
 	NSArray *m_PrinterDefaults;
 	IBOutlet NSArrayController *m_PrinterController;
 	IBOutlet NSWindow *mainWindow;
+    
+    id _tlos;
 }
 
 - (IBAction) addPrinter: (id) sender;

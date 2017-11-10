@@ -35,15 +35,15 @@
 #import <SecurityInterface/SFCertificateView.h>
 #import "WebPortalUser.h"
 #import "OSIWebSharingPreferencePanePref.h"
-#import <HorosAPI/DefaultsOsiriX.h>
-#import <HorosAPI/NSUserDefaults+OsiriX.h>
-#import <HorosAPI/BrowserController.h>
-#import <HorosAPI/AppController.h>
-#import <HorosAPI/NSFileManager+N2.h>
-#import <HorosAPI/WebPortal.h>
-#import <HorosAPI/WebPortalDatabase.h>
-#import <HorosAPI/DicomDatabase.h>
-#import <HorosAPI/DicomStudy.h>
+#import "DefaultsOsiriX.h"
+#import "NSUserDefaults+OsiriX.h"
+#import "BrowserController.h"
+#import "AppController.h"
+#import "NSFileManager+N2.h"
+#import "WebPortal.h"
+#import "WebPortalDatabase.h"
+#import "DicomDatabase.h"
+#import "DicomStudy.h"
 
 #import "DDKeychain.h"
 #import "url.h"
@@ -92,7 +92,7 @@
 	if( self = [super init])
 	{
 		NSNib *nib = [[NSNib alloc] initWithNibNamed: @"OSIWebSharingPreferencePanePref" bundle: nil];
-		[nib instantiateNibWithOwner:self topLevelObjects: nil];
+		[nib instantiateWithOwner:self topLevelObjects:&_tlos];
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
@@ -193,6 +193,8 @@
 	NSLog(@"dealloc OSIWebSharingPreferencePanePref");
 	
     [studiesArrayController removeObserver: self forKeyPath: @"selection"];
+    
+    [_tlos release]; _tlos = nil;
     
 	[super dealloc];
 }

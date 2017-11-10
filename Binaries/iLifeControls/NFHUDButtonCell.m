@@ -90,7 +90,10 @@
 	
 	[rightImage drawAtPoint:NSMakePoint(x, y) fromRect: NSZeroRect operation:NSCompositeSourceOver fraction: 1.0];
 	
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 	[fillImage setScalesWhenResized:YES];
+#pragma clang diagnostic pop
 	[fillImage setSize:NSMakeSize(fillWidth, [fillImage size].height)];
 	[fillImage drawAtPoint:NSMakePoint(fillX, y) fromRect: NSZeroRect operation:NSCompositeSourceOver fraction: 1.0];
 	

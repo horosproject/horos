@@ -33,7 +33,7 @@
 
 #import "DICOMFilesTests.h"
 #import "DCMPix.h"
-#import "dicomFile.h"
+#import "DicomFile.h"
 #import "DDData.h"
 
 #include "options.h"

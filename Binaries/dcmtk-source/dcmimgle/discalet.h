@@ -63,7 +63,7 @@ static inline void setScaleValues(Uint16 data[],
                                   const Uint16 min,
                                   const Uint16 max)
 {
-    register Uint16 remainder = max % min;
+    Uint16 remainder = max % min;
     Uint16 step0 = max / min;
     Uint16 step1 = max / min;
     if (remainder > OFstatic_cast(Uint16, min / 2))
@@ -73,8 +73,8 @@ static inline void setScaleValues(Uint16 data[],
     } else
         ++step1;
     const double count = OFstatic_cast(double, min) / (OFstatic_cast(double, remainder) + 1);
-    register Uint16 i;
-    register double c = count;
+    Uint16 i;
+    double c = count;
     for (i = 0; i < min; ++i)
     {
         if ((i >= OFstatic_cast(Uint16, c)) && (remainder > 0))
@@ -253,10 +253,10 @@ class DiScaleTemplate
     {
         const unsigned int x_feed = Columns - this->Src_X;
         const unsigned int y_feed = OFstatic_cast(unsigned int, Rows - this->Src_Y) * OFstatic_cast(unsigned int, Columns);
-        register Uint16 x;
-        register Uint16 y;
-        register const T *p;
-        register T *q;
+        Uint16 x;
+        Uint16 y;
+        const T *p;
+        T *q;
         for (int j = 0; j < this->Planes; ++j)
         {
             p = src[j] + OFstatic_cast(unsigned int, Top) * OFstatic_cast(unsigned int, Columns) + Left;
@@ -310,11 +310,11 @@ class DiScaleTemplate
          *  different from most of the other algorithms in this toolkit where the source image is scanned
          *  linearly.
          */
-        register Uint16 x;
-        register Uint16 y;
-        register unsigned int i;
-        register const T *p;
-        register T *q;
+        Uint16 x;
+        Uint16 y;
+        unsigned int i;
+        const T *p;
+        T *q;
         for (int j = 0; j < this->Planes; ++j)
         {
             p = src[j] + s_start;
@@ -364,13 +364,13 @@ class DiScaleTemplate
         const unsigned int x_feed = Columns;
         const unsigned int y_feed = OFstatic_cast(unsigned int, Rows - this->Src_Y) * OFstatic_cast(unsigned int, Columns);
         const T *sp;
-        register Uint16 x;
-        register Uint16 y;
-        register Uint16 dx;
-        register Uint16 dy;
-        register const T *p;
-        register T *q;
-        register T value;
+        Uint16 x;
+        Uint16 y;
+        Uint16 dx;
+        Uint16 dy;
+        const T *p;
+        T *q;
+        T value;
         for (int j = 0; j < this->Planes; ++j)
         {
             sp = src[j] + OFstatic_cast(unsigned int, Top) * OFstatic_cast(unsigned int, Columns) + Left;
@@ -407,10 +407,10 @@ class DiScaleTemplate
         const unsigned int x_divisor = this->Src_X / this->Dest_X;
         const unsigned int x_feed = OFstatic_cast(unsigned int, this->Src_Y / this->Dest_Y) * OFstatic_cast(unsigned int, Columns) - this->Src_X;
         const unsigned int y_feed = OFstatic_cast(unsigned int, Rows - this->Src_Y) * OFstatic_cast(unsigned int, Columns);
-        register Uint16 x;
-        register Uint16 y;
-        register const T *p;
-        register T *q;
+        Uint16 x;
+        Uint16 y;
+        const T *p;
+        T *q;
         for (int j = 0; j < this->Planes; ++j)
         {
             p = src[j] + OFstatic_cast(unsigned int, Top) * OFstatic_cast(unsigned int, Columns) + Left;
@@ -454,8 +454,8 @@ class DiScaleTemplate
 
         if ((x_step != NULL) && (y_step != NULL) && (x_fact != NULL) && (y_fact != NULL))
         {
-            register Uint16 x;
-            register Uint16 y;
+            Uint16 x;
+            Uint16 y;
             if (this->Dest_X < this->Src_X)
                 setScaleValues(x_step, this->Dest_X, this->Src_X);
             else if (this->Dest_X > this->Src_X)
@@ -475,11 +475,11 @@ class DiScaleTemplate
                 OFBitmanipTemplate<Uint16>::setMem(y_step, 1, ymin);  // initialize with default values
             y_step[ymin - 1] += Rows - this->Src_Y;                         // skip to next frame
             const T *sp;
-            register Uint16 dx;
-            register Uint16 dy;
-            register const T *p;
-            register T *q;
-            register T value;
+            Uint16 dx;
+            Uint16 dy;
+            const T *p;
+            T *q;
+            T value;
             for (int j = 0; j < this->Planes; ++j)
             {
                 sp = src[j] + OFstatic_cast(unsigned int, Top) * OFstatic_cast(unsigned int, Columns) + Left;
@@ -535,10 +535,10 @@ class DiScaleTemplate
          *   (adapted to be used with signed pixel representation and inverse images - mono2)
          */
 
-        register Uint16 x;
-        register Uint16 y;
-        register const T *p;
-        register T *q;
+        Uint16 x;
+        Uint16 y;
+        const T *p;
+        T *q;
         T const *sp = NULL;                         // initialization avoids compiler warning
         T const *fp;
         T *sq;
@@ -573,9 +573,9 @@ class DiScaleTemplate
                 {
                     for (x = 0; x < this->Src_X; ++x)
                         xvalue[x] = HALFSCALE_FACTOR;
-                    register unsigned int yfill = SCALE_FACTOR;
-                    register unsigned int yleft = syscale;
-                    register int yneed = 1;
+                    unsigned int yfill = SCALE_FACTOR;
+                    unsigned int yleft = syscale;
+                     int yneed = 1;
                     int ysrc = 0;
                     for (y = 0; y < this->Dest_Y; ++y)
                     {
@@ -611,7 +611,7 @@ class DiScaleTemplate
                             }
                             for (x = 0, p = sp, q = xtemp; x < this->Src_X; ++x)
                             {
-                                register signed int v = xvalue[x] + yfill * OFstatic_cast(signed int, *(p++));
+                                 signed int v = xvalue[x] + yfill * OFstatic_cast(signed int, *(p++));
                                 v /= SCALE_FACTOR;
                                 *(q++) = OFstatic_cast(T, (v > maxvalue) ? maxvalue : v);
                                 xvalue[x] = HALFSCALE_FACTOR;
@@ -632,10 +632,10 @@ class DiScaleTemplate
                         }
                         else
                         {
-                            register signed int v = HALFSCALE_FACTOR;
-                            register unsigned int xfill = SCALE_FACTOR;
-                            register unsigned int xleft;
-                            register int xneed = 0;
+                            signed int v = HALFSCALE_FACTOR;
+                            unsigned int xfill = SCALE_FACTOR;
+                            unsigned int xleft;
+                            int xneed = 0;
                             q = sq;
                             for (x = 0, p = xtemp; x < this->Src_X; ++x, ++p)
                             {
@@ -712,12 +712,12 @@ class DiScaleTemplate
         double x_part, y_part;
         double l_factor, r_factor;
         double t_factor, b_factor;
-        register int xi;
-        register int yi;
-        register Uint16 x;
-        register Uint16 y;
-        register const T *p;
-        register T *q;
+        int xi;
+        int yi;
+        Uint16 x;
+        Uint16 y;
+        const T *p;
+        T *q;
 
         /*
          *   based on scaling algorithm from "c't - Magazin fuer Computertechnik" (c't 11/94)
@@ -815,12 +815,12 @@ class DiScaleTemplate
         double value, sum;
         double l_factor, r_factor;
         double t_factor, b_factor;
-        register int xi;
-        register int yi;
-        register Uint16 x;
-        register Uint16 y;
-        register const T *p;
-        register T *q;
+        int xi;
+        int yi;
+        Uint16 x;
+        Uint16 y;
+        const T *p;
+        T *q;
 
         /*
          *   based on scaling algorithm from "c't - Magazin fuer Computertechnik" (c't 11/94)

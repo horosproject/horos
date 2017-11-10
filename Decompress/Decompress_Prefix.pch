@@ -1,0 +1,8 @@
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
+
+
+#define STATIC_DICOM_LIB
+#define DECOMPRESS_APP
+#define OSIRIX_LIGHT

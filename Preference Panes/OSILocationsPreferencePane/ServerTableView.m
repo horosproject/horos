@@ -32,7 +32,7 @@
  ============================================================================*/
 
 #import "ServerTableView.h"
-#import <HorosAPI/DNDArrayController.h>
+#import "DNDArrayController.h"
 #import "OSILocationsPreferencePanePref.h"
 
 @implementation ServerTableView

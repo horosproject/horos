@@ -37,7 +37,9 @@
 
 @interface OSIViewerPreferencePanePref : NSPreferencePane 
 {
-	IBOutlet NSWindow *mainWindow;
+    IBOutlet NSWindow *mainWindow;
+    
+    id _tlos;
 }
 
 - (AppController*) appController;

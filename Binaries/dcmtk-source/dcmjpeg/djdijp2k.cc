@@ -40,33 +40,33 @@ BEGIN_EXTERN_C
 #endif
 
 
-//#include "openjpeg.h"
-/**
-sample error callback expecting a FILE* client object
-*/
-static void error_callback(const char *msg, void *a)
-{
-//	printf( "%s\r\r", msg);
-}
-/**
-sample warning callback expecting a FILE* client object
-*/
-static void warning_callback(const char *msg, void *a)
-{
-//	printf( "%s\r\r", msg);
-}
-
-/**
-sample debug callback expecting no client object
-*/
-static void info_callback(const char *msg, void *a)
-{
-//	printf( "%s\r\r", msg);
-}
-
-static inline int int_ceildivpow2(int a, int b) {
-	return (a + (1 << b) - 1) >> b;
-}
+////#include "openjpeg.h"
+///**
+//sample error callback expecting a FILE* client object
+//*/
+//static void error_callback(const char *msg, void *a)
+//{
+////	printf( "%s\r\r", msg);
+//}
+///**
+//sample warning callback expecting a FILE* client object
+//*/
+//static void warning_callback(const char *msg, void *a)
+//{
+////	printf( "%s\r\r", msg);
+//}
+//
+///**
+//sample debug callback expecting no client object
+//*/
+//static void info_callback(const char *msg, void *a)
+//{
+////	printf( "%s\r\r", msg);
+//}
+//
+//static inline int int_ceildivpow2(int a, int b) {
+//	return (a + (1 << b) - 1) >> b;
+//}
 
 
 

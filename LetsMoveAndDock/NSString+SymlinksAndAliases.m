@@ -113,7 +113,7 @@
 	if (lstat([[NSFileManager defaultManager]
 		fileSystemRepresentationWithPath:path], &fileInfo) < 0)
 	{
-		return nil;
+		return self;
 	}
 
 	//
@@ -221,7 +221,7 @@
 		symlinkPath =
 			[[self stringByDeletingLastPathComponent]
 				stringByAppendingPathComponent:symlinkPath];
-        
+		
         NSString *standardizedPath = [symlinkPath stringByStandardizingPath];
         if (![standardizedPath isEqualToString:self]) // avoid looping on resolving the alias and standardizing it back to the original alias
             symlinkPath = standardizedPath;
@@ -239,32 +239,23 @@
 //
 - (NSString *)stringByConditionallyResolvingAlias
 {
-	NSString *resolvedPath = nil;
-
-	CFURLRef url = CFURLCreateWithFileSystemPath
-		(kCFAllocatorDefault, (CFStringRef)self, kCFURLPOSIXPathStyle, NO);
-	if (url != NULL)
-	{
-		FSRef fsRef;
-		if (CFURLGetFSRef(url, &fsRef))
-		{
-			Boolean targetIsFolder, wasAliased;
-			OSErr err = FSResolveAliasFileWithMountFlags(
-				&fsRef, false, &targetIsFolder, &wasAliased, kResolveAliasFileNoUI);
-			if ((err == noErr) && wasAliased)
-			{
-				CFURLRef resolvedUrl = CFURLCreateFromFSRef(kCFAllocatorDefault, &fsRef);
-				if (resolvedUrl != NULL)
-				{
-					resolvedPath =
-						[(id)NSMakeCollectable(CFURLCopyFileSystemPath(resolvedUrl, kCFURLPOSIXPathStyle))
-							autorelease];
-					CFRelease(resolvedUrl);
-				}
-			}
-		}
-		CFRelease(url);
-	}
+    NSString *resolvedPath = nil;
+    CFURLRef	url = CFURLCreateWithFileSystemPath(NULL, (CFStringRef)self, kCFURLPOSIXPathStyle, NO);
+    if (url != NULL)
+    {
+        CFDataRef bd = CFURLCreateBookmarkDataFromFile(NULL, url, NULL);
+        if (bd) {
+            CFURLRef r = CFURLCreateByResolvingBookmarkData(NULL, bd, kCFBookmarkResolutionWithoutUIMask, NULL, NULL, NULL, NULL);
+            if (r) {
+                resolvedPath = CFBridgingRelease(CFURLCopyFileSystemPath(r, kCFURLPOSIXPathStyle));
+                CFRelease(r);
+            }
+            
+            CFRelease(bd);
+        }
+        
+        CFRelease(url);
+    }
 
 	return resolvedPath;
 }

@@ -32,18 +32,18 @@
  ============================================================================*/
 
 
-#import "OsiriX/DCMValueRepresentation.h"
-#import "OsiriX/DCMAttributeTag.h"
-#import "OsiriX/DCMAttribute.h"
-#import "OsiriX/DCMSequenceAttribute.h"
-#import "OsiriX/DCMDataContainer.h"
-#import "OsiriX/DCMObject.h"
-#import "OsiriX/DCMTransferSyntax.h"
-#import "OsiriX/DCMTagDictionary.h"
-#import "OsiriX/DCMTagForNameDictionary.h"
-#import "OsiriX/DCMCharacterSet.h"
-#import "OsiriX/DCMPixelDataAttribute.h"
-#import "OsiriX/DCMCalendarDate.h"
+#import "DCMValueRepresentation.h"
+#import "DCMAttributeTag.h"
+#import "DCMAttribute.h"
+#import "DCMSequenceAttribute.h"
+#import "DCMDataContainer.h"
+#import "DCMObject.h"
+#import "DCMTransferSyntax.h"
+#import "DCMTagDictionary.h"
+#import "DCMTagForNameDictionary.h"
+#import "DCMCharacterSet.h"
+#import "DCMPixelDataAttribute.h"
+#import "DCMCalendarDate.h"
 
 #import "DCMLimitedObject.h"
 

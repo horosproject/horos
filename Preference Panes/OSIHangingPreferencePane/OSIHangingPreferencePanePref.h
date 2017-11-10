@@ -48,6 +48,8 @@
     NSNumber *WLnew, *WWnew;
     NSMutableDictionary *currentWLWWProtocol;
     IBOutlet NSButton* newHangingProtocolButton;
+    
+    id _tlos;
 }
 
 @property (retain, nonatomic) NSString *modalityForHangingProtocols;

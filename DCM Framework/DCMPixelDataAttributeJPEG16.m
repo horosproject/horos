@@ -53,7 +53,7 @@ readFromData16(NSData *data, JOCTET *buffer, int currentPosition, int length)
 		lengthToRead = length;
 	}
 	else{
-		lengthToRead = [data length] - currentPosition;
+		lengthToRead = (int)[data length] - currentPosition;
 		range = NSMakeRange(currentPosition, lengthToRead);
 	}
 	
@@ -80,7 +80,7 @@ typedef JPEG16ErrorStruct * JPEG16ErrorPtr;
 //	char buffer[JMSG_LENGTH_MAX]; 
 //	(*cinfo->err->format_message) (cinfo, buffer);
 //	NSLog(@"JPEG error %s", buffer);
-//	dcmException = [NSException exceptionWithName:@"DCM JPEG Encoding error" reason:[NSString stringWithCString:buffer] userInfo:nil];
+//	dcmException = [NSException exceptionWithName:@"DCM JPEG Encoding error" reason:[NSString stringWithUTF8String:buffer] userInfo:nil];
 //}
 //
 //METHODDEF(void) JPEG16OutputMessage(j_common_ptr cinfo)
@@ -167,7 +167,7 @@ fill_input_buffer (j_decompress_ptr cinfo)
 	
   data16_src_ptr src = (data16_src_ptr) cinfo->src;
   size_t nbytes;
-	nbytes = readFromData16(src->data, src->buffer, src->currentPosition, INPUT_BUF_SIZE);
+	nbytes = readFromData16(src->data, src->buffer, (int)src->currentPosition, INPUT_BUF_SIZE);
   //nbytes = JFREAD(src->infile, src->buffer, INPUT_BUF_SIZE);
 
   if (nbytes <= 0) {

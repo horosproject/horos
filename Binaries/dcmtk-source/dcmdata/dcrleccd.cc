@@ -199,7 +199,7 @@ OFCondition DcmRLECodecDecoder::decode(
               // temporary variables
               Uint32 sample = 0;
               Uint32 byte = 0;
-              register Uint32 pixel = 0;
+              Uint32 pixel = 0;
 
               // for each stripe in stripe set
               for (i=0; (i<numberOfStripes) && result.good(); ++i)

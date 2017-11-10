@@ -67,7 +67,7 @@ This list of common macros is from the file:///System/Library/Frameworks/SenTest
 #import "dicomData.h"
 #import "DicomStudy.h"
 #import "AppController.h"
-#import "browserController.h"
+#import "BrowserController.h"
 
 
 @implementation UnitTestingBase

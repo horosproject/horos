@@ -62,6 +62,7 @@
 
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+//#include "diutil.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -1524,8 +1525,6 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 
     (void) memset(&sockarg, 0, sizeof(sockarg));
 
-    int reuse = 1;
-
     int sock = dcmExternalSocketHandle.get();
     if (sock > 0)
     {
@@ -1749,9 +1748,9 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 
 #ifndef HAVE_GUSI_H
     /* GUSI always returns an error for setsockopt() */
+#else
     sockarg.l_onoff = 0;
-    if (setsockopt(sock, SOL_SOCKET, SO_LINGER, (char *) &sockarg,
-                   sizeof(sockarg)) < 0)
+    if (setsockopt(sock, SOL_SOCKET, SO_LINGER, (char *) &sockarg, sizeof(sockarg)) < 0)
     {
         char buf4[256];
         sprintf(buf4, "TCP Initialization Error: %s, setsockopt failed on socket %d", strerror(errno), sock);
@@ -1764,29 +1763,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         sprintf(buf1, "TCP Initialization Error: %s", strerror(errno));
         return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
     }
-	
- #ifndef DISABLE_RECV_TIMEOUT
-     /* use a timeout of 60 seconds for the recv() function */
-     const int recvTimeout = 60;
- #ifdef HAVE_WINSOCK_H
-     // for Windows, specify receive timeout in milliseconds
-     int timeoutVal = recvTimeout * 1000;
-     if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (char *) &timeoutVal, sizeof(timeoutVal)) < 0)
- #else
-     // for other systems, specify receive timeout as timeval struct
-     struct timeval timeoutVal;
-     timeoutVal.tv_sec = recvTimeout;
-     timeoutVal.tv_usec = 0;
-     if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &timeoutVal, sizeof(timeoutVal)) < 0)
- #endif
-     {
-         // according to MSDN: available in the Microsoft implementation of Windows Sockets 2,
-         // so we are reporting a warning message but are not returning with an error code;
-         // this also applies to all other systems where the call to this function might fail
-     }
- #endif
- #endif
-	
+#endif
     setTCPBufferLength(sock);
 
 #ifndef DONT_DISABLE_NAGLE_ALGORITHM
@@ -1991,10 +1968,8 @@ createNetworkKey(const char *mode,
 static OFCondition
 initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
 {
-    struct linger
-        sockarg;
-    int
-        reuse = 1;
+    struct linger sockarg;
+    int reuse = 1;
 
     (void) memset(&sockarg, 0, sizeof(sockarg));
 
@@ -2021,64 +1996,82 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
     size_t length;
 #endif
 
+        int sock;
     struct sockaddr_in server;
 
-/* Create socket for internet type communication */
+        /* Create socket for internet type communication */
         (*key)->networkSpecific.TCP.port = *(int *) parameter;
         (*key)->networkSpecific.TCP.listenSocket = socket(AF_INET, SOCK_STREAM, 0);
-        if ((*key)->networkSpecific.TCP.listenSocket < 0)
-        {
-          char buf1[256];
-          sprintf(buf1, "TCP Initialization Error: %s", strerror(errno));
-          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
+        sock = (*key)->networkSpecific.TCP.listenSocket;
+        if (sock < 0) {
+            char buf1[256];
+            sprintf(buf1, "TCP Initialization Error: %s", strerror(errno));
+            return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
         }
         reuse = 1;
+
 #ifdef HAVE_GUSI_H
         /* GUSI always returns an error for setsockopt(...) */
 #else
-        if (setsockopt((*key)->networkSpecific.TCP.listenSocket,
-            SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0)
-        {
-          char buf2[256];
-          sprintf(buf2, "TCP Initialization Error: %s", strerror(errno));
-          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf2);
+       if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0) {
+           char buf2[256];
+           sprintf(buf2, "TCP Initialization Error: %s", strerror(errno));
+           return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf2);
         }
 #endif
-/* Name socket using wildcards */
+        /* Name socket using wildcards */
+        memset(&server, 0, sizeof(server));
+        server.sin_len = sizeof(server);
         server.sin_family = AF_INET;
         server.sin_addr.s_addr = INADDR_ANY;
         server.sin_port = (unsigned short) htons((*key)->networkSpecific.TCP.port);
-        if (bind((*key)->networkSpecific.TCP.listenSocket,
-                 (struct sockaddr *) & server, sizeof(server)))
-        {
-          char buf3[256];
-          sprintf(buf3, "TCP Initialization Error: %s", strerror(errno));
-          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf3);
+        if (::bind(sock, (struct sockaddr *)&server, sizeof(server)) < 0) {
+            char buf3[256];
+            sprintf(buf3, "TCP Initialization Error: %s", strerror(errno));
+            return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf3);
         }
-				
-/* Find out assigned port number and print it out */
+        /* Find out assigned port number and print it out */
         length = sizeof(server);
-        if (getsockname((*key)->networkSpecific.TCP.listenSocket,
-                        (struct sockaddr *) & server, &length))
-        {
-          char buf4[256];
-          sprintf(buf4, "TCP Initialization Error: %s", strerror(errno));
-          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf4);
+        if (getsockname(sock, (struct sockaddr *) &server, &length)) {
+            char buf4[256];
+            sprintf(buf4, "TCP Initialization Error: %s", strerror(errno));
+            return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf4);
         }
 		
 #ifdef HAVE_GUSI_H
         /* GUSI always returns an error for setsockopt(...) */
 #else
         sockarg.l_onoff = 0;
-        if (setsockopt((*key)->networkSpecific.TCP.listenSocket,
-           SOL_SOCKET, SO_LINGER, (char *) &sockarg, sizeof(sockarg)) < 0)
+        if (setsockopt(sock, SOL_SOCKET, SO_LINGER, (char *) &sockarg, sizeof(sockarg)) < 0)
         {
-          char buf5[256];
-          sprintf(buf5, "TCP Initialization Error: %s", strerror(errno));
-          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf5);
+            char buf5[256];
+            sprintf(buf5, "TCP Initialization Error: %s", strerror(errno));
+            return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf5);
+        }
+#ifndef DISABLE_RECV_TIMEOUT
+        /* use a timeout of 60 seconds for the recv() function */
+        const int recvTimeout = 60;
+//        DCMNET_DEBUG("setting network receive timeout to " << recvTimeout << " seconds");
+#ifdef HAVE_WINSOCK_H
+        // for Windows, specify receive timeout in milliseconds
+        int timeoutVal = recvTimeout * 1000;
+        if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, (char *) &timeoutVal, sizeof(timeoutVal)) < 0)
+#else
+            // for other systems, specify receive timeout as timeval struct
+            struct timeval timeoutVal;
+        timeoutVal.tv_sec = recvTimeout;
+        timeoutVal.tv_usec = 0;
+        if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &timeoutVal, sizeof(timeoutVal)) < 0)
+#endif
+        {
+            // according to MSDN: available in the Microsoft implementation of Windows Sockets 2,
+            // so we are reporting a warning message but are not returning with an error code;
+            // this also applies to all other systems where the call to this function might fail
+//            DCMNET_WARN("cannot set network receive timeout to " << recvTimeout << " seconds");
         }
 #endif
-        listen((*key)->networkSpecific.TCP.listenSocket, PRV_LISTENBACKLOG);
+#endif
+        listen(sock, PRV_LISTENBACKLOG);
     }
 
     (*key)->networkSpecific.TCP.tLayer = new DcmTransportLayer((*key)->applicationFunction);

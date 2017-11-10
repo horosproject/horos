@@ -63,13 +63,13 @@
  *
  */
 
-#include <Cocoa/Cocoa.h>
-#include"OsiriX/DCMNetServiceDelegate.h"
+#import <Cocoa/Cocoa.h>
+#import "DCMNetServiceDelegate.h"
 #import "SendController.h"
-#import "browserController.h"
-#import "OsiriX/DCMObject.h"
-#import "OsiriX/DCM.h"
-#import "OsiriX/DCMTransferSyntax.h"
+#import "BrowserController.h"
+#import "DCMObject.h"
+#import "DCM.h"
+#import "DCMTransferSyntax.h"
 
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
@@ -463,7 +463,7 @@ void DcmQueryRetrieveGetContext::getNextImage(DcmQueryRetrieveDatabaseStatus * d
 	char outfname[ 4096];
 	
 	strcpy( outfname, "");
-	sprintf( outfname, "%s/QR-CGET-%d-%d.dcm", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], seed++, getpid());
+	sprintf( outfname, "%s/QR-CGET-%d-%d.dcm", [[DicomDatabase activeLocalDatabase] tempDirPathC], seed++, getpid());
 	unlink( outfname);
 	
 	presId = ASC_findAcceptedPresentationContextID(origAssoc, subImgSOPClass);
@@ -483,7 +483,7 @@ void DcmQueryRetrieveGetContext::getNextImage(DcmQueryRetrieveDatabaseStatus * d
 		DcmXfer preferredXfer( xferSyntax);
 		OFBool status = YES;
 		
-		sprintf( outfname, "%s/QR-CGET-%d-%d.dcm", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], seed++, getpid());
+		sprintf( outfname, "%s/QR-CGET-%d-%d.dcm", [[DicomDatabase activeLocalDatabase] tempDirPathC], seed++, getpid());
 		unlink( outfname);
 		
 		if (filexfer.isNotEncapsulated() && preferredXfer.isNotEncapsulated())

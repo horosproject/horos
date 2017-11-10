@@ -170,7 +170,7 @@ void DcmByteString::print(ostream &out,
         getString(string);
         if (string != NULL)
         {
-            unsigned int printedLength = strlen(string) + 2 /* for enclosing brackets */;
+            unsigned int printedLength = (unsigned int)strlen(string) + 2 /* for enclosing brackets */;
             /* print line start with tag and VR */
             printInfoLineStart(out, flags, level);
             out << '[';
@@ -286,7 +286,7 @@ OFCondition DcmByteString::putString(const char *stringVal)
     errorFlag = EC_Normal;
     /* check for an empty string parameter */
     if ((stringVal != NULL) && (strlen(stringVal) > 0))
-        putValue(stringVal, strlen(stringVal));
+        putValue(stringVal, (Uint32)strlen(stringVal));
     else
         putValue(NULL, 0);
     /* make sure that extra padding is removed from the string */
@@ -338,7 +338,7 @@ OFCondition DcmByteString::makeMachineByteString()
     /* determine initial string length */
     if (value != NULL)
     {
-        realLength = strlen(value);
+        realLength = (Uint32)strlen(value);
         /* remove all trailing spaces if automatic input data correction is enabled */
         if (dcmEnableAutomaticInputDataCorrection.get())
         {
