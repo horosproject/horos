@@ -190,9 +190,9 @@
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>Horos</string>
-    <key>CFBundleGetInfoString</key>
-    <string>Horos v2.2.0, volz.io</string>
-    <key>CFBundleIconFile</key>
+	<key>CFBundleGetInfoString</key>
+	<string>Horos v2.2.0</string>
+	<key>CFBundleIconFile</key>
 	<string>Horos.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
@@ -259,7 +259,7 @@
 	<key>NSContactsUsageDescription</key>
 	<string>Your account will be used for the built-in iChat sharing service. If you don&apos;t allow access, you cannot use the iChat functions.</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>© 2017 volz.io, The Horos Project &amp; OsiriX Team</string>
+	<string>© 2017 The Horos Project &amp; OsiriX Team</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
