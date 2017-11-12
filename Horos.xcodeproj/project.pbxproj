@@ -13197,7 +13197,7 @@
 					__info_plist,
 					Info.plist,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.horos;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.horos;
 				PRODUCT_NAME = Horos;
 				STRIP_STYLE = debugging;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
@@ -13226,7 +13226,7 @@
 					"-seg1addr",
 					0x20000000,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.dcmframework;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.dcmframework;
 				PRODUCT_NAME = HorosDCM;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				SKIP_INSTALL = YES;
@@ -13362,7 +13362,7 @@
 		710BAF051FAB124D004909E4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.vtk;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.vtk;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 			};
@@ -13371,7 +13371,7 @@
 		710BAF061FAB124D004909E4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.vtk;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.vtk;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 			};
@@ -13380,7 +13380,7 @@
 		710BAF1A1FAB176C004909E4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.itk;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.itk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -13389,7 +13389,7 @@
 		710BAF1B1FAB176C004909E4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.itk;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.itk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -13402,7 +13402,7 @@
 					"$(inherited)",
 					"-w",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.charls;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.charls;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -13415,7 +13415,7 @@
 					"$(inherited)",
 					"-w",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.charls;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.charls;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -13428,7 +13428,7 @@
 					"$(inherited)",
 					"-w",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.gdcm;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.gdcm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -13441,7 +13441,7 @@
 					"$(inherited)",
 					"-w",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.gdcm;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.gdcm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -13454,7 +13454,7 @@
 					"$(inherited)",
 					"-w",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.openjpeg;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.openjpeg;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -13467,7 +13467,7 @@
 					"$(inherited)",
 					"-w",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.openjpeg;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.openjpeg;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -13480,7 +13480,7 @@
 					"$(inherited)",
 					"-w",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.openssl;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.openssl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -13493,7 +13493,7 @@
 					"$(inherited)",
 					"-w",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.openssl;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.openssl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -13520,7 +13520,7 @@
 					"-seg1addr",
 					0x20000000,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.dcmframework;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.dcmframework;
 				PRODUCT_NAME = HorosDCM;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				SKIP_INSTALL = YES;
@@ -13560,7 +13560,7 @@
 					__info_plist,
 					Horos/Info.plist,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.macrad.horos;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.horos;
 				PRODUCT_NAME = Horos;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
 			};
