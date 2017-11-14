@@ -2,8 +2,8 @@
  
  vtkPowerCrustSurfaceReconstruction algorithm reconstructs surfaces from
  unorganized point data.
- Copyright (C) 2014  Arash Akbarinia, Tim Hutton, Bruce Lamond
- Dieter Pfeffer, Oliver Moss
+ Copyright (C) 2017  Arash Akbarinia, Tim Hutton, Bruce Lamond
+ Dieter Pfeffer, Oliver Moss, Alessandro Volz
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
+ Nina Amenta et al. came up with a lovely algorithm for surface
+ reconstruction - the PowerCrust. With humbling generosity they made
+ their code available to the world, under the GNU Public License.
+ <http://web.cs.ucdavis.edu/~amenta/powercrust.html>
+
  =========================================================================*/
 
 #include "vtkPowerCrustSurfaceReconstruction.h"
@@ -3534,7 +3539,7 @@ void * vtkPowerCrustSurfaceReconstructionImpl::compute_pole2 ( simplex *s, void 
                 pole2[i]=s;
                 continue;
             }
-            else if ( !pole2[i]->vv ) /* 2nd pole points null */
+            else if ( pole2[i]->isVvNull ) /* 2nd pole points null */
             {
                 continue;
             }
@@ -3918,7 +3923,7 @@ void vtkPowerCrustSurfaceReconstructionImpl::Ax_plus_y_test ( Coord a, point x, 
 
 void vtkPowerCrustSurfaceReconstructionImpl::Vec_scale_test ( int n, Coord a, Coord *x )
 {
-    register Coord *xx = x, *xend = xx + n;
+    Coord *xx = x, *xend = xx + n;
     
     while ( xx!=xend )
     {
