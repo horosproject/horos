@@ -70,7 +70,7 @@
 #include <VTK/vtkImageData.h>
 #include <VTK/vtkDecimatePro.h>
 #include <VTK/vtkSmoothPolyDataFilter.h>
-#include "vtkPowerCrustSurfaceReconstruction.h"
+//#include "vtkPowerCrustSurfaceReconstruction.h"
 #include <VTK/vtkMarchingCubes.h>
 
 //#undef id

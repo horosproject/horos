@@ -1645,8 +1645,6 @@
 		BF2425520A51D39500D3D76B /* DicomFileDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */; };
 		BF26843D0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */; };
 		BF26843E0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
-		BF30B3A90C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */ = {isa = PBXBuildFile; fileRef = BF30B3A70C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx */; };
-		BF30B3AD0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h in Headers */ = {isa = PBXBuildFile; fileRef = BF30B3AB0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h */; };
 		BF34857A0951270C00B05AD2 /* SendController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF3485760951270C00B05AD2 /* SendController.h */; };
 		BF34857B0951270C00B05AD2 /* SendController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3485770951270C00B05AD2 /* SendController.m */; };
 		BF36E2F009CDC6BF003991D3 /* dcmqrdbi.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9E09B6828800545F5E /* dcmqrdbi.cc */; };
@@ -9460,7 +9458,6 @@
 				AB87FA7A0C06BEB200CD2976 /* nifti1.h in Headers */,
 				AB87FA7C0C06BEB200CD2976 /* nifti1_io.h in Headers */,
 				AB87FA7E0C06BEB200CD2976 /* znzlib.h in Headers */,
-				BF30B3AD0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h in Headers */,
 				ABB230BD0C2F95DD00B38596 /* JPEGExif.h in Headers */,
 				AB64A2DB0C4E0F61000E0981 /* HornRegistration.h in Headers */,
 				CE882AC60C889B6500D4F982 /* XMLRPCMethods.h in Headers */,
@@ -11411,7 +11408,6 @@
 				ABC47B5A0C031397001CEA21 /* BrowserMatrix.m in Sources */,
 				AB87FA7B0C06BEB200CD2976 /* nifti1_io.c in Sources */,
 				AB87FA7D0C06BEB200CD2976 /* znzlib.c in Sources */,
-				BF30B3A90C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */,
 				ABB230BE0C2F95DD00B38596 /* JPEGExif.m in Sources */,
 				AB64A2DA0C4E0F61000E0981 /* HornRegistration.mm in Sources */,
 				CE51BAF511E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld in Sources */,
