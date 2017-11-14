@@ -18,6 +18,17 @@
 			name = "Unzip Binaries";
 			productName = "Unzip Binaries";
 		};
+		71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 71E6C0B31FBAD31E00FF75B6 /* Build configuration list for PBXAggregateTarget "Git Submodule Sync" */;
+			buildPhases = (
+				71E6C0B41FBAD32800FF75B6 /* Git Submodule Sync */,
+			);
+			dependencies = (
+			);
+			name = "Git Submodule Sync";
+			productName = "Git Submodule Sync";
+		};
 		BF7486A50CC6AA5C00198387 /* Documentation */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = BF7486AA0CC6AA7C00198387 /* Build configuration list for PBXAggregateTarget "Documentation" */;
@@ -3039,6 +3050,48 @@
 			proxyType = 1;
 			remoteGlobalIDString = CEDF6C600B46FE99008B45B8;
 			remoteInfo = DICOMPrint;
+		};
+		71E6C0B51FBAD34100FF75B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
+			remoteInfo = "Git Submodule Sync";
+		};
+		71E6C0B71FBAD34500FF75B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
+			remoteInfo = "Git Submodule Sync";
+		};
+		71E6C0B91FBAD34800FF75B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
+			remoteInfo = "Git Submodule Sync";
+		};
+		71E6C0BB1FBAD34C00FF75B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
+			remoteInfo = "Git Submodule Sync";
+		};
+		71E6C0BD1FBAD35000FF75B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
+			remoteInfo = "Git Submodule Sync";
+		};
+		71E6C0BF1FBAD35400FF75B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
+			remoteInfo = "Git Submodule Sync";
 		};
 		99FE27FC1CF4A442003C32AB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -9748,6 +9801,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				71E6C0C01FBAD35400FF75B6 /* PBXTargetDependency */,
 			);
 			name = VTK;
 			productName = VTK;
@@ -9766,6 +9820,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				71E6C0BE1FBAD35000FF75B6 /* PBXTargetDependency */,
 			);
 			name = ITK;
 			productName = VTK;
@@ -9784,6 +9839,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				71E6C0BA1FBAD34800FF75B6 /* PBXTargetDependency */,
 			);
 			name = CharLS;
 			productName = VTK;
@@ -9802,6 +9858,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				71E6C0BC1FBAD34C00FF75B6 /* PBXTargetDependency */,
 				710BAF621FB1A478004909E4 /* PBXTargetDependency */,
 			);
 			name = GDCM;
@@ -9821,6 +9878,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				71E6C0B81FBAD34500FF75B6 /* PBXTargetDependency */,
 			);
 			name = OpenJPEG;
 			productName = VTK;
@@ -9839,6 +9897,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				71E6C0B61FBAD34100FF75B6 /* PBXTargetDependency */,
 			);
 			name = OpenSSL;
 			productName = VTK;
@@ -9972,6 +10031,9 @@
 					710BAEFB1FAB124C004909E4 = {
 						CreatedOnToolsVersion = 9.0;
 					};
+					71E6C0B01FBAD31E00FF75B6 = {
+						CreatedOnToolsVersion = 9.0;
+					};
 					AB0F3A2B1046BD2B004129DD = {
 						DevelopmentTeam = KM2Q4CB65V;
 					};
@@ -10019,6 +10081,7 @@
 				710BAF291FAB2837004909E4 /* CharLS */,
 				710BAF581FB1A418004909E4 /* OpenJPEG */,
 				717C19CB1FB3712E005A5834 /* OpenSSL */,
+				71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */,
 			);
 		};
 /* End PBXProject section */
@@ -10857,6 +10920,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "path=$(cat \"$TARGET_TEMP_DIR/../Horos API.build/Product.path\")\nrsync --exclude=\".DS_Store\" -rtlv \"$path\" \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/\"";
+		};
+		71E6C0B41FBAD32800FF75B6 /* Git Submodule Sync */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Git Submodule Sync";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "git submodule sync";
 		};
 		AB0F3A3F1046BE51004129DD /* Copy Headers and Create Horos.h */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -12588,6 +12665,36 @@
 			target = CEDF6C600B46FE99008B45B8 /* DICOMPrint */;
 			targetProxy = 71C99EA21D19A80C00208F3B /* PBXContainerItemProxy */;
 		};
+		71E6C0B61FBAD34100FF75B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */;
+			targetProxy = 71E6C0B51FBAD34100FF75B6 /* PBXContainerItemProxy */;
+		};
+		71E6C0B81FBAD34500FF75B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */;
+			targetProxy = 71E6C0B71FBAD34500FF75B6 /* PBXContainerItemProxy */;
+		};
+		71E6C0BA1FBAD34800FF75B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */;
+			targetProxy = 71E6C0B91FBAD34800FF75B6 /* PBXContainerItemProxy */;
+		};
+		71E6C0BC1FBAD34C00FF75B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */;
+			targetProxy = 71E6C0BB1FBAD34C00FF75B6 /* PBXContainerItemProxy */;
+		};
+		71E6C0BE1FBAD35000FF75B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */;
+			targetProxy = 71E6C0BD1FBAD35000FF75B6 /* PBXContainerItemProxy */;
+		};
+		71E6C0C01FBAD35400FF75B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */;
+			targetProxy = 71E6C0BF1FBAD35400FF75B6 /* PBXContainerItemProxy */;
+		};
 		99FE27FD1CF4A442003C32AB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 4A2F5931078D148300C514A2 /* Unzip Binaries */;
@@ -13499,6 +13606,20 @@
 			};
 			name = Release;
 		};
+		71E6C0B11FBAD31E00FF75B6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = $TARGET_NAME;
+			};
+			name = Debug;
+		};
+		71E6C0B21FBAD31E00FF75B6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = $TARGET_NAME;
+			};
+			name = Release;
+		};
 		7E76BEC1085757B60073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -13791,6 +13912,15 @@
 			buildConfigurations = (
 				717C19D11FB3712E005A5834 /* Debug */,
 				717C19D21FB3712E005A5834 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		71E6C0B31FBAD31E00FF75B6 /* Build configuration list for PBXAggregateTarget "Git Submodule Sync" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				71E6C0B11FBAD31E00FF75B6 /* Debug */,
+				71E6C0B21FBAD31E00FF75B6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

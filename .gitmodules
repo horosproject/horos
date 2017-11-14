@@ -12,10 +12,10 @@
 	url = git@github.com:commontk/DCMTK.git
 [submodule "GDCM"]
 	path = GDCM
-	url = git://git.code.sf.net/p/gdcm/gdcm
+	url = git@github.com:malaterre/GDCM.git
 [submodule "OpenJPEG"]
 	path = OpenJPEG
 	url = git@github.com:uclouvain/openjpeg.git
 [submodule "OpenSSL"]
 	path = OpenSSL
-	url = git://git.openssl.org/openssl.git
+	url = git@github.com:openssl/openssl.git
