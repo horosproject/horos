@@ -65,8 +65,8 @@
 // We want our own Defaults plist saved in ~/Library/Preferences/
 // Make sure it matches "Bundle Identifier" in Deployment-Info.plist
 
-#define BUNDLE_IDENTIFIER_PREFIX    "com.horosproject"
-#define BUNDLE_IDENTIFIER           "com.horosproject.horos"
+#define BUNDLE_IDENTIFIER_PREFIX    "org.horosproject"
+#define BUNDLE_IDENTIFIER           "org.horosproject.horos"
 
 ////////////////////////////////////////////////////////////////////////////////
 // This is the address of the plist containing the list of the available plugins.
