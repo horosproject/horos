@@ -1,21 +1,22 @@
 [submodule "ITK"]
 	path = ITK
-	url = git@github.com:InsightSoftwareConsortium/ITK.git
+	url = https://github.com/InsightSoftwareConsortium/ITK.git
 [submodule "VTK"]
 	path = VTK
-	url = git@github.com:Kitware/VTK.git
+	url = https://github.com/Kitware/VTK.git
 [submodule "CharLS"]
 	path = CharLS
-	url = git@github.com:team-charls/charls.git
-[submodule "DCMTK"]
-	path = DCMTK
-	url = git@github.com:commontk/DCMTK.git
+	url = https://github.com/team-charls/charls.git
+#[submodule "DCMTK"]
+#	path = DCMTK
+#	url = http://git.dcmtk.org/dcmtk
 [submodule "GDCM"]
 	path = GDCM
-	url = git://git.code.sf.net/p/gdcm/gdcm
+	url = https://github.com/malaterre/GDCM.git
 [submodule "OpenJPEG"]
 	path = OpenJPEG
-	url = git@github.com:uclouvain/openjpeg.git
+	url = https://github.com/uclouvain/openjpeg.git
 [submodule "OpenSSL"]
 	path = OpenSSL
-	url = git://git.openssl.org/openssl.git
+	url = https://github.com/openssl/openssl.git
+
