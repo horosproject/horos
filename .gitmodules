@@ -10,9 +10,6 @@
 #[submodule "DCMTK"]
 #	path = DCMTK
 #	url = http://git.dcmtk.org/dcmtk
-[submodule "GDCM"]
-	path = GDCM
-	url = https://github.com/malaterre/GDCM.git
 [submodule "OpenJPEG"]
 	path = OpenJPEG
 	url = https://github.com/uclouvain/openjpeg.git
