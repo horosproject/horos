@@ -33,10 +33,10 @@ Binaries/weasis/
 Binaries/._OsiriX Report.template
 Binaries/FeedbackReporter.framework/
 
-DCMTK
-GDCM
-ITK
-OpenJPEG
-OpenSSL
-VTK
+DCMTK/
+GDCM/
+ITK/
+OpenJPEG/
+OpenSSL/
+VTK/
 

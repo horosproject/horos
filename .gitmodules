@@ -10,9 +10,6 @@
 #[submodule "DCMTK"]
 #	path = DCMTK
 #	url = http://git.dcmtk.org/dcmtk
-[submodule "DCMTK"]
-        path = DCMTK
-        url = https://github.com/commontk/DCMTK.git
 [submodule "GDCM"]
 	path = GDCM
 	url = https://github.com/malaterre/GDCM.git
