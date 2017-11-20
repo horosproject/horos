@@ -17,3 +17,6 @@
 	path = OpenSSL
 	url = https://github.com/openssl/openssl.git
 
+[submodule "GDCM"]
+	path = GDCM
+	url = https://github.com/malaterre/GDCM.git
