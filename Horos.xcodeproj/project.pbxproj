@@ -9963,11 +9963,11 @@
 			buildRules = (
 			);
 			dependencies = (
+				99FE27FD1CF4A442003C32AB /* PBXTargetDependency */,
 				717C19D51FB372DD005A5834 /* PBXTargetDependency */,
 				710BAF331FAB28DF004909E4 /* PBXTargetDependency */,
 				710BAF1E1FAB17C6004909E4 /* PBXTargetDependency */,
 				710BAF351FAB28DF004909E4 /* PBXTargetDependency */,
-				99FE27FD1CF4A442003C32AB /* PBXTargetDependency */,
 				71C99E991D19A7FB00208F3B /* PBXTargetDependency */,
 				71C99E9B1D19A7FD00208F3B /* PBXTargetDependency */,
 				71C99EA11D19A80A00208F3B /* PBXTargetDependency */,
@@ -10510,7 +10510,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo FeedbackReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo dciodvfy.zip\nunzip -uo Ming.zip\n\nunzip -uo weasis-portable*.zip -d weasis\nchmod -R 755 weasis\nfind \"$SRCROOT/Binaries/weasis\" -name __MACOSX | xargs rm -Rf\n\ncd \"$SRCROOT/Binaries/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/DICOMPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\nexit 0";
+			shellScript = "git submodule sync\n\ncd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo FeedbackReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo dciodvfy.zip\nunzip -uo Ming.zip\n\nunzip -uo weasis-portable*.zip -d weasis\nchmod -R 755 weasis\nfind \"$SRCROOT/Binaries/weasis\" -name __MACOSX | xargs rm -Rf\n\ncd \"$SRCROOT/Binaries/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/DICOMPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\nexit 0";
 		};
 		59BDEE70117CB3A6007F1F2C /* Zip Horos Launcher into Resources */ = {
 			isa = PBXShellScriptBuildPhase;
