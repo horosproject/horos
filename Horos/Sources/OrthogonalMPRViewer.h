@@ -148,7 +148,7 @@ typedef enum {SyncSeriesBehaviorAbsolutePosWithSameStudy, SyncSeriesBehaviorRela
 + (void) synchronizeViewersPosition:(id) onlyViewerToBeSynchronized;
 + (void) validateViewersSyncSeriesState;
 
-+ (void) initSyncSeriesToolbarItem:(id)viewer :(NSToolbarItem*) toolbarItem;
++ (void) initSyncSeriesToolbarItem:(id)viewer :(KBPopUpToolbarItem *) toolbarItem;
 + (void) updateSyncSeriesToolbarItemUI:(id)viewer;
 + (void) evaluteSyncSeriesToolbarItemActivationWhenInit:(id)currentViewer;
 + (void) evaluteSyncSeriesToolbarItemActivationBeforeClose:(id)currentViewer;

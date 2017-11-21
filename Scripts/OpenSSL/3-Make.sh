@@ -16,7 +16,7 @@ args=( -j 8 )
 
 cd "$cmake_dir"
 make "${args[@]}"
-make install
+make install_sw
 
 rm -f "$cmake_dir/.incomplete"
 

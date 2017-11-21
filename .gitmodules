@@ -7,16 +7,15 @@
 [submodule "CharLS"]
 	path = CharLS
 	url = https://github.com/team-charls/charls.git
-#[submodule "DCMTK"]
-#	path = DCMTK
-#	url = http://git.dcmtk.org/dcmtk
+[submodule "GDCM"]
+	path = GDCM
+	url = https://github.com/malaterre/GDCM.git
 [submodule "OpenJPEG"]
 	path = OpenJPEG
 	url = https://github.com/uclouvain/openjpeg.git
 [submodule "OpenSSL"]
 	path = OpenSSL
 	url = https://github.com/openssl/openssl.git
-
-[submodule "GDCM"]
-	path = GDCM
-	url = https://github.com/malaterre/GDCM.git
+#[submodule "DCMTK"]
+#	path = DCMTK
+#	url = http://git.dcmtk.org/dcmtk

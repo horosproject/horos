@@ -18,6 +18,11 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
+ Nina Amenta et al. came up with a lovely algorithm for surface
+ reconstruction - the PowerCrust. With humbling generosity they made
+ their code available to the world, under the GNU Public License.
+ <http://web.cs.ucdavis.edu/~amenta/powercrust.html>
+ 
  =========================================================================*/
 // .NAME vtkPowerCrustSurfaceReconstruction - reconstructs surfaces from
 // unorganized point data

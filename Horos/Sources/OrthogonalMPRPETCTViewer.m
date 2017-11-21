@@ -1201,7 +1201,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
     }
     else if ([itemIdent isEqualToString: SyncSeriesToolbarItemIdentifier])
     {
-        [OrthogonalMPRViewer initSyncSeriesToolbarItem:self : toolbarItem];
+        [OrthogonalMPRViewer initSyncSeriesToolbarItem:self :(id)toolbarItem];
     }
     else
     {

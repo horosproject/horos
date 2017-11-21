@@ -114,7 +114,7 @@
 #include <VTK/vtkTexture.h>
 #include <VTK/vtkTextureMapToSphere.h>
 #include <VTK/vtkTransformTextureCoords.h>
-#include "vtkPowerCrustSurfaceReconstruction.h"
+//#include "vtkPowerCrustSurfaceReconstruction.h"
 
 //#undef id
 

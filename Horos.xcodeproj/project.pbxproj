@@ -18,6 +18,17 @@
 			name = "Unzip Binaries";
 			productName = "Unzip Binaries";
 		};
+		71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 71E6C0B31FBAD31E00FF75B6 /* Build configuration list for PBXAggregateTarget "Git Submodule Sync" */;
+			buildPhases = (
+				71E6C0B41FBAD32800FF75B6 /* Git Submodule Sync */,
+			);
+			dependencies = (
+			);
+			name = "Git Submodule Sync";
+			productName = "Git Submodule Sync";
+		};
 		BF7486A50CC6AA5C00198387 /* Documentation */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = BF7486AA0CC6AA7C00198387 /* Build configuration list for PBXAggregateTarget "Documentation" */;
@@ -357,6 +368,45 @@
 		71AA5A381611F1EB006A6A5F /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AA5A2B1611F1EB006A6A5F /* SBJsonParser.m */; };
 		71AA5A391611F1EB006A6A5F /* SBJsonWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 71AA5A2C1611F1EB006A6A5F /* SBJsonWriter.h */; };
 		71AA5A3A1611F1EB006A6A5F /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AA5A2D1611F1EB006A6A5F /* SBJsonWriter.m */; };
+		71AD67481FC4248100A1E2F8 /* BlackBody.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0881FB5995100FF75B6 /* BlackBody.plist */; };
+		71AD67491FC4248100A1E2F8 /* Flow.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0961FB5995300FF75B6 /* Flow.plist */; };
+		71AD674A1FC4248100A1E2F8 /* French.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0911FB5995300FF75B6 /* French.plist */; };
+		71AD674B1FC4248100A1E2F8 /* GEcolor.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C09E1FB5995500FF75B6 /* GEcolor.plist */; };
+		71AD674C1FC4248100A1E2F8 /* GrayRainbow.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C08E1FB5995200FF75B6 /* GrayRainbow.plist */; };
+		71AD674D1FC4248100A1E2F8 /* HotGreen.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C09A1FB5995400FF75B6 /* HotGreen.plist */; };
+		71AD674E1FC4248100A1E2F8 /* HotIron.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C09B1FB5995500FF75B6 /* HotIron.plist */; };
+		71AD674F1FC4248100A1E2F8 /* HotMetal.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C08B1FB5995200FF75B6 /* HotMetal.plist */; };
+		71AD67501FC4248100A1E2F8 /* Hue1.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C09C1FB5995500FF75B6 /* Hue1.plist */; };
+		71AD67511FC4248100A1E2F8 /* Hue2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C08C1FB5995200FF75B6 /* Hue2.plist */; };
+		71AD67521FC4248100A1E2F8 /* ired.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0921FB5995300FF75B6 /* ired.plist */; };
+		71AD67531FC4248100A1E2F8 /* Jet.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0A31FB5995600FF75B6 /* Jet.plist */; };
+		71AD67541FC4248100A1E2F8 /* NIH.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C08F1FB5995200FF75B6 /* NIH.plist */; };
+		71AD67551FC4248100A1E2F8 /* Perfusion.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C09D1FB5995500FF75B6 /* Perfusion.plist */; };
+		71AD67561FC4248100A1E2F8 /* PPU Inferno.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0A11FB5995600FF75B6 /* PPU Inferno.plist */; };
+		71AD67571FC4248100A1E2F8 /* PPU Magma.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0931FB5995300FF75B6 /* PPU Magma.plist */; };
+		71AD67581FC4248100A1E2F8 /* PPU Plasma.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0971FB5995400FF75B6 /* PPU Plasma.plist */; };
+		71AD67591FC4248100A1E2F8 /* PPU Viridis.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C08A1FB5995100FF75B6 /* PPU Viridis.plist */; };
+		71AD675A1FC4248100A1E2F8 /* Rainbow.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C09F1FB5995500FF75B6 /* Rainbow.plist */; };
+		71AD675B1FC4248100A1E2F8 /* Rainbow2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0991FB5995400FF75B6 /* Rainbow2.plist */; };
+		71AD675C1FC4248100A1E2F8 /* Rainbow3.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C08D1FB5995200FF75B6 /* Rainbow3.plist */; };
+		71AD675D1FC4248100A1E2F8 /* Ratio.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0951FB5995300FF75B6 /* Ratio.plist */; };
+		71AD675E1FC4248100A1E2F8 /* Spectrum.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0941FB5995300FF75B6 /* Spectrum.plist */; };
+		71AD675F1FC4248100A1E2F8 /* Stern.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0A21FB5995600FF75B6 /* Stern.plist */; };
+		71AD67601FC4248100A1E2F8 /* UCLA.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0981FB5995400FF75B6 /* UCLA.plist */; };
+		71AD67611FC4248100A1E2F8 /* VR Bones.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0901FB5995200FF75B6 /* VR Bones.plist */; };
+		71AD67621FC4248100A1E2F8 /* VR Muscles-Bones.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0891FB5995100FF75B6 /* VR Muscles-Bones.plist */; };
+		71AD67631FC4248100A1E2F8 /* VR Red Vessels.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0A01FB5995600FF75B6 /* VR Red Vessels.plist */; };
+		71AD67641FC4256E00A1E2F8 /* Tiling1x1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0AD1FB59A9100FF75B6 /* Tiling1x1.pdf */; };
+		71AD67651FC4256E00A1E2F8 /* Tiling1x2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0A51FB59A8F00FF75B6 /* Tiling1x2.pdf */; };
+		71AD67661FC4256E00A1E2F8 /* Tiling1x3.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0A61FB59A9000FF75B6 /* Tiling1x3.pdf */; };
+		71AD67671FC4256E00A1E2F8 /* Tiling1x4.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0AA1FB59A9100FF75B6 /* Tiling1x4.pdf */; };
+		71AD67681FC4256E00A1E2F8 /* Tiling2x1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0AB1FB59A9100FF75B6 /* Tiling2x1.pdf */; };
+		71AD67691FC4256E00A1E2F8 /* Tiling2x2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0A41FB59A8F00FF75B6 /* Tiling2x2.pdf */; };
+		71AD676A1FC4256E00A1E2F8 /* Tiling2x3.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0AE1FB59A9200FF75B6 /* Tiling2x3.pdf */; };
+		71AD676B1FC4256E00A1E2F8 /* Tiling2x4.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0A71FB59A9000FF75B6 /* Tiling2x4.pdf */; };
+		71AD676C1FC4256E00A1E2F8 /* Tiling3x1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0AC1FB59A9100FF75B6 /* Tiling3x1.pdf */; };
+		71AD676D1FC4256E00A1E2F8 /* Tiling3x2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0A81FB59A9000FF75B6 /* Tiling3x2.pdf */; };
+		71AD676E1FC4256E00A1E2F8 /* Tiling3x3.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0A91FB59A9000FF75B6 /* Tiling3x3.pdf */; };
 		71C99EA61D1A81FE00208F3B /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71C99EA51D1A81FE00208F3B /* Growl.framework */; };
 		71C99EA71D1A871700208F3B /* Growl.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 71C99EA51D1A81FE00208F3B /* Growl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		71CE3C19157F489C00AC0112 /* List.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71CE3C18157F489C00AC0112 /* List.pdf */; };
@@ -1634,8 +1684,6 @@
 		BF2425520A51D39500D3D76B /* DicomFileDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */; };
 		BF26843D0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */; };
 		BF26843E0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
-		BF30B3A90C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */ = {isa = PBXBuildFile; fileRef = BF30B3A70C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx */; };
-		BF30B3AD0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h in Headers */ = {isa = PBXBuildFile; fileRef = BF30B3AB0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h */; };
 		BF34857A0951270C00B05AD2 /* SendController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF3485760951270C00B05AD2 /* SendController.h */; };
 		BF34857B0951270C00B05AD2 /* SendController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF3485770951270C00B05AD2 /* SendController.m */; };
 		BF36E2F009CDC6BF003991D3 /* dcmqrdbi.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3D9E09B6828800545F5E /* dcmqrdbi.cc */; };
@@ -3039,6 +3087,48 @@
 			proxyType = 1;
 			remoteGlobalIDString = CEDF6C600B46FE99008B45B8;
 			remoteInfo = DICOMPrint;
+		};
+		71E6C0B51FBAD34100FF75B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
+			remoteInfo = "Git Submodule Sync";
+		};
+		71E6C0B71FBAD34500FF75B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
+			remoteInfo = "Git Submodule Sync";
+		};
+		71E6C0B91FBAD34800FF75B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
+			remoteInfo = "Git Submodule Sync";
+		};
+		71E6C0BB1FBAD34C00FF75B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
+			remoteInfo = "Git Submodule Sync";
+		};
+		71E6C0BD1FBAD35000FF75B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
+			remoteInfo = "Git Submodule Sync";
+		};
+		71E6C0BF1FBAD35400FF75B6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
+			remoteInfo = "Git Submodule Sync";
 		};
 		99FE27FC1CF4A442003C32AB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -9407,7 +9497,6 @@
 				AB87FA7A0C06BEB200CD2976 /* nifti1.h in Headers */,
 				AB87FA7C0C06BEB200CD2976 /* nifti1_io.h in Headers */,
 				AB87FA7E0C06BEB200CD2976 /* znzlib.h in Headers */,
-				BF30B3AD0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h in Headers */,
 				ABB230BD0C2F95DD00B38596 /* JPEGExif.h in Headers */,
 				AB64A2DB0C4E0F61000E0981 /* HornRegistration.h in Headers */,
 				CE882AC60C889B6500D4F982 /* XMLRPCMethods.h in Headers */,
@@ -9748,6 +9837,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				71E6C0C01FBAD35400FF75B6 /* PBXTargetDependency */,
 			);
 			name = VTK;
 			productName = VTK;
@@ -9766,6 +9856,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				71E6C0BE1FBAD35000FF75B6 /* PBXTargetDependency */,
 			);
 			name = ITK;
 			productName = VTK;
@@ -9784,6 +9875,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				71E6C0BA1FBAD34800FF75B6 /* PBXTargetDependency */,
 			);
 			name = CharLS;
 			productName = VTK;
@@ -9802,6 +9894,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				71E6C0BC1FBAD34C00FF75B6 /* PBXTargetDependency */,
 				710BAF621FB1A478004909E4 /* PBXTargetDependency */,
 			);
 			name = GDCM;
@@ -9821,6 +9914,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				71E6C0B81FBAD34500FF75B6 /* PBXTargetDependency */,
 			);
 			name = OpenJPEG;
 			productName = VTK;
@@ -9839,6 +9933,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				71E6C0B61FBAD34100FF75B6 /* PBXTargetDependency */,
 			);
 			name = OpenSSL;
 			productName = VTK;
@@ -9972,6 +10067,9 @@
 					710BAEFB1FAB124C004909E4 = {
 						CreatedOnToolsVersion = 9.0;
 					};
+					71E6C0B01FBAD31E00FF75B6 = {
+						CreatedOnToolsVersion = 9.0;
+					};
 					AB0F3A2B1046BD2B004129DD = {
 						DevelopmentTeam = KM2Q4CB65V;
 					};
@@ -10019,6 +10117,7 @@
 				710BAF291FAB2837004909E4 /* CharLS */,
 				710BAF581FB1A418004909E4 /* OpenJPEG */,
 				717C19CB1FB3712E005A5834 /* OpenSSL */,
+				71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */,
 			);
 		};
 /* End PBXProject section */
@@ -10041,7 +10140,9 @@
 				CE902EA3181C034E00CC4B88 /* pages2pages09.applescript in Resources */,
 				596D30B31439B9CD004EE9EC /* word2pdf.applescript in Resources */,
 				CE0C4792183139C400D4C50E /* pages092pdf.applescript in Resources */,
+				71AD67621FC4248100A1E2F8 /* VR Muscles-Bones.plist in Resources */,
 				596D30B21439B9C8004EE9EC /* pages2pdf.applescript in Resources */,
+				71AD674D1FC4248100A1E2F8 /* HotGreen.plist in Resources */,
 				CE289B1D0D00AF91004F0A93 /* Mail.scpt in Resources */,
 				ABBB63A70635874E00D9531F /* dcmdump in Resources */,
 				998B52E41AE0893D00D317CF /* Horos.icns in Resources */,
@@ -10057,8 +10158,11 @@
 				ABBB64BB063587B200D9531F /* dcm.icns in Resources */,
 				ABBB64BF063587B200D9531F /* Logo.tif in Resources */,
 				ABBB64C0063587B200D9531F /* MIP.tif in Resources */,
+				71AD67501FC4248100A1E2F8 /* Hue1.plist in Resources */,
 				ABBB64C2063587B200D9531F /* Movie.pdf in Resources */,
+				71AD67591FC4248100A1E2F8 /* PPU Viridis.plist in Resources */,
 				ABBB64C3063587B200D9531F /* MPR.tif in Resources */,
+				71AD676D1FC4256E00A1E2F8 /* Tiling3x2.pdf in Resources */,
 				ABBB64C4063587B200D9531F /* MPR3D.tif in Resources */,
 				ABBB64C5063587B200D9531F /* Next.tif in Resources */,
 				ABBB64C9063587B200D9531F /* Play.pdf in Resources */,
@@ -10073,6 +10177,7 @@
 				ABBB64D4063587B200D9531F /* Send.pdf in Resources */,
 				ABBB64D5063587B200D9531F /* SRSettings.tif in Resources */,
 				ABBB64D7063587B200D9531F /* Surface.tif in Resources */,
+				71AD67651FC4256E00A1E2F8 /* Tiling1x2.pdf in Resources */,
 				ABBB64D9063587B200D9531F /* Viewer.pdf in Resources */,
 				ABBB64DA063587B200D9531F /* VolumeRendering.tif in Resources */,
 				ABBB64DC063587B200D9531F /* XML.icns in Resources */,
@@ -10097,14 +10202,18 @@
 				BFD4BFFC06F2A96900EC9A90 /* ContrastCursor.tif in Resources */,
 				999B0B671BB711ED00AF018A /* CurvedArrowGrayLeft.png in Resources */,
 				BFD4BFFD06F2A96900EC9A90 /* RotateCursor.tif in Resources */,
+				71AD676A1FC4256E00A1E2F8 /* Tiling2x3.pdf in Resources */,
+				71AD67561FC4248100A1E2F8 /* PPU Inferno.plist in Resources */,
 				BFD4BFFE06F2A96900EC9A90 /* StackCursor.tif in Resources */,
 				BFD4BFFF06F2A96900EC9A90 /* ZoomCursor.tif in Resources */,
 				7E2BE3D10715DB9A0017898A /* route.tif in Resources */,
 				7E2BE3DA0715DBC50017898A /* cd.icns in Resources */,
+				71AD675C1FC4248100A1E2F8 /* Rainbow3.plist in Resources */,
 				7E2BE3E30715DBD40017898A /* GeneralPreferences.tif in Resources */,
 				7E2BE3EC0715DBE80017898A /* AccountPreferences.tif in Resources */,
 				7E2BE3F50715DBFB0017898A /* Network.tif in Resources */,
 				7E2BE3FE0715DC0D0017898A /* StartupDisk.tif in Resources */,
+				71AD675E1FC4248100A1E2F8 /* Spectrum.plist in Resources */,
 				7E2BE4190715E5040017898A /* CD.tif in Resources */,
 				CE99E890073AB4C500725ABC /* Photos.icns in Resources */,
 				71E6C0851FB597FC00FF75B6 /* Decompress in Resources */,
@@ -10139,9 +10248,12 @@
 				CE2028FB094EFFC300C00310 /* Endoscopy.tif in Resources */,
 				CE90D8C4095F5B48004FC7E2 /* FlipData.tif in Resources */,
 				CE286C120964196C001A4573 /* Localizable.strings in Resources */,
+				71AD67611FC4248100A1E2F8 /* VR Bones.plist in Resources */,
 				CE6C77ED09739B3100F951C2 /* Rotate3DCursor.tif in Resources */,
 				CE6C77EE09739B3100F951C2 /* Rotate3DCameraCursor.tif in Resources */,
+				71AD676E1FC4256E00A1E2F8 /* Tiling3x3.pdf in Resources */,
 				CED8BC7C097F93D1002665CE /* SUV.tif in Resources */,
+				71AD67491FC4248100A1E2F8 /* Flow.plist in Resources */,
 				CE5487410989346800CF4C60 /* BrushPalette.tif in Resources */,
 				CE54877A0989363200CF4C60 /* Brush.tif in Resources */,
 				CEDCDD5B099C8AA20026AA4B /* ROIManager.pdf in Resources */,
@@ -10160,6 +10272,7 @@
 				A95B98AD0A6E65C900E476D4 /* QTExportStudiesTemplate.html in Resources */,
 				A9A9F4C10A74C9A9005A1CA7 /* QTExportStyle.css in Resources */,
 				A926BFC90A76577600F1B366 /* QTExportSeriesTemplate.html in Resources */,
+				71AD67691FC4256E00A1E2F8 /* Tiling2x2.pdf in Resources */,
 				B7CDACFB0AB3003300068D70 /* PAGES in Resources */,
 				B7CDAD020AB30E7700068D70 /* page.tif in Resources */,
 				71E6C0861FB597FF00FF75B6 /* DICOMPrint in Resources */,
@@ -10167,6 +10280,7 @@
 				B78DA71C0ACEDA9A005C2C04 /* Shutter.tif in Resources */,
 				A9ADBBD10ADE80E60022DFC7 /* ReportPages.icns in Resources */,
 				A9ADBBD20ADE80E60022DFC7 /* ReportRTF.icns in Resources */,
+				71AD675B1FC4248100A1E2F8 /* Rainbow2.plist in Resources */,
 				A9ADBBD30ADE80E60022DFC7 /* ReportWord.icns in Resources */,
 				ABD559FE0AEE146900108895 /* SagSmall.tif in Resources */,
 				ABD559FF0AEE146900108895 /* CorSmall.tif in Resources */,
@@ -10181,10 +10295,12 @@
 				CEDCFB460B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */,
 				CEBD8E5F0B675A75008FD772 /* Propagate.tif in Resources */,
 				CEBD8EF80B6761CC008FD772 /* PropagateOn.tif in Resources */,
+				71AD674B1FC4248100A1E2F8 /* GEcolor.plist in Resources */,
 				AB10FA680B96C95500D74684 /* OsirixDownload.icns in Resources */,
 				AB3674A90BE0CEB1003634E6 /* HUDButtonFillN.tif in Resources */,
 				AB3674AA0BE0CEB1003634E6 /* HUDButtonFillP.tif in Resources */,
 				AB3674AB0BE0CEB1003634E6 /* HUDButtonLeftN.tif in Resources */,
+				71AD675A1FC4248100A1E2F8 /* Rainbow.plist in Resources */,
 				AB3674AC0BE0CEB1003634E6 /* HUDButtonLeftP.tif in Resources */,
 				AB3674AD0BE0CEB1003634E6 /* HUDButtonRightN.tif in Resources */,
 				AB3674AE0BE0CEB1003634E6 /* HUDButtonRightP.tif in Resources */,
@@ -10202,6 +10318,7 @@
 				AB3674BA0BE0CEB1003634E6 /* HUDSliderKnob.tif in Resources */,
 				AB3674BB0BE0CEB1003634E6 /* HUDSliderKnobRound.tif in Resources */,
 				AB3674BC0BE0CEB1003634E6 /* HUDSliderTrack.tif in Resources */,
+				71AD67571FC4248100A1E2F8 /* PPU Magma.plist in Resources */,
 				999B0B681BB7309200AF018A /* Osirix.icns in Resources */,
 				AB3674BD0BE0CEB1003634E6 /* HUDSliderTrack5Tick.tif in Resources */,
 				AB3674BE0BE0CEB1003634E6 /* HUDSliderTrackFill.tif in Resources */,
@@ -10234,6 +10351,7 @@
 				CE3F994A0C84724B00CB38F1 /* ToolbarPanel.xib in Resources */,
 				CE3F99500C84724B00CB38F1 /* Splash.xib in Resources */,
 				CE3F99510C84724B00CB38F1 /* ROI.xib in Resources */,
+				71AD67541FC4248100A1E2F8 /* NIH.plist in Resources */,
 				CE3F99520C84724B00CB38F1 /* CalciumScoring.xib in Resources */,
 				CE3F99530C84724B00CB38F1 /* ROIManager.xib in Resources */,
 				CE3F99540C84724B00CB38F1 /* Send.xib in Resources */,
@@ -10250,10 +10368,13 @@
 				CE3F99680C84724B00CB38F1 /* BurnViewer.xib in Resources */,
 				CE3F99690C84724B00CB38F1 /* ROIDefaults.xib in Resources */,
 				CEF09317182D23B20020C70A /* ThumbnailsList.xib in Resources */,
+				71AD67661FC4256E00A1E2F8 /* Tiling1x3.pdf in Resources */,
+				71AD67511FC4248100A1E2F8 /* Hue2.plist in Resources */,
 				CE3F996A0C84724B00CB38F1 /* VR.xib in Resources */,
 				CE3F996B0C84724B00CB38F1 /* QuicktimeExport.xib in Resources */,
 				CE3F996C0C84724B00CB38F1 /* SR.xib in Resources */,
 				CE3F996D0C84724B00CB38F1 /* Viewer.xib in Resources */,
+				71AD674C1FC4248100A1E2F8 /* GrayRainbow.plist in Resources */,
 				CE3F996E0C84724B00CB38F1 /* MainMenu.xib in Resources */,
 				CE3F996F0C84724B00CB38F1 /* Wait.xib in Resources */,
 				CE3F99710C84724B00CB38F1 /* XMLViewer.xib in Resources */,
@@ -10262,12 +10383,14 @@
 				A97B73980CB380EF00E5348D /* horosplugin.png in Resources */,
 				CEEB5CCC0CCDD161008803E2 /* Centerline.tif in Resources */,
 				A977ECAD0CD1F7E500C418D8 /* QRpartiallyInDatabase.tif in Resources */,
+				71AD674A1FC4248100A1E2F8 /* French.plist in Resources */,
 				A977ECAE0CD1F7E500C418D8 /* QRalreadyInDatabase.tif in Resources */,
 				ABE0D6940CDB1A4400F0494B /* iChatHelper.xib in Resources */,
 				ABE0D6A20CDB1B9E00F0494B /* browse2OsiriX_small.png in Resources */,
 				ABE0D6A30CDB1B9E00F0494B /* iChatIcon.png in Resources */,
 				841B0B3A18980EFF0007E5C5 /* 3DCutRead.png in Resources */,
 				ABE0D6A40CDB1B9E00F0494B /* iChatTheatre-English.html in Resources */,
+				71AD67641FC4256E00A1E2F8 /* Tiling1x1.pdf in Resources */,
 				ABE0D6A60CDB1B9E00F0494B /* shareFromMenu_small.png in Resources */,
 				ABE0D6A70CDB1B9E00F0494B /* shareFromVideoChatWindow_small.png in Resources */,
 				ABE0D6A80CDB1B9E00F0494B /* style.css in Resources */,
@@ -10282,10 +10405,14 @@
 				CE40ED590D86D634007C6D49 /* 3DPosition.xib in Resources */,
 				CEAE02E00DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */,
 				8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */,
+				71AD67581FC4248100A1E2F8 /* PPU Plasma.plist in Resources */,
 				AB9693C00E823E3A00F09EEA /* ROIsAndKeys.tif in Resources */,
+				71AD675D1FC4248100A1E2F8 /* Ratio.plist in Resources */,
 				8440039A0E8CF99500A00EBD /* dciodvfy in Resources */,
+				71AD675F1FC4248100A1E2F8 /* Stern.plist in Resources */,
 				CE03A3CC0EA2AE0300951EF4 /* iPhone.tif in Resources */,
 				AB932A960EA38DEF0006DF1B /* CobbAngle.tif in Resources */,
+				71AD67601FC4248100A1E2F8 /* UCLA.plist in Resources */,
 				84A220E80F25E41800C6C3EB /* ROIs.tif in Resources */,
 				84A220E90F25E41800C6C3EB /* Keys.tif in Resources */,
 				A9333D3A0F56E9670097DAB7 /* MPR.xib in Resources */,
@@ -10299,6 +10426,7 @@
 				A9D4D06D0F73922500483A3A /* loupeMask.png in Resources */,
 				CE1C4EF20FDA6F4600185561 /* nameDictionary.plist in Resources */,
 				991B8B5C1BB8B279006AF439 /* O2HMigrationAssistant.png in Resources */,
+				71AD67681FC4256E00A1E2F8 /* Tiling2x1.pdf in Resources */,
 				CE1C4EF30FDA6F5300185561 /* tagDictionary.plist in Resources */,
 				CED1FD1B1035E9BB0076AB33 /* SetPixelValue.pdf in Resources */,
 				CED1FD1C1035E9BB0076AB33 /* GrowingRegion.png in Resources */,
@@ -10327,8 +10455,11 @@
 				9966BCB51CEB5BA50086A8D7 /* osirixplugin.icns in Resources */,
 				59FB654F12312D8900EBA136 /* weasis in Resources */,
 				A97569581237D132003F00D3 /* PathAssistant.png in Resources */,
+				71AD67631FC4248100A1E2F8 /* VR Red Vessels.plist in Resources */,
 				59D9471D125333640095680D /* SWFInit.as in Resources */,
 				CE72D7C31263702500874EF6 /* Pause.pdf in Resources */,
+				71AD67481FC4248100A1E2F8 /* BlackBody.plist in Resources */,
+				71AD676B1FC4256E00A1E2F8 /* Tiling2x4.pdf in Resources */,
 				CE8CDAF212B3C88D00268E4F /* DatabaseIcon.tif in Resources */,
 				CE90551812F5B68100263AB6 /* CPR.xib in Resources */,
 				CEB9898E133500D30083F3FD /* OSIWebSharingPreferencePanePref.xib in Resources */,
@@ -10338,11 +10469,14 @@
 				CEB98BB1133507F50083F3FD /* OSIListenerPreferencePanePref.xib in Resources */,
 				CEB98BC3133508040083F3FD /* OSIHotKeysPref.xib in Resources */,
 				CEB98BE9133508180083F3FD /* OSIHangingPreferencePanePref.xib in Resources */,
+				71AD674F1FC4248100A1E2F8 /* HotMetal.plist in Resources */,
 				CEB98C05133508280083F3FD /* OSIGeneralPreferencePanePref.xib in Resources */,
 				CEB98C0F133508350083F3FD /* OSIDatabasePreferencePanePref.xib in Resources */,
 				CEB98C2D1335084F0083F3FD /* AlphaGray.tif in Resources */,
 				CEB98C381335084F0083F3FD /* OSICustomImageAnnotations.xib in Resources */,
 				CEB98C431335084F0083F3FD /* Security.tiff in Resources */,
+				71AD67531FC4248100A1E2F8 /* Jet.plist in Resources */,
+				71AD67521FC4248100A1E2F8 /* ired.plist in Resources */,
 				CEB98C5F1335085D0083F3FD /* OSICDPreferencePanePref.xib in Resources */,
 				CEB98C6B1335086B0083F3FD /* OSIAutoroutingPreferencePanePref.xib in Resources */,
 				CEB98C791335087D0083F3FD /* OSI3DPreferencePanePref.xib in Resources */,
@@ -10366,11 +10500,13 @@
 				A9EFC40A15C6CBD6000D1179 /* Export.pdf in Resources */,
 				A9EFC40D15C6CBE3000D1179 /* Import.pdf in Resources */,
 				A9701A5C15C958020019EE55 /* burn_iris00.tif in Resources */,
+				71AD67551FC4248100A1E2F8 /* Perfusion.plist in Resources */,
 				A9701A5E15C958020019EE55 /* burn_iris01.tif in Resources */,
 				71E6C0801FB5943B00FF75B6 /* O2HMigrationAssistant.xib in Resources */,
 				A9701A6015C958020019EE55 /* burn_iris02.tif in Resources */,
 				A9701A6215C958020019EE55 /* burn_iris03.tif in Resources */,
 				A9701A6415C958020019EE55 /* burn_iris04.tif in Resources */,
+				71AD674E1FC4248100A1E2F8 /* HotIron.plist in Resources */,
 				A9701A6615C958020019EE55 /* burn_iris05.tif in Resources */,
 				A9701A6815C958020019EE55 /* burn_iris06.tif in Resources */,
 				A9701A6A15C958020019EE55 /* burn_iris07.tif in Resources */,
@@ -10413,9 +10549,11 @@
 				A9B23D2515CFE938000E47C3 /* Angle.pdf in Resources */,
 				A9B23D2815CFE948000E47C3 /* DynamicAngle.pdf in Resources */,
 				A9B23D2B15CFE95E000E47C3 /* Text.pdf in Resources */,
+				71AD676C1FC4256E00A1E2F8 /* Tiling3x1.pdf in Resources */,
 				A9B23D2E15CFE972000E47C3 /* Axis.pdf in Resources */,
 				A9B23D3115CFEB36000E47C3 /* Repulsor.pdf in Resources */,
 				A9B23D3415CFECDC000E47C3 /* ROISelector.pdf in Resources */,
+				71AD67671FC4256E00A1E2F8 /* Tiling1x4.pdf in Resources */,
 				A9B23D3715CFFCC4000E47C3 /* Navigator.pdf in Resources */,
 				A9B23D4115D00304000E47C3 /* FlipHorizontal.pdf in Resources */,
 				A9B23D4315D00304000E47C3 /* FlipVertical.pdf in Resources */,
@@ -10450,7 +10588,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "git submodule sync\n\ncd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo FeedbackReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo dciodvfy.zip\nunzip -uo Ming.zip\n\nunzip -uo weasis-portable*.zip -d weasis\nchmod -R 755 weasis\nfind \"$SRCROOT/Binaries/weasis\" -name __MACOSX | xargs rm -Rf\n\ncd \"$SRCROOT/Binaries/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/DICOMPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\nexit 0";
+			shellScript = "# git submodule sync # done in dedicated target\n\ncd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo FeedbackReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo dciodvfy.zip\nunzip -uo Ming.zip\n\nunzip -uo weasis-portable*.zip -d weasis\nchmod -R 755 weasis\nfind \"$SRCROOT/Binaries/weasis\" -name __MACOSX | xargs rm -Rf\n\ncd \"$SRCROOT/Binaries/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/DICOMPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\nexit 0";
 		};
 		59BDEE70117CB3A6007F1F2C /* Zip Horos Launcher into Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10857,6 +10995,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "path=$(cat \"$TARGET_TEMP_DIR/../Horos API.build/Product.path\")\nrsync --exclude=\".DS_Store\" -rtlv \"$path\" \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/\"";
+		};
+		71E6C0B41FBAD32800FF75B6 /* Git Submodule Sync */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Git Submodule Sync";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "git submodule sync";
 		};
 		AB0F3A3F1046BE51004129DD /* Copy Headers and Create Horos.h */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -11334,7 +11486,6 @@
 				ABC47B5A0C031397001CEA21 /* BrowserMatrix.m in Sources */,
 				AB87FA7B0C06BEB200CD2976 /* nifti1_io.c in Sources */,
 				AB87FA7D0C06BEB200CD2976 /* znzlib.c in Sources */,
-				BF30B3A90C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */,
 				ABB230BE0C2F95DD00B38596 /* JPEGExif.m in Sources */,
 				AB64A2DA0C4E0F61000E0981 /* HornRegistration.mm in Sources */,
 				CE51BAF511E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld in Sources */,
@@ -12588,6 +12739,36 @@
 			target = CEDF6C600B46FE99008B45B8 /* DICOMPrint */;
 			targetProxy = 71C99EA21D19A80C00208F3B /* PBXContainerItemProxy */;
 		};
+		71E6C0B61FBAD34100FF75B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */;
+			targetProxy = 71E6C0B51FBAD34100FF75B6 /* PBXContainerItemProxy */;
+		};
+		71E6C0B81FBAD34500FF75B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */;
+			targetProxy = 71E6C0B71FBAD34500FF75B6 /* PBXContainerItemProxy */;
+		};
+		71E6C0BA1FBAD34800FF75B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */;
+			targetProxy = 71E6C0B91FBAD34800FF75B6 /* PBXContainerItemProxy */;
+		};
+		71E6C0BC1FBAD34C00FF75B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */;
+			targetProxy = 71E6C0BB1FBAD34C00FF75B6 /* PBXContainerItemProxy */;
+		};
+		71E6C0BE1FBAD35000FF75B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */;
+			targetProxy = 71E6C0BD1FBAD35000FF75B6 /* PBXContainerItemProxy */;
+		};
+		71E6C0C01FBAD35400FF75B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */;
+			targetProxy = 71E6C0BF1FBAD35400FF75B6 /* PBXContainerItemProxy */;
+		};
 		99FE27FD1CF4A442003C32AB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 4A2F5931078D148300C514A2 /* Unzip Binaries */;
@@ -13499,6 +13680,20 @@
 			};
 			name = Release;
 		};
+		71E6C0B11FBAD31E00FF75B6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = $TARGET_NAME;
+			};
+			name = Debug;
+		};
+		71E6C0B21FBAD31E00FF75B6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = $TARGET_NAME;
+			};
+			name = Release;
+		};
 		7E76BEC1085757B60073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -13791,6 +13986,15 @@
 			buildConfigurations = (
 				717C19D11FB3712E005A5834 /* Debug */,
 				717C19D21FB3712E005A5834 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		71E6C0B31FBAD31E00FF75B6 /* Build configuration list for PBXAggregateTarget "Git Submodule Sync" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				71E6C0B11FBAD31E00FF75B6 /* Debug */,
+				71E6C0B21FBAD31E00FF75B6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
