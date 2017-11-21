@@ -229,8 +229,8 @@ static int my_isinf(double x)
  */
 size_t OFStandard::my_strlcpy(char *dst, const char *src, size_t siz)
 {
-  register char *d = dst;
-  register const char *s = src;
+  char *d = dst;
+  const char *s = src;
   register size_t n = siz;
 
   /* Copy as many bytes as will fit */
@@ -266,8 +266,8 @@ size_t OFStandard::my_strlcpy(char *dst, const char *src, size_t siz)
  */
 size_t OFStandard::my_strlcat(char *dst, const char *src, size_t siz)
 {
-  register char *d = dst;
-  register const char *s = src;
+  char *d = dst;
+  const char *s = src;
   register size_t n = siz;
   size_t dlen;
 
@@ -818,8 +818,8 @@ static const double atof_powersOf10[] =
 double OFStandard::atof(const char *s, OFBool *success)
 {
     if (success) *success = OFFalse;
-    register const char *p = s;
-    register char c;
+    const char *p = s;
+    char c;
     int sign = 0;
     int expSign = 0;
     double fraction;
@@ -1153,7 +1153,7 @@ static char *ftoa_exponent(char *p, int exponent, char fmtch)
     *p++ = '-';
   }
   else *p++ = '+';
-  register char *t = expbuf + FTOA_MAXEXP;
+  char *t = expbuf + FTOA_MAXEXP;
   if (exponent > 9)
   {
     do
@@ -1240,8 +1240,8 @@ static char *ftoa_round(double fract, int *expon, char *start, char *end, char c
  */
 static int ftoa_convert(double val, int prec, int flags, char *signp, char fmtch, char *startp, char *endp)
 {
-  register char *p;
-  register double fract;
+  char *p;
+  double fract;
   int dotrim = 0;
   int expcnt = 0;
   int gformat = 0;
@@ -1250,7 +1250,7 @@ static int ftoa_convert(double val, int prec, int flags, char *signp, char fmtch
   fract = modf(val, &integer);
 
   /* get an extra slot for rounding. */
-  register char *t = ++startp;
+  char *t = ++startp;
 
   /*
    * get integer portion of val; put into the end of the buffer; the
@@ -1438,7 +1438,7 @@ eformat:
       }
   } /* end switch */
 
-  return (t - startp);
+  return (int)(t - startp);
 }
 
 void OFStandard::ftoa(
@@ -1480,7 +1480,7 @@ void OFStandard::ftoa(
   char softsign = 0;  /* temporary negative sign for floats */
   char buf[FTOA_BUFSIZE];      /* space for %c, %[diouxX], %[eEfgG] */
   char sign = '\0';   /* sign prefix (' ', '+', '-', or \0) */
-  register int n;
+  int n;
   unsigned char fmtch = 'G';
   FTOAStringBuffer sb(FTOA_BUFSIZE+1);
 
@@ -1526,7 +1526,7 @@ void OFStandard::ftoa(
   *buf = 0;
   int size = ftoa_convert(val, prec, flags, &softsign, fmtch, buf, buf + sizeof(buf));
   if (softsign) sign = '-';
-  register char *t = *buf ? buf : buf + 1;
+  char *t = *buf ? buf : buf + 1;
 
   /* At this point, `t' points to a string which (if not flags&FTOA_LEFT_ADJUSTMENT)
    * should be padded out to `width' places.  If flags&FTOA_ZEROPAD, it should
@@ -1583,8 +1583,8 @@ OFBool OFStandard::stringMatchesCharacterSet( const char *str, const char *chars
     return OFTrue;
 
   OFBool result = OFTrue;
-  unsigned int lenStr = strlen( str );
-  unsigned int lenCharset = strlen( charset );
+  unsigned int lenStr = (unsigned int)strlen( str );
+  unsigned int lenCharset = (unsigned int)strlen( charset );
   for( unsigned int i=0 ; i<lenStr && result ; i++ )
   {
     OFBool charFound = OFFalse;

@@ -115,7 +115,7 @@ OFBool DcmDataset::canWriteXfer(const E_TransferSyntax newXfer,
     //First : GE private group...
     delete remove( DcmTagKey( 0x0009, 0x1110)); // "GEIIS" The problematic private group, containing a *always* JPEG compressed PixelData
     
-    register E_TransferSyntax originalXfer = Xfer;
+    E_TransferSyntax originalXfer = Xfer;
     if (newXfer == EXS_Unknown)
         return OFFalse;
     if (Xfer == EXS_Unknown)

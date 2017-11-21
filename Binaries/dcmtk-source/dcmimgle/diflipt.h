@@ -156,11 +156,11 @@ class DiFlipTemplate
     {
         if ((src != NULL) && (dest != NULL))
         {
-            register Uint16 x;
-            register Uint16 y;
-            register const T *p;
-            register T *q;
-            register T *r;
+            Uint16 x;
+            Uint16 y;
+            const T *p;
+            T *q;
+            T *r;
             for (int j = 0; j < this->Planes; ++j)
             {
                 p = src[j];
@@ -189,11 +189,11 @@ class DiFlipTemplate
     {
         if ((src != NULL) && (dest != NULL))
         {
-            register Uint16 x;
-            register Uint16 y;
-            register const T *p;
-            register T *q;
-            register T *r;
+            Uint16 x;
+            Uint16 y;
+            const T *p;
+            T *q;
+            T *r;
             const unsigned int count = OFstatic_cast(unsigned int, this->Dest_X) * OFstatic_cast(unsigned int, this->Dest_Y);
             for (int j = 0; j < this->Planes; ++j)
             {
@@ -225,9 +225,9 @@ class DiFlipTemplate
     {
        if ((src != NULL) && (dest != NULL))
        {
-            register unsigned int i;
-            register const T *p;
-            register T *q;
+            unsigned int i;
+            const T *p;
+            T *q;
             const unsigned int count = OFstatic_cast(unsigned int, this->Dest_X) * OFstatic_cast(unsigned int, this->Dest_Y);
             for (int j = 0; j < this->Planes; ++j)
             {
@@ -252,11 +252,11 @@ class DiFlipTemplate
     */
     inline void flipHorz(T *data[])
     {
-        register Uint16 x;
-        register Uint16 y;
-        register T *p;
-        register T *q;
-        register T t;
+        Uint16 x;
+        Uint16 y;
+        T *p;
+        T *q;
+        T t;
         T *r;
         for (int j = 0; j < this->Planes; ++j)
         {
@@ -285,12 +285,12 @@ class DiFlipTemplate
     */
     inline void flipVert(T *data[])
     {
-        register Uint16 x;
-        register Uint16 y;
-        register T *p;
-        register T *q;
-        register T *r;
-        register T t;
+        Uint16 x;
+        Uint16 y;
+        T *p;
+        T *q;
+        T *r;
+        T t;
         T *s;
         const unsigned int count = OFstatic_cast(unsigned int, this->Dest_X) * OFstatic_cast(unsigned int, this->Dest_Y);
         for (int j = 0; j < this->Planes; ++j)
@@ -322,10 +322,10 @@ class DiFlipTemplate
     */
     inline void flipHorzVert(T *data[])
     {
-        register unsigned int i;
-        register T *p;
-        register T *q;
-        register T t;
+        unsigned int i;
+        T *p;
+        T *q;
+        T t;
         T *s;
         const unsigned int count = OFstatic_cast(unsigned int, this->Dest_X) * OFstatic_cast(unsigned int, this->Dest_Y);
         for (int j = 0; j < this->Planes; ++j)

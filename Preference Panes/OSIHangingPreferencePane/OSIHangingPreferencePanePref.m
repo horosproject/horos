@@ -34,7 +34,7 @@
 #import "WindowLayoutManager.h"
 #import "OSIHangingPreferencePanePref.h"
 #import "NSArray+N2.h"
-#import <HorosAPI/NSPreferencePane+OsiriX.h>
+#import "NSPreferencePane+OsiriX.h"
 #import "Notifications.h"
 #import "AppController.h"
 
@@ -238,7 +238,7 @@
 	if( self = [super init])
 	{
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIHangingPreferencePanePref" bundle: nil] autorelease];
-		[nib instantiateNibWithOwner:self topLevelObjects: nil];
+		[nib instantiateWithOwner:self topLevelObjects:&_tlos];
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
@@ -357,7 +357,9 @@
     self.WLnew = nil;
     self.WLWWNewName = nil;
     
-	NSLog(@"dealloc OSIHangingPreferencePanePref");
+    NSLog(@"dealloc OSIHangingPreferencePanePref");
+    
+    [_tlos release]; _tlos = nil;
     
 	[super dealloc];
 }

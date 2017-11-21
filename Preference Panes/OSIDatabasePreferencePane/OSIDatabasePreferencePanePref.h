@@ -59,6 +59,8 @@
 	IBOutlet NSWindow *mainWindow;
     
     BOOL newUsePatientIDForUID, newUsePatientBirthDateForUID, newUsePatientNameForUID;
+    
+    id _tlos;
 }
 
 @property (nonatomic) int currentCommentsAutoFill, currentCommentsField;

@@ -156,9 +156,9 @@ stripWhitespace(char* s)
 {
   if (s)
   {
-    register char c;
-    register char *t;
-    register char *p;
+    char c;
+    char *t;
+    char *p;
     t=p=s;
     while ((c = *t++)) if (!isspace(c)) *p++ = c;
     *p = '\0';
@@ -172,7 +172,7 @@ stripTrailingWhitespace(char* s)
 
     if (s == NULL) return s;
 
-    n = strlen(s);
+    n = (int)strlen(s);
     for (i = n - 1; i >= 0 && isspace(s[i]); i--)
         s[i] = '\0';
     return s;
@@ -183,9 +183,9 @@ stripLeadingWhitespace(char* s)
 {
   if (s)
   {
-    register char c;
-    register char *t=s;
-    register char *p=s;
+    char c;
+    char *t=s;
+    char *p=s;
     while (isspace(*t)) t++;
     while ((c = *t++)) *p++ = c;
     *p = '\0';
@@ -256,9 +256,9 @@ splitFields(const char* line, char* fields[], int maxFields, char splitChar)
         p = strchr(line, splitChar);
 #endif
         if (p == NULL) {
-            len = strlen(line);
+            len = (int)strlen(line);
         } else {
-            len = p - line;
+            len = (int)(p - line);
         }
         fields[foundFields] = OFstatic_cast(char *, malloc(len+1));
         strncpy(fields[foundFields], line, len);
@@ -326,7 +326,7 @@ parseWholeTagField(char* s, DcmTagKey& key,
     char gs[64];
     char es[64];
     char pc[64];
-    int slen = strlen(s);
+    int slen = (int)strlen(s);
 
     if (s[0] != '(') return OFFalse;
     if (s[slen-1] != ')') return OFFalse;
@@ -392,7 +392,7 @@ parseWholeTagField(char* s, DcmTagKey& key,
 static OFBool
 onlyWhitespace(const char* s)
 {
-    int len = strlen(s);
+    int len = (int)strlen(s);
     int charsFound = OFFalse;
 
     for (int i=0; (!charsFound) && (i<len); i++) {
@@ -418,7 +418,7 @@ static OFBool
 isaCommentLine(const char* s)
 {
     OFBool isComment = OFFalse; /* assumption */
-    int len = strlen(s);
+    int len = (int)strlen(s);
     int i = 0;
     for (i=0; i<len && isspace(s[i]); i++) /*loop*/;
     isComment = (s[i] == DCM_DICT_COMMENT_CHAR);
@@ -602,7 +602,7 @@ DcmDataDictionary::loadExternalDictionaries()
     }
 
     if ((env != NULL) && (strlen(env) != 0)) {
-        len = strlen(env);
+        len = (int)strlen(env);
         for (int i=0; i<len; i++) {
             if (env[i] == ENVIRONMENT_PATH_SEPARATOR) {
                 sepCnt++;

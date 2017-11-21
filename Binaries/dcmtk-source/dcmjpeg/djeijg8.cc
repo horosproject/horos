@@ -454,7 +454,7 @@ OFCondition DJCompressIJG8Bit::encode(
   jpeg_finish_compress(&cinfo);
   jpeg_destroy_compress(&cinfo);
 
-  length = bytesInLastBlock;
+  length = (Uint32)bytesInLastBlock;
   if (pixelDataList.size() > 1) length += (pixelDataList.size() - 1)*IJGE8_BLOCKSIZE;
   if (length % 2) length++; // ensure even length    
 

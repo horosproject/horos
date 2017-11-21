@@ -123,7 +123,7 @@ jcopy_sample_rows (JSAMPARRAY input_array, int source_row,
 #else
   register JDIMENSION count;
 #endif
-  register int row;
+  int row;
 
   input_array += source_row;
   output_array += dest_row;
@@ -150,7 +150,7 @@ jcopy_block_row (JBLOCKROW input_row, JBLOCKROW output_row,
   FMEMCOPY(output_row, input_row, num_blocks * (DCTSIZE2 * SIZEOF(JCOEF)));
 #else
   register JCOEFPTR inptr, outptr;
-  register long count;
+  long count;
 
   inptr = (JCOEFPTR) input_row;
   outptr = (JCOEFPTR) output_row;
@@ -169,7 +169,7 @@ jzero_far (void FAR * target, size_t bytestozero)
 #ifdef FMEMZERO
   FMEMZERO(target, bytestozero);
 #else
-  register char FAR * ptr = (char FAR *) target;
+  char FAR * ptr = (char FAR *) target;
   register size_t count;
 
   for (count = bytestozero; count > 0; count--) {

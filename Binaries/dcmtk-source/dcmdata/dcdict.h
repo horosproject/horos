@@ -85,7 +85,7 @@ public:
     int numberOfNormalTagEntries() const { return hashDict.size(); }
 
     /// returns the number of repeating tag entries
-    int numberOfRepeatingTagEntries() const { return repDict.size(); }
+    int numberOfRepeatingTagEntries() const { return (int)repDict.size(); }
 
     /** returns the number of dictionary entries that were loaded
      *  either from file or from a built-in dictionary or both.

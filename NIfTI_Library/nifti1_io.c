@@ -2157,7 +2157,7 @@ void nifti_swap_4bytes( size_t n , void *ar )    /* 4 bytes at a time */
 {
    register size_t ii ;
    unsigned char * cp0 = (unsigned char *)ar, * cp1, * cp2 ;
-   register unsigned char tval ;
+   unsigned char tval ;
 
    for( ii=0 ; ii < n ; ii++ ){
        cp1 = cp0; cp2 = cp0+3;
@@ -2178,7 +2178,7 @@ void nifti_swap_8bytes( size_t n , void *ar )    /* 8 bytes at a time */
 {
    register size_t ii ;
    unsigned char * cp0 = (unsigned char *)ar, * cp1, * cp2 ;
-   register unsigned char tval ;
+   unsigned char tval ;
 
    for( ii=0 ; ii < n ; ii++ ){
        cp1 = cp0;  cp2 = cp0+7;
@@ -2199,7 +2199,7 @@ void nifti_swap_16bytes( size_t n , void *ar )    /* 16 bytes at a time */
 {
    register size_t ii ;
    unsigned char * cp0 = (unsigned char *)ar, * cp1, * cp2 ;
-   register unsigned char tval ;
+   unsigned char tval ;
 
    for( ii=0 ; ii < n ; ii++ ){
        cp1 = cp0;  cp2 = cp0+15;
@@ -2222,7 +2222,7 @@ void nifti_swap_bytes( size_t n , int siz , void *ar )
 {
    register size_t ii ;
    unsigned char * cp0 = (unsigned char *)ar, * cp1, * cp2 ;
-   register unsigned char tval ;
+   unsigned char tval ;
 
    for( ii=0 ; ii < n ; ii++ ){
        cp1 = cp0;  cp2 = cp0+(siz-1);
@@ -2588,7 +2588,7 @@ char * nifti_find_file_extension( const char * name )
    char   exthdr[8] = ".hdr";   /* (leave space for .gz) */
    char   extimg[8] = ".img";
    char   extnia[8] = ".nia";
-   char   extgz[4]  = ".gz";
+//   char   extgz[4]  = ".gz";
    char * elist[4]  = { NULL, NULL, NULL, NULL};
 
    /* stupid compiler... */
@@ -4984,7 +4984,7 @@ size_t nifti_read_buffer(znzFile fp, void* dataptr, size_t ntot,
     
     case NIFTI_TYPE_FLOAT64:
     case NIFTI_TYPE_COMPLEX128:{
-        register double *far = (double *)dataptr ; register size_t jj,nj ;
+        double *far = (double *)dataptr ; register size_t jj,nj ;
         nj = ntot / sizeof(double) ;
         for( jj=0 ; jj < nj ; jj++ )   /* count fixes 30 Nov 2004 [rickr] */
            if( !IS_GOOD_FLOAT(far[jj]) ){

@@ -166,11 +166,12 @@ static NSMatrix *gDateMatrix = nil;
 	if( self = [super init])
 	{
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIPACSOnDemand" bundle: nil] autorelease];
-		[nib instantiateNibWithOwner:self topLevelObjects: nil];
-		
+		[nib instantiateWithOwner:self topLevelObjects:&_tlos];
+        [_tlos retain];
+        
 		[self setMainView: [mainWindow contentView]];
         
-        gDateMatrix = dateMatrix;
+        gDateMatrix = [dateMatrix retain];
         
 		[self mainViewDidLoad];
 	}
@@ -231,6 +232,10 @@ static NSMatrix *gDateMatrix = nil;
     [sourcesArray release];
     [smartAlbumsArray release];
     [albumDBArray release];
+    
+    [gDateMatrix release]; gDateMatrix = nil;
+    
+    [_tlos release]; _tlos = nil;
     
 	[super dealloc];
 }

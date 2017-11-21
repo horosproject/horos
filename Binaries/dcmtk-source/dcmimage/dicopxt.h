@@ -240,11 +240,11 @@ class DiColorPixelTemplate
             const unsigned int start = count * frame + ((upsideDown) ?
                 OFstatic_cast(unsigned int, height - 1) * OFstatic_cast(unsigned int, width) : 0);
             const signed int nextRow = (upsideDown) ? -2 * OFstatic_cast(signed int, width) : 0;
-            register const T *r = Data[0] + start;
-            register const T *g = Data[1] + start;
-            register const T *b = Data[2] + start;
-            register Uint16 x;
-            register Uint16 y;
+            const T *r = Data[0] + start;
+            const T *g = Data[1] + start;
+            const T *b = Data[2] + start;
+            Uint16 x;
+            Uint16 y;
             if (mode == 24)     // 24 bits per pixel
             {
                 const unsigned int wid3 = OFstatic_cast(unsigned int, width) * 3;
@@ -257,7 +257,7 @@ class DiColorPixelTemplate
                         data = new Uint8[fsize];
                     if (data != NULL)
                     {
-                        register Uint8 *q = OFstatic_cast(Uint8 *, data);
+                        Uint8 *q = OFstatic_cast(Uint8 *, data);
                         if (fromBits == toBits)
                         {
                             /* copy pixel data as is */
@@ -339,7 +339,7 @@ class DiColorPixelTemplate
                         data = new Uint32[count];
                     if (data != NULL)
                     {
-                        register Uint32 *q = OFstatic_cast(Uint32 *, data);
+                        Uint32 *q = OFstatic_cast(Uint32 *, data);
                         if (fromBits == toBits)
                         {
                             /* copy pixel data as is */
@@ -439,11 +439,11 @@ class DiColorPixelTemplate
             if (data != NULL)
             {
                 const unsigned int start = count * frame;
-                register const T *r = Data[0] + start;
-                register const T *g = Data[1] + start;
-                register const T *b = Data[2] + start;
-                register Uint32 *q = OFstatic_cast(Uint32 *, data);
-                register unsigned int i;
+                const T *r = Data[0] + start;
+                const T *g = Data[1] + start;
+                const T *b = Data[2] + start;
+                Uint32 *q = OFstatic_cast(Uint32 *, data);
+                unsigned int i;
                 if (fromBits == toBits)
                 {
                     /* copy pixel data as is */

@@ -134,10 +134,10 @@ static const int extend_test[16] =   /* entry n is 2**(n-1) */
     0x0100, 0x0200, 0x0400, 0x0800, 0x1000, 0x2000, 0x4000 };
 
 static const int extend_offset[16] = /* entry n is (-1 << n) + 1 */
-  { 0, ((-1)<<1) + 1, ((-1)<<2) + 1, ((-1)<<3) + 1, ((-1)<<4) + 1,
-    ((-1)<<5) + 1, ((-1)<<6) + 1, ((-1)<<7) + 1, ((-1)<<8) + 1,
-    ((-1)<<9) + 1, ((-1)<<10) + 1, ((-1)<<11) + 1, ((-1)<<12) + 1,
-    ((-1)<<13) + 1, ((-1)<<14) + 1, ((-1)<<15) + 1 };
+{ 0, (0xffffffff<<1) + 1, (0xffffffff<<2) + 1, (0xffffffff<<3) + 1, (0xffffffff<<4) + 1,
+    (0xffffffff<<5) + 1, (0xffffffff<<6) + 1, (0xffffffff<<7) + 1, (0xffffffff<<8) + 1,
+    (0xffffffff<<9) + 1, (0xffffffff<<10) + 1, (0xffffffff<<11) + 1, (0xffffffff<<12) + 1,
+    (0xffffffff<<13) + 1, (0xffffffff<<14) + 1, (0xffffffff<<15) + 1 };
 
 #endif /* AVOID_TABLES */
 
@@ -236,7 +236,7 @@ decode_mcus (j_decompress_ptr cinfo, JDIFFIMAGE diff_buf,
       /* Inner loop handles the samples in the MCU */
       for (sampn = 0; sampn < cinfo->data_units_in_MCU; sampn++) {
 	d_derived_tbl * dctbl = entropy->cur_tbls[sampn];
-	register int s, r;
+	int s, r;
 
 	/* Section H.2.2: decode the sample difference */
 	HUFF_DECODE(s, br_state, dctbl, return mcu_num, label1);

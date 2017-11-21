@@ -61,7 +61,7 @@
 extern short Use_kdu_IfAvailable;
 
 #include "OPJSupport.h"
-#include "../Binaries/openjpeg/openjpeg.h"
+#include <OpenJPEG/openjpeg.h>
 
 #include "options.h"
 
@@ -91,11 +91,11 @@ extern short Use_kdu_IfAvailable;
 //{
 //    printf( "%s", msg);
 //}
-
-static inline int int_ceildivpow2(int a, int b)
-{
-    return (a + (1 << b) - 1) >> b;
-}
+//
+//static inline int int_ceildivpow2(int a, int b)
+//{
+//    return (a + (1 << b) - 1) >> b;
+//}
 
 DJCompressJP2K::DJCompressJP2K(const DJCodecParameter& cp, EJ_Mode mode, Uint8 theQuality, Uint8 theBitsPerSample)
 : DJEncoder()
@@ -400,8 +400,8 @@ OFCondition DJCompressJP2K::encode(
                 break;
         }
         
-        int image_width = columns;
-        int image_height = rows;
+//        int image_width = columns;
+//        int image_height = rows;
         int sample_pixel = samplesPerPixel;
         
         if (colorSpace != EPI_Monochrome1 &&
@@ -424,7 +424,7 @@ OFCondition DJCompressJP2K::encode(
                                          false, // sign
                                          rate,
                                          &compressedLength);
-        length = compressedLength;
+        length = (Uint32)compressedLength;
     }
     
     return EC_Normal;

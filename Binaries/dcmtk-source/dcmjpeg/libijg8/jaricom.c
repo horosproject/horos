@@ -12,4 +12,7 @@
 #include "jinclude8.h"
 #include "jpeglib8.h"
 
+#pragma clang diaagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
 static  IJG_INT32 jaritab[1];	/* dummy table */
+#pragma clang diaagnostic pop

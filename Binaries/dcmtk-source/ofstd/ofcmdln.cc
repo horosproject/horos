@@ -927,7 +927,7 @@ void OFCommandLine::storeParameter(const OFString &param,
 {
     ArgumentList.push_back(param);
     const OFListIterator(OFListIterator_OFString) iter = (OptionPosList.size() == 0) ? OptionPosList.end() : --OptionPosList.end();
-    OFCmdParamPos *paramPos = new OFCmdParamPos(--ArgumentList.end(), iter, OptionPosList.size(), directOpt);
+    OFCmdParamPos *paramPos = new OFCmdParamPos(--ArgumentList.end(), iter, (int)OptionPosList.size(), directOpt);
     if (paramPos != NULL)
         ParamPosList.push_back(paramPos);
 }
@@ -1104,7 +1104,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
                 }
             }
         }
-        i = argList.size();
+        i = (int)argList.size();
         OFListIterator(OFString) argIter = argList.begin();
         const OFListIterator(OFString) argEnd = argList.end();
         /* iterate over all command line arguments */
@@ -1214,9 +1214,9 @@ void OFCommandLine::getOptionString(OFString &optionStr) const
                 while ((i != last) && ((*i)->LongOption.length() > 0))
                 {
                     if ((*i)->ShortOption.length() > shortSize)
-                        shortSize = (*i)->ShortOption.length();
+                        shortSize = (unsigned int)(*i)->ShortOption.length();
                     if ((*i)->LongOption.length() > longSize)
-                        longSize = (*i)->LongOption.length();
+                        longSize = (unsigned int)(*i)->LongOption.length();
                     i++;
                 }
                 newGrp = 0;
@@ -1283,7 +1283,7 @@ void OFCommandLine::getParamString(OFString &paramStr) const
         while ((iter != last) && ((*iter)->ParamDescription.length() > 0))
         {
             if ((*iter)->ParamName.length() > columnSize)           // determine maximum column width
-                columnSize = (*iter)->ParamName.length();
+                columnSize = (unsigned int)(*iter)->ParamName.length();
             ++iter;
         }
         iter = ValidParamList.begin();                              // reset iterator
