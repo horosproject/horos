@@ -1182,7 +1182,7 @@ static SyncSeriesScope globalSyncSeriesScope;
     }
     else if ([itemIdent isEqualToString: SyncSeriesToolbarItemIdentifier])
     {
-        [OrthogonalMPRViewer initSyncSeriesToolbarItem:self : toolbarItem];
+        [OrthogonalMPRViewer initSyncSeriesToolbarItem:self :(id)toolbarItem];
     }
     else
         toolbarItem = nil;
@@ -2463,14 +2463,14 @@ static SyncSeriesScope globalSyncSeriesScope;
 
 #pragma mark-
 
-+ (void) initSyncSeriesToolbarItem:(id)viewer :(NSToolbarItem*) toolbarItem
++ (void)initSyncSeriesToolbarItem:(id)viewer :(KBPopUpToolbarItem*)toolbarItem
 {
-    if(![toolbarItem  isMemberOfClass:[KBPopUpToolbarItem class]]){
+    if(![toolbarItem isMemberOfClass:[KBPopUpToolbarItem class]]){
         NSLog(@"WARN - initSyncSeriesToolbarItem cannot be initialized");
         return;
     }
     
-    [viewer setSyncSeriesToolbarItem:(KBPopUpToolbarItem*) toolbarItem];
+    [viewer setSyncSeriesToolbarItem:toolbarItem];
     
     [toolbarItem setTarget: viewer];
     [toolbarItem setAction: @selector(syncSeriesAction:)];
@@ -2479,36 +2479,34 @@ static SyncSeriesScope globalSyncSeriesScope;
     [toolbarItem setLabel: NSLocalizedString(@"Sync", nil)];
     [toolbarItem setPaletteLabel: NSLocalizedString(@"Sync", nil)];
     
-    KBPopUpToolbarItem* popupToolbarItem = (KBPopUpToolbarItem*)toolbarItem;
-    
-    popupToolbarItem.menu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
+    toolbarItem.menu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
     NSMenuItem* menuItem;
     
-    menuItem = [popupToolbarItem.menu addItemWithTitle:NSLocalizedString(@"All", nil) action:@selector(syncSeriesScopeAction:) keyEquivalent:@""];
+    menuItem = [toolbarItem.menu addItemWithTitle:NSLocalizedString(@"All", nil) action:@selector(syncSeriesScopeAction:) keyEquivalent:@""];
     menuItem.target = viewer;
     menuItem.tag=SyncSeriesScopeAllSeries;
-    menuItem = [popupToolbarItem.menu addItemWithTitle:NSLocalizedString(@"Same Patient", nil) action:@selector(syncSeriesScopeAction:) keyEquivalent:@""];
+    menuItem = [toolbarItem.menu addItemWithTitle:NSLocalizedString(@"Same Patient", nil) action:@selector(syncSeriesScopeAction:) keyEquivalent:@""];
     menuItem.target = viewer;
     menuItem.tag=SyncSeriesScopeSamePatient;
-    menuItem = [popupToolbarItem.menu addItemWithTitle:NSLocalizedString(@"Same Study", nil) action:@selector(syncSeriesScopeAction:) keyEquivalent:@"" ];
+    menuItem = [toolbarItem.menu addItemWithTitle:NSLocalizedString(@"Same Study", nil) action:@selector(syncSeriesScopeAction:) keyEquivalent:@"" ];
     menuItem.target = viewer;
     menuItem.tag=SyncSeriesScopeSameStudy;
     
-    [[popupToolbarItem menu] addItem:[NSMenuItem separatorItem]];
+    [toolbarItem.menu addItem:[NSMenuItem separatorItem]];
     
-    menuItem = [popupToolbarItem.menu addItemWithTitle:NSLocalizedString(@"Force absolute positioning", nil) action:@selector(syncSeriesBehaviorAction:) keyEquivalent:@""];
+    menuItem = [toolbarItem.menu addItemWithTitle:NSLocalizedString(@"Force absolute positioning", nil) action:@selector(syncSeriesBehaviorAction:) keyEquivalent:@""];
     menuItem.target = viewer;
     menuItem.tag=SyncSeriesBehaviorAbsolutePos;
-    menuItem = [popupToolbarItem.menu addItemWithTitle:NSLocalizedString(@"Force relative positioning", nil) action:@selector(syncSeriesBehaviorAction:) keyEquivalent:@""];
+    menuItem = [toolbarItem.menu addItemWithTitle:NSLocalizedString(@"Force relative positioning", nil) action:@selector(syncSeriesBehaviorAction:) keyEquivalent:@""];
     menuItem.target = viewer;
     menuItem.tag=SyncSeriesBehaviorRelativePos;
-    menuItem = [popupToolbarItem.menu addItemWithTitle:NSLocalizedString(@"Absolute positioning for same study", nil) action:@selector(syncSeriesBehaviorAction:) keyEquivalent:@""];
+    menuItem = [toolbarItem.menu addItemWithTitle:NSLocalizedString(@"Absolute positioning for same study", nil) action:@selector(syncSeriesBehaviorAction:) keyEquivalent:@""];
     menuItem.target = viewer;
     menuItem.tag=SyncSeriesBehaviorAbsolutePosWithSameStudy;
     
-    [[popupToolbarItem menu] addItem:[NSMenuItem separatorItem]];
+    [toolbarItem.menu addItem:[NSMenuItem separatorItem]];
     
-    menuItem = [[popupToolbarItem menu] addItemWithTitle:NSLocalizedString(@"No synchronization for this window", nil) action:@selector(syncSeriesStateAction:) keyEquivalent:@""];
+    menuItem = [toolbarItem.menu addItemWithTitle:NSLocalizedString(@"No synchronization for this window", nil) action:@selector(syncSeriesStateAction:) keyEquivalent:@""];
     menuItem.target = viewer;
     menuItem.tag=SyncSeriesStateOff;
     
