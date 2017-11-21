@@ -435,7 +435,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         }
         else
         {
-            if (isLoading == NO)
+            //if (isLoading == NO)
                 imagePtr = [vrView imageInFullDepthWidth: &w height: &h isRGB: &isRGB];
         }
         
