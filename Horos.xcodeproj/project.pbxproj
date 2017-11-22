@@ -3088,6 +3088,13 @@
 			remoteGlobalIDString = CEDF6C600B46FE99008B45B8;
 			remoteInfo = DICOMPrint;
 		};
+		71E6A23D1FC5ED720099B327 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4A2F5931078D148300C514A2;
+			remoteInfo = "Unzip Binaries";
+		};
 		71E6C0B51FBAD34100FF75B6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -10041,6 +10048,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				71E6A23E1FC5ED720099B327 /* PBXTargetDependency */,
 			);
 			name = DICOMPrint;
 			productName = SafeDBRebuild;
@@ -12648,6 +12656,11 @@
 			isa = PBXTargetDependency;
 			target = CEDF6C600B46FE99008B45B8 /* DICOMPrint */;
 			targetProxy = 71C99EA21D19A80C00208F3B /* PBXContainerItemProxy */;
+		};
+		71E6A23E1FC5ED720099B327 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4A2F5931078D148300C514A2 /* Unzip Binaries */;
+			targetProxy = 71E6A23D1FC5ED720099B327 /* PBXContainerItemProxy */;
 		};
 		71E6C0B61FBAD34100FF75B6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
