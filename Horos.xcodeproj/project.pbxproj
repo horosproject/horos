@@ -10616,7 +10616,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/Clean.sh\"";
+			shellScript = "sh ./Scripts/Horos/Clean-Frameworks.sh";
 		};
 		710BAF0F1FAB158F004909E4 /* Submodule */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -11021,8 +11021,8 @@
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /usr/bin/perl;
-			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen Horos_h, \">\", \"$destination/Horos.h\" or die $!;\n\nprint Horos_h \"#ifndef __Horos_API\\n#define __Horos_API\\n\\n\";\n\n\n# TODO TODO TODO\n# -------------------------------------------------------------------------------------------------- #\n\n# \"$ENV{PROJECT_DIR}/cocoahttpserver\",\n# \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/config\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmsr\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmdata\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/ofstd\", \"$ENV{PROJECT_DIR}/Binaries/dcmtk-source/dcmnet,\n\n# -------------------------------------------------------------------------------------------------- #\n\n\nmy @fromdirs = ( \"$ENV{PROJECT_DIR}/nitrogen/Sources\", \"$ENV{PROJECT_DIR}/nitrogen/Sources/JSON\", $ENV{PROJECT_DIR} );\n\nforeach my $root (@fromdirs) {\n    opendir(DIR, $root);\n    \n    my @files = readdir(DIR);\n    foreach (@files) {\n        my $filename = $_;\n        next unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n        my @args = ( \"cp\", \"-fp\", \"$root/$filename\", \"$destination/\".(basename $filename) );\n        system(@args) == 0 or die \"Copy failed: $?\";\n        print Horos_h \"#include <Horos/$filename>\\n\";\n    }\n    \n    closedir(DIR);\n}\n\nprint Horos_h \"\\n#endif\\n\";\nclose Horos_h;\n\n\n\n\nmy @fromdirs = ( );\n\nforeach my $root (@fromdirs) {\n    my @args = ( \"cp\", \"-Rfp\", \"$root\", \"$destination/\" );\n    system(@args) == 0 or die \"Copy failed: $?\";\n}\n\n\n\n\nchdir \"$ENV{TARGET_BUILD_DIR}/$ENV{FULL_PRODUCT_NAME}\";\nsymlink \"Versions/Current/Headers\", \"Headers\";\n\nexit 0;\n";
+			shellPath = /bin/sh;
+			shellScript = "./Scripts/Horos/API-Headers.pl";
 		};
 		ABF307FB1443330100BBC96A /* Copy odt2pdf script */ = {
 			isa = PBXShellScriptBuildPhase;
