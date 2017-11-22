@@ -18,15 +18,15 @@
 			name = "Unzip Binaries";
 			productName = "Unzip Binaries";
 		};
-		71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */ = {
+		71E6C0B01FBAD31E00FF75B6 /* Submodules */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = 71E6C0B31FBAD31E00FF75B6 /* Build configuration list for PBXAggregateTarget "Git Submodule Sync" */;
+			buildConfigurationList = 71E6C0B31FBAD31E00FF75B6 /* Build configuration list for PBXAggregateTarget "Submodules" */;
 			buildPhases = (
-				71E6C0B41FBAD32800FF75B6 /* Git Submodule Sync */,
+				71E6C0B41FBAD32800FF75B6 /* Submodules */,
 			);
 			dependencies = (
 			);
-			name = "Git Submodule Sync";
+			name = Submodules;
 			productName = "Git Submodule Sync";
 		};
 		BF7486A50CC6AA5C00198387 /* Documentation */ = {
@@ -9829,7 +9829,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 710BAF071FAB124D004909E4 /* Build configuration list for PBXNativeTarget "VTK" */;
 			buildPhases = (
-				710BAF0F1FAB158F004909E4 /* Submodule */,
 				710BAF101FAB15D3004909E4 /* CMake */,
 				710BAF111FAB15E8004909E4 /* Xcodebuild */,
 				710BAF121FAB160E004909E4 /* Framework */,
@@ -9848,7 +9847,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 710BAF191FAB176C004909E4 /* Build configuration list for PBXNativeTarget "ITK" */;
 			buildPhases = (
-				710BAF151FAB176C004909E4 /* Submodule */,
 				710BAF161FAB176C004909E4 /* CMake */,
 				710BAF171FAB176C004909E4 /* Xcodebuild */,
 				710BAF181FAB176C004909E4 /* Framework */,
@@ -9867,7 +9865,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 710BAF2E1FAB2837004909E4 /* Build configuration list for PBXNativeTarget "CharLS" */;
 			buildPhases = (
-				710BAF2A1FAB2837004909E4 /* Submodule */,
 				710BAF2B1FAB2837004909E4 /* CMake */,
 				710BAF2C1FAB2837004909E4 /* Make */,
 				710BAF2D1FAB2837004909E4 /* Framework */,
@@ -9886,7 +9883,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 710BAF3E1FAB7F10004909E4 /* Build configuration list for PBXNativeTarget "GDCM" */;
 			buildPhases = (
-				710BAF3A1FAB7F10004909E4 /* Submodule */,
 				710BAF3B1FAB7F10004909E4 /* CMake */,
 				710BAF3C1FAB7F10004909E4 /* Make */,
 				710BAF3D1FAB7F10004909E4 /* Framework */,
@@ -9906,7 +9902,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 710BAF5D1FB1A418004909E4 /* Build configuration list for PBXNativeTarget "OpenJPEG" */;
 			buildPhases = (
-				710BAF591FB1A418004909E4 /* Submodule */,
 				710BAF5A1FB1A418004909E4 /* CMake */,
 				710BAF5B1FB1A418004909E4 /* Make */,
 				710BAF5C1FB1A418004909E4 /* Framework */,
@@ -9925,7 +9920,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 717C19D01FB3712E005A5834 /* Build configuration list for PBXNativeTarget "OpenSSL" */;
 			buildPhases = (
-				717C19CC1FB3712E005A5834 /* Submodule */,
 				717C19CD1FB3712E005A5834 /* Config */,
 				717C19CE1FB3712E005A5834 /* Make */,
 				717C19CF1FB3712E005A5834 /* Framework */,
@@ -10117,7 +10111,7 @@
 				710BAF291FAB2837004909E4 /* CharLS */,
 				710BAF581FB1A418004909E4 /* OpenJPEG */,
 				717C19CB1FB3712E005A5834 /* OpenSSL */,
-				71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */,
+				71E6C0B01FBAD31E00FF75B6 /* Submodules */,
 			);
 		};
 /* End PBXProject section */
@@ -10618,20 +10612,6 @@
 			shellPath = /bin/sh;
 			shellScript = "sh ./Scripts/Horos/Clean-Frameworks.sh";
 		};
-		710BAF0F1FAB158F004909E4 /* Submodule */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = Submodule;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/1-Submodule.sh\"";
-		};
 		710BAF101FAB15D3004909E4 /* CMake */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -10644,7 +10624,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/2-CMake.sh\"";
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/CMake.sh\"";
 		};
 		710BAF111FAB15E8004909E4 /* Xcodebuild */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10658,7 +10638,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/3-Xcodebuild.sh\"";
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Xcodebuild.sh\"";
 		};
 		710BAF121FAB160E004909E4 /* Framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10672,21 +10652,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/4-Framework.sh\"";
-		};
-		710BAF151FAB176C004909E4 /* Submodule */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = Submodule;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/1-Submodule.sh\"";
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Framework.sh\"";
 		};
 		710BAF161FAB176C004909E4 /* CMake */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10700,7 +10666,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/2-CMake.sh\"";
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/CMake.sh\"";
 		};
 		710BAF171FAB176C004909E4 /* Xcodebuild */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10714,7 +10680,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/3-Xcodebuild.sh\"";
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Xcodebuild.sh\"";
 		};
 		710BAF181FAB176C004909E4 /* Framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10728,21 +10694,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/4-Framework.sh\"";
-		};
-		710BAF2A1FAB2837004909E4 /* Submodule */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = Submodule;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/1-Submodule.sh\"";
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Framework.sh\"";
 		};
 		710BAF2B1FAB2837004909E4 /* CMake */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10756,7 +10708,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/2-CMake.sh\"";
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/CMake.sh\"";
 		};
 		710BAF2C1FAB2837004909E4 /* Make */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10770,7 +10722,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/3-Make.sh\"";
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Make.sh\"";
 		};
 		710BAF2D1FAB2837004909E4 /* Framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10784,21 +10736,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/4-Framework.sh\"";
-		};
-		710BAF3A1FAB7F10004909E4 /* Submodule */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = Submodule;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/1-Submodule.sh\"";
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Framework.sh\"";
 		};
 		710BAF3B1FAB7F10004909E4 /* CMake */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10812,7 +10750,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/2-CMake.sh\"";
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/CMake.sh\"";
 		};
 		710BAF3C1FAB7F10004909E4 /* Make */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10826,7 +10764,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/3-Make.sh\"";
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Make.sh\"";
 		};
 		710BAF3D1FAB7F10004909E4 /* Framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10840,21 +10778,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/4-Framework.sh\"";
-		};
-		710BAF591FB1A418004909E4 /* Submodule */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = Submodule;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/1-Submodule.sh\"";
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Framework.sh\"";
 		};
 		710BAF5A1FB1A418004909E4 /* CMake */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10868,7 +10792,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/2-CMake.sh\"";
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/CMake.sh\"";
 		};
 		710BAF5B1FB1A418004909E4 /* Make */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10882,7 +10806,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/3-Make.sh\"";
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Make.sh\"";
 		};
 		710BAF5C1FB1A418004909E4 /* Framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10896,7 +10820,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/4-Framework.sh\"";
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Framework.sh\"";
 		};
 		710BAF711FB33751004909E4 /* Store Product Path */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10912,20 +10836,6 @@
 			shellPath = /bin/sh;
 			shellScript = "echo \"$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME\" > \"$TARGET_TEMP_DIR/Product.path\"";
 		};
-		717C19CC1FB3712E005A5834 /* Submodule */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = Submodule;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/1-Submodule.sh\"";
-		};
 		717C19CD1FB3712E005A5834 /* Config */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -10938,7 +10848,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/2-Config.sh\"";
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Config.sh\"";
 		};
 		717C19CE1FB3712E005A5834 /* Make */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10952,7 +10862,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/3-Make.sh\"";
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Make.sh\"";
 		};
 		717C19CF1FB3712E005A5834 /* Framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10966,7 +10876,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/4-Framework.sh\"";
+			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Framework.sh\"";
 		};
 		7183153F161065BE0098576F /* Replace Weasis ext-config.properties */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10996,19 +10906,19 @@
 			shellPath = /bin/sh;
 			shellScript = "path=$(cat \"$TARGET_TEMP_DIR/../Horos API.build/Product.path\")\nrsync --exclude=\".DS_Store\" -rtlv \"$path\" \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/\"";
 		};
-		71E6C0B41FBAD32800FF75B6 /* Git Submodule Sync */ = {
+		71E6C0B41FBAD32800FF75B6 /* Submodules */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Git Submodule Sync";
+			name = Submodules;
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "git submodule sync --recursive";
+			shellScript = "git submodule sync --recursive\ngit submodule update --init --recursive";
 		};
 		AB0F3A3F1046BE51004129DD /* Copy Headers and Create Horos.h */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -12741,32 +12651,32 @@
 		};
 		71E6C0B61FBAD34100FF75B6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
 			targetProxy = 71E6C0B51FBAD34100FF75B6 /* PBXContainerItemProxy */;
 		};
 		71E6C0B81FBAD34500FF75B6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
 			targetProxy = 71E6C0B71FBAD34500FF75B6 /* PBXContainerItemProxy */;
 		};
 		71E6C0BA1FBAD34800FF75B6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
 			targetProxy = 71E6C0B91FBAD34800FF75B6 /* PBXContainerItemProxy */;
 		};
 		71E6C0BC1FBAD34C00FF75B6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
 			targetProxy = 71E6C0BB1FBAD34C00FF75B6 /* PBXContainerItemProxy */;
 		};
 		71E6C0BE1FBAD35000FF75B6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
 			targetProxy = 71E6C0BD1FBAD35000FF75B6 /* PBXContainerItemProxy */;
 		};
 		71E6C0C01FBAD35400FF75B6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 71E6C0B01FBAD31E00FF75B6 /* Git Submodule Sync */;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
 			targetProxy = 71E6C0BF1FBAD35400FF75B6 /* PBXContainerItemProxy */;
 		};
 		99FE27FD1CF4A442003C32AB /* PBXTargetDependency */ = {
@@ -13990,7 +13900,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		71E6C0B31FBAD31E00FF75B6 /* Build configuration list for PBXAggregateTarget "Git Submodule Sync" */ = {
+		71E6C0B31FBAD31E00FF75B6 /* Build configuration list for PBXAggregateTarget "Submodules" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				71E6C0B11FBAD31E00FF75B6 /* Debug */,
