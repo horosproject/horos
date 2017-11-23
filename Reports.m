@@ -894,7 +894,7 @@ static int Pages5orHigher = -1;
         NSLog( @"-- Try to convert to Pages 09: %@", templateName);
         */
         
-        NSString* path = [[NSBundle mainBundle] pathForResource:@"OsiriX Report.pages09" ofType:@"pages"];
+        NSString* path = [[NSBundle mainBundle] pathForResource:@"Horos Report.pages09" ofType:@"pages"];
         if( [[NSFileManager defaultManager] fileExistsAtPath:path] == YES)
         {
             [[NSFileManager defaultManager] copyItemAtPath:path toPath:[templatePath stringByAppendingString: @"09.pages"] byReplacingExisting:YES error: nil];
