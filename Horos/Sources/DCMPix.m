@@ -10543,7 +10543,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     else [result appendFormat: @" / %@", [field stringValue]];
                 }
             }
-            else if([field isKindOfClass:[NSCalendarDate class]])
+            else if([field isKindOfClass:[NSDate class]])
             {
                 NSString *vr = [attr vr];
                 if([vr isEqualToString:@"DA"])
@@ -10592,7 +10592,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     // image sides (LowerLeft, LowerMiddle, LowerRight, MiddleLeft, MiddleRight, TopLeft, TopMiddle, TopRight) & sameAsDefault
     NSArray *keys = [annotationsForModality allKeys];
     
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [imageObj.managedObjectContext lock];
+#pragma clang diagnostic pop
     
     for( NSString *key in keys)
     {
@@ -10663,7 +10666,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             }
         }
     }
+    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [imageObj.managedObjectContext unlock];
+#pragma clang diagnostic pop
+
 #endif
 }
 

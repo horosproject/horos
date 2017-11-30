@@ -303,7 +303,7 @@
 		59EBFDDC12BA5A1B00809C61 /* WebPortal+Email+Log.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */; };
 		59EBFDDD12BA5A1B00809C61 /* WebPortal+Email+Log.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */; };
 		59EBFEA412BB500C00809C61 /* BrowserController.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFEA212BB500C00809C61 /* BrowserController.h */; };
-		59F1A4C8104BA5BE009E3215 /* HorosHeaders.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F1A4C7104BA5BE009E3215 /* HorosHeaders.mm */; };
+		59F1A4C8104BA5BE009E3215 /* HorosAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 59F1A4C7104BA5BE009E3215 /* HorosAPI.m */; };
 		59F5F3F911F476030047A90D /* N2ImageButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F3F711F476030047A90D /* N2ImageButtonCell.h */; };
 		59F5F3FA11F476030047A90D /* N2ImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F3F811F476030047A90D /* N2ImageButtonCell.mm */; };
 		59F5F4EC11F485CC0047A90D /* BrowserController+Activity.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F4EA11F485CC0047A90D /* BrowserController+Activity.h */; };
@@ -323,6 +323,10 @@
 		710BAF6B1FB1D40B004909E4 /* OpenJPEG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 710BAF601FB1A418004909E4 /* OpenJPEG.framework */; };
 		710BAF6F1FB322A4004909E4 /* OpenJPEG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 710BAF601FB1A418004909E4 /* OpenJPEG.framework */; };
 		710BAF701FB322B9004909E4 /* OpenJPEG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 710BAF601FB1A418004909E4 /* OpenJPEG.framework */; };
+		710EF1F31FD00E29000B555B /* Horos.h in Headers */ = {isa = PBXBuildFile; fileRef = 710EF1F11FD00E28000B555B /* Horos.h */; };
+		710EF1F41FD00E29000B555B /* Horos.m in Sources */ = {isa = PBXBuildFile; fileRef = 710EF1F21FD00E29000B555B /* Horos.m */; };
+		710EF1F61FD025BC000B555B /* Horos.m in Sources */ = {isa = PBXBuildFile; fileRef = 710EF1F21FD00E29000B555B /* Horos.m */; };
+		710EF1F71FD03F64000B555B /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */; };
 		711849771590A377006AB447 /* SMTPClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 711849751590A377006AB447 /* SMTPClient.h */; };
 		711849781590A377006AB447 /* SMTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 711849761590A377006AB447 /* SMTPClient.m */; };
 		7128FD771487D54A00AB54A1 /* N2UnclickableSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7128FD751487D54A00AB54A1 /* N2UnclickableSplitView.h */; };
@@ -3426,7 +3430,7 @@
 		59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WebPortal+Email+Log.h"; sourceTree = "<group>"; };
 		59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "WebPortal+Email+Log.mm"; sourceTree = "<group>"; };
 		59EBFEA212BB500C00809C61 /* BrowserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserController.h; sourceTree = "<group>"; };
-		59F1A4C7104BA5BE009E3215 /* HorosHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = HorosHeaders.mm; sourceTree = "<group>"; };
+		59F1A4C7104BA5BE009E3215 /* HorosAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HorosAPI.m; sourceTree = "<group>"; };
 		59F5F3F711F476030047A90D /* N2ImageButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2ImageButtonCell.h; sourceTree = "<group>"; };
 		59F5F3F811F476030047A90D /* N2ImageButtonCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = N2ImageButtonCell.mm; sourceTree = "<group>"; };
 		59F5F4EA11F485CC0047A90D /* BrowserController+Activity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BrowserController+Activity.h"; sourceTree = "<group>"; };
@@ -3443,6 +3447,8 @@
 		710BAF311FAB2837004909E4 /* CharLS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CharLS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		710BAF411FAB7F10004909E4 /* GDCM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GDCM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		710BAF601FB1A418004909E4 /* OpenJPEG.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OpenJPEG.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		710EF1F11FD00E28000B555B /* Horos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Horos.h; sourceTree = "<group>"; };
+		710EF1F21FD00E29000B555B /* Horos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Horos.m; sourceTree = "<group>"; };
 		711849751590A377006AB447 /* SMTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTPClient.h; sourceTree = "<group>"; };
 		711849761590A377006AB447 /* SMTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTPClient.m; sourceTree = "<group>"; };
 		7128FD751487D54A00AB54A1 /* N2UnclickableSplitView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2UnclickableSplitView.h; sourceTree = "<group>"; };
@@ -3467,7 +3473,6 @@
 		7154B80E14ED5402000EF7E4 /* N2Stuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2Stuff.h; sourceTree = "<group>"; };
 		716DBDBB173920AF00BDB1E4 /* ViewerController+CPP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ViewerController+CPP.h"; sourceTree = "<group>"; };
 		716DBDBC173920AF00BDB1E4 /* ViewerController+CPP.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "ViewerController+CPP.mm"; sourceTree = "<group>"; };
-		716DFAB81DE5A9F700440401 /* OsiriXDCMFrameworkHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXDCMFrameworkHeaders.mm; sourceTree = "<group>"; };
 		717C19D31FB3712E005A5834 /* OpenSSL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OpenSSL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7183153D1610651E0098576F /* weasis-ext-config.properties */ = {isa = PBXFileReference; lastKnownFileType = text; path = "weasis-ext-config.properties"; sourceTree = "<group>"; };
 		718416061654022400180467 /* DownArrowGreyRev.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = DownArrowGreyRev.pdf; sourceTree = "<group>"; };
@@ -3567,7 +3572,7 @@
 		7E0B3A1C067526A600908593 /* DCMValueRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMValueRepresentation.h; sourceTree = "<group>"; };
 		7E0B3A1D067526A600908593 /* DCMValueRepresentation.m */ = {isa = PBXFileReference; fileEncoding = 30; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = DCMValueRepresentation.m; sourceTree = "<group>"; };
 		7E0B3A21067526A600908593 /* version.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = version.plist; sourceTree = "<group>"; };
-		7E0B3A40067526CD00908593 /* DCM-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "DCM-Info.plist"; path = "DCM Framework/DCM-Info.plist"; sourceTree = SOURCE_ROOT; };
+		7E0B3A40067526CD00908593 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "DCM Framework/Info.plist"; sourceTree = SOURCE_ROOT; };
 		7E172F540933CAE00057BCE8 /* DCMObjectDBImport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMObjectDBImport.h; sourceTree = "<group>"; };
 		7E172F550933CAE00057BCE8 /* DCMObjectDBImport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMObjectDBImport.m; sourceTree = "<group>"; };
 		7E172F620933D5FF0057BCE8 /* DCMObjectPixelDataImport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMObjectPixelDataImport.h; sourceTree = "<group>"; };
@@ -3691,7 +3696,6 @@
 		99529DF71E0DA8E70045981E /* OsiriX Report.pages09.pages */ = {isa = PBXFileReference; lastKnownFileType = file; name = "OsiriX Report.pages09.pages"; path = "../../Binaries/OsiriX Report.pages09.pages"; sourceTree = "<group>"; };
 		9953FE4E1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vtkHorosFixedPointVolumeRayCastMIPHelper.cxx; sourceTree = "<group>"; };
 		9953FE4F1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkHorosFixedPointVolumeRayCastMIPHelper.h; sourceTree = "<group>"; };
-		9966A19E1AE09B6F00F2D81A /* OsiriXHeaders.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OsiriXHeaders.mm; sourceTree = "<group>"; };
 		9966A1A01AE09D3F00F2D81A /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		9966A1A21AE09D4800F2D81A /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		9966A1A41AE09D5100F2D81A /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -5681,18 +5685,13 @@
 			isa = PBXGroup;
 			children = (
 				71C99EA41D1A7E9F00208F3B /* Info.plist */,
-				719D3F1A1FB461CA004CFB27 /* Sources */,
-				324AD88708B23B0500101139 /* Models */,
-				719D3F261FB46892004CFB27 /* Resources */,
-				71BC461B1F272CA400FD6CCF /* Scripts */,
+				710EF1F51FD014E8000B555B /* Horos */,
 				AB10FA9611293361009EB238 /* Nitrogen */,
-				7E0B3A08067525FD00908593 /* DCM */,
 				AB724F1C0ADE6CFC00A212A0 /* Decompress */,
 				CEDF6E1E0B46FF46008B45B8 /* DICOMPrint */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				4A2F58D9078D119600C514A2 /* Dependencies */,
-				A98795CA16DB9FD100926023 /* Unit Tests */,
+				7E0B3A08067525FD00908593 /* DCM */,
 			);
 			name = OsiriX;
 			sourceTree = "<group>";
@@ -5700,11 +5699,11 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				710EF1F11FD00E28000B555B /* Horos.h */,
+				710EF1F21FD00E29000B555B /* Horos.m */,
 				4307C62B1A2091900083877C /* url.h */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
-				59F1A4C7104BA5BE009E3215 /* HorosHeaders.mm */,
-				9966A19E1AE09B6F00F2D81A /* OsiriXHeaders.mm */,
-				716DFAB81DE5A9F700440401 /* OsiriXDCMFrameworkHeaders.mm */,
+				59F1A4C7104BA5BE009E3215 /* HorosAPI.m */,
 				32E422140C97301600E193CA /* altivecFunctions.h */,
 				434B46151A19F2A3008CF8CF /* options.h */,
 			);
@@ -5731,8 +5730,7 @@
 				CE51BAF411E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld */,
 				59526F301281ACA90016F6C0 /* WebPortalDB.xcdatamodeld */,
 			);
-			name = Models;
-			path = Horos/Models;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		434B461A1A19F4E4008CF8CF /* OpenJPEG */ = {
@@ -5742,13 +5740,6 @@
 				434B461C1A19F631008CF8CF /* OPJSupport.h */,
 			);
 			name = OpenJPEG;
-			sourceTree = "<group>";
-		};
-		4A2F58D9078D119600C514A2 /* Dependencies */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Dependencies;
 			sourceTree = "<group>";
 		};
 		4F832D2213FA5E9E00511070 /* PluginSDK */ = {
@@ -6028,6 +6019,18 @@
 			name = Ming;
 			sourceTree = "<group>";
 		};
+		710EF1F51FD014E8000B555B /* Horos */ = {
+			isa = PBXGroup;
+			children = (
+				71BC461B1F272CA400FD6CCF /* Scripts */,
+				719D3F1A1FB461CA004CFB27 /* Sources */,
+				719D3F261FB46892004CFB27 /* Resources */,
+				324AD88708B23B0500101139 /* Models */,
+				A98795CA16DB9FD100926023 /* Unit Tests */,
+			);
+			path = Horos;
+			sourceTree = "<group>";
+		};
 		719D3F1A1FB461CA004CFB27 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
@@ -6065,8 +6068,7 @@
 				A9F2E5E609224ED600055899 /* DarkPanel.m */,
 				ABAA285A058A675600F0601D /* Utilities */,
 			);
-			name = Sources;
-			path = Horos/Sources;
+			path = Sources;
 			sourceTree = "<group>";
 		};
 		719D3F261FB46892004CFB27 /* Resources */ = {
@@ -6155,8 +6157,7 @@
 				998B52E11AE0890300D317CF /* Horos.sdef */,
 				B7CDAC730AB3003200068D70 /* PAGES */,
 			);
-			name = Resources;
-			path = Horos/Resources;
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		71AA5A201611F1EB006A6A5F /* JSON */ = {
@@ -6297,7 +6298,7 @@
 				BFDDE5BF091717F80033317B /* DCMEncapsulatedPDF.h */,
 				BFDDE5C0091717F80033317B /* DCMEncapsulatedPDF.m */,
 				7E0B3A21067526A600908593 /* version.plist */,
-				7E0B3A40067526CD00908593 /* DCM-Info.plist */,
+				7E0B3A40067526CD00908593 /* Info.plist */,
 				BFEB763B0677FDA700F242F3 /* nameDictionary.plist */,
 				BFEB763C0677FDA700F242F3 /* tagDictionary.plist */,
 			);
@@ -9278,6 +9279,7 @@
 				BFBF415009B6828D00545F5E /* dcmqropt.h in Headers */,
 				BFBF415409B6828D00545F5E /* dcmqrsrv.h in Headers */,
 				BFBF415809B6828D00545F5E /* dcsignat.h in Headers */,
+				710EF1F31FD00E29000B555B /* Horos.h in Headers */,
 				BFBF415909B6828D00545F5E /* sialgo.h in Headers */,
 				BFBF415B09B6828D00545F5E /* siautopr.h in Headers */,
 				BFBF415D09B6828D00545F5E /* sibrsapr.h in Headers */,
@@ -10618,7 +10620,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh ./Scripts/Horos/Clean-Frameworks.sh";
+			shellScript = "sh \"Horos/Scripts/Horos/Clean-Frameworks.sh\"";
 		};
 		710BAF101FAB15D3004909E4 /* CMake */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10632,7 +10634,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/CMake.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/CMake.sh\"";
 		};
 		710BAF111FAB15E8004909E4 /* Xcodebuild */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10646,7 +10648,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Xcodebuild.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Xcodebuild.sh\"";
 		};
 		710BAF121FAB160E004909E4 /* Framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10660,7 +10662,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Framework.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Framework.sh\"";
 		};
 		710BAF161FAB176C004909E4 /* CMake */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10674,7 +10676,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/CMake.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/CMake.sh\"";
 		};
 		710BAF171FAB176C004909E4 /* Xcodebuild */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10688,7 +10690,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Xcodebuild.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Xcodebuild.sh\"";
 		};
 		710BAF181FAB176C004909E4 /* Framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10702,7 +10704,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Framework.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Framework.sh\"";
 		};
 		710BAF2B1FAB2837004909E4 /* CMake */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10716,7 +10718,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/CMake.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/CMake.sh\"";
 		};
 		710BAF2C1FAB2837004909E4 /* Make */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10730,7 +10732,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Make.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Make.sh\"";
 		};
 		710BAF2D1FAB2837004909E4 /* Framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10744,7 +10746,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Framework.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Framework.sh\"";
 		};
 		710BAF3B1FAB7F10004909E4 /* CMake */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10758,7 +10760,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/CMake.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/CMake.sh\"";
 		};
 		710BAF3C1FAB7F10004909E4 /* Make */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10772,7 +10774,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Make.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Make.sh\"";
 		};
 		710BAF3D1FAB7F10004909E4 /* Framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10786,7 +10788,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Framework.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Framework.sh\"";
 		};
 		710BAF5A1FB1A418004909E4 /* CMake */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10800,7 +10802,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/CMake.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/CMake.sh\"";
 		};
 		710BAF5B1FB1A418004909E4 /* Make */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10814,7 +10816,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Make.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Make.sh\"";
 		};
 		710BAF5C1FB1A418004909E4 /* Framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10828,7 +10830,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Framework.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Framework.sh\"";
 		};
 		710BAF711FB33751004909E4 /* Store Product Path */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10856,7 +10858,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Config.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Config.sh\"";
 		};
 		717C19CE1FB3712E005A5834 /* Make */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10870,7 +10872,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Make.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Make.sh\"";
 		};
 		717C19CF1FB3712E005A5834 /* Framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10884,7 +10886,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"$PROJECT_DIR/Scripts/$TARGET_NAME/Framework.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Framework.sh\"";
 		};
 		7183153F161065BE0098576F /* Replace Weasis ext-config.properties */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10940,7 +10942,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "./Scripts/Horos/API-Headers.pl";
+			shellScript = "./Horos/Scripts/Horos/API-Headers.pl";
 		};
 		ABF307FB1443330100BBC96A /* Copy odt2pdf script */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -11242,7 +11244,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				59F1A4C8104BA5BE009E3215 /* HorosHeaders.mm in Sources */,
+				59F1A4C8104BA5BE009E3215 /* HorosAPI.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11847,6 +11849,7 @@
 				BFBF41C909B6828D00545F5E /* dsrtncsr.cc in Sources */,
 				BFBF41CB09B6828D00545F5E /* dsrtree.cc in Sources */,
 				BFBF41CD09B6828D00545F5E /* dsrtypes.cc in Sources */,
+				710EF1F41FD00E29000B555B /* Horos.m in Sources */,
 				BFBF41CF09B6828D00545F5E /* dsruidtn.cc in Sources */,
 				BFBF41D109B6828D00545F5E /* dsrwavch.cc in Sources */,
 				BFBF41D309B6828D00545F5E /* dsrwavtn.cc in Sources */,
@@ -12269,6 +12272,7 @@
 				AB724FA40ADE6ECB00A212A0 /* ofstd.cc in Sources */,
 				AB724FA50ADE6ECB00A212A0 /* ofstring.cc in Sources */,
 				AB724FA60ADE6ECB00A212A0 /* ofthread.cc in Sources */,
+				710EF1F71FD03F64000B555B /* DCMAbstractSyntaxUID.m in Sources */,
 				AB724FAA0ADE6ECB00A212A0 /* jaricom.c in Sources */,
 				AB724FAB0ADE6ECB00A212A0 /* jcapimin.c in Sources */,
 				AB724FAC0ADE6ECB00A212A0 /* jcapistd.c in Sources */,
@@ -12328,6 +12332,7 @@
 				AB724FE20ADE6ECB00A212A0 /* jidctfst.c in Sources */,
 				AB724FE30ADE6ECB00A212A0 /* jidctint.c in Sources */,
 				AB724FE40ADE6ECB00A212A0 /* jidctred.c in Sources */,
+				710EF1F61FD025BC000B555B /* Horos.m in Sources */,
 				AB724FE50ADE6ECB00A212A0 /* jmemmgr.c in Sources */,
 				AB724FE60ADE6ECB00A212A0 /* jmemnobs.c in Sources */,
 				AB724FE70ADE6ECB00A212A0 /* jquant1.c in Sources */,
@@ -13240,11 +13245,13 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_FAST_MATH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = s;
@@ -13252,7 +13259,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = NO;
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				IBC_FLATTEN_NIBS = NO;
+				IBC_FLATTEN_NIBS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = (
 					"-fvisibility=hidden",
@@ -13260,38 +13267,24 @@
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
 		43E98D1A1A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_WARN_EMPTY_BODY = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries,
 				);
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_FAST_MATH = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Horos/Horos_Prefix.pch;
+				GCC_PREFIX_HEADER = Horos/prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
-				GCC_WARN_SHADOW = NO;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				IBC_FLATTEN_NIBS = YES;
 				INFOPLIST_FILE = Horos/Info.plist;
-				INSTALL_PATH = /Applications;
 				KEEP_PRIVATE_EXTERNS = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				OTHER_LDFLAGS = (
@@ -13299,11 +13292,11 @@
 					"-sectcreate",
 					__TEXT,
 					__info_plist,
-					Info.plist,
+					Horos/Info.plist,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.horos;
 				PRODUCT_NAME = Horos;
-				STRIP_STYLE = debugging;
+				SKIP_INSTALL = NO;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
 			};
 			name = Release;
@@ -13311,20 +13304,10 @@
 		43E98D1C1A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = YES;
-				DEAD_CODE_STRIPPING = YES;
-				FRAMEWORK_VERSION = A;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DCM Framework/DCM Framework_Prefix.pch";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				OTHER_CFLAGS = "";
+				GCC_PREFIX_HEADER = "DCM Framework/prefix.pch";
+				INFOPLIST_FILE = "DCM Framework/Info.plist";
+				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-seg1addr",
@@ -13332,50 +13315,19 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.dcmframework;
 				PRODUCT_NAME = HorosDCM;
-				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
-				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
 		43E98D1D1A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				GCC_ALTIVEC_EXTENSIONS = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_CPU = "";
-				GCC_MODEL_PPC64 = NO;
-				GCC_MODEL_TUNING = "";
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_SHADOW = NO;
-				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				OTHER_CFLAGS = (
-					"-falign-functions=32",
-					"-falign-labels=32",
-					"-falign-loops=32",
-					"-falign-jumps=32",
-				);
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = "Unzip Binaries";
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
 			};
 			name = Release;
 		};
 		43E98D201A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				PRODUCT_NAME = Documentation;
 			};
 			name = Release;
@@ -13383,25 +13335,14 @@
 		43E98D211A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
-				COPY_PHASE_STRIP = YES;
-				DEPLOYMENT_LOCATION = NO;
 				FRAMEWORK_SEARCH_PATHS = Binaries;
-				GCC_FAST_MATH = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Decompress/Decompress_Prefix.pch;
-				GCC_UNROLL_LOOPS = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_PREFIX_HEADER = Decompress/prefix.pch;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries/Ming,
 				);
 				PRODUCT_NAME = Decompress;
-				SKIP_INSTALL = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
-				SYMROOT = build;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
 			};
 			name = Release;
@@ -13410,30 +13351,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
-				COPY_PHASE_STRIP = NO;
-				DEPLOYMENT_LOCATION = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					DICOMPrint,
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					DICOMPrint,
-				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
+				LIBRARY_SEARCH_PATHS = DICOMPrint;
 				PRODUCT_NAME = DICOMPrint;
-				SKIP_INSTALL = YES;
-				SYMROOT = build;
+				USER_HEADER_SEARCH_PATHS = DICOMPrint;
 				VALID_ARCHS = i386;
 			};
 			name = Release;
@@ -13441,165 +13361,91 @@
 		43E98D231A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_VERSION = A;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
 				PRODUCT_NAME = Horos;
-				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
 		710BAF051FAB124D004909E4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.vtk;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
 		710BAF061FAB124D004909E4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.vtk;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
 		710BAF1A1FAB176C004909E4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.itk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
 		710BAF1B1FAB176C004909E4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.itk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
 		710BAF2F1FAB2837004909E4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(inherited)",
-					"-w",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.charls;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
 		710BAF301FAB2837004909E4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(inherited)",
-					"-w",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.charls;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
 		710BAF3F1FAB7F10004909E4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(inherited)",
-					"-w",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.gdcm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
 		710BAF401FAB7F10004909E4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(inherited)",
-					"-w",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.gdcm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
 		710BAF5E1FB1A418004909E4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(inherited)",
-					"-w",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.openjpeg;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
 		710BAF5F1FB1A418004909E4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(inherited)",
-					"-w",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.openjpeg;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
 		717C19D11FB3712E005A5834 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(inherited)",
-					"-w",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.openssl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
 		717C19D21FB3712E005A5834 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(inherited)",
-					"-w",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.openssl;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -13620,19 +13466,10 @@
 		7E76BEC1085757B60073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_VERSION = A;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DCM Framework/DCM Framework_Prefix.pch";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				OTHER_CFLAGS = "";
+				GCC_PREFIX_HEADER = "DCM Framework/prefix.pch";
+				INFOPLIST_FILE = "DCM Framework/Info.plist";
+				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-seg1addr",
@@ -13640,36 +13477,21 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.dcmframework;
 				PRODUCT_NAME = HorosDCM;
-				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
-				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
 		7E76BEC7085757B70073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_WARN_EMPTY_BODY = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries,
 				);
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Horos/Horos_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = "";
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_PREFIX_HEADER = Horos/prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
-				GCC_WARN_SHADOW = NO;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				IBC_FLATTEN_NIBS = NO;
 				INFOPLIST_FILE = Horos/Info.plist;
-				INSTALL_PATH = /Applications;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -13680,6 +13502,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.horos;
 				PRODUCT_NAME = Horos;
+				SKIP_INSTALL = NO;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
 			};
 			name = Debug;
@@ -13687,32 +13510,7 @@
 		7E76BED0085757B70073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				GCC_ALTIVEC_EXTENSIONS = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_MODEL_CPU = "";
-				GCC_MODEL_PPC64 = NO;
-				GCC_MODEL_TUNING = "";
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_SHADOW = NO;
-				GCC_WARN_UNINITIALIZED_AUTOS = NO;
-				OTHER_CFLAGS = (
-					"-falign-functions=32",
-					"-falign-labels=32",
-					"-falign-loops=32",
-					"-falign-jumps=32",
-				);
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = "Unzip Binaries";
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
 			};
 			name = Debug;
 		};
@@ -13732,6 +13530,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -13739,7 +13538,7 @@
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -13760,54 +13559,28 @@
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = "-Wno-deprecated";
 				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
 		AB0F3A2E1046BD2D004129DD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_VERSION = A;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
 				PRODUCT_NAME = Horos;
-				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
 		AB724FF40ADE6ECB00A212A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
-				COPY_PHASE_STRIP = YES;
-				DEPLOYMENT_LOCATION = NO;
 				FRAMEWORK_SEARCH_PATHS = Binaries;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Decompress/Decompress_Prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_PREFIX_HEADER = Decompress/prefix.pch;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries/Ming,
 				);
 				PRODUCT_NAME = Decompress;
-				SKIP_INSTALL = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
-				SYMROOT = build;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
 			};
 			name = Debug;
@@ -13815,10 +13588,6 @@
 		BF7486A60CC6AA5D00198387 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				PRODUCT_NAME = Documentation;
 			};
 			name = Debug;
@@ -13827,31 +13596,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
-				COPY_PHASE_STRIP = NO;
-				DEPLOYMENT_LOCATION = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					DICOMPrint,
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					DICOMPrint,
-				);
+				LIBRARY_SEARCH_PATHS = DICOMPrint;
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
 				PRODUCT_NAME = DICOMPrint;
-				SKIP_INSTALL = YES;
-				SYMROOT = build;
+				USER_HEADER_SEARCH_PATHS = DICOMPrint;
 				VALID_ARCHS = i386;
 			};
 			name = Debug;

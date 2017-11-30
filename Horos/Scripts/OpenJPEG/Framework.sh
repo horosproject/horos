@@ -2,14 +2,16 @@
 
 set -e; set -o xtrace
 
+path="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )/$(basename "${BASH_SOURCE[0]}")"
+
+source_dir="$PROJECT_DIR/$TARGET_NAME"
 cmake_dir="$TARGET_TEMP_DIR/CMake"
-install_dir="$TARGET_TEMP_DIR/Install"
-libs_dir="$install_dir/lib"
+libs_dir="$cmake_dir"
 framework_path="$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME"
 
 cd "$libs_dir"
 
-hash="$(find -s . -type f -name '*.a' -exec md5 -q {} \; | md5)-$(md5 -q "$0")"
+hash="$(find -s . -type f -name '*.a' -exec md5 -q {} \; | md5)-$(md5 -q "$path")"
 [ -d "$framework_path" -a -f "$cmake_dir/.frameworkhash" ] && [ "$(cat "$cmake_dir/.frameworkhash")" == "$hash" ] && exit 0
 
 rm -Rf "$framework_path"
@@ -30,7 +32,8 @@ ln -s Versions/Current/Headers Headers
 
 cd Headers
 
-find "$install_dir/include" \( -name '*.h*' -o -name '*.t*' \) -exec sh -c 'p="${0#*$install_dir/include/}"; cp -an "{}" "$(basename $p)"' {} \;
+find "$source_dir/src" \( -name '*.h*' -o -name '*.t*' \) -exec sh -c 'p="${0#*$source_dir/Source/}"; cp -an "{}" "$(basename $p)"' {} \;
+find "$cmake_dir/src" \( -name '*.h*' -o -name '*.t*' \) -exec sh -c 'p="${0#*$source_dir/Source/}"; cp -an "{}" "$(basename $p)"' {} \;
 
 find . \( -name '*.htm*' -o -name '*.in' -o -name '*.txt' \) -delete
 
