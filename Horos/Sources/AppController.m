@@ -737,8 +737,7 @@ void exceptionHandler(NSException *exception)
 	[[AppController sharedAppController] performSelectorOnMainThread: @selector(pause) withObject: nil waitUntilDone: NO];
 }
 
--(void)applicationDidChangeScreenParameters:(NSNotification*)aNotification
-{
+- (void)applicationDidChangeScreenParameters:(NSNotification *)aNotification {
     [self updateScreenParameters];
 }
 
@@ -751,10 +750,9 @@ void exceptionHandler(NSException *exception)
     if ([screenParameters isEqual:previousScreenParameters])
         return;
     
-    if (previousScreenParameters) {
-        [[AppController sharedAppController] closeAllViewers:self];
-        [AppController resetThumbnailsList];
-    }
+    [[AppController sharedAppController] closeAllViewers:self];
+
+    [AppController resetThumbnailsList];
     
     [previousScreenParameters release];
     previousScreenParameters = [screenParameters retain];
@@ -2801,8 +2799,6 @@ static BOOL firstCall = YES;
         #ifndef OSIRIX_LIGHT
         [VRView testGraphicBoard];
         #endif
-        
-        [self updateScreenParameters];
     }
     @catch (NSException * e)
     {
@@ -4046,7 +4042,7 @@ static BOOL initialized = NO;
 	
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidChangeScreenParameters:) name:NSApplicationDidChangeScreenParametersNotification object:NSApp];
     
-    [AppController resetThumbnailsList];
+    [self updateScreenParameters];
 	
 //	if( USETOOLBARPANEL) [[toolbarPanel window] makeKeyAndOrderFront:self];
 	
