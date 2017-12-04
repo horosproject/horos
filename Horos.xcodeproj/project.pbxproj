@@ -348,7 +348,7 @@
 		71512E99152349E500B87012 /* DiscMountedAskTheUserDialog.xib in Resources */ = {isa = PBXBuildFile; fileRef = 71512E97152349E500B87012 /* DiscMountedAskTheUserDialog.xib */; };
 		71512E9D15234F6B00B87012 /* DiscMountedAskTheUserDialogController.h in Headers */ = {isa = PBXBuildFile; fileRef = 71512E9B15234F6B00B87012 /* DiscMountedAskTheUserDialogController.h */; };
 		71512E9E15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 71512E9C15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m */; };
-		7152C52F1D1D7BFF005526D8 /* HorosDCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */; };
+		7152C52F1D1D7BFF005526D8 /* DCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* DCM.framework */; };
 		7154B80F14ED5402000EF7E4 /* N2Stuff.h in Headers */ = {isa = PBXBuildFile; fileRef = 7154B80E14ED5402000EF7E4 /* N2Stuff.h */; };
 		716DBDBD173920AF00BDB1E4 /* ViewerController+CPP.h in Headers */ = {isa = PBXBuildFile; fileRef = 716DBDBB173920AF00BDB1E4 /* ViewerController+CPP.h */; };
 		716DBDBF173920AF00BDB1E4 /* ViewerController+CPP.mm in Sources */ = {isa = PBXBuildFile; fileRef = 716DBDBC173920AF00BDB1E4 /* ViewerController+CPP.mm */; };
@@ -591,8 +591,8 @@
 		9966A1AC1AE09DB300F2D81A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A21AE09D4800F2D81A /* AVFoundation.framework */; };
 		9966A1AD1AE09DD000F2D81A /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A41AE09D5100F2D81A /* CoreMedia.framework */; };
 		9966A1AE1AE09DE200F2D81A /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1AA1AE09D7C00F2D81A /* Quartz.framework */; };
-		9966A1B51AE0B6EE00F2D81A /* HorosDCM.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		9966A2E71AE0C55600F2D81A /* HorosDCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */; };
+		9966A1B51AE0B6EE00F2D81A /* DCM.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* DCM.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9966A2E71AE0C55600F2D81A /* DCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* DCM.framework */; };
 		9966BCB51CEB5BA50086A8D7 /* osirixplugin.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9966BCB41CEB5BA50086A8D7 /* osirixplugin.icns */; };
 		998309111BB62D4100CAB197 /* JRSwizzle.h in Headers */ = {isa = PBXBuildFile; fileRef = 9983090F1BB62D4100CAB197 /* JRSwizzle.h */; };
 		998309121BB62D4100CAB197 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 998309101BB62D4100CAB197 /* JRSwizzle.m */; };
@@ -3159,7 +3159,7 @@
 			files = (
 				71E6C0AF1FB5B0BF00FF75B6 /* 3DconnexionClient.framework in Copy Frameworks */,
 				993DB4A11C0244430084218A /* FeedbackReporter.framework in Copy Frameworks */,
-				9966A1B51AE0B6EE00F2D81A /* HorosDCM.framework in Copy Frameworks */,
+				9966A1B51AE0B6EE00F2D81A /* DCM.framework in Copy Frameworks */,
 				71C99EA71D1A871700208F3B /* Growl.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
@@ -3649,7 +3649,7 @@
 		84281FFD13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2OpenGLViewWithSplitsWindow.h; sourceTree = "<group>"; };
 		843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AYDicomPrintPref.h; path = "Preference Panes/AYDicomPrintPreferencePane/AYDicomPrintPref.h"; sourceTree = SOURCE_ROOT; };
 		844003990E8CF99500A00EBD /* dciodvfy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dciodvfy; path = ../../Binaries/dciodvfy; sourceTree = "<group>"; };
-		844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HorosDCM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		844719AF0FD8EF50003BFDF8 /* DCM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DCM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		848327AA15ED08F3003BAEEB /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = en.lproj/CustomIntervalPanel.xib; sourceTree = "<group>"; };
 		8483ABA50E1BE33900C21B31 /* crossCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = crossCursor.tif; path = Cursors/crossCursor.tif; sourceTree = "<group>"; };
 		848CE28E145AC9AE00BEB249 /* curvedPath.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = curvedPath.icns; sourceTree = "<group>"; };
@@ -5553,7 +5553,7 @@
 				841524C5113D6BDB008250E6 /* QuartzCore.framework in Frameworks */,
 				717C19D61FB44D61005A5834 /* OpenSSL.framework in Frameworks */,
 				439B8C141A19CCC300F396D7 /* 3DconnexionClient.framework in Frameworks */,
-				9966A2E71AE0C55600F2D81A /* HorosDCM.framework in Frameworks */,
+				9966A2E71AE0C55600F2D81A /* DCM.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5577,7 +5577,7 @@
 				59FB643A1230EE4100EBA136 /* libgifOsiriX.a in Frameworks */,
 				59FB643B1230EE4100EBA136 /* libmingOsiriX.a in Frameworks */,
 				59FB643C1230EE4100EBA136 /* libpng12OsiriX.a in Frameworks */,
-				7152C52F1D1D7BFF005526D8 /* HorosDCM.framework in Frameworks */,
+				7152C52F1D1D7BFF005526D8 /* DCM.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5669,7 +5669,7 @@
 				ABA71D3F06726B1800335A62 /* Horos.app */,
 				AB724FF60ADE6ECB00A212A0 /* Decompress */,
 				CEDF6DD00B46FE99008B45B8 /* DICOMPrint */,
-				844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */,
+				844719AF0FD8EF50003BFDF8 /* DCM.framework */,
 				AB0F3A2C1046BD2B004129DD /* Horos.framework */,
 				710BAEFC1FAB124C004909E4 /* VTK.framework */,
 				710BAF1C1FAB176C004909E4 /* ITK.framework */,
@@ -9943,9 +9943,9 @@
 			productReference = 717C19D31FB3712E005A5834 /* OpenSSL.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		7E0B3A3E067526CD00908593 /* Horos DCM */ = {
+		7E0B3A3E067526CD00908593 /* DCM */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7E76BEC0085757B60073649A /* Build configuration list for PBXNativeTarget "Horos DCM" */;
+			buildConfigurationList = 7E76BEC0085757B60073649A /* Build configuration list for PBXNativeTarget "DCM" */;
 			buildPhases = (
 				7E0B3A3A067526CD00908593 /* Headers */,
 				7E0B3A3B067526CD00908593 /* Resources */,
@@ -9960,14 +9960,14 @@
 				710BAF221FAB17E8004909E4 /* PBXTargetDependency */,
 				710BAF371FAB28EF004909E4 /* PBXTargetDependency */,
 			);
-			name = "Horos DCM";
+			name = DCM;
 			productName = DCM;
-			productReference = 844719AF0FD8EF50003BFDF8 /* HorosDCM.framework */;
+			productReference = 844719AF0FD8EF50003BFDF8 /* DCM.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		AB0F3A2B1046BD2B004129DD /* Horos API */ = {
+		AB0F3A2B1046BD2B004129DD /* API */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AB0F3A321046BD2D004129DD /* Build configuration list for PBXNativeTarget "Horos API" */;
+			buildConfigurationList = AB0F3A321046BD2D004129DD /* Build configuration list for PBXNativeTarget "API" */;
 			buildPhases = (
 				CEC4468110664C300061B338 /* Headers */,
 				AB0F3A291046BD2B004129DD /* Sources */,
@@ -9980,7 +9980,7 @@
 			);
 			dependencies = (
 			);
-			name = "Horos API";
+			name = API;
 			productName = "OsiriXHeaders Framework";
 			productReference = AB0F3A2C1046BD2B004129DD /* Horos.framework */;
 			productType = "com.apple.product-type.framework";
@@ -10109,8 +10109,8 @@
 			projectRoot = "";
 			targets = (
 				AB28B42E05B7921E00A9906C /* Horos */,
-				AB0F3A2B1046BD2B004129DD /* Horos API */,
-				7E0B3A3E067526CD00908593 /* Horos DCM */,
+				7E0B3A3E067526CD00908593 /* DCM */,
+				AB0F3A2B1046BD2B004129DD /* API */,
 				AB724F300ADE6ECB00A212A0 /* Decompress */,
 				CEDF6C600B46FE99008B45B8 /* DICOMPrint */,
 				4A2F5931078D148300C514A2 /* Unzip Binaries */,
@@ -12634,7 +12634,7 @@
 		};
 		710BAF6E1FB2438E004909E4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 7E0B3A3E067526CD00908593 /* Horos DCM */;
+			target = 7E0B3A3E067526CD00908593 /* DCM */;
 			targetProxy = 710BAF6D1FB2438E004909E4 /* PBXContainerItemProxy */;
 		};
 		717C19D51FB372DD005A5834 /* PBXTargetDependency */ = {
@@ -12644,12 +12644,12 @@
 		};
 		71C99E991D19A7FB00208F3B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = AB0F3A2B1046BD2B004129DD /* Horos API */;
+			target = AB0F3A2B1046BD2B004129DD /* API */;
 			targetProxy = 71C99E981D19A7FB00208F3B /* PBXContainerItemProxy */;
 		};
 		71C99E9B1D19A7FD00208F3B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 7E0B3A3E067526CD00908593 /* Horos DCM */;
+			target = 7E0B3A3E067526CD00908593 /* DCM */;
 			targetProxy = 71C99E9A1D19A7FD00208F3B /* PBXContainerItemProxy */;
 		};
 		71C99EA11D19A80A00208F3B /* PBXTargetDependency */ = {
@@ -13255,6 +13255,8 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = NO;
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
@@ -13282,8 +13284,6 @@
 				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Horos/prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				INFOPLIST_FILE = Horos/Info.plist;
 				KEEP_PRIVATE_EXTERNS = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -13313,8 +13313,8 @@
 					"-seg1addr",
 					0x20000000,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.dcmframework;
-				PRODUCT_NAME = HorosDCM;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.dcm;
+				PRODUCT_NAME = DCM;
 			};
 			name = Release;
 		};
@@ -13475,8 +13475,8 @@
 					"-seg1addr",
 					0x20000000,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.dcmframework;
-				PRODUCT_NAME = HorosDCM;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.dcm;
+				PRODUCT_NAME = DCM;
 			};
 			name = Debug;
 		};
@@ -13489,8 +13489,6 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Horos/prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
-				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				INFOPLIST_FILE = Horos/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				OTHER_LDFLAGS = (
@@ -13541,7 +13539,8 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
@@ -13670,7 +13669,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7E76BEC0085757B60073649A /* Build configuration list for PBXNativeTarget "Horos DCM" */ = {
+		7E76BEC0085757B60073649A /* Build configuration list for PBXNativeTarget "DCM" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7E76BEC1085757B60073649A /* Debug */,
@@ -13706,7 +13705,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AB0F3A321046BD2D004129DD /* Build configuration list for PBXNativeTarget "Horos API" */ = {
+		AB0F3A321046BD2D004129DD /* Build configuration list for PBXNativeTarget "API" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AB0F3A2E1046BD2D004129DD /* Debug */,

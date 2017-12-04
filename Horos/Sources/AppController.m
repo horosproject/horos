@@ -739,11 +739,25 @@ void exceptionHandler(NSException *exception)
 
 -(void)applicationDidChangeScreenParameters:(NSNotification*)aNotification
 {
-    NSLog( @"--- applicationDidChangeScreenParameters");
+    [self updateScreenParameters];
+}
+
+- (void)updateScreenParameters {
+    NSMutableArray *screenParameters = [NSMutableArray array];
+    for (NSScreen *screen in [NSScreen screens])
+        [screenParameters addObject:@[screen.deviceDescription, @(screen.frame)]];
     
-    [[AppController sharedAppController] closeAllViewers: self];
+    static NSArray *previousScreenParameters = nil;
+    if ([screenParameters isEqual:previousScreenParameters])
+        return;
     
-    [AppController resetThumbnailsList];
+    if (previousScreenParameters) {
+        [[AppController sharedAppController] closeAllViewers:self];
+        [AppController resetThumbnailsList];
+    }
+    
+    [previousScreenParameters release];
+    previousScreenParameters = [screenParameters retain];
 }
 
 + (void) resetThumbnailsList
@@ -2787,6 +2801,8 @@ static BOOL firstCall = YES;
         #ifndef OSIRIX_LIGHT
         [VRView testGraphicBoard];
         #endif
+        
+        [self updateScreenParameters];
     }
     @catch (NSException * e)
     {

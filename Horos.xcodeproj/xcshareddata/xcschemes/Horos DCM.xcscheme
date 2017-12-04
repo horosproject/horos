@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7E0B3A3E067526CD00908593"
-               BuildableName = "HorosDCM.framework"
-               BlueprintName = "Horos DCM"
+               BuildableName = "DCM.framework"
+               BlueprintName = "DCM"
                ReferencedContainer = "container:Horos.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -48,8 +48,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7E0B3A3E067526CD00908593"
-            BuildableName = "HorosDCM.framework"
-            BlueprintName = "Horos DCM"
+            BuildableName = "DCM.framework"
+            BlueprintName = "DCM"
             ReferencedContainer = "container:Horos.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -66,8 +66,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7E0B3A3E067526CD00908593"
-            BuildableName = "HorosDCM.framework"
-            BlueprintName = "Horos DCM"
+            BuildableName = "DCM.framework"
+            BlueprintName = "DCM"
             ReferencedContainer = "container:Horos.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

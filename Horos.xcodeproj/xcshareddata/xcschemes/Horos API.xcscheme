@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AB0F3A2B1046BD2B004129DD"
                BuildableName = "Horos.framework"
-               BlueprintName = "Horos API"
+               BlueprintName = "API"
                ReferencedContainer = "container:Horos.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -49,7 +49,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AB0F3A2B1046BD2B004129DD"
             BuildableName = "Horos.framework"
-            BlueprintName = "Horos API"
+            BlueprintName = "API"
             ReferencedContainer = "container:Horos.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -67,7 +67,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AB0F3A2B1046BD2B004129DD"
             BuildableName = "Horos.framework"
-            BlueprintName = "Horos API"
+            BlueprintName = "API"
             ReferencedContainer = "container:Horos.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
