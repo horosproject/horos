@@ -31,16 +31,4 @@
      PURPOSE.
  ============================================================================*/
 
-#import <Cocoa/Cocoa.h>
-
-@interface Dummy_OsiriXHeaders_Class : NSObject
-@end
-@implementation Dummy_OsiriXHeaders_Class
-
-- (id)init
-{
-    self = [super init];
-    return self;
-}
-
-@end
+// yes, this source file is empty

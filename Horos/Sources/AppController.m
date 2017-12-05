@@ -737,13 +737,25 @@ void exceptionHandler(NSException *exception)
 	[[AppController sharedAppController] performSelectorOnMainThread: @selector(pause) withObject: nil waitUntilDone: NO];
 }
 
--(void)applicationDidChangeScreenParameters:(NSNotification*)aNotification
-{
-    NSLog( @"--- applicationDidChangeScreenParameters");
+- (void)applicationDidChangeScreenParameters:(NSNotification *)aNotification {
+    [self updateScreenParameters];
+}
+
+- (void)updateScreenParameters {
+    NSMutableArray *screenParameters = [NSMutableArray array];
+    for (NSScreen *screen in [NSScreen screens])
+        [screenParameters addObject:@[screen.deviceDescription, @(screen.frame)]];
     
-    [[AppController sharedAppController] closeAllViewers: self];
+    static NSArray *previousScreenParameters = nil;
+    if ([screenParameters isEqual:previousScreenParameters])
+        return;
     
+    [[AppController sharedAppController] closeAllViewers:self];
+
     [AppController resetThumbnailsList];
+    
+    [previousScreenParameters release];
+    previousScreenParameters = [screenParameters retain];
 }
 
 + (void) resetThumbnailsList
@@ -4030,7 +4042,7 @@ static BOOL initialized = NO;
 	
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidChangeScreenParameters:) name:NSApplicationDidChangeScreenParametersNotification object:NSApp];
     
-    [AppController resetThumbnailsList];
+    [self updateScreenParameters];
 	
 //	if( USETOOLBARPANEL) [[toolbarPanel window] makeKeyAndOrderFront:self];
 	

@@ -82,6 +82,8 @@
 
 #include <GDCM/gdcmScanner.h>
 
+#include "Horos.h"
+
 extern NSString * convertDICOM( NSString *inputfile);
 extern NSRecursiveLock *PapyrusLock;
 
@@ -1826,7 +1828,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                 serie = [[NSString alloc] initWithString:[[filePath lastPathComponent] stringByDeletingPathExtension]];
                 Modality = [[NSString alloc] initWithString:@"ANZ"];
                 
-                date = [[NSCalendarDate alloc] initWithString:[NSString stringWithCString: Analyze->hist.exp_date encoding: NSISOLatin1StringEncoding] calendarFormat:@"%Y%m%d"];
+                date = [[Horos dateWithString:[NSString stringWithCString: Analyze->hist.exp_date encoding: NSISOLatin1StringEncoding] calendarFormat:@"%Y%m%d"] retain];
                 if(date == nil) date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
                 if( date == nil) date = [[NSDate date] retain];
                 
@@ -2283,8 +2285,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
     }
     
     if( gUsePatientBirthDateForUID)
-        patientBirthDate = [[NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[src valueForKey:@"patientBirthDate"] timeIntervalSinceReferenceDate]] descriptionWithCalendarFormat:@"%Y%m%d"];
-    
+        patientBirthDate = [Horos:[NSDate dateWithTimeIntervalSinceReferenceDate:[[src valueForKey:@"patientBirthDate"] timeIntervalSinceReferenceDate]] descriptionWithCalendarFormat:@"%Y%m%d"];
+
     if( gUsePatientIDForUID)
         patientID = [src valueForKey:@"patientID"];
     
