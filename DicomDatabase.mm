@@ -2603,7 +2603,10 @@ static BOOL protectionAgainstReentry = NO;
         
         for( int i = 0; i < [filesInput count];)
         {
-            if ([[NSThread currentThread] isCancelled]) break;
+            if ([[NSThread currentThread] isCancelled]) {
+                NSLog(@"(copyFilesThread): [[NSThread currentThread] isCancelled]...");
+                break;
+            }
             
             @autoreleasepool
             {
@@ -2615,7 +2618,10 @@ static BOOL protectionAgainstReentry = NO;
                     
                     for( ; i < [filesInput count] && twentySeconds > [NSDate timeIntervalSinceReferenceDate]; i++)
                     {
-                        if ([[NSThread currentThread] isCancelled]) break;
+                        if ([[NSThread currentThread] isCancelled]) {
+                            NSLog(@"(copyFilesThread): [[NSThread currentThread] isCancelled]...");
+                            break;
+                        }
                         
                         if( [NSDate timeIntervalSinceReferenceDate] - lastGUIUpdate > 1)
                         {
@@ -2652,9 +2658,9 @@ static BOOL protectionAgainstReentry = NO;
                                             while( [t isRunning]){};
                                         }
                                         else
-                                        {
+                                        {;
                                             if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil] == NO)
-                                                NSLog( @"***** copyItemAtPath %@ failed", srcPath);
+                                                NSLog( @"(copyFilesThread): ***** copyItemAtPath %@ failed", srcPath);
                                         }
                                         
                                         if( [[NSFileManager defaultManager] fileExistsAtPath: dstPath])
@@ -2670,6 +2676,9 @@ static BOOL protectionAgainstReentry = NO;
                                             }
                                             
                                             [copiedFiles addObject: dstPath];
+                                        }
+                                        else {
+                                            NSLog(@"(copyFilesThread): Copying %@ to %@ FAILED", srcPath, dstPath);
                                         }
                                     }
                                 }
@@ -2695,7 +2704,7 @@ static BOOL protectionAgainstReentry = NO;
                                         {
                                             [copiedFiles addObject: srcPath];
                                         }
-                                        else NSLog( @"**** DicomFile *curFile = nil");
+                                        else NSLog( @"(copyFilesThread): **** DicomFile *curFile = nil");
                                     }
                                     @catch (NSException * e) {
                                         N2LogExceptionWithStackTrace(e);
@@ -2713,8 +2722,10 @@ static BOOL protectionAgainstReentry = NO;
                             }
                         }
                         
-                        if ([NSThread currentThread].isCancelled)
+                        if ([NSThread currentThread].isCancelled) {
+                            NSLog(@"(copyFilesThread): copyFilesThread cancelled");
                             break;
+                        }
                     }
                     
                     [queue addOperationWithBlock:^{
@@ -2800,11 +2811,14 @@ static BOOL protectionAgainstReentry = NO;
                         [[ThreadsManager defaultManager] removeThread:thread]; // NSOperationQueue threads don't finish after ablock execution, they're recycled
                     }];
                     
-                    if( [NSThread currentThread].isCancelled)
+                    if( [NSThread currentThread].isCancelled) {
+                        NSLog(@"(copyFilesThread): [NSThread currentThread].isCancelled");
                         break;
+                    }
                 }
                 @catch (NSException * e)
                 {
+                    NSLog(@"exception coppying files...");
                     N2LogExceptionWithStackTrace(e);
                 }
             }
@@ -2817,13 +2831,16 @@ static BOOL protectionAgainstReentry = NO;
                 [NSThread sleepForTimeInterval:0.05];
                 
                 
-                if( [[NSThread currentThread] isCancelled])
+                if( [[NSThread currentThread] isCancelled]) {
+                    NSLog(@"[[NSThread currentThread] isCancelled]");
                     [queue cancelAllOperations];
+                }
             }
         }
         
         if( [[dict objectForKey: @"ejectCDDVD"] boolValue] == YES && copyFiles == YES)
         {
+            NSLog(@"(copyFilesThread): ejecting...");
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EJECTCDDVD"])
                 [[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath: [filesInput objectAtIndex:0]];
         }

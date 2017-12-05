@@ -1,4 +1,4 @@
-/*=========================================================================
+ /*=========================================================================
  This file is part of the Horos Project (www.horosproject.org)
  
  Horos is free software: you can redistribute it and/or modify
