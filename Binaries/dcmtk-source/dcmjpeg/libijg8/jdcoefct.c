@@ -659,7 +659,7 @@ decompress_smooth_data (j_decompress_ptr cinfo, JSAMPIMAGE output_buf)
 	DC1 = DC2; DC2 = DC3;
 	DC4 = DC5; DC5 = DC6;
 	DC7 = DC8; DC8 = DC9;
-	buffer_ptr++, prev_block_row++, next_block_row++;
+    buffer_ptr++; prev_block_row++; next_block_row++;
 	output_col += compptr->codec_data_unit;
       }
       output_ptr += compptr->codec_data_unit;

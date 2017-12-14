@@ -60,7 +60,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-extern const char *GetPrivateIP();
+extern const char *GetPrivateIP(void);
 
 
 @interface O2DatabaseConnection : N2Connection {

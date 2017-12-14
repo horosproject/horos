@@ -62,8 +62,8 @@ typedef struct N3BezierCore *N3MutableBezierCoreRef;
 typedef struct N3BezierCoreIterator *N3BezierCoreIteratorRef;
 typedef const struct N3BezierCoreRandomAccessor *N3BezierCoreRandomAccessorRef;
 
-N3BezierCoreRef N3BezierCoreCreate();
-N3MutableBezierCoreRef N3BezierCoreCreateMutable();
+N3BezierCoreRef N3BezierCoreCreate(void);
+N3MutableBezierCoreRef N3BezierCoreCreateMutable(void);
 void *N3BezierCoreRetain(N3BezierCoreRef bezierCore);
 void N3BezierCoreRelease(N3BezierCoreRef bezierCore);
 bool N3BezierCoreEqualToBezierCore(N3BezierCoreRef bezierCore1, N3BezierCoreRef bezierCore2);

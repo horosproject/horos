@@ -92,9 +92,9 @@ enum
 extern "C"
 {
 #endif
-	NSRect screenFrame();
+    NSRect screenFrame(void);
 	NSString * documentsDirectoryFor( int mode, NSString *url) __deprecated;
-	NSString * documentsDirectory() __deprecated;
+    NSString * documentsDirectory(void) __deprecated;
 #ifdef __cplusplus
 }
 #endif

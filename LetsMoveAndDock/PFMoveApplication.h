@@ -40,4 +40,4 @@
 
 #import <Foundation/Foundation.h>
 
-void PFMoveToApplicationsFolderIfNecessary();
+void PFMoveToApplicationsFolderIfNecessary(void);

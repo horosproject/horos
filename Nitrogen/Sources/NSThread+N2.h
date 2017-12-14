@@ -36,7 +36,7 @@
 
 @interface NSThread (N2)
 
-+(NSThread*)performBlockInBackground:(void(^)())block;
++(NSThread*)performBlockInBackground:(void(^)(void))block;
 
 extern NSString* const NSThreadNameKey;
 

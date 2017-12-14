@@ -39,7 +39,7 @@
 - (id)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        [self acceptsFirstMouse:NO];
+        [self acceptsFirstMouse:nil];
     }
     return self;
 }
