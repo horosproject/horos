@@ -1714,7 +1714,8 @@ static NSHost *currentHost = nil;
 	// ITK Segmentation Defaults
 	[defaultValues setObject:[NSNumber numberWithInt:0] forKey:@"growingRegionType"];
 	[defaultValues setObject:[NSNumber numberWithInt:0] forKey:@"growingRegionAlgorithm"];
-	[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:@"previewGrowingRegion"];
+    [defaultValues setObject:[NSNumber numberWithBool:YES] forKey:@"previewGrowingRegion"];
+    [defaultValues setObject:[NSNumber numberWithBool:YES] forKey:@"preview3DGrowingRegion"];
 	[defaultValues setObject:[NSNumber numberWithInt:100] forKey:@"growingRegionInterval"];
 	[defaultValues setObject:[NSNumber numberWithInt:0] forKey:@"growingRegionLowerThreshold"];
 	[defaultValues setObject:[NSNumber numberWithInt:100] forKey:@"growingRegionUpperThreshold"];

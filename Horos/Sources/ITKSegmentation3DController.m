@@ -291,7 +291,10 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	long slice;
 	int previousMovieIndex = [viewer curMovieIndex];
 	
-	slice = [[viewer imageView] curImage];
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"preview3DGrowingRegion"] == NO )
+        slice = [[viewer imageView] curImage];
+    else
+        slice = -1;
 	
 	for( int i = 0; i < [viewer maxMovieIndex]; i++)
 	{
