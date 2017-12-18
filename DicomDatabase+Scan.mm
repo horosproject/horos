@@ -711,14 +711,14 @@ static NSString* _dcmElementKey(DcmElement* element) {
             
             int check = false;
             
-            while (copyFilesThread.progress < 0.999999)
+            while (copyFilesThread.progress < 1.0)
             {
                 if(!copyFilesThread.isExecuting) {
                     threadHung += sleepInterval;
                 } else {
                     threadHung = 0.0f;
                 }
-                if(threadHung > 1.0f) { // ten passes stuck... break
+                if(threadHung > 10.0f) { // ten secs stuck... break
                     break;
                 }
                 
