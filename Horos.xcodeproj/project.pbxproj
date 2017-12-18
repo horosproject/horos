@@ -10078,7 +10078,6 @@
 						DevelopmentTeam = KM2Q4CB65V;
 					};
 					AB28B42E05B7921E00A9906C = {
-						DevelopmentTeam = R8G9BDMT59;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -10914,7 +10913,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "path=$(cat \"$TARGET_TEMP_DIR/../Horos API.build/Product.path\")\nrsync --exclude=\".DS_Store\" -rtlv \"$path\" \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/\"";
+			shellScript = "#path=$(cat \"$TARGET_TEMP_DIR/../Horos API.build/Product.path\")\n#rsync --exclude=\".DS_Store\" -rtlv \"$path\" \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/\"";
 		};
 		71E6C0B41FBAD32800FF75B6 /* Submodules */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -13277,6 +13276,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Mac Developer";
+				DEVELOPMENT_TEAM = WGC24S6NKV;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries,
@@ -13483,6 +13483,7 @@
 		7E76BEC7085757B70073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = WGC24S6NKV;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries,
