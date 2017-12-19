@@ -536,7 +536,16 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 
 - (void)setOsiriXPluginURL:(NSString*)url;
 {
-	[[osirixPluginWebView mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
+    if ([url containsString:@"www.osirix-viewer.com"])
+    {
+        [osirixPluginDownloadButton setEnabled:NO];
+        [[osirixPluginWebView mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"https://www.horosproject.org/plugin-manager/"]]];
+    }
+    else
+    {
+        [osirixPluginDownloadButton setEnabled:YES];
+        [[osirixPluginWebView mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
+    }
 }
 
 - (void)setURLforOsiriXPluginWithName:(NSString*) name
