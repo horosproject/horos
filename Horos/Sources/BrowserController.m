@@ -15226,12 +15226,14 @@ static NSArray*	openSubSeriesArray = nil;
     NSMenuItem *helpItem = [mainMenu addItemWithTitle:NSLocalizedString(@"Help", nil) action:nil keyEquivalent:@""];
     NSMenu *helpMenu = [[NSMenu allocWithZone: [NSMenu menuZone]] initWithTitle: NSLocalizedString(@"Help", nil)];
     [helpItem setSubmenu:helpMenu];
-    [helpMenu addItemWithTitle: NSLocalizedString(@"Send an email to Horos support", nil) action: @selector(sendEmail:) keyEquivalent: @""];
-    [helpMenu addItemWithTitle: NSLocalizedString(@"Horos Project Web site", nil) action: @selector(openHorosWebPage:) keyEquivalent: @""];
-    [helpMenu addItemWithTitle: NSLocalizedString(@"Horos Discussion Group", nil) action: @selector(openHorosDiscussion:) keyEquivalent: @""];
+    
+    //[helpMenu addItemWithTitle: NSLocalizedString(@"TBD", nil) action: @selector(help:) keyEquivalent: @""];
+    [helpMenu addItemWithTitle: NSLocalizedString(@"Professional support", nil) action: @selector(openHorosSupport:) keyEquivalent: @""];
+    [helpMenu addItemWithTitle: NSLocalizedString(@"Community support", nil) action: @selector(openCommunityPage:) keyEquivalent: @""];
     [helpMenu addItem: [NSMenuItem separatorItem]];
-    [helpMenu addItemWithTitle: NSLocalizedString(@"Horos Help Web Site ", nil) action: @selector(help:) keyEquivalent: @""];
-    [helpMenu addItemWithTitle: NSLocalizedString(@"Report a Bug", nil) action: @selector(userManual:) keyEquivalent: @""];
+    [helpMenu addItemWithTitle: NSLocalizedString(@"Report a bug", nil) action: @selector(openBugReportPage:) keyEquivalent: @""];
+    //[helpMenu addItem: [NSMenuItem separatorItem]];
+    //[helpMenu addItemWithTitle: NSLocalizedString(@"Send an email to Horos support", nil) action: @selector(sendEmail:) keyEquivalent: @""];
     
     [helpMenu release];
 }

@@ -44,6 +44,10 @@
 // search for URLWithString
 #define URL_HOROS_VIEWER           @"http://www.horosproject.org"
 #define URL_HOROS_WEB_PAGE         URL_HOROS_VIEWER
+#define URL_HOROS_LEARNING         URL_HOROS_VIEWER@"/community/communicate/"
+#define URL_HOROS_SUPPORT_PAGE     URL_HOROS_VIEWER@"/horos-technical-support/"
+#define URL_HOROS_COMMUNITY        @"https://groups.google.com/forum/#!forum/horos-project"
+#define URL_HOROS_BUG_REPORT_PAGE  @"https://github.com/horosproject/horos/issues"
 #define URL_VENDOR                 URL_HOROS_VIEWER
 #define URL_EMAIL                  @"horos@horosproject.org"
 
@@ -52,7 +56,6 @@
 
 #define URL_HOROS_DOC_SECURITY     URL_HOROS_VIEWER
 
-#define URL_HOROS_LEARNING         URL_HOROS_VIEWER@"/community/communicate/"
 #define URL_HOROS_UPDATE           URL_HOROS_VIEWER@"/adaa7f5d1f33cb8ddd89fe300da7c2cd/"
 #define URL_HOROS_UPDATE_CRASH     URL_HOROS_VIEWER@"/adaa7f5d1f33cb8ddd89fe300da7c2cd/"
 
@@ -60,13 +63,12 @@
 
 #define URL_HOROS_PLUGINS          URL_HOROS_VIEWER@"/wp-content/uploads/horos_plugins/index.html"
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // We want our own Defaults plist saved in ~/Library/Preferences/
 // Make sure it matches "Bundle Identifier" in Info.plist
 
-#define BUNDLE_IDENTIFIER_PREFIX    "com.horosproject"
-#define BUNDLE_IDENTIFIER           "com.horosproject.horos"
+#define BUNDLE_IDENTIFIER_PREFIX    "org.horosproject"
+#define BUNDLE_IDENTIFIER           "org.horosproject.horos"
 
 ////////////////////////////////////////////////////////////////////////////////
 // This is the address of the plist containing the list of the available plugins.

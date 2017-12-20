@@ -1117,45 +1117,53 @@ void exceptionHandler(NSException *exception)
 #endif
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
 #pragma mark-
-
--(IBAction) osirix64bit:(id)sender
-{
-	if( sender)
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_VIEWER@"/Horos-64bit.html"]];
-	else
-	{
-		NSArray* urls = [NSArray arrayWithObject: [NSURL URLWithString:URL_HOROS_VIEWER@"/Horos-64bit.html"]];
-
-        [[NSWorkspace sharedWorkspace] openURLs:urls withAppBundleIdentifier: nil options: NSWorkspaceLaunchWithoutActivation additionalEventParamDescriptor: nil launchIdentifiers: nil];
-	}
-}
-
--(IBAction)sendEmail:(id)sender
-{
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:"URL_EMAIL]];
-}
 
 -(IBAction)openHorosWebPage:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_WEB_PAGE]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_WEB_PAGE]];
 }
 
 -(IBAction)help:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_LEARNING]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_LEARNING]];
 }
 
--(IBAction)openHorosDiscussion:(id)sender
+-(IBAction)openHorosSupport:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://groups.google.com/forum/#!forum/horos-project"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_SUPPORT_PAGE]];
 }
 
--(IBAction)userManual:(id)sender
+-(IBAction)openCommunityPage:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/horosproject/horos/issues"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_COMMUNITY]];
 }
+
+-(IBAction)openBugReportPage:(id)sender
+{
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_BUG_REPORT_PAGE]];
+}
+
+-(IBAction)sendEmail:(id)sender
+{
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:"URL_EMAIL]];
+}
+
+-(IBAction) osirix64bit:(id)sender
+{
+    if( sender)
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_VIEWER@"/Horos-64bit.html"]];
+    else
+    {
+        NSArray* urls = [NSArray arrayWithObject: [NSURL URLWithString:URL_HOROS_VIEWER@"/Horos-64bit.html"]];
+        
+        [[NSWorkspace sharedWorkspace] openURLs:urls withAppBundleIdentifier: nil options: NSWorkspaceLaunchWithoutActivation additionalEventParamDescriptor: nil launchIdentifiers: nil];
+    }
+}
+
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
 #pragma mark-
 
 - (void) waitForPID: (NSNumber*) pidNumber

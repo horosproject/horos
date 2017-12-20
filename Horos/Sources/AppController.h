@@ -221,14 +221,16 @@ extern AppController* OsiriX;
 - (void) checkAllWindowsAreVisible:(id) sender;
 - (void) checkAllWindowsAreVisible:(id) sender makeKey: (BOOL) makeKey;
 //- (IBAction)toggleActivityWindow:(id)sender;
+
+
 //===============HELP==========================
-- (IBAction) sendEmail: (id) sender;   /**< Send email to lead developer */
-- (IBAction) openHorosWebPage: (id) sender;  /**<  Open Horos web page */
-- (IBAction) openHorosDiscussion: (id) sender; /**< Open Horos discussion web page */
+- (IBAction) openHorosWebPage: (id) sender;
+- (IBAction) help: (id) sender;
+- (IBAction) openHorosSupport: (id) sender;
+- (IBAction) openCommunityPage: (id) sender;
+- (IBAction) openBugReportPage:(id)sender;
+- (IBAction) sendEmail: (id) sender;
 - (IBAction) osirix64bit: (id) sender;
-- (IBAction)userManual:(id)sender;
-//---------------------------------------------
-- (IBAction) help: (id) sender;  /**< Open help window */
 //=============================================
 
 - (IBAction) killAllStoreSCU:(id) sender;
