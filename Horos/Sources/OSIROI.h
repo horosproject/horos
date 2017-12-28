@@ -5,7 +5,7 @@
  it under the terms of the GNU Lesser General Public License as published by
  the Free Software Foundation,  version 3 of the License.
  
-  The Horos Project was based originally upon the OsiriX Project which at the time of
+ The Horos Project was based originally upon the OsiriX Project which at the time of
  the code fork was licensed as a LGPL project.  However, not all of the the source-code
  was properly documented and file headers were not all updated with the appropriate
  license terms. The Horos Project, originally was licensed under the  GNU GPL license.
