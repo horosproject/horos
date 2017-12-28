@@ -3560,7 +3560,6 @@
 		71EB83D316DD0F1800D48646 /* osirix-complementary.tpl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "osirix-complementary.tpl"; sourceTree = "<group>"; };
 		7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BurnerWindowController.h; sourceTree = "<group>"; };
 		7E0339E707415C4F0025DDB4 /* BurnerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BurnerWindowController.m; sourceTree = "<group>"; };
-		7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "DCM Framework_Prefix.pch"; sourceTree = "<group>"; };
 		7E0B3A13067526A600908593 /* DCM.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCM.h; sourceTree = "<group>"; };
 		7E0B3A14067526A600908593 /* DCMAttribute.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMAttribute.h; sourceTree = "<group>"; };
 		7E0B3A15067526A600908593 /* DCMAttribute.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DCMAttribute.m; sourceTree = "<group>"; };
@@ -6268,7 +6267,6 @@
 				BFAEB40706BF3BEE00C7EF1E /* DCMPixelDataAttributeJPEG12.m */,
 				BFAEB41606BF3BFA00C7EF1E /* DCMPixelDataAttributeJPEG16.h */,
 				BFAEB41706BF3BFA00C7EF1E /* DCMPixelDataAttributeJPEG16.m */,
-				7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */,
 				7E0B3A14067526A600908593 /* DCMAttribute.h */,
 				7E0B3A15067526A600908593 /* DCMAttribute.m */,
 				7EE0DC3C067A5138003E745F /* DCMSequenceAttribute.h */,
