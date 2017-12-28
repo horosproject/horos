@@ -594,6 +594,7 @@
 		9966A1B51AE0B6EE00F2D81A /* DCM.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* DCM.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9966A2E71AE0C55600F2D81A /* DCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* DCM.framework */; };
 		9966BCB51CEB5BA50086A8D7 /* osirixplugin.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9966BCB41CEB5BA50086A8D7 /* osirixplugin.icns */; };
+		9980BA351FF545BC001D7779 /* COPYING.LESSER in Resources */ = {isa = PBXBuildFile; fileRef = 9980BA341FF545BC001D7779 /* COPYING.LESSER */; };
 		998309111BB62D4100CAB197 /* JRSwizzle.h in Headers */ = {isa = PBXBuildFile; fileRef = 9983090F1BB62D4100CAB197 /* JRSwizzle.h */; };
 		998309121BB62D4100CAB197 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 998309101BB62D4100CAB197 /* JRSwizzle.m */; };
 		998B52E21AE0890300D317CF /* Horos.sdef in Resources */ = {isa = PBXBuildFile; fileRef = 998B52E11AE0890300D317CF /* Horos.sdef */; };
@@ -3704,6 +3705,7 @@
 		9966A1AA1AE09D7C00F2D81A /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		9966A1AF1AE09FFE00F2D81A /* Osirix.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Osirix.icns; sourceTree = "<group>"; };
 		9966BCB41CEB5BA50086A8D7 /* osirixplugin.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = osirixplugin.icns; sourceTree = "<group>"; };
+		9980BA341FF545BC001D7779 /* COPYING.LESSER */ = {isa = PBXFileReference; lastKnownFileType = text; path = COPYING.LESSER; sourceTree = "<group>"; };
 		9983090F1BB62D4100CAB197 /* JRSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRSwizzle.h; sourceTree = "<group>"; };
 		998309101BB62D4100CAB197 /* JRSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRSwizzle.m; sourceTree = "<group>"; };
 		998B52E11AE0890300D317CF /* Horos.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Horos.sdef; sourceTree = "<group>"; };
@@ -5682,6 +5684,7 @@
 		29B97314FDCFA39411CA2CEA /* OsiriX */ = {
 			isa = PBXGroup;
 			children = (
+				9980BA341FF545BC001D7779 /* COPYING.LESSER */,
 				71C99EA41D1A7E9F00208F3B /* Info.plist */,
 				710EF1F51FD014E8000B555B /* Horos */,
 				AB10FA9611293361009EB238 /* Nitrogen */,
@@ -10509,6 +10512,7 @@
 				A9701A6615C958020019EE55 /* burn_iris05.tif in Resources */,
 				A9701A6815C958020019EE55 /* burn_iris06.tif in Resources */,
 				A9701A6A15C958020019EE55 /* burn_iris07.tif in Resources */,
+				9980BA351FF545BC001D7779 /* COPYING.LESSER in Resources */,
 				A9701A6C15C958020019EE55 /* burn_iris08.tif in Resources */,
 				A9701A6E15C958020019EE55 /* burn_iris09.tif in Resources */,
 				A9701A7015C958020019EE55 /* burn_iris10.tif in Resources */,
