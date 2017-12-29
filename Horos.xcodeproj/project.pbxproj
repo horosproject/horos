@@ -594,6 +594,7 @@
 		9966A1B51AE0B6EE00F2D81A /* DCM.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* DCM.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9966A2E71AE0C55600F2D81A /* DCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* DCM.framework */; };
 		9966BCB51CEB5BA50086A8D7 /* osirixplugin.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9966BCB41CEB5BA50086A8D7 /* osirixplugin.icns */; };
+		9980BA351FF545BC001D7779 /* COPYING.LESSER in Resources */ = {isa = PBXBuildFile; fileRef = 9980BA341FF545BC001D7779 /* COPYING.LESSER */; };
 		998309111BB62D4100CAB197 /* JRSwizzle.h in Headers */ = {isa = PBXBuildFile; fileRef = 9983090F1BB62D4100CAB197 /* JRSwizzle.h */; };
 		998309121BB62D4100CAB197 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 998309101BB62D4100CAB197 /* JRSwizzle.m */; };
 		998B52E21AE0890300D317CF /* Horos.sdef in Resources */ = {isa = PBXBuildFile; fileRef = 998B52E11AE0890300D317CF /* Horos.sdef */; };
@@ -3559,7 +3560,6 @@
 		71EB83D316DD0F1800D48646 /* osirix-complementary.tpl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "osirix-complementary.tpl"; sourceTree = "<group>"; };
 		7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BurnerWindowController.h; sourceTree = "<group>"; };
 		7E0339E707415C4F0025DDB4 /* BurnerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BurnerWindowController.m; sourceTree = "<group>"; };
-		7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "DCM Framework_Prefix.pch"; sourceTree = "<group>"; };
 		7E0B3A13067526A600908593 /* DCM.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCM.h; sourceTree = "<group>"; };
 		7E0B3A14067526A600908593 /* DCMAttribute.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DCMAttribute.h; sourceTree = "<group>"; };
 		7E0B3A15067526A600908593 /* DCMAttribute.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DCMAttribute.m; sourceTree = "<group>"; };
@@ -3704,6 +3704,7 @@
 		9966A1AA1AE09D7C00F2D81A /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		9966A1AF1AE09FFE00F2D81A /* Osirix.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Osirix.icns; sourceTree = "<group>"; };
 		9966BCB41CEB5BA50086A8D7 /* osirixplugin.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = osirixplugin.icns; sourceTree = "<group>"; };
+		9980BA341FF545BC001D7779 /* COPYING.LESSER */ = {isa = PBXFileReference; lastKnownFileType = text; path = COPYING.LESSER; sourceTree = "<group>"; };
 		9983090F1BB62D4100CAB197 /* JRSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRSwizzle.h; sourceTree = "<group>"; };
 		998309101BB62D4100CAB197 /* JRSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRSwizzle.m; sourceTree = "<group>"; };
 		998B52E11AE0890300D317CF /* Horos.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Horos.sdef; sourceTree = "<group>"; };
@@ -4254,8 +4255,6 @@
 		BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomFileDCMTKCategory.mm; sourceTree = "<group>"; };
 		BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomImageDCMTKCategory.h; sourceTree = "<group>"; };
 		BF26843C0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomImageDCMTKCategory.mm; sourceTree = "<group>"; };
-		BF30B3A70C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = vtkPowerCrustSurfaceReconstruction.cxx; sourceTree = "<group>"; };
-		BF30B3AB0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = vtkPowerCrustSurfaceReconstruction.h; sourceTree = "<group>"; };
 		BF3485760951270C00B05AD2 /* SendController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendController.h; sourceTree = "<group>"; };
 		BF3485770951270C00B05AD2 /* SendController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendController.m; sourceTree = "<group>"; };
 		BF398B8A065B124700AD1F25 /* InArrow.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = InArrow.tif; sourceTree = "<group>"; };
@@ -5684,6 +5683,7 @@
 		29B97314FDCFA39411CA2CEA /* OsiriX */ = {
 			isa = PBXGroup;
 			children = (
+				9980BA341FF545BC001D7779 /* COPYING.LESSER */,
 				71C99EA41D1A7E9F00208F3B /* Info.plist */,
 				710EF1F51FD014E8000B555B /* Horos */,
 				AB10FA9611293361009EB238 /* Nitrogen */,
@@ -6267,7 +6267,6 @@
 				BFAEB40706BF3BEE00C7EF1E /* DCMPixelDataAttributeJPEG12.m */,
 				BFAEB41606BF3BFA00C7EF1E /* DCMPixelDataAttributeJPEG16.h */,
 				BFAEB41706BF3BFA00C7EF1E /* DCMPixelDataAttributeJPEG16.m */,
-				7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */,
 				7E0B3A14067526A600908593 /* DCMAttribute.h */,
 				7E0B3A15067526A600908593 /* DCMAttribute.m */,
 				7EE0DC3C067A5138003E745F /* DCMSequenceAttribute.h */,
@@ -8535,8 +8534,6 @@
 		CE3E19E80875710E007FFD6F /* ITK */ = {
 			isa = PBXGroup;
 			children = (
-				BF30B3AB0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h */,
-				BF30B3A70C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx */,
 				DB5961360CAB447B00809190 /* OSIVoxel.h */,
 				DB5961370CAB447B00809190 /* OSIVoxel.m */,
 				CE74456706DBA4CB0034D05E /* ITK.h */,
@@ -10513,6 +10510,7 @@
 				A9701A6615C958020019EE55 /* burn_iris05.tif in Resources */,
 				A9701A6815C958020019EE55 /* burn_iris06.tif in Resources */,
 				A9701A6A15C958020019EE55 /* burn_iris07.tif in Resources */,
+				9980BA351FF545BC001D7779 /* COPYING.LESSER in Resources */,
 				A9701A6C15C958020019EE55 /* burn_iris08.tif in Resources */,
 				A9701A6E15C958020019EE55 /* burn_iris09.tif in Resources */,
 				A9701A7015C958020019EE55 /* burn_iris10.tif in Resources */,
