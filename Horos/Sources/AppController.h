@@ -5,9 +5,13 @@
  it under the terms of the GNU Lesser General Public License as published by
  the Free Software Foundation,  version 3 of the License.
  
- Portions of the Horos Project were originally licensed under the GNU GPL license.
- However, all authors of that software have agreed to modify the license to the
- GNU LGPL.
+ The Horos Project was based originally upon the OsiriX Project which at the time of
+ the code fork was licensed as a LGPL project.  However, not all of the the source-code
+ was properly documented and file headers were not all updated with the appropriate
+ license terms. The Horos Project, originally was licensed under the  GNU GPL license.
+ However, contributors to the software since that time have agreed to modify the license
+ to the GNU LGPL in order to be conform to the changes previously made to the
+ OsirX project.
  
  Horos is distributed in the hope that it will be useful, but
  WITHOUT ANY WARRANTY EXPRESS OR IMPLIED, INCLUDING ANY WARRANTY OF
@@ -221,14 +225,16 @@ extern AppController* OsiriX;
 - (void) checkAllWindowsAreVisible:(id) sender;
 - (void) checkAllWindowsAreVisible:(id) sender makeKey: (BOOL) makeKey;
 //- (IBAction)toggleActivityWindow:(id)sender;
+
+
 //===============HELP==========================
-- (IBAction) sendEmail: (id) sender;   /**< Send email to lead developer */
-- (IBAction) openHorosWebPage: (id) sender;  /**<  Open Horos web page */
-- (IBAction) openHorosDiscussion: (id) sender; /**< Open Horos discussion web page */
+- (IBAction) openHorosWebPage: (id) sender;
+- (IBAction) help: (id) sender;
+- (IBAction) openHorosSupport: (id) sender;
+- (IBAction) openCommunityPage: (id) sender;
+- (IBAction) openBugReportPage:(id)sender;
+- (IBAction) sendEmail: (id) sender;
 - (IBAction) osirix64bit: (id) sender;
-- (IBAction)userManual:(id)sender;
-//---------------------------------------------
-- (IBAction) help: (id) sender;  /**< Open help window */
 //=============================================
 
 - (IBAction) killAllStoreSCU:(id) sender;

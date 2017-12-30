@@ -5,9 +5,13 @@
  it under the terms of the GNU Lesser General Public License as published by
  the Free Software Foundation,  version 3 of the License.
  
- Portions of the Horos Project were originally licensed under the GNU GPL license.
- However, all authors of that software have agreed to modify the license to the
- GNU LGPL.
+ The Horos Project was based originally upon the OsiriX Project which at the time of
+ the code fork was licensed as a LGPL project.  However, not all of the the source-code
+ was properly documented and file headers were not all updated with the appropriate
+ license terms. The Horos Project, originally was licensed under the  GNU GPL license.
+ However, contributors to the software since that time have agreed to modify the license
+ to the GNU LGPL in order to be conform to the changes previously made to the
+ OsirX project.
  
  Horos is distributed in the hope that it will be useful, but
  WITHOUT ANY WARRANTY EXPRESS OR IMPLIED, INCLUDING ANY WARRANTY OF
@@ -544,7 +548,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
             NSString* dicomdirPath = [[self class] _findDicomdirIn:allpaths];
             if (dicomdirPath)
             {
-                NSLog(@"Scanning DICOMDIR at %@", dicomdirPath);
+                NSLog(@"(scanAtPath): Scanning DICOMDIR at %@", dicomdirPath);
                 thread.status = NSLocalizedString(@"Reading DICOMDIR...", nil);
                 
                 @try {
@@ -557,6 +561,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
         }
         
         BOOL doScan = (![NSUserDefaults.standardUserDefaults boolForKey:@"UseDICOMDIRFileCD"]) || (!dicomImages.count && [NSUserDefaults.standardUserDefaults boolForKey:@"ScanDiskIfDICOMDIRZero"]);
+               
         if (pathsToScanAnyway.count || doScan)
         {
             NSMutableArray* dicomFilePaths = [NSMutableArray arrayWithArray:pathsToScanAnyway];
@@ -702,10 +707,31 @@ static NSString* _dcmElementKey(DcmElement* element) {
                                                                                         NULL]];
             }];
             
-            while (copyFilesThread.isExecuting)
+            //  NOTE - sometimes the while() below is reached before copyFilesThread.isExecuting
+            //gets true. This is why we check for the copyFilesThread.progress
+            
+            float sleepInterval = 0.1f;
+            float threadHung = 0.0f; // As we don't check isRunning, we need this get off the while()
+            
+            int check = false;
+            
+            while (copyFilesThread.progress < 1.0)
             {
-                if (thread.isCancelled && !copyFilesThread.isCancelled)
+                if(!copyFilesThread.isExecuting) {
+                    threadHung += sleepInterval;
+                } else {
+                    threadHung = 0.0f;
+                }
+                if(threadHung > 1.0f) { // ten passes stuck... break
+                    break;
+                }
+                
+                if(!check) {
+                    check = true;
+                }
+                if (thread.isCancelled && !copyFilesThread.isCancelled) {
                     [copyFilesThread cancel];
+                }
                 else
                 {
                     if( [thread.status isEqualToString: copyFilesThread.status] == NO)
@@ -718,15 +744,14 @@ static NSString* _dcmElementKey(DcmElement* element) {
                         thread.progress = copyFilesThread.progress;
                 }
                 
-                [NSThread sleepForTimeInterval:0.1];
+                [NSThread sleepForTimeInterval:sleepInterval];
             }
             
-            thread.supportsCancel = NO;
+            thread.supportsCancel = NO; // why now?
             
-            while (copyFilesThread.isExecuting)
-                [NSThread sleepForTimeInterval:0.1];
-            
-            if (isVolume && [NSUserDefaults.standardUserDefaults boolForKey:@"CDDVDEjectAfterAutoCopy"] && ![copyFilesThread isCancelled]) {
+            if (isVolume && [NSUserDefaults.standardUserDefaults boolForKey:@"CDDVDEjectAfterAutoCopy"] && ![copyFilesThread isCancelled])
+            {
+                NSLog(@"(scanAtPath): Ejecting...");
                 thread.status = NSLocalizedString(@"Ejecting...", nil);
                 thread.progress = -1;
                 

@@ -5,9 +5,13 @@
  it under the terms of the GNU Lesser General Public License as published by
  the Free Software Foundation, Êversion 3 of the License.
  
- Portions of the Horos Project were originally licensed under the GNU GPL license.
- However, all authors of that software have agreed to modify the license to the
- GNU LGPL.
+ The Horos Project was based originally upon the OsiriX Project which at the time of
+ the code fork was licensed as a LGPL project.  However, not all of the the source-code
+ was properly documented and file headers were not all updated with the appropriate
+ license terms. The Horos Project, originally was licensed under the  GNU GPL license.
+ However, contributors to the software since that time have agreed to modify the license
+ to the GNU LGPL in order to be conform to the changes previously made to the
+ OsirX project.
  
  Horos is distributed in the hope that it will be useful, but
  WITHOUT ANY WARRANTY EXPRESS OR IMPLIED, INCLUDING ANY WARRANTY OF
@@ -10543,7 +10547,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     else [result appendFormat: @" / %@", [field stringValue]];
                 }
             }
-            else if([field isKindOfClass:[NSCalendarDate class]])
+            else if([field isKindOfClass:[NSDate class]])
             {
                 NSString *vr = [attr vr];
                 if([vr isEqualToString:@"DA"])
@@ -10592,7 +10596,10 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     // image sides (LowerLeft, LowerMiddle, LowerRight, MiddleLeft, MiddleRight, TopLeft, TopMiddle, TopRight) & sameAsDefault
     NSArray *keys = [annotationsForModality allKeys];
     
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [imageObj.managedObjectContext lock];
+#pragma clang diagnostic pop
     
     for( NSString *key in keys)
     {
@@ -10663,7 +10670,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             }
         }
     }
+    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [imageObj.managedObjectContext unlock];
+#pragma clang diagnostic pop
+
 #endif
 }
 

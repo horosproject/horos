@@ -5,9 +5,13 @@
  it under the terms of the GNU Lesser General Public License as published by
  the Free Software Foundation,  version 3 of the License.
  
- Portions of the Horos Project were originally licensed under the GNU GPL license.
- However, all authors of that software have agreed to modify the license to the
- GNU LGPL.
+ The Horos Project was based originally upon the OsiriX Project which at the time of
+ the code fork was licensed as a LGPL project.  However, not all of the the source-code
+ was properly documented and file headers were not all updated with the appropriate
+ license terms. The Horos Project, originally was licensed under the  GNU GPL license.
+ However, contributors to the software since that time have agreed to modify the license
+ to the GNU LGPL in order to be conform to the changes previously made to the
+ OsirX project.
  
  Horos is distributed in the hope that it will be useful, but
  WITHOUT ANY WARRANTY EXPRESS OR IMPLIED, INCLUDING ANY WARRANTY OF
@@ -44,6 +48,10 @@
 // search for URLWithString
 #define URL_HOROS_VIEWER           @"http://www.horosproject.org"
 #define URL_HOROS_WEB_PAGE         URL_HOROS_VIEWER
+#define URL_HOROS_LEARNING         URL_HOROS_VIEWER@"/community/communicate/"
+#define URL_HOROS_SUPPORT_PAGE     URL_HOROS_VIEWER@"/horos-technical-support/"
+#define URL_HOROS_COMMUNITY        @"https://groups.google.com/forum/#!forum/horos-project"
+#define URL_HOROS_BUG_REPORT_PAGE  @"https://github.com/horosproject/horos/issues"
 #define URL_VENDOR                 URL_HOROS_VIEWER
 #define URL_EMAIL                  @"horos@horosproject.org"
 
@@ -52,7 +60,6 @@
 
 #define URL_HOROS_DOC_SECURITY     URL_HOROS_VIEWER
 
-#define URL_HOROS_LEARNING         URL_HOROS_VIEWER@"/community/communicate/"
 #define URL_HOROS_UPDATE           URL_HOROS_VIEWER@"/adaa7f5d1f33cb8ddd89fe300da7c2cd/"
 #define URL_HOROS_UPDATE_CRASH     URL_HOROS_VIEWER@"/adaa7f5d1f33cb8ddd89fe300da7c2cd/"
 
@@ -60,13 +67,12 @@
 
 #define URL_HOROS_PLUGINS          URL_HOROS_VIEWER@"/wp-content/uploads/horos_plugins/index.html"
 
-
 ////////////////////////////////////////////////////////////////////////////////
 // We want our own Defaults plist saved in ~/Library/Preferences/
 // Make sure it matches "Bundle Identifier" in Info.plist
 
-#define BUNDLE_IDENTIFIER_PREFIX    "com.horosproject"
-#define BUNDLE_IDENTIFIER           "com.horosproject.horos"
+#define BUNDLE_IDENTIFIER_PREFIX    "org.horosproject"
+#define BUNDLE_IDENTIFIER           "org.horosproject.horos"
 
 ////////////////////////////////////////////////////////////////////////////////
 // This is the address of the plist containing the list of the available plugins.
