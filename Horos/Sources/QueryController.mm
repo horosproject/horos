@@ -2304,8 +2304,11 @@ extern "C"
                     }
                 }
                 
-                if( [temporaryCFindResultArray count])
-                    [temporaryCFindResultArray sortUsingDescriptors: [self sortArray]];
+                if( [temporaryCFindResultArray count] ) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [temporaryCFindResultArray sortUsingDescriptors: [self sortArray]];
+                    });
+                }
                 
                 if( [NSThread isMainThread])
                     [self refreshList: temporaryCFindResultArray];
