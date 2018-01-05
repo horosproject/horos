@@ -5,9 +5,13 @@
  it under the terms of the GNU Lesser General Public License as published by
  the Free Software Foundation, Êversion 3 of the License.
  
- Portions of the Horos Project were originally licensed under the GNU GPL license.
- However, all authors of that software have agreed to modify the license to the
- GNU LGPL.
+ The Horos Project was based originally upon the OsiriX Project which at the time of
+ the code fork was licensed as a LGPL project.  However, not all of the the source-code
+ was properly documented and file headers were not all updated with the appropriate
+ license terms. The Horos Project, originally was licensed under the  GNU GPL license.
+ However, contributors to the software since that time have agreed to modify the license
+ to the GNU LGPL in order to be conform to the changes previously made to the
+ OsirX project.
  
  Horos is distributed in the hope that it will be useful, but
  WITHOUT ANY WARRANTY EXPRESS OR IMPLIED, INCLUDING ANY WARRANTY OF
@@ -15226,12 +15230,14 @@ static NSArray*	openSubSeriesArray = nil;
     NSMenuItem *helpItem = [mainMenu addItemWithTitle:NSLocalizedString(@"Help", nil) action:nil keyEquivalent:@""];
     NSMenu *helpMenu = [[NSMenu allocWithZone: [NSMenu menuZone]] initWithTitle: NSLocalizedString(@"Help", nil)];
     [helpItem setSubmenu:helpMenu];
-    [helpMenu addItemWithTitle: NSLocalizedString(@"Send an email to Horos support", nil) action: @selector(sendEmail:) keyEquivalent: @""];
-    [helpMenu addItemWithTitle: NSLocalizedString(@"Horos Project Web site", nil) action: @selector(openHorosWebPage:) keyEquivalent: @""];
-    [helpMenu addItemWithTitle: NSLocalizedString(@"Horos Discussion Group", nil) action: @selector(openHorosDiscussion:) keyEquivalent: @""];
+    
+    //[helpMenu addItemWithTitle: NSLocalizedString(@"TBD", nil) action: @selector(help:) keyEquivalent: @""];
+    [helpMenu addItemWithTitle: NSLocalizedString(@"Professional support", nil) action: @selector(openHorosSupport:) keyEquivalent: @""];
+    [helpMenu addItemWithTitle: NSLocalizedString(@"Community support", nil) action: @selector(openCommunityPage:) keyEquivalent: @""];
     [helpMenu addItem: [NSMenuItem separatorItem]];
-    [helpMenu addItemWithTitle: NSLocalizedString(@"Horos Help Web Site ", nil) action: @selector(help:) keyEquivalent: @""];
-    [helpMenu addItemWithTitle: NSLocalizedString(@"Report a Bug", nil) action: @selector(userManual:) keyEquivalent: @""];
+    [helpMenu addItemWithTitle: NSLocalizedString(@"Report a bug", nil) action: @selector(openBugReportPage:) keyEquivalent: @""];
+    //[helpMenu addItem: [NSMenuItem separatorItem]];
+    //[helpMenu addItemWithTitle: NSLocalizedString(@"Send an email to Horos support", nil) action: @selector(sendEmail:) keyEquivalent: @""];
     
     [helpMenu release];
 }

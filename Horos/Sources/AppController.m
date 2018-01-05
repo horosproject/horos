@@ -5,9 +5,13 @@
  it under the terms of the GNU Lesser General Public License as published by
  the Free Software Foundation,  version 3 of the License.
  
- Portions of the Horos Project were originally licensed under the GNU GPL license.
- However, all authors of that software have agreed to modify the license to the
- GNU LGPL.
+ The Horos Project was based originally upon the OsiriX Project which at the time of
+ the code fork was licensed as a LGPL project.  However, not all of the the source-code
+ was properly documented and file headers were not all updated with the appropriate
+ license terms. The Horos Project, originally was licensed under the  GNU GPL license.
+ However, contributors to the software since that time have agreed to modify the license
+ to the GNU LGPL in order to be conform to the changes previously made to the
+ OsirX project.
  
  Horos is distributed in the hope that it will be useful, but
  WITHOUT ANY WARRANTY EXPRESS OR IMPLIED, INCLUDING ANY WARRANTY OF
@@ -1117,45 +1121,53 @@ void exceptionHandler(NSException *exception)
 #endif
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
 #pragma mark-
-
--(IBAction) osirix64bit:(id)sender
-{
-	if( sender)
-		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_VIEWER@"/Horos-64bit.html"]];
-	else
-	{
-		NSArray* urls = [NSArray arrayWithObject: [NSURL URLWithString:URL_HOROS_VIEWER@"/Horos-64bit.html"]];
-
-        [[NSWorkspace sharedWorkspace] openURLs:urls withAppBundleIdentifier: nil options: NSWorkspaceLaunchWithoutActivation additionalEventParamDescriptor: nil launchIdentifiers: nil];
-	}
-}
-
--(IBAction)sendEmail:(id)sender
-{
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:"URL_EMAIL]];
-}
 
 -(IBAction)openHorosWebPage:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_WEB_PAGE]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_WEB_PAGE]];
 }
 
 -(IBAction)help:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_LEARNING]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_LEARNING]];
 }
 
--(IBAction)openHorosDiscussion:(id)sender
+-(IBAction)openHorosSupport:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://groups.google.com/forum/#!forum/horos-project"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_SUPPORT_PAGE]];
 }
 
--(IBAction)userManual:(id)sender
+-(IBAction)openCommunityPage:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/horosproject/horos/issues"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_COMMUNITY]];
 }
+
+-(IBAction)openBugReportPage:(id)sender
+{
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_BUG_REPORT_PAGE]];
+}
+
+-(IBAction)sendEmail:(id)sender
+{
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"mailto:"URL_EMAIL]];
+}
+
+-(IBAction) osirix64bit:(id)sender
+{
+    if( sender)
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:URL_HOROS_VIEWER@"/Horos-64bit.html"]];
+    else
+    {
+        NSArray* urls = [NSArray arrayWithObject: [NSURL URLWithString:URL_HOROS_VIEWER@"/Horos-64bit.html"]];
+        
+        [[NSWorkspace sharedWorkspace] openURLs:urls withAppBundleIdentifier: nil options: NSWorkspaceLaunchWithoutActivation additionalEventParamDescriptor: nil launchIdentifiers: nil];
+    }
+}
+
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
 #pragma mark-
 
 - (void) waitForPID: (NSNumber*) pidNumber

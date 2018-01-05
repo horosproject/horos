@@ -5,9 +5,13 @@
  it under the terms of the GNU Lesser General Public License as published by
  the Free Software Foundation,  version 3 of the License.
  
- Portions of the Horos Project were originally licensed under the GNU GPL license.
- However, all authors of that software have agreed to modify the license to the
- GNU LGPL.
+ The Horos Project was based originally upon the OsiriX Project which at the time of
+ the code fork was licensed as a LGPL project.  However, not all of the the source-code
+ was properly documented and file headers were not all updated with the appropriate
+ license terms. The Horos Project, originally was licensed under the  GNU GPL license.
+ However, contributors to the software since that time have agreed to modify the license
+ to the GNU LGPL in order to be conform to the changes previously made to the
+ OsirX project.
  
  Horos is distributed in the hope that it will be useful, but
  WITHOUT ANY WARRANTY EXPRESS OR IMPLIED, INCLUDING ANY WARRANTY OF
@@ -649,7 +653,7 @@
     
     if( templatePath == nil || ![[NSFileManager defaultManager] fileExistsAtPath:templatePath])
     {
-        NSRunCriticalAlertPanel( NSLocalizedString( @"Microsoft Word", nil),  NSLocalizedString(@"I cannot find the OsiriX Word Template doc file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+        NSRunCriticalAlertPanel( NSLocalizedString( @"Microsoft Word", nil),  NSLocalizedString(@"I cannot find the Horos Word Template doc file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
         return NO;
     }
     
@@ -699,8 +703,8 @@
 	[unzip setLaunchPath:@"/usr/bin/unzip"];
 	[unzip setCurrentDirectoryPath: [aPath stringByDeletingLastPathComponent]];
 	
-	[[NSFileManager defaultManager] removeItemAtPath: [[aPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"OOOsiriX"] error: nil];
-	[unzip setArguments: [NSArray arrayWithObjects: aPath, @"-d", @"OOOsiriX", nil]];
+	[[NSFileManager defaultManager] removeItemAtPath: [[aPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"HHHoros"] error: nil];
+	[unzip setArguments: [NSArray arrayWithObjects: aPath, @"-d", @"HHHoros", nil]];
 	[unzip launch];
 
 	while( [unzip isRunning])
@@ -718,7 +722,7 @@
 	}
 	
 	// read the xml file and find & replace templated string with patient's datas
-	NSString *indexFilePath = [NSString stringWithFormat:@"%@/OOOsiriX/content.xml", [aPath stringByDeletingLastPathComponent]];
+	NSString *indexFilePath = [NSString stringWithFormat:@"%@/HHHoros/content.xml", [aPath stringByDeletingLastPathComponent]];
 	NSError *xmlError = nil;
 	NSStringEncoding xmlFileEncoding = NSUTF8StringEncoding;
 	NSMutableString *xmlContentString = [NSMutableString stringWithContentsOfFile:indexFilePath encoding:xmlFileEncoding error:&xmlError];
@@ -731,7 +735,7 @@
 	// zip back the index.xml file
 	unzip = [[[NSTask alloc] init] autorelease];
 	[unzip setLaunchPath:@"/usr/bin/zip"];
-	[unzip setCurrentDirectoryPath: [[aPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"OOOsiriX"]];
+	[unzip setCurrentDirectoryPath: [[aPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"HHHoros"]];
 	[unzip setArguments: [NSArray arrayWithObjects: @"-q", @"-r", aPath, @"content.xml", nil]];
 	[unzip launch];
 
@@ -749,7 +753,7 @@
 		// we don't need to return NO, because the xml has been modified. Thus, even if the file is not compressed, the report is valid...
 	}
 	
-	[[NSFileManager defaultManager] removeItemAtPath: [[aPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"OOOsiriX"] error: nil];
+	[[NSFileManager defaultManager] removeItemAtPath: [[aPath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"HHHoros"] error: nil];
 	
 	[aStudy setValue:aPath forKey:@"reportURL"];
 	
@@ -895,7 +899,7 @@ static int Pages5orHigher = -1;
         NSLog( @"-- Try to convert to Pages 09: %@", templateName);
         */
         
-        NSString* path = [[NSBundle mainBundle] pathForResource:@"OsiriX Report.pages09" ofType:@"pages"];
+        NSString* path = [[NSBundle mainBundle] pathForResource:@"Horos Report.pages09" ofType:@"pages"];
         if( [[NSFileManager defaultManager] fileExistsAtPath:path] == YES)
         {
             [[NSFileManager defaultManager] copyItemAtPath:path toPath:[templatePath stringByAppendingString: @"09.pages"] byReplacingExisting:YES error: nil];
@@ -960,7 +964,7 @@ static int Pages5orHigher = -1;
     }
     else
     {
-        NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", nil];
+        NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", @"Horos", nil];
         NSString *templateDirectory = [NSString pathWithComponents:templateDirectoryPathArray];
         NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
         
@@ -970,7 +974,7 @@ static int Pages5orHigher = -1;
         {
             [directoryEnumerator skipDescendents];
             
-            if( [file isEqualToString: templateName] || [file isEqualToString: [NSString stringWithFormat: @"OsiriX %@", templateName]])
+            if( [file isEqualToString: templateName] || [file isEqualToString: [NSString stringWithFormat: @"Horos %@", templateName]])
                 return [templateDirectory stringByAppendingPathComponent: file];
         }
     }
@@ -980,7 +984,7 @@ static int Pages5orHigher = -1;
 
 + (void) copyPages4templatesToPages5: (NSString*) newDirectory
 {
-    NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", nil];
+    NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", @"Horos", nil];
     NSString *templateDirectory = [NSString pathWithComponents:templateDirectoryPathArray];
     NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
     
@@ -989,7 +993,7 @@ static int Pages5orHigher = -1;
     while ((file = [directoryEnumerator nextObject]))
     {
         [directoryEnumerator skipDescendents];
-        NSRange rangeOfOsiriX = [file rangeOfString:@"OsiriX "];
+        NSRange rangeOfOsiriX = [file rangeOfString:@"Horos "];
         if( rangeOfOsiriX.location==0 && rangeOfOsiriX.length==7)
         {
             NSString *fromPath = [templateDirectory stringByAppendingPathComponent: file];
@@ -1029,7 +1033,7 @@ static int Pages5orHigher = -1;
     }
     else
     {
-        NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", nil];
+        NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", @"Horos", nil];
         NSString *templateDirectory = [NSString pathWithComponents:templateDirectoryPathArray];
         NSDirectoryEnumerator *directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:templateDirectory];
         
@@ -1038,7 +1042,7 @@ static int Pages5orHigher = -1;
         while ((file = [directoryEnumerator nextObject]))
         {
             [directoryEnumerator skipDescendents];
-            NSRange rangeOfOsiriX = [file rangeOfString:@"OsiriX "];
+            NSRange rangeOfOsiriX = [file rangeOfString:@"Horos "];
             if(rangeOfOsiriX.location==0 && rangeOfOsiriX.length==7)
             {
                 // this is a template for us (we should maybe verify that it is a valid Pages template... but what ever...)
