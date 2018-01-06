@@ -2308,12 +2308,6 @@ extern "C"
                     }
                 }
                 
-                if( [temporaryCFindResultArray count] ) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [temporaryCFindResultArray sortUsingDescriptors: [self sortArray]];
-                    });
-                }
-                
                 if( [NSThread isMainThread])
                     [self refreshList: temporaryCFindResultArray];
                 else
@@ -2900,7 +2894,10 @@ extern "C"
         N2LogStackTrace( @"******* this function should be called in MAIN thread");
     
 	[resultArray removeAllObjects];
-	[resultArray addObjectsFromArray: l];
+    if ( [ l count ] > 0) {
+        [resultArray addObjectsFromArray: l];
+        [resultArray sortUsingDescriptors: [self sortArray]];
+    }
 	[outlineView reloadData];
     
     [numberOfStudies setStringValue:N2LocalizedSingularPluralCount(resultArray.count, NSLocalizedString( @"study found", nil), NSLocalizedString( @"studies found", nil))];
