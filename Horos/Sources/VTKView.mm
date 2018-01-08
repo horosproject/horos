@@ -11,7 +11,7 @@
  license terms. The Horos Project, originally was licensed under the  GNU GPL license.
  However, contributors to the software since that time have agreed to modify the license
  to the GNU LGPL in order to be conform to the changes previously made to the
- OsirX project.
+ OsiriX Project.
  
  Horos is distributed in the hope that it will be useful, but
  WITHOUT ANY WARRANTY EXPRESS OR IMPLIED, INCLUDING ANY WARRANTY OF
