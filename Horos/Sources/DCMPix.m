@@ -613,8 +613,10 @@ static inline void DrawRuns(	struct edge *active,
         }
     }
     
-    if (numCoords % 2)  /* Protect from degenerate polygons */
-        xCoords[numCoords] = xCoords[numCoords - 1], numCoords++;
+    if (numCoords % 2) { /* Protect from degenerate polygons */
+        xCoords[numCoords] = xCoords[numCoords - 1];
+        numCoords++;
+    }
     
     for( long i = 0; i < numCoords; i += 2)
     {

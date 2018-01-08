@@ -1764,7 +1764,7 @@ void DIMSE_warning(T_ASC_Association *assoc,
     char buf[8192]; /* we hope a DIMSE warning never gets larger */
 
     CERR << "DIMSE Warning: (" << assoc->params->DULparams.callingAPTitle
-        << "," << assoc->params->DULparams.calledAPTitle << "): ",
+         << "," << assoc->params->DULparams.calledAPTitle << "): ";
     va_start(args, format);
     vsprintf(buf, format, args);
     va_end(args);

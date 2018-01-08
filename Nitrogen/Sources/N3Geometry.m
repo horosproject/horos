@@ -56,7 +56,7 @@ const N3Plane N3PlaneInvalid = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
 N3Vector N3VectorMake(CGFloat x, CGFloat y, CGFloat z)
 {
     N3Vector vector;
-    vector.x = x,
+    vector.x = x;
     vector.y = y;
     vector.z = z;
     return vector;

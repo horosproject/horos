@@ -777,12 +777,12 @@
 	[self performSelectorOnMainThread:@selector(estimateFolderSize:) withObject:nil waitUntilDone:YES];
 	isExtracting = NO;
     
-    irisAnimationTimer = [[NSTimer timerWithTimeInterval: 0.07  target: self selector: @selector(irisAnimation:) userInfo: NO repeats: YES] retain];
+    irisAnimationTimer = [[NSTimer timerWithTimeInterval: 0.07  target: self selector: @selector(irisAnimation:) userInfo: nil repeats: YES] retain];
     [[NSRunLoop currentRunLoop] addTimer: irisAnimationTimer forMode: NSModalPanelRunLoopMode];
     [[NSRunLoop currentRunLoop] addTimer: irisAnimationTimer forMode: NSDefaultRunLoopMode];
     
     
-    burnAnimationTimer = [[NSTimer timerWithTimeInterval: 0.07  target: self selector: @selector(burnAnimation:) userInfo: NO repeats: YES] retain];
+    burnAnimationTimer = [[NSTimer timerWithTimeInterval: 0.07  target: self selector: @selector(burnAnimation:) userInfo: nil repeats: YES] retain];
     
     [[NSRunLoop currentRunLoop] addTimer: burnAnimationTimer forMode: NSModalPanelRunLoopMode];
     [[NSRunLoop currentRunLoop] addTimer: burnAnimationTimer forMode: NSDefaultRunLoopMode];

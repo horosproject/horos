@@ -122,13 +122,22 @@ static int getfd(id object, BOOL read, int def) { // http://www.quantum-step.com
 		}
 		
 		case 0: {
-			if (idesc != 0)	dup2(idesc, STDIN_FILENO), close(idesc);
+            if (idesc != 0)	{
+                dup2(idesc, STDIN_FILENO);
+                close(idesc);
+            }
 			if ([self.standardInput isKindOfClass:[NSPipe class]])
 				[[self.standardInput fileHandleForWriting] closeFile];
-			if (odesc != 1) dup2(odesc, STDOUT_FILENO), close(odesc);
+            if (odesc != 1) {
+                dup2(odesc, STDOUT_FILENO);
+                close(odesc);
+            }
 			if ([self.standardOutput isKindOfClass:[NSPipe class]])
 				[[self.standardOutput fileHandleForReading] closeFile];
-			if (edesc != 2) dup2(edesc, STDERR_FILENO), close(edesc);
+            if (edesc != 2) {
+                dup2(edesc, STDERR_FILENO);
+                close(edesc);
+            }
 			if ([self.standardError isKindOfClass:[NSPipe class]])
 				[[self.standardError fileHandleForReading] closeFile];
 				
