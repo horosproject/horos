@@ -33,3 +33,4 @@ Binaries/weasis/
 Binaries/._OsiriX Report.template
 Binaries/FeedbackReporter.framework/
 
+*.xcscmblueprint
