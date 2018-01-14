@@ -10089,7 +10089,7 @@
 						DevelopmentTeam = KM2Q4CB65V;
 					};
 					AB28B42E05B7921E00A9906C = {
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -11008,7 +11008,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#test with codesign -vvv\nif [[ ${CONFIGURATION} == \"Release\" ]]; then\n# -f means force to re-sign even if already signed\ncodesign -f -s \"Developer ID Application\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\necho \"code signed\"\nfi";
+			shellScript = "##test with codesign -vvv\n#if [[ ${CONFIGURATION} == \"Release\" ]]; then\n## -f means force to re-sign even if already signed\n#codesign -f -s \"Developer ID Application\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\n#echo \"code signed\"\n#fi";
 		};
 		CED88262125064F70085A861 /* CodeSigning */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -13288,6 +13288,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = WGC24S6NKV;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -13308,6 +13309,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.horos;
 				PRODUCT_NAME = Horos;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
 			};
@@ -13319,6 +13321,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCM Framework/prefix.pch";
 				INFOPLIST_FILE = "DCM Framework/Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -13376,6 +13379,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				DEVELOPMENT_TEAM = WGC24S6NKV;
 				INFOPLIST_FILE = "$(SRCROOT)/API/Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.api;
 				PRODUCT_NAME = Horos;
 			};
@@ -13485,6 +13489,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCM Framework/prefix.pch";
 				INFOPLIST_FILE = "DCM Framework/Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -13499,7 +13504,8 @@
 		7E76BEC7085757B70073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_TEAM = WGC24S6NKV;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries,
@@ -13517,6 +13523,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.horos;
 				PRODUCT_NAME = Horos;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
 			};
@@ -13584,6 +13591,7 @@
 			buildSettings = {
 				DEVELOPMENT_TEAM = WGC24S6NKV;
 				INFOPLIST_FILE = "$(SRCROOT)/API/Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.api;
 				PRODUCT_NAME = Horos;
 			};

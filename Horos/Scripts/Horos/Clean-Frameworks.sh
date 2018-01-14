@@ -10,9 +10,10 @@ alts=( HorosAPI OsiriXAPI 'OsiriX Headers' )
 for alt in "${alts[@]}"; do
     alt_framework_path="$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/$alt.framework"
     rm -Rf "$alt_framework_path"
-    mkdir -p "$alt_framework_path/Versions/A"
-    ln -s "../../../Horos.framework/Horos" "$alt_framework_path/Versions/A/$alt"
-    ln -s "Versions/A/$alt" "$alt_framework_path/$alt"
+    cp -R "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/Horos.framework" "$alt_framework_path"
+#    mkdir -p "$alt_framework_path/Versions/A"
+#    ln -s "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/Horos.framework/Horos" "$alt_framework_path/Versions/A/$alt"
+#    ln -s "Versions/A/$alt" "$alt_framework_path/$alt"
 done
 
 exit 0
