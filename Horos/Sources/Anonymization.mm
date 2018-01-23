@@ -437,6 +437,7 @@ static NSString *templateDicomFile = nil;
     //////////////////////
     
     BOOL anonymationSuccess = YES;
+    NSMutableArray* producedAnonFiles = [NSMutableArray arrayWithCapacity: files.count];
     
     for (NSString* f in producedFiles)
     {
@@ -513,7 +514,11 @@ static NSString *templateDicomFile = nil;
                 /////////////////////////////
                 /////////////////////////////
                 
-                const char* outfilename = filename;
+                NSString* _outfilename = [NSString stringWithCString:filename encoding:[NSString defaultCStringEncoding]];
+                NSString* anon_folder = [_outfilename stringByDeletingLastPathComponent];
+                NSString* anon_filename = [_outfilename lastPathComponent];
+                _outfilename = [NSString stringWithFormat:@"%@/anon_%@",anon_folder,anon_filename];
+                const char* outfilename = [_outfilename cStringUsingEncoding:[NSString defaultCStringEncoding]];
                 
                 gdcm::Writer writer;
                 writer.SetFileName( outfilename );
@@ -536,6 +541,34 @@ static NSString *templateDicomFile = nil;
                     
                     continue;
                 }
+                else
+                {
+                    [producedAnonFiles addObject:_outfilename];
+                }
+            }
+        }
+    }
+    
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    //////////////////////
+    //////////////////////
+
+    if ([producedAnonFiles count] != [producedFiles count])
+    {
+        anonymationSuccess = false;
+    }
+    else
+    {
+        for (int i = 0; i < [producedAnonFiles count]; i++)
+        {
+            NSError* error = nil;
+            unlink([[producedFiles objectAtIndex:i] cStringUsingEncoding:[NSString defaultCStringEncoding]]);
+            if (![[NSFileManager defaultManager] moveItemAtPath:[producedAnonFiles objectAtIndex:i] toPath:[producedFiles objectAtIndex:i] error:&error])
+            {
+                anonymationSuccess = false;
+                break;
             }
         }
     }
