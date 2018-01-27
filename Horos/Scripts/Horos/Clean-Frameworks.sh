@@ -15,6 +15,10 @@ for alt in "${alts[@]}"; do
     rm "$alt_framework_path/Horos"
     cd "$alt_framework_path"
     ln -s "Versions/A/$alt"
+    sed -i '' "s/Horos/$alt/" "Versions/A/Resources/Info.plist"
+    sed -i '' "s/org.horosproject.api/org.horosproject.$alt/" "Versions/A/Resources/Info.plist"
+    #exception since this is temporary
+    sed -i '' "s/OsiriX\ Headers/OsiriXHeaders/" "Versions/A/Resources/Info.plist"
 done
 
 alts=( HorosDCM )
@@ -26,6 +30,8 @@ for alt in "${alts[@]}"; do
     rm "$alt_framework_path/DCM"
     cd "$alt_framework_path"
     ln -s "Versions/A/$alt"
+    sed -i '' "s/DCM/$alt/" "Versions/A/Resources/Info.plist"
+    sed -i '' "s/org.horosproject.dcm/org.horosproject.$alt/" "Versions/A/Resources/Info.plist"
 done
 
 exit 0
