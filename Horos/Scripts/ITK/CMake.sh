@@ -23,7 +23,7 @@ mkdir -p "$cmake_dir"; cd "$cmake_dir"
 echo "$hash" > .cmakehash
 
 args=("$PROJECT_DIR/$TARGET_NAME" -G Xcode)
-cxxfs=( )
+cxxfs=( -fvisibility=default )
 args+=(-DITK_USE_64BITS_IDS=ON)
 args+=(-DBUILD_DOCUMENTATION=OFF)
 args+=(-DBUILD_EXAMPLES=OFF)
