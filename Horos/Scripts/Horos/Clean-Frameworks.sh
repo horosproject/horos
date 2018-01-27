@@ -17,4 +17,15 @@ for alt in "${alts[@]}"; do
     ln -s "Versions/A/$alt"
 done
 
+alts=( HorosDCM )
+for alt in "${alts[@]}"; do
+    alt_framework_path="$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/$alt.framework"
+    rm -Rf "$alt_framework_path"
+    cp -R "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/DCM.framework" "$alt_framework_path"
+    mv "$alt_framework_path/Versions/A/DCM" "$alt_framework_path/Versions/A/$alt"
+    rm "$alt_framework_path/DCM"
+    cd "$alt_framework_path"
+    ln -s "Versions/A/$alt"
+done
+
 exit 0
