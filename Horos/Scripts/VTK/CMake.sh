@@ -22,7 +22,7 @@ mkdir -p "$cmake_dir"; cd "$cmake_dir"
 echo "$hash" > .cmakehash
 
 args=("$PROJECT_DIR/$TARGET_NAME" -G Xcode)
-cxxfs=( -w -fvisibility=hidden -fvisibility-inlines-hidden )
+cxxfs=( -w )
 args+=(-DVTK_USE_OFFSCREEN_EGL:BOOL=OFF)
 args+=(-DVTK_USE_X:BOOL=OFF)
 args+=(-DVTK_USE_COCOA:BOOL=ON)
