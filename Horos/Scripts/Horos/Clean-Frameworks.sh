@@ -11,9 +11,10 @@ for alt in "${alts[@]}"; do
     alt_framework_path="$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/$alt.framework"
     rm -Rf "$alt_framework_path"
     cp -R "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/Horos.framework" "$alt_framework_path"
-#    mkdir -p "$alt_framework_path/Versions/A"
-#    ln -s "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/Horos.framework/Horos" "$alt_framework_path/Versions/A/$alt"
-#    ln -s "Versions/A/$alt" "$alt_framework_path/$alt"
+    mv "$alt_framework_path/Versions/A/Horos" "$alt_framework_path/Versions/A/$alt"
+    rm "$alt_framework_path/Horos"
+    cd "$alt_framework_path"
+    ln -s "Versions/A/$alt"
 done
 
 exit 0
