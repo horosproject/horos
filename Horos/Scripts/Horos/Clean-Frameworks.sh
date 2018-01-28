@@ -18,7 +18,7 @@ for alt in "${alts[@]}"; do
     sed -i '' "s/Horos/$alt/" "Versions/A/Resources/Info.plist"
     sed -i '' "s/org.horosproject.api/org.horosproject.$alt/" "Versions/A/Resources/Info.plist"
     #exception since this is temporary
-    sed -i '' "s/OsiriX\ Headers/OsiriXHeaders/" "Versions/A/Resources/Info.plist"
+    sed -i '' "s/org.horosproject.OsiriX\ Headers/org.horosproject.OsiriXHeaders/" "Versions/A/Resources/Info.plist"
 done
 
 alts=( HorosDCM )
