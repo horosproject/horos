@@ -231,11 +231,22 @@
    
     [[self window] orderOut:self];
     
-    int processIdentifier = [[NSProcessInfo processInfo] processIdentifier];
-    NSString *myPath = [NSString stringWithFormat:@"%s", [[[NSBundle mainBundle] executablePath] fileSystemRepresentation]];
-    [NSTask launchedTaskWithLaunchPath:myPath arguments:[NSArray arrayWithObject:[NSString stringWithFormat:@"%d", processIdentifier]]];
-    [NSApp terminate:self];
+    //RESTART or REOPEN DATABSE?
+    //reopenDatabase
+    {
+        [[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
+        [[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
+        [[BrowserController currentBrowser] resetToLocalDatabase];
+    }
+    
+    /*
+     int processIdentifier = [[NSProcessInfo processInfo] processIdentifier];
+     NSString *myPath = [NSString stringWithFormat:@"%s", [[[NSBundle mainBundle] executablePath] fileSystemRepresentation]];
+     [NSTask launchedTaskWithLaunchPath:myPath arguments:[NSArray arrayWithObject:[NSString stringWithFormat:@"%d", processIdentifier]]];
+     [NSApp terminate:self];
+     */
 }
+
     
     
 - (IBAction) keepSync:(id)sender
