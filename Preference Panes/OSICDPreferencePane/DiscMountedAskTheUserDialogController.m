@@ -69,6 +69,7 @@
 -(IBAction)buttonAction:(NSButton*)sender {
     _choice = [sender tag];
     [NSApp stopModal];
+    [[self window] orderOut:self];
 }
 
 @end
