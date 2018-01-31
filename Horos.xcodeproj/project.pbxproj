@@ -71,6 +71,20 @@
 			name = OpenSSL;
 			productName = OpenSSL;
 		};
+		71A523342021DB180065793A /* ITK */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 71A523352021DB180065793A /* Build configuration list for PBXAggregateTarget "ITK" */;
+			buildPhases = (
+				71A5233A2021DB370065793A /* CMake */,
+				71A5233B2021DB490065793A /* Make */,
+			);
+			dependencies = (
+				71A523392021DB340065793A /* PBXTargetDependency */,
+				71A523432021EA680065793A /* PBXTargetDependency */,
+			);
+			name = ITK;
+			productName = ITK;
+		};
 		71E6C0B01FBAD31E00FF75B6 /* Submodules */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 71E6C0B31FBAD31E00FF75B6 /* Build configuration list for PBXAggregateTarget "Submodules" */;
@@ -367,7 +381,6 @@
 		59FB643C1230EE4100EBA136 /* libpng12OsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64371230EE4100EBA136 /* libpng12OsiriX.a */; };
 		59FB64DD1231295400EBA136 /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */; };
 		59FB654F12312D8900EBA136 /* weasis in Resources */ = {isa = PBXBuildFile; fileRef = 59FB652912312D8900EBA136 /* weasis */; };
-		710BAF271FAB1A4D004909E4 /* ITK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 710BAF1C1FAB176C004909E4 /* ITK.framework */; };
 		710BAF281FAB1A4D004909E4 /* VTK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 710BAEFC1FAB124C004909E4 /* VTK.framework */; };
 		710EF1F31FD00E29000B555B /* Horos.h in Headers */ = {isa = PBXBuildFile; fileRef = 710EF1F11FD00E28000B555B /* Horos.h */; };
 		710EF1F41FD00E29000B555B /* Horos.m in Sources */ = {isa = PBXBuildFile; fileRef = 710EF1F21FD00E29000B555B /* Horos.m */; };
@@ -3021,13 +3034,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		710BAF1D1FAB17C6004909E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 710BAF141FAB176C004909E4;
-			remoteInfo = ITK;
-		};
 		710BAF1F1FAB17E8004909E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -3035,26 +3041,12 @@
 			remoteGlobalIDString = 710BAEFB1FAB124C004909E4;
 			remoteInfo = VTK;
 		};
-		710BAF211FAB17E8004909E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 710BAF141FAB176C004909E4;
-			remoteInfo = ITK;
-		};
 		710BAF231FAB17EF004909E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 710BAEFB1FAB124C004909E4;
 			remoteInfo = VTK;
-		};
-		710BAF251FAB17EF004909E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 710BAF141FAB176C004909E4;
-			remoteInfo = ITK;
 		};
 		710BAF321FAB28DF004909E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -3161,6 +3153,41 @@
 			remoteGlobalIDString = 71A5232A2021D3420065793A;
 			remoteInfo = OpenSSL;
 		};
+		71A523382021DB340065793A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
+			remoteInfo = Submodules;
+		};
+		71A5233C2021DB6C0065793A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71A523342021DB180065793A;
+			remoteInfo = ITK;
+		};
+		71A5233E2021DB770065793A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71A523342021DB180065793A;
+			remoteInfo = ITK;
+		};
+		71A523402021DB800065793A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71A523342021DB180065793A;
+			remoteInfo = ITK;
+		};
+		71A523422021EA680065793A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71A522F72021AB220065793A;
+			remoteInfo = GDCM;
+		};
 		71C99E981D19A7FB00208F3B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -3195,13 +3222,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 4A2F5931078D148300C514A2;
 			remoteInfo = "Unzip Binaries";
-		};
-		71E6C0BD1FBAD35000FF75B6 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
-			remoteInfo = "Git Submodule Sync";
 		};
 		71E6C0BF1FBAD35400FF75B6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -3513,7 +3533,6 @@
 		59FB647D1231106000EBA136 /* ming.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ming.h; path = Binaries/Ming/ming.h; sourceTree = "<group>"; };
 		59FB652912312D8900EBA136 /* weasis */ = {isa = PBXFileReference; lastKnownFileType = folder; name = weasis; path = Binaries/weasis; sourceTree = SOURCE_ROOT; };
 		710BAEFC1FAB124C004909E4 /* VTK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VTK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		710BAF1C1FAB176C004909E4 /* ITK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ITK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		710EF1F11FD00E28000B555B /* Horos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Horos.h; sourceTree = "<group>"; };
 		710EF1F21FD00E29000B555B /* Horos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Horos.m; sourceTree = "<group>"; };
 		711849751590A377006AB447 /* SMTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTPClient.h; sourceTree = "<group>"; };
@@ -5581,7 +5600,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				710BAF271FAB1A4D004909E4 /* ITK.framework in Frameworks */,
 				710BAF281FAB1A4D004909E4 /* VTK.framework in Frameworks */,
 				9966A1AB1AE09D7C00F2D81A /* Quartz.framework in Frameworks */,
 				9966A1A91AE09D6800F2D81A /* InstantMessage.framework in Frameworks */,
@@ -5730,7 +5748,6 @@
 				844719AF0FD8EF50003BFDF8 /* DCM.framework */,
 				AB0F3A2C1046BD2B004129DD /* Horos.framework */,
 				710BAEFC1FAB124C004909E4 /* VTK.framework */,
-				710BAF1C1FAB176C004909E4 /* ITK.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -9913,24 +9930,6 @@
 			productReference = 710BAEFC1FAB124C004909E4 /* VTK.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		710BAF141FAB176C004909E4 /* ITK */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 710BAF191FAB176C004909E4 /* Build configuration list for PBXNativeTarget "ITK" */;
-			buildPhases = (
-				710BAF161FAB176C004909E4 /* CMake */,
-				710BAF171FAB176C004909E4 /* Xcodebuild */,
-				710BAF181FAB176C004909E4 /* Framework */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				71E6C0BE1FBAD35000FF75B6 /* PBXTargetDependency */,
-			);
-			name = ITK;
-			productName = VTK;
-			productReference = 710BAF1C1FAB176C004909E4 /* ITK.framework */;
-			productType = "com.apple.product-type.framework";
-		};
 		7E0B3A3E067526CD00908593 /* DCM */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7E76BEC0085757B60073649A /* Build configuration list for PBXNativeTarget "DCM" */;
@@ -9946,7 +9945,7 @@
 				71A523192021D2400065793A /* PBXTargetDependency */,
 				71A523252021D2F70065793A /* PBXTargetDependency */,
 				710BAF201FAB17E8004909E4 /* PBXTargetDependency */,
-				710BAF221FAB17E8004909E4 /* PBXTargetDependency */,
+				71A5233F2021DB770065793A /* PBXTargetDependency */,
 			);
 			name = DCM;
 			productName = DCM;
@@ -9998,7 +9997,7 @@
 				71A523332021D3840065793A /* PBXTargetDependency */,
 				71A523052021B6D50065793A /* PBXTargetDependency */,
 				710BAF331FAB28DF004909E4 /* PBXTargetDependency */,
-				710BAF1E1FAB17C6004909E4 /* PBXTargetDependency */,
+				71A5233D2021DB6C0065793A /* PBXTargetDependency */,
 				71C99E991D19A7FB00208F3B /* PBXTargetDependency */,
 				71C99E9B1D19A7FD00208F3B /* PBXTargetDependency */,
 				71C99EA11D19A80A00208F3B /* PBXTargetDependency */,
@@ -10022,9 +10021,9 @@
 				71A5231B2021D2480065793A /* PBXTargetDependency */,
 				71A523272021D3010065793A /* PBXTargetDependency */,
 				71A5230B2021C8A80065793A /* PBXTargetDependency */,
-				710BAF6E1FB2438E004909E4 /* PBXTargetDependency */,
 				710BAF241FAB17EF004909E4 /* PBXTargetDependency */,
-				710BAF261FAB17EF004909E4 /* PBXTargetDependency */,
+				71A523412021DB800065793A /* PBXTargetDependency */,
+				710BAF6E1FB2438E004909E4 /* PBXTargetDependency */,
 			);
 			name = Decompress;
 			productName = SafeDBRebuild;
@@ -10070,9 +10069,11 @@
 					};
 					71A5231C2021D2B50065793A = {
 						CreatedOnToolsVersion = 9.2;
-						ProvisioningStyle = Automatic;
 					};
 					71A5232A2021D3420065793A = {
+						CreatedOnToolsVersion = 9.2;
+					};
+					71A523342021DB180065793A = {
 						CreatedOnToolsVersion = 9.2;
 					};
 					71E6C0B01FBAD31E00FF75B6 = {
@@ -10116,7 +10117,7 @@
 				4A2F5931078D148300C514A2 /* Unzip Binaries */,
 				BF7486A50CC6AA5C00198387 /* Documentation */,
 				710BAEFB1FAB124C004909E4 /* VTK */,
-				710BAF141FAB176C004909E4 /* ITK */,
+				71A523342021DB180065793A /* ITK */,
 				71A522F72021AB220065793A /* GDCM */,
 				71A5230E2021D1B60065793A /* CharLS */,
 				71A5231C2021D2B50065793A /* OpenJPEG */,
@@ -10665,48 +10666,6 @@
 			shellPath = /bin/sh;
 			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Framework.sh\"";
 		};
-		710BAF161FAB176C004909E4 /* CMake */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = CMake;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/CMake.sh\"";
-		};
-		710BAF171FAB176C004909E4 /* Xcodebuild */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = Xcodebuild;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Xcodebuild.sh\"";
-		};
-		710BAF181FAB176C004909E4 /* Framework */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = Framework;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Framework.sh\"";
-		};
 		710BAF711FB33751004909E4 /* Store Product Path */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -10834,6 +10793,34 @@
 			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Config.sh\"";
 		};
 		71A523312021D3650065793A /* Make */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Make;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Make.sh\"";
+		};
+		71A5233A2021DB370065793A /* CMake */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = CMake;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/CMake.sh\"";
+		};
+		71A5233B2021DB490065793A /* Make */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -12522,30 +12509,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		710BAF1E1FAB17C6004909E4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 710BAF141FAB176C004909E4 /* ITK */;
-			targetProxy = 710BAF1D1FAB17C6004909E4 /* PBXContainerItemProxy */;
-		};
 		710BAF201FAB17E8004909E4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 710BAEFB1FAB124C004909E4 /* VTK */;
 			targetProxy = 710BAF1F1FAB17E8004909E4 /* PBXContainerItemProxy */;
 		};
-		710BAF221FAB17E8004909E4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 710BAF141FAB176C004909E4 /* ITK */;
-			targetProxy = 710BAF211FAB17E8004909E4 /* PBXContainerItemProxy */;
-		};
 		710BAF241FAB17EF004909E4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 710BAEFB1FAB124C004909E4 /* VTK */;
 			targetProxy = 710BAF231FAB17EF004909E4 /* PBXContainerItemProxy */;
-		};
-		710BAF261FAB17EF004909E4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 710BAF141FAB176C004909E4 /* ITK */;
-			targetProxy = 710BAF251FAB17EF004909E4 /* PBXContainerItemProxy */;
 		};
 		710BAF331FAB28DF004909E4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -12622,6 +12594,31 @@
 			target = 71A5232A2021D3420065793A /* OpenSSL */;
 			targetProxy = 71A523322021D3840065793A /* PBXContainerItemProxy */;
 		};
+		71A523392021DB340065793A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
+			targetProxy = 71A523382021DB340065793A /* PBXContainerItemProxy */;
+		};
+		71A5233D2021DB6C0065793A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71A523342021DB180065793A /* ITK */;
+			targetProxy = 71A5233C2021DB6C0065793A /* PBXContainerItemProxy */;
+		};
+		71A5233F2021DB770065793A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71A523342021DB180065793A /* ITK */;
+			targetProxy = 71A5233E2021DB770065793A /* PBXContainerItemProxy */;
+		};
+		71A523412021DB800065793A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71A523342021DB180065793A /* ITK */;
+			targetProxy = 71A523402021DB800065793A /* PBXContainerItemProxy */;
+		};
+		71A523432021EA680065793A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71A522F72021AB220065793A /* GDCM */;
+			targetProxy = 71A523422021EA680065793A /* PBXContainerItemProxy */;
+		};
 		71C99E991D19A7FB00208F3B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = AB0F3A2B1046BD2B004129DD /* API */;
@@ -12646,11 +12643,6 @@
 			isa = PBXTargetDependency;
 			target = 4A2F5931078D148300C514A2 /* Unzip Binaries */;
 			targetProxy = 71E6A23D1FC5ED720099B327 /* PBXContainerItemProxy */;
-		};
-		71E6C0BE1FBAD35000FF75B6 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
-			targetProxy = 71E6C0BD1FBAD35000FF75B6 /* PBXContainerItemProxy */;
 		};
 		71E6C0C01FBAD35400FF75B6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -13222,6 +13214,7 @@
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				IBC_FLATTEN_NIBS = YES;
+				ITK_LIB_VERSION_SUFFIX = "-4.13";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
@@ -13250,6 +13243,7 @@
 					$CONFIGURATION_TEMP_DIR/GDCM.build/Install/include,
 					$CONFIGURATION_TEMP_DIR/OpenSSL.build/Install/include,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/include,
+					$CONFIGURATION_TEMP_DIR/ITK.build/Install/include,
 				);
 				INFOPLIST_FILE = Horos/Info.plist;
 				KEEP_PRIVATE_EXTERNS = YES;
@@ -13257,6 +13251,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					$CONFIGURATION_TEMP_DIR/OpenSSL.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/GDCM.build/Install/lib,
+					$CONFIGURATION_TEMP_DIR/ITK.build/Install/lib,
 				);
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_LDFLAGS = (
@@ -13274,6 +13269,16 @@
 					"-lgdcmIOD",
 					"-lgdcmexpat",
 					"-lgdcmuuid",
+					"-lITKCommon$ITK_LIB_VERSION_SUFFIX",
+					"-litkvnl$ITK_LIB_VERSION_SUFFIX",
+					"-litkvnl_algo$ITK_LIB_VERSION_SUFFIX",
+					"-litkvcl$ITK_LIB_VERSION_SUFFIX",
+					"-lITKVTK$ITK_LIB_VERSION_SUFFIX",
+					"-lITKTransform$ITK_LIB_VERSION_SUFFIX",
+					"-litksys$ITK_LIB_VERSION_SUFFIX",
+					"-lITKNrrdIO$ITK_LIB_VERSION_SUFFIX",
+					"-litkv3p_netlib$ITK_LIB_VERSION_SUFFIX",
+					"-litkzlib$ITK_LIB_VERSION_SUFFIX",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.horos;
 				PRODUCT_NAME = Horos;
@@ -13396,20 +13401,6 @@
 			};
 			name = Release;
 		};
-		710BAF1A1FAB176C004909E4 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		710BAF1B1FAB176C004909E4 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 		71A522F92021AB230065793A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -13441,7 +13432,6 @@
 		71A5231E2021D2B50065793A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -13449,7 +13439,6 @@
 		71A5231F2021D2B50065793A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -13462,6 +13451,20 @@
 			name = Debug;
 		};
 		71A5232D2021D3420065793A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		71A523362021DB180065793A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		71A523372021DB180065793A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -13528,12 +13531,14 @@
 					$CONFIGURATION_TEMP_DIR/GDCM.build/Install/include,
 					$CONFIGURATION_TEMP_DIR/OpenSSL.build/Install/include,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/include,
+					$CONFIGURATION_TEMP_DIR/ITK.build/Install/include,
 				);
 				INFOPLIST_FILE = Horos/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					$CONFIGURATION_TEMP_DIR/OpenSSL.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/GDCM.build/Install/lib,
+					$CONFIGURATION_TEMP_DIR/ITK.build/Install/lib,
 				);
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_LDFLAGS = (
@@ -13551,6 +13556,16 @@
 					"-lgdcmIOD",
 					"-lgdcmexpat",
 					"-lgdcmuuid",
+					"-lITKCommon$ITK_LIB_VERSION_SUFFIX",
+					"-litkvnl$ITK_LIB_VERSION_SUFFIX",
+					"-litkvnl_algo$ITK_LIB_VERSION_SUFFIX",
+					"-litkvcl$ITK_LIB_VERSION_SUFFIX",
+					"-lITKVTK$ITK_LIB_VERSION_SUFFIX",
+					"-lITKTransform$ITK_LIB_VERSION_SUFFIX",
+					"-litksys$ITK_LIB_VERSION_SUFFIX",
+					"-lITKNrrdIO$ITK_LIB_VERSION_SUFFIX",
+					"-litkv3p_netlib$ITK_LIB_VERSION_SUFFIX",
+					"-litkzlib$ITK_LIB_VERSION_SUFFIX",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.horos;
 				PRODUCT_NAME = Horos;
@@ -13605,6 +13620,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IBC_FLATTEN_NIBS = NO;
+				ITK_LIB_VERSION_SUFFIX = "-4.13";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-fvisibility=default";
@@ -13691,15 +13707,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		710BAF191FAB176C004909E4 /* Build configuration list for PBXNativeTarget "ITK" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				710BAF1A1FAB176C004909E4 /* Debug */,
-				710BAF1B1FAB176C004909E4 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		71A522F82021AB230065793A /* Build configuration list for PBXAggregateTarget "GDCM" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -13732,6 +13739,15 @@
 			buildConfigurations = (
 				71A5232C2021D3420065793A /* Debug */,
 				71A5232D2021D3420065793A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		71A523352021DB180065793A /* Build configuration list for PBXAggregateTarget "ITK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				71A523362021DB180065793A /* Debug */,
+				71A523372021DB180065793A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

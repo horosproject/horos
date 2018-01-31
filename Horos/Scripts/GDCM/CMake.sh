@@ -12,7 +12,7 @@ cmake_dir="$TARGET_TEMP_DIR/CMake"
 install_dir="$TARGET_TEMP_DIR/Install"
 
 mkdir -p "$cmake_dir"; cd "$cmake_dir"
-if [ -e "$TARGET_NAME.xcodeproj" -a -f .cmakehash ] && [ "$(cat '.cmakehash')" = "$hash" ]; then
+if [ -e Makefile -a -f .cmakehash ] && [ "$(cat '.cmakehash')" = "$hash" ]; then
     exit 0
 fi
 

@@ -82,8 +82,8 @@
 #include <VTK/vtkDoubleArray.h>
 
 //#define id Id
-#include <ITK/itkImage.h>
-#include <ITK/itkImportImageFilter.h>
+#include <itkImage.h>
+#include <itkImportImageFilter.h>
 
 #import "ITKSegmentation3D.h"
 //#undef id

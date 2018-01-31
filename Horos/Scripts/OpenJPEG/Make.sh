@@ -6,7 +6,7 @@ source_dir="$PROJECT_DIR/$TARGET_NAME"
 cmake_dir="$TARGET_TEMP_DIR/CMake"
 install_dir="$TARGET_TEMP_DIR/Install"
 
-#[ -f "$install_dir/lib/libopenjp2.a" ] && [ ! -f "$cmake_dir/.incomplete" ] && exit 0
+[ -f "$install_dir/lib/libopenjp2.a" ] && [ ! -f "$cmake_dir/.incomplete" ] && exit 0
 
 export CC=clang
 export CXX=clang

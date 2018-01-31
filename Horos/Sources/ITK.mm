@@ -36,9 +36,9 @@
  ============================================================================*/
 
 //#define id Id
-#include <ITK/itkImage.h>
-#include <ITK/itkImportImageFilter.h>
-//#include <ITK/itkResampleImageFilter.h>
+#include <itkImage.h>
+#include <itkImportImageFilter.h>
+//#include <itkResampleImageFilter.h>
 //#undef id
 
 
