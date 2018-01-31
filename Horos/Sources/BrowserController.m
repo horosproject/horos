@@ -138,6 +138,7 @@
 #import "DicomDir.h"
 #import "CPRVolumeData.h"
 #import "O2HMigrationAssistant.h"
+#import "ICloudDriveDetector.h"
 #import "NSException+N2.h"
 
 #import "url.h"
@@ -14522,7 +14523,7 @@ static NSArray*	openSubSeriesArray = nil;
     }
     
     
-    
+    [ICloudDriveDetector performStartupICloudDriveTasks:self];
     [O2HMigrationAssistant performStartupO2HTasks:self];
 }
 
