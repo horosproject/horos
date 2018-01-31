@@ -228,23 +228,36 @@
     
     [[NSUserDefaults standardUserDefaults] setObject:newDatabasePath forKey:@"DEFAULT_DATABASELOCATIONURL"];
     [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"];
-   
-    [[self window] orderOut:self];
     
     //RESTART or REOPEN DATABSE?
-    //reopenDatabase
+    
+    // reopenDatabase - it seems it does not work at all
+    /*
     {
         [[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
         [[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
         [[BrowserController currentBrowser] resetToLocalDatabase];
+        
+        [[self window] close];
+        return;
     }
+    */
     
-    /*
-     int processIdentifier = [[NSProcessInfo processInfo] processIdentifier];
-     NSString *myPath = [NSString stringWithFormat:@"%s", [[[NSBundle mainBundle] executablePath] fileSystemRepresentation]];
-     [NSTask launchedTaskWithLaunchPath:myPath arguments:[NSArray arrayWithObject:[NSString stringWithFormat:@"%d", processIdentifier]]];
-     [NSApp terminate:self];
-     */
+    // Restart
+    {
+        //reopenDatabase - but it doesn't work at all
+        [[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
+        [[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
+        [[BrowserController currentBrowser] resetToLocalDatabase];
+        
+        [[self window] orderOut:self];
+        [NSApp stopModal];
+     
+        int processIdentifier = [[NSProcessInfo processInfo] processIdentifier];
+        NSString *myPath = [NSString stringWithFormat:@"%s", [[[NSBundle mainBundle] executablePath] fileSystemRepresentation]];
+        [NSTask launchedTaskWithLaunchPath:myPath arguments:[NSArray arrayWithObject:[NSString stringWithFormat:@"%d", processIdentifier]]];
+        [NSApp terminate:self];
+    }
 }
 
     
