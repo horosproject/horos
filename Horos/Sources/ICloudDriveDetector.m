@@ -203,61 +203,84 @@
     }
 
     
-    NSError *error = nil;
+    //ALERT user about the operation - Missing localization
+    NSAlert *alert = [[NSAlert alloc] init];
+    [alert setMessageText:[NSString stringWithFormat:@"Please, confirm you want to stop using iCloud Drive for your Horos database."]];
+    [alert setInformativeText:[NSString stringWithFormat:@"Your Horos database and image files will be moved from \"%@\" to \"%@\"",databasePath,nosyncPath]];
+    [alert addButtonWithTitle:@"Continue"];
+    [alert addButtonWithTitle:@"Abort"];
+    [alert setAlertStyle:NSWarningAlertStyle];
     
-    [[NSFileManager defaultManager] createDirectoryAtPath:nosyncPath withIntermediateDirectories:YES attributes:nil error:&error];
-    
-    if (error) {
-        //TODO - Alert user
-        [[self window] close];
-        return;
-    }
-    
-     
-    error = nil;
-    
-    NSString* newDatabasePath = [NSString stringWithFormat:@"%@.nosync/%@",databasePath,[databasePath lastPathComponent]];
-    [[NSFileManager defaultManager] moveItemAtPath:databasePath toPath:newDatabasePath error:&error];
-    
-    if (error) {
-        //TODO - Alert user
-        [[self window] close];
-        return;
-    }
-    
-    
-    [[NSUserDefaults standardUserDefaults] setObject:newDatabasePath forKey:@"DEFAULT_DATABASELOCATIONURL"];
-    [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"];
-    
-    //RESTART or REOPEN DATABSE?
-    
-    // reopenDatabase - it seems it does not work at all
-    /*
+    [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode)
     {
-        [[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
-        [[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
-        [[BrowserController currentBrowser] resetToLocalDatabase];
+        if (returnCode == NSAlertSecondButtonReturn) {
+            NSLog(@"Delete was cancelled!");
+            return;
+        }
         
-        [[self window] close];
-        return;
-    }
-    */
-    
-    // Restart
-    {
-        //reopenDatabase - but it doesn't work at all
-        [[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
-        [[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
-        [[BrowserController currentBrowser] resetToLocalDatabase];
+        [NSApp endSheet: [alert window]];
         
-        [[self window] orderOut:self];
-        [NSApp stopModal];
-     
-        int processIdentifier = [[NSProcessInfo processInfo] processIdentifier];
-        NSString *myPath = [NSString stringWithFormat:@"%s", [[[NSBundle mainBundle] executablePath] fileSystemRepresentation]];
-        [NSTask launchedTaskWithLaunchPath:myPath arguments:[NSArray arrayWithObject:[NSString stringWithFormat:@"%d", processIdentifier]]];
-        [NSApp terminate:self];
-    }
+        
+        
+        dispatch_async(dispatch_get_main_queue(), ^(void)
+        {
+            NSError *error = nil;
+            
+            [[NSFileManager defaultManager] createDirectoryAtPath:nosyncPath withIntermediateDirectories:YES attributes:nil error:&error];
+            
+            if (error) {
+                //TODO - Alert user
+                [[self window] close];
+                return;
+            }
+            
+            
+            error = nil;
+            
+            NSString* newDatabasePath = [NSString stringWithFormat:@"%@.nosync/%@",databasePath,[databasePath lastPathComponent]];
+            [[NSFileManager defaultManager] moveItemAtPath:databasePath toPath:newDatabasePath error:&error];
+            
+            if (error) {
+                //TODO - Alert user
+                [[self window] close];
+                return;
+            }
+            
+            
+            [[NSUserDefaults standardUserDefaults] setObject:newDatabasePath forKey:@"DEFAULT_DATABASELOCATIONURL"];
+            [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"];
+            
+            //RESTART or REOPEN DATABSE?
+            
+            // reopenDatabase - it seems it does not work at all
+            /*
+             {
+             [[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
+             [[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
+             [[BrowserController currentBrowser] resetToLocalDatabase];
+             
+             [[self window] close];
+             return;
+             }
+             */
+            
+            // Restart
+            {
+                //reopenDatabase - but it doesn't work at all
+                [[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
+                [[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
+                [[BrowserController currentBrowser] resetToLocalDatabase];
+                
+                [[self window] orderOut:self];
+                [NSApp stopModal];
+                
+                int processIdentifier = [[NSProcessInfo processInfo] processIdentifier];
+                NSString *myPath = [NSString stringWithFormat:@"%s", [[[NSBundle mainBundle] executablePath] fileSystemRepresentation]];
+                [NSTask launchedTaskWithLaunchPath:myPath arguments:[NSArray arrayWithObject:[NSString stringWithFormat:@"%d", processIdentifier]]];
+                [NSApp terminate:self];
+            }
+        });
+    }];
 }
 
     
