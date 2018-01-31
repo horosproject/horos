@@ -496,7 +496,7 @@
     
     // Workaround (weak)
     // On Horos initialization this will make Horos to check if local database folder is being synchronized over iCloud
-    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"ICLOUD_DRIVE_SYNC_USER_IGNORED"];
+    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"ICLOUD_DRIVE_SYNC_RISK_USER_IGNORED"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -562,7 +562,7 @@
         
         // Workaround (weak)
         // On Horos initialization this will make Horos to check if local database folder is being synchronized over iCloud
-        [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"ICLOUD_DRIVE_SYNC_USER_IGNORED"];
+        [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"ICLOUD_DRIVE_SYNC_RISK_USER_IGNORED"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }];
     
