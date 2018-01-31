@@ -206,7 +206,7 @@
     //ALERT user about the operation - Missing localization
     NSAlert *alert = [[NSAlert alloc] init];
     [alert setMessageText:[NSString stringWithFormat:@"Please, confirm you want to stop using iCloud Drive for your Horos database."]];
-    [alert setInformativeText:[NSString stringWithFormat:@"Your Horos database and image files will be moved from \"%@\" to \"%@\"",databasePath,nosyncPath]];
+    [alert setInformativeText:[NSString stringWithFormat:@"Your Horos database and image files will be moved from \"%@\" to \"%@\". Horos will be restarted after this operation is concluded.",databasePath,nosyncPath]];
     [alert addButtonWithTitle:@"Continue"];
     [alert addButtonWithTitle:@"Abort"];
     [alert setAlertStyle:NSWarningAlertStyle];
