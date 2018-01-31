@@ -38,12 +38,6 @@
 #import "DicomDatabase.h"
 #import "AppController.h"
 
-enum
-{
-    ICLOUD_DRIVE_SYNC_KEPT = 1,
-    ICLOUD_DRIVE_SYNC_AVOIDED = 2,
-};
-
 
 @interface ICloudDriveDetector ()
 
@@ -74,7 +68,7 @@ enum
     
 + (BOOL) hasNoSyncDeployed:(NSString*) databasePath
 {
-    return [databasePath containsString:@"Horos Data.nosync"];
+    return [databasePath containsString:@".nosync/"];
 }
     
     
@@ -85,7 +79,7 @@ enum
     paths = NSSearchPathForDirectoriesInDomains(NSDesktopDirectory, NSUserDomainMask, YES);
     NSString* desktopFolder = [NSString stringWithString:[paths objectAtIndex:0]];
     
-    if ([databasePath containsString:docFolder] || [databasePath containsString:desktopFolder])
+    if ([databasePath hasPrefix:docFolder] || [databasePath hasPrefix:desktopFolder])
     {
         return YES;
     }
@@ -96,9 +90,9 @@ enum
     
 + (BOOL) isUserAwareOfICloudDriveRisk
 {
-    NSNumber* flag = [[NSUserDefaults standardUserDefaults] objectForKey:@"ICLOUD_DRIVE_SYNC"];
+    NSNumber* flag = [[NSUserDefaults standardUserDefaults] objectForKey:@"ICLOUD_DRIVE_SYNC_USER_IGNORED"];
     
-    if (flag != nil && ([flag integerValue] == ICLOUD_DRIVE_SYNC_KEPT || [flag integerValue] == ICLOUD_DRIVE_SYNC_AVOIDED))
+    if (flag != nil && ([flag integerValue] != 0))
         return YES;
     
     return NO;
@@ -192,16 +186,24 @@ enum
 {
     NSString* databasePath = [NSString stringWithString:[ICloudDriveDetector databasePath]];
     
-    NSError *error = nil;
-    
     NSString* nosyncPath = [NSString stringWithFormat:@"%@.nosync",databasePath];
     
-    if ([[NSFileManager defaultManager] fileExistsAtPath:nosyncPath])
+    
+    
+    while ([[NSFileManager defaultManager] fileExistsAtPath:nosyncPath])
     {
-        //TODO - Alert user
-        [[self window] close];
-        return;
+        // Convert date object to desired output format
+        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+        [dateFormat setDateFormat:@"yyyyMMddhhmmss"];
+        NSDate *date = [NSDate date];
+        NSString* timestamp = [dateFormat stringFromDate:date];
+        [dateFormat release];
+        
+        nosyncPath = [NSString stringWithFormat:@"%@_%@.nosync",databasePath,timestamp];
     }
+
+    
+    NSError *error = nil;
     
     [[NSFileManager defaultManager] createDirectoryAtPath:nosyncPath withIntermediateDirectories:YES attributes:nil error:&error];
     
@@ -210,6 +212,7 @@ enum
         [[self window] close];
         return;
     }
+    
      
     error = nil;
     
@@ -222,12 +225,10 @@ enum
         return;
     }
     
+    
     [[NSUserDefaults standardUserDefaults] setObject:newDatabasePath forKey:@"DEFAULT_DATABASELOCATIONURL"];
     [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"];
-
-    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:ICLOUD_DRIVE_SYNC_AVOIDED] forKey:@"ICLOUD_DRIVE_SYNC"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    
+   
     [[self window] orderOut:self];
     
     int processIdentifier = [[NSProcessInfo processInfo] processIdentifier];
@@ -239,7 +240,7 @@ enum
     
 - (IBAction) keepSync:(id)sender
 {
-    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:ICLOUD_DRIVE_SYNC_KEPT] forKey:@"ICLOUD_DRIVE_SYNC"];
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:1] forKey:@"ICLOUD_DRIVE_SYNC_USER_IGNORED"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     [[self window] close];
