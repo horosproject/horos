@@ -487,6 +487,8 @@
 	
 	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey:@"DEFAULT_DATABASELOCATION"];
     
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
 	[[[[self mainView] window] windowController] reopenDatabase];
 	
 	[[[self mainView] window] makeKeyAndOrderFront: self];
@@ -552,6 +554,8 @@
             [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"DEFAULT_DATABASELOCATION"];
             [locationMatrix selectCellWithTag:0];
         }
+        
+        [[NSUserDefaults standardUserDefaults] synchronize];
         
         [[[[self mainView] window] windowController] reopenDatabase];
         

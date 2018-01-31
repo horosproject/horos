@@ -237,7 +237,7 @@
             
             error = nil;
             
-            NSString* newDatabasePath = [NSString stringWithFormat:@"%@.nosync/%@",databasePath,[databasePath lastPathComponent]];
+            NSString* newDatabasePath = [NSString stringWithFormat:@"%@/%@",nosyncPath,[databasePath lastPathComponent]];
             [[NSFileManager defaultManager] moveItemAtPath:databasePath toPath:newDatabasePath error:&error];
             
             if (error) {
@@ -249,6 +249,7 @@
             
             [[NSUserDefaults standardUserDefaults] setObject:newDatabasePath forKey:@"DEFAULT_DATABASELOCATIONURL"];
             [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             
             //RESTART or REOPEN DATABSE?
             
@@ -257,6 +258,8 @@
              {
              [[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
              [[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
+             [[NSUserDefaults standardUserDefaults] synchronize];
+             
              [[BrowserController currentBrowser] resetToLocalDatabase];
              
              [[self window] close];
@@ -269,6 +272,9 @@
                 //reopenDatabase - but it doesn't work at all
                 [[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
                 [[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
+                
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                
                 [[BrowserController currentBrowser] resetToLocalDatabase];
                 
                 [[self window] orderOut:self];
