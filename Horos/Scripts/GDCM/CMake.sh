@@ -9,6 +9,7 @@ set -e; set -o xtrace
 
 source_dir="$PROJECT_DIR/$TARGET_NAME"
 cmake_dir="$TARGET_TEMP_DIR/CMake"
+install_dir="$TARGET_TEMP_DIR/Install"
 
 mkdir -p "$cmake_dir"; cd "$cmake_dir"
 if [ -e "$TARGET_NAME.xcodeproj" -a -f .cmakehash ] && [ "$(cat '.cmakehash')" = "$hash" ]; then
@@ -34,7 +35,7 @@ args+=(-DGDCM_BUILD_TESTING=OFF)
 args+=(-DGDCM_BUILD_DOCBOOK_MANPAGES=OFF)
 
 args+=(-DGDCM_USE_SYSTEM_OPENJPEG=ON)
-export PKG_CONFIG_PATH="$TARGET_TEMP_DIR/../OpenJPEG.build/Install/lib/pkgconfig"
+export PKG_CONFIG_PATH="$CONFIGURATION_TEMP_DIR/OpenJPEG.build/Install/lib/pkgconfig"
 
 # currently, GDCM 2.8.3 uses CharLS 1.1, using our CharLS 2.0.0 won't compile
 #args+=(-DGDCM_USE_SYSTEM_CHARLS=ON)
@@ -43,7 +44,9 @@ export PKG_CONFIG_PATH="$TARGET_TEMP_DIR/../OpenJPEG.build/Install/lib/pkgconfig
 
 args+=(-DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET")
 args+=(-DCMAKE_OSX_ARCHITECTURES="$ARCHS")
-args+=(-DCMAKE_INSTALL_PREFIX=/usr/local)
+
+args+=(-DCMAKE_INSTALL_PREFIX="$TARGET_TEMP_DIR/Install")
+args+=(-DGDCM_INSTALL_INCLUDE_DIR="include/GDCM")
 
 if [ "$CONFIGURATION" = 'Debug' ]; then
     cxxfs+=( -g )

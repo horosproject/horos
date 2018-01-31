@@ -7,6 +7,7 @@ hash="$(find . \( -name CMakeLists.txt -o -name '*.cmake' \) -type f -exec md5 -
 
 set -e; set -o xtrace
 
+source_dir="$PROJECT_DIR/$TARGET_NAME"
 cmake_dir="$TARGET_TEMP_DIR/CMake"
 
 mkdir -p "$cmake_dir"; cd "$cmake_dir"
@@ -22,16 +23,18 @@ mkdir -p "$cmake_dir"
 export CC=clang
 export CXX=clang
 
-args=("$PROJECT_DIR/$TARGET_NAME")
+args=("$source_dir")
 cfs=($OTHER_CFLAGS)
 cxxfs=($OTHER_CPLUSPLUSFLAGS)
 
 args+=(-DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET")
 args+=(-DCMAKE_OSX_ARCHITECTURES="$ARCHS")
+
 args+=(-DCMAKE_INSTALL_PREFIX="$TARGET_TEMP_DIR/Install")
+args+=(-DOPENJPEG_INSTALL_INCLUDE_DIR="include/OpenJPEG")
+args+=(-DOPENJPEG_INSTALL_LIB_DIR="lib")
 
 args+=(-DBUILD_DOC=OFF)
-args+=(-DBUILD_EXAMPLES=OFF)
 args+=(-DBUILD_SHARED_LIBS=OFF)
 args+=(-DBUILD_STATIC_LIBS=ON)
 args+=(-DBUILD_TESTING=OFF)

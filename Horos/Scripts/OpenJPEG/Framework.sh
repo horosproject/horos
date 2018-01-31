@@ -1,4 +1,5 @@
 #!/bin/sh
+exit 0
 
 set -e; set -o xtrace
 
