@@ -45,7 +45,7 @@
 + (BOOL) isICloudDriveEnabled;
 + (BOOL) hasNoSyncDeployed:(NSString*) databasePath;
 + (BOOL) isDatabaseLocatedInICloudDrive:(NSString*) databasePath;
-+ (BOOL) isUserAwareOfICloudDriveRisk;
++ (BOOL) hasUserIgnoredICloudDriveSyncRisk;
 + (BOOL) requiresUserNotificationOnICloudDrive;
     
 @end
@@ -88,9 +88,9 @@
 }
 
     
-+ (BOOL) isUserAwareOfICloudDriveRisk
++ (BOOL) hasUserIgnoredICloudDriveSyncRisk
 {
-    NSNumber* flag = [[NSUserDefaults standardUserDefaults] objectForKey:@"ICLOUD_DRIVE_SYNC_USER_IGNORED"];
+    NSNumber* flag = [[NSUserDefaults standardUserDefaults] objectForKey:@"ICLOUD_DRIVE_SYNC_RISK_USER_IGNORED"];
     
     if (flag != nil && ([flag integerValue] != 0))
         return YES;
@@ -103,7 +103,7 @@
 {
     NSString* databasePath = [NSString stringWithString:[ICloudDriveDetector databasePath]];
     
-    if (![ICloudDriveDetector isUserAwareOfICloudDriveRisk])
+    if (![ICloudDriveDetector hasUserIgnoredICloudDriveSyncRisk])
     {
         if ([ICloudDriveDetector isDatabaseLocatedInICloudDrive:databasePath])
         {
@@ -240,7 +240,7 @@
     
 - (IBAction) keepSync:(id)sender
 {
-    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:1] forKey:@"ICLOUD_DRIVE_SYNC_USER_IGNORED"];
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:1] forKey:@"ICLOUD_DRIVE_SYNC_RISK_USER_IGNORED"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     [[self window] close];
