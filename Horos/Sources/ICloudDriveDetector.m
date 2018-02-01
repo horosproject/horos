@@ -61,7 +61,7 @@
     
 + (BOOL) isICloudDriveEnabled
 {
-    NSString* mobileDocumentsPath = [NSString stringWithFormat:@"%@/Library/Mobile Documents", NSHomeDirectory()];
+    NSString* mobileDocumentsPath = [NSString stringWithFormat:@"%@/Library/Mobile Documents/com~apple~CloudDocs", NSHomeDirectory()];
     return [[NSFileManager defaultManager] fileExistsAtPath:mobileDocumentsPath isDirectory:nil];
 }
     
