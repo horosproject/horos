@@ -23,53 +23,30 @@
  
  Prior versions of this file were published by the OsiriX team pursuant to
  the below notice and licensing protocol.
- ============================================================================
- Program:   OsiriX
-  Copyright (c) OsiriX Team
-  All rights reserved.
-  Distributed under GNU - LGPL
-  
-  See http://www.osirix-viewer.com/copyright.html for details.
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.
  ============================================================================*/
+//
+//  ICloudDriveDetector.h
+//  Horos
+//
+//  Created by Fauze Polpeta on 30/01/18.
+//  Copyright © 2018 The Horos Project. All rights reserved.
+//
 
-#import "DiscMountedAskTheUserDialogController.h"
+#import <Foundation/Foundation.h>
 
-@interface DiscMountedAskTheUserDialogController ()
+@class BrowserController;
 
-@end
-
-@implementation DiscMountedAskTheUserDialogController
-
-@synthesize label = _label;
-@synthesize choice = _choice;
-
-- (id)initWithMountedPath:(NSString*)path dicomFilesCount:(NSInteger)count {
-    if ((self = [super initWithWindowNibName:@"DiscMountedAskTheUserDialog"])) {
-        _mountedPath = [path retain];
-        _filesCount = count;
-    }
+@interface ICloudDriveDetector : NSWindowController
+{
+     BrowserController* _browserController;
+}
     
-    return self;
-}
-
-- (void)windowDidLoad {
-    [super windowDidLoad];
+@property (assign) BrowserController* browserController;
     
-    [_label setStringValue:[NSString stringWithFormat:NSLocalizedString(@"A disc named %@, containing %d DICOM files, was mounted. What do you want to do with these files?", nil), [_mountedPath lastPathComponent], (int)_filesCount]];
-}
++ (void) performStartupICloudDriveTasks:(BrowserController*) browserController;
 
--(void)dealloc {
-    [_mountedPath release];
-    [super dealloc];
-}
-
--(IBAction)buttonAction:(NSButton*)sender {
-    _choice = [sender tag];
-    [NSApp stopModal];
-    [[self window] orderOut:self];
-}
-
+- (IBAction) askLater:(id)sender;
+- (IBAction) dontSync:(id)sender;
+- (IBAction) keepSync:(id)sender;
+    
 @end
