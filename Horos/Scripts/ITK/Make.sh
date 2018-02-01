@@ -12,11 +12,10 @@ touch "$install_dir/.incomplete"
 
 args=()
 export MAKEFLAGS='-j 8'
-export CC=clang
-export CXX=clang
 
 cd "$cmake_dir"
-make "${args[@]}" install
+make "${args[@]}" ITKIOImageBase ITKStatistics ITKTransform ITKVTK ITKNrrdIO
+make install
 
 # wrap the libs into one
 mkdir -p "$install_dir/wlib"
@@ -26,3 +25,8 @@ libtool -static -o "$install_dir/wlib/lib$PRODUCT_NAME.a" $ars
 rm -f "$install_dir/.incomplete"
 
 exit 0
+
+#xcodebuild -project "$cmake_dir/$TARGET_NAME.xcodeproj" \
+#-target ITKIOImageBase -target ITKStatistics -target ITKTransform \
+#-target ITKVTK -target ITKNrrdIO \
+#-configuration "$CONFIGURATION"

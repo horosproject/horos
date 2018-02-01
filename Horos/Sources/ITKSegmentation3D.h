@@ -42,8 +42,8 @@
 
 #ifdef __cplusplus
 //#define id Id
-#include <ITK/itkImage.h>
-#include <ITK/itkImportImageFilter.h>
+#include <itkImage.h>
+#include <itkImportImageFilter.h>
 //#undef id
 #import "ITK.h"
 #else

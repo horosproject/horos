@@ -50,15 +50,15 @@
 =========================================================================*/
 #include "vtkHorosFixedPointVolumeRayCastMIPHelper.h"
 
-#include <VTK/vtkImageData.h>
-#include <VTK/vtkCommand.h>
-#include <VTK/vtkFixedPointVolumeRayCastMapper.h>
-#include <VTK/vtkObjectFactory.h>
-#include <VTK/vtkRenderWindow.h>
-#include <VTK/vtkVolume.h>
-#include <VTK/vtkVolumeProperty.h>
-#include <VTK/vtkFixedPointRayCastImage.h>
-#include <VTK/vtkDataArray.h>
+#include <vtkImageData.h>
+#include <vtkCommand.h>
+#include <vtkFixedPointVolumeRayCastMapper.h>
+#include <vtkObjectFactory.h>
+#include <vtkRenderWindow.h>
+#include <vtkVolume.h>
+#include <vtkVolumeProperty.h>
+#include <vtkFixedPointRayCastImage.h>
+#include <vtkDataArray.h>
 
 #include <math.h>
 

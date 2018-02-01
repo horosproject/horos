@@ -57,12 +57,7 @@
 #import "DefaultsOsiriX.h"
 
 #ifndef OSIRIX_LIGHT
-#ifdef VTK_USE_SYSTEM_TIFF
-#include <tiffio.h>
-#else
-#include <VTK/tiffio.h>
-//#include "vtktiff/tiffio.h"
-#endif
+#import <vtk_tiff.h>
 #endif
 
 #import "DicomFileDCMTKCategory.h"

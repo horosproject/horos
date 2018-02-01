@@ -40,7 +40,7 @@
 #import "Interpolation3D.h"
 
 #ifdef __cplusplus
-#include <VTK/vtkPiecewiseFunction.h>
+#include <vtkPiecewiseFunction.h>
 #else
 typedef char* vtkPiecewiseFunction;
 #endif

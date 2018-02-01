@@ -37,11 +37,11 @@
 
 #include "vtkHorosFixedPointVolumeRayCastMapper.h"
 
-#include <VTK/vtkObjectFactory.h>
-#include <VTK/vtkRenderWindow.h>
-#include <VTK/vtkRenderer.h>
-#include <VTK/vtkTimerLog.h>
-#include <VTK/vtkRayCastImageDisplayHelper.h>
+#include <vtkObjectFactory.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderer.h>
+#include <vtkTimerLog.h>
+#include <vtkRayCastImageDisplayHelper.h>
 #include "vtkHorosFixedPointVolumeRayCastMIPHelper.h"
 
 #include <math.h>

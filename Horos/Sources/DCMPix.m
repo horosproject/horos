@@ -72,14 +72,8 @@
 
 #import "url.h"
 
-#ifdef VTK_USE_SYSTEM_TIFF
-#include <tiffio.h>
-#else
-//#include "tiffio.h"
-//#include "vtktiff/tiffio.h"
-//#include "vtktiff/vtk_tiff_mangle.h"
-#include <VTK/tiffio.h>
-#endif
+#define uint64 tiff_uint64
+#import <vtk_tiff.h>
 
 #ifndef OSIRIX_LIGHT
 #include "FVTiff.h"

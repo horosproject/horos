@@ -2,22 +2,24 @@
 
 set -e; set -o xtrace
 
-cmake_dir="$TARGET_TEMP_DIR/CMake"
+cmake_dir="$TARGET_TEMP_DIR/Config"
+install_dir="$TARGET_TEMP_DIR/Install"
 
-[ -f "$cmake_dir/libssl.a" ] && [ ! -f "$cmake_dir/.incomplete" ] && exit 0
+[ -d "$install_dir" ] && [ ! -f "$install_dir/.incomplete" ] && exit 0
 
+mkdir -p "$install_dir"
+touch "$install_dir/.incomplete"
+
+args=()
+export MAKEFLAGS='-j 8'
 export CC=clang
 export CXX=clang
 export COMMAND_MODE=unix2003
-
-touch "$cmake_dir/.incomplete"
-
-args=( -j 8 )
 
 cd "$cmake_dir"
 make "${args[@]}"
 make install_sw
 
-rm -f "$cmake_dir/.incomplete"
+rm -f "$install_dir/.incomplete"
 
 exit 0

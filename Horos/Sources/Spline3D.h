@@ -40,7 +40,7 @@
 #import "Interpolation3D.h"
 
 #ifdef __cplusplus
-#include <VTK/vtkCardinalSpline.h>
+#include <vtkCardinalSpline.h>
 #else
 typedef char* vtkCardinalSpline;
 #endif
