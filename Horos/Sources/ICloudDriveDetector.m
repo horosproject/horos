@@ -103,6 +103,9 @@
 {
     NSString* databasePath = [NSString stringWithString:[ICloudDriveDetector databasePath]];
     
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[databasePath stringByAppendingPathComponent:@".nosync"]])
+        return NO; // the database contains a .nosync file
+    
     if (![ICloudDriveDetector hasUserIgnoredICloudDriveSyncRisk])
     {
         if ([ICloudDriveDetector isDatabaseLocatedInICloudDrive:databasePath])
@@ -164,7 +167,6 @@
                                        NSHeight([[self window] frame])) display:YES];
 }
     
-    
 - (void)windowWillClose:(NSNotification *)notification
 {
     if ([NSApp isHidden])
@@ -186,42 +188,42 @@
 {
     NSString* databasePath = [NSString stringWithString:[ICloudDriveDetector databasePath]];
     
-    NSString* nosyncPath = [NSString stringWithFormat:@"%@.nosync",databasePath];
+//    NSString* nosyncPath = [NSString stringWithFormat:@"%@.nosync",databasePath];
     
-    
-    
-    while ([[NSFileManager defaultManager] fileExistsAtPath:nosyncPath])
-    {
-        // Convert date object to desired output format
-        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-        [dateFormat setDateFormat:@"yyyyMMddhhmmss"];
-        NSDate *date = [NSDate date];
-        NSString* timestamp = [dateFormat stringFromDate:date];
-        [dateFormat release];
-        
-        nosyncPath = [NSString stringWithFormat:@"%@_%@.nosync",databasePath,timestamp];
-    }
+//    while ([[NSFileManager defaultManager] fileExistsAtPath:nosyncPath])
+//    {
+//        // Convert date object to desired output format
+//        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+//        [dateFormat setDateFormat:@"yyyyMMddhhmmss"];
+//        NSDate *date = [NSDate date];
+//        NSString* timestamp = [dateFormat stringFromDate:date];
+//        [dateFormat release];
+//
+//        nosyncPath = [NSString stringWithFormat:@"%@_%@.nosync",databasePath,timestamp];
+//    }
 
     
     //ALERT user about the operation - Missing localization
     NSAlert *alert = [[NSAlert alloc] init];
     [alert setMessageText:[NSString stringWithFormat:@"Please, confirm you want to stop using iCloud Drive for your Horos database."]];
-    [alert setInformativeText:[NSString stringWithFormat:@"Your Horos database and image files will be moved from \"%@\" to \"%@\". Horos will be restarted after this operation is concluded.",databasePath,nosyncPath]];
+//    [alert setInformativeText:[NSString stringWithFormat:@"Your Horos database and image files will be moved from \"%@\" to \"%@\". Horos will be restarted after this operation is concluded.",databasePath,nosyncPath]];
     [alert addButtonWithTitle:@"Continue"];
-    [alert addButtonWithTitle:@"Abort"];
+    [alert addButtonWithTitle:@"Cancel"];
     [alert setAlertStyle:NSWarningAlertStyle];
     
     [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode)
     {
+        [NSApp endSheet: [alert window]];
+        [[self window] close];
+
         if (returnCode == NSAlertSecondButtonReturn) {
             NSLog(@"Delete was cancelled!");
             return;
         }
         
-        [NSApp endSheet: [alert window]];
+        [@"" writeToFile:[databasePath stringByAppendingPathComponent:@".nosync"] atomically:YES encoding:NSUTF8StringEncoding error:NULL];
         
-        
-        
+        /*
         dispatch_async(dispatch_get_main_queue(), ^(void)
         {
             NSError *error = nil;
@@ -254,7 +256,7 @@
             //RESTART or REOPEN DATABSE?
             
             // reopenDatabase - it seems it does not work at all
-            /*
+            / *
              {
              [[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
              [[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
@@ -265,7 +267,7 @@
              [[self window] close];
              return;
              }
-             */
+             * /
             
             // Restart
             {
@@ -285,7 +287,7 @@
                 [NSTask launchedTaskWithLaunchPath:myPath arguments:[NSArray arrayWithObject:[NSString stringWithFormat:@"%d", processIdentifier]]];
                 [NSApp terminate:self];
             }
-        });
+        });*/
     }];
 }
 
@@ -293,10 +295,10 @@
     
 - (IBAction) keepSync:(id)sender
 {
+    [[self window] close];
+
     [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:1] forKey:@"ICLOUD_DRIVE_SYNC_RISK_USER_IGNORED"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    
-    [[self window] close];
 }
 
 @end
