@@ -103,8 +103,8 @@
 {
     NSString* databasePath = [NSString stringWithString:[ICloudDriveDetector databasePath]];
     
-    if ([[NSFileManager defaultManager] fileExistsAtPath:[databasePath stringByAppendingPathComponent:@".nosync"]])
-        return NO; // the database contains a .nosync file
+//    if ([[NSFileManager defaultManager] fileExistsAtPath:[databasePath stringByAppendingPathComponent:@".nosync"]])
+//        return NO; // the database contains a .nosync file
     
     if (![ICloudDriveDetector hasUserIgnoredICloudDriveSyncRisk])
     {
@@ -188,19 +188,19 @@
 {
     NSString* databasePath = [NSString stringWithString:[ICloudDriveDetector databasePath]];
     
-//    NSString* nosyncPath = [NSString stringWithFormat:@"%@.nosync",databasePath];
+    NSString* nosyncPath = [NSString stringWithFormat:@"%@.nosync",databasePath];
     
-//    while ([[NSFileManager defaultManager] fileExistsAtPath:nosyncPath])
-//    {
-//        // Convert date object to desired output format
-//        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-//        [dateFormat setDateFormat:@"yyyyMMddhhmmss"];
-//        NSDate *date = [NSDate date];
-//        NSString* timestamp = [dateFormat stringFromDate:date];
-//        [dateFormat release];
-//
-//        nosyncPath = [NSString stringWithFormat:@"%@_%@.nosync",databasePath,timestamp];
-//    }
+    while ([[NSFileManager defaultManager] fileExistsAtPath:nosyncPath])
+    {
+        // Convert date object to desired output format
+        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+        [dateFormat setDateFormat:@"yyyyMMddhhmmss"];
+        NSDate *date = [NSDate date];
+        NSString* timestamp = [dateFormat stringFromDate:date];
+        [dateFormat release];
+
+        nosyncPath = [NSString stringWithFormat:@"%@_%@.nosync",databasePath,timestamp];
+    }
 
     
     //ALERT user about the operation - Missing localization
@@ -221,9 +221,9 @@
             return;
         }
         
-        [@"" writeToFile:[databasePath stringByAppendingPathComponent:@".nosync"] atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+//        [@"" writeToFile:[databasePath stringByAppendingPathComponent:@".nosync"] atomically:YES encoding:NSUTF8StringEncoding error:NULL];
         
-        /*
+        
         dispatch_async(dispatch_get_main_queue(), ^(void)
         {
             NSError *error = nil;
@@ -256,7 +256,7 @@
             //RESTART or REOPEN DATABSE?
             
             // reopenDatabase - it seems it does not work at all
-            / *
+            /*
              {
              [[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
              [[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
@@ -267,7 +267,7 @@
              [[self window] close];
              return;
              }
-             * /
+             */
             
             // Restart
             {
@@ -287,7 +287,7 @@
                 [NSTask launchedTaskWithLaunchPath:myPath arguments:[NSArray arrayWithObject:[NSString stringWithFormat:@"%d", processIdentifier]]];
                 [NSApp terminate:self];
             }
-        });*/
+        });
     }];
 }
 
