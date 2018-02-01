@@ -37,9 +37,9 @@
 
 #import "HornRegistration.h"
 
-#include <VTK/vtkLandmarkTransform.h>
-#include <VTK/vtkPoints.h>
-#include <VTK/vtkMatrix4x4.h>
+#include <vtkLandmarkTransform.h>
+#include <vtkPoints.h>
+#include <vtkMatrix4x4.h>
 
 #include <stdio.h>
 

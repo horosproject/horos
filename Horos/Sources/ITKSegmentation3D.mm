@@ -64,18 +64,18 @@ The Horos Project was based originally upon the OsiriX Project which at the time
 #include <itkNearestNeighborInterpolateImageFunction.h>
 #include <itkResampleImageFilter.h>
 
-#include <VTK/vtkImageImport.h>
-#include <VTK/vtkMarchingSquares.h>
-#include <VTK/vtkPolyData.h>
-#include <VTK/vtkCleanPolyData.h>
-#include <VTK/vtkPolyDataConnectivityFilter.h>
-#include <VTK/vtkCell.h>
-#include <VTK/vtkContourFilter.h>
-#include <VTK/vtkImageData.h>
-#include <VTK/vtkDecimatePro.h>
-#include <VTK/vtkSmoothPolyDataFilter.h>
+#include <vtkImageImport.h>
+#include <vtkMarchingSquares.h>
+#include <vtkPolyData.h>
+#include <vtkCleanPolyData.h>
+#include <vtkPolyDataConnectivityFilter.h>
+#include <vtkCell.h>
+#include <vtkContourFilter.h>
+#include <vtkImageData.h>
+#include <vtkDecimatePro.h>
+#include <vtkSmoothPolyDataFilter.h>
 //#include "vtkPowerCrustSurfaceReconstruction.h"
-#include <VTK/vtkMarchingCubes.h>
+#include <vtkMarchingCubes.h>
 
 //#undef id
 

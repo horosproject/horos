@@ -16,15 +16,19 @@ if [ -e Makefile -a -f .cmakehash ] && [ "$(cat '.cmakehash')" = "$hash" ]; then
 fi
 
 command -v cmake >/dev/null 2>&1 || { echo >&2 "error: building $TARGET_NAME requires CMake. Please install CMake. Aborting."; exit 1; }
+command -v pkg-config >/dev/null 2>&1 || { echo >&2 "error: building $TARGET_NAME requires pkg-config. Please install pkg-config. Aborting."; exit 1; }
 
 cd ..
-mv "$cmake_dir" "$cmake_dir.tmp"; rm -Rf "$cmake_dir.tmp"
+mv "$cmake_dir" "$cmake_dir.tmp"
+[ -d "$install_dir" ] && mv "$install_dir" "$install_dir.tmp"
+rm -Rf "$cmake_dir.tmp" "$install_dir.tmp"
 mkdir -p "$cmake_dir"; cd "$cmake_dir"
 
 echo "$hash" > .cmakehash
 
 args=("$PROJECT_DIR/$TARGET_NAME") # -G Xcode
 cxxfs=( -fvisibility=default )
+lfs=() # linker flags
 args+=(-DITK_USE_64BITS_IDS=ON)
 args+=(-DBUILD_DOCUMENTATION=OFF)
 args+=(-DBUILD_EXAMPLES=OFF)
@@ -38,7 +42,7 @@ args+=(-DITK_INSTALL_INCLUDE_DIR="include")
 
 args+=(-DITK_USE_SYSTEM_GDCM=ON)
 args+=(-DGDCM_DIR="$CONFIGURATION_TEMP_DIR/GDCM.build/CMake")
-cxxfs+=(-L"$CONFIGURATION_TEMP_DIR/OpenJPEG.build/Install/lib")
+lfs+=(-L"$CONFIGURATION_TEMP_DIR/OpenJPEG.build/Install/lib")
 
 if [ ! -z "$CLANG_CXX_LIBRARY" ] && [ "$CLANG_CXX_LIBRARY" != 'compiler-default' ]; then
 #    args+=(-DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY="$CLANG_CXX_LIBRARY")
@@ -52,6 +56,11 @@ fi
 if [ ${#cxxfs[@]} -ne 0 ]; then
     cxxfss="${cxxfs[@]}"
     args+=(-DCMAKE_CXX_FLAGS="$cxxfss")
+fi
+
+if [ ${#lfs[@]} -ne 0 ]; then
+    lfss="${lfs[@]}"
+    args+=(-DCMAKE_EXE_LINKER_FLAGS="$lfss")
 fi
 
 #args+=(-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON)

@@ -8,10 +8,18 @@ hash="$(find . \( -name CMakeLists.txt -o -name '*.cmake' \) -type f -exec md5 -
 set -e; set -o xtrace
 
 source_dir="$PROJECT_DIR/$TARGET_NAME"
-cmake_dir="$TARGET_TEMP_DIR/CMake"
+cmake_dir="$TARGET_TEMP_DIR/Config"
+install_dir="$TARGET_TEMP_DIR/Install"
 
 mkdir -p "$cmake_dir"; cd "$cmake_dir"
 [ -e "Makefile" -a -f .cmakehash ] && [ "$(cat '.cmakehash')" = "$hash" ] && exit 0
+
+command -v pkg-config >/dev/null 2>&1 || { echo >&2 "error: building $TARGET_NAME requires pkg-config. Please install pkg-config. Aborting."; exit 1; }
+
+mv "$cmake_dir" "$cmake_dir.tmp"
+[ -d "$install_dir" ] && mv "$install_dir" "$install_dir.tmp"
+rm -Rf "$cmake_dir.tmp" "$install_dir.tmp"
+mkdir -p "$cmake_dir"
 
 cd "$cmake_dir"
 rsync -a --delete "$source_dir/" .

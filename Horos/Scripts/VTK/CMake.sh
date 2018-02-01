@@ -7,16 +7,19 @@ hash="$(find . \( -name CMakeLists.txt -o -name '*.cmake' \) -type f -exec md5 -
 set -e; set -o xtrace
 
 cmake_dir="$TARGET_TEMP_DIR/CMake"
+install_dir="$TARGET_TEMP_DIR/Install"
 
 mkdir -p "$cmake_dir"; cd "$cmake_dir"
-if [ -e "$Makefile" -a -f .cmakehash ] && [ "$(cat '.cmakehash')" = "$hash" ]; then
+if [ -e Makefile -a -f .cmakehash ] && [ "$(cat '.cmakehash')" = "$hash" ]; then
     exit 0
 fi
 
 command -v cmake >/dev/null 2>&1 || { echo >&2 "error: building $TARGET_NAME requires CMake. Please install CMake. Aborting."; exit 1; }
+command -v pkg-config >/dev/null 2>&1 || { echo >&2 "error: building $TARGET_NAME requires pkg-config. Please install pkg-config. Aborting."; exit 1; }
 
-cd ..
-mv "$cmake_dir" "$cmake_dir.tmp"; rm -Rf "$cmake_dir.tmp"
+mv "$cmake_dir" "$cmake_dir.tmp"
+[ -d "$install_dir" ] && mv "$install_dir" "$install_dir.tmp"
+rm -Rf "$cmake_dir.tmp" "$install_dir.tmp"
 mkdir -p "$cmake_dir"; cd "$cmake_dir"
 
 echo "$hash" > .cmakehash
@@ -33,13 +36,16 @@ args+=(-DBUILD_SHARED_LIBS=OFF)
 args+=(-DBUILD_TESTING=OFF)
 args+=(-DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET")
 args+=(-DCMAKE_OSX_ARCHITECTURES="$ARCHS")
-args+=(-DCMAKE_INSTALL_PREFIX=/usr/local)
+
+args+=(-DCMAKE_INSTALL_PREFIX="$install_dir")
+args+=(-DVTK_INSTALL_INCLUDE_DIR="include")
+
 if [ ! -z "$CLANG_CXX_LIBRARY" ] && [ "$CLANG_CXX_LIBRARY" != 'compiler-default' ]; then
-    args+=(-DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY="$CLANG_CXX_LIBRARY")
+#    args+=(-DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY="$CLANG_CXX_LIBRARY")
     cxxfs+=(-stdlib="$CLANG_CXX_LIBRARY")
 fi
 if [ ! -z "$CLANG_CXX_LANGUAGE_STANDARD" ]; then
-    args+=(-DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD="$CLANG_CXX_LANGUAGE_STANDARD")
+#    args+=(-DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD="$CLANG_CXX_LANGUAGE_STANDARD")
     cxxfs+=(-std="$CLANG_CXX_LANGUAGE_STANDARD")
 fi
 

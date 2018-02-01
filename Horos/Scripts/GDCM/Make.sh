@@ -5,18 +5,24 @@ set -e; set -o xtrace
 cmake_dir="$TARGET_TEMP_DIR/CMake"
 install_dir="$TARGET_TEMP_DIR/Install"
 
-#[ -f "$install_dir/lib/libgdcmCommon.a" ] && [ ! -f "$cmake_dir/.incomplete" ] && exit 0
+[ -d "$install_dir" ] && [ ! -f "$install_dir/.incomplete" ] && exit 0
 
+mkdir -p "$install_dir"
+touch "$install_dir/.incomplete"
+
+args=()
+export MAKEFLAGS='-j 8'
 export CC=clang
 export CXX=clang
-
-touch "$cmake_dir/.incomplete"
-
-args=( -j 8 ) # compile using parallel processes
 
 cd "$cmake_dir"
 make "${args[@]}" install
 
-rm -f "$cmake_dir/.incomplete"
+# wrap the libs into one
+mkdir -p "$install_dir/wlib"
+ars=$(find "$install_dir/lib" -name '*.a' -type f)
+libtool -static -o "$install_dir/wlib/lib$PRODUCT_NAME.a" $ars
+
+rm -f "$install_dir/.incomplete"
 
 exit 0

@@ -61,8 +61,8 @@
 #ifndef vtkHorosFixedPointVolumeRayCastMIPHelper_h
 #define vtkHorosFixedPointVolumeRayCastMIPHelper_h
 
-#include <VTK/vtkRenderingVolumeModule.h> // For export macro
-#include <VTK/vtkFixedPointVolumeRayCastMIPHelper.h>
+#include <vtkRenderingVolumeModule.h> // For export macro
+#include <vtkFixedPointVolumeRayCastMIPHelper.h>
 
 class vtkFixedPointVolumeRayCastMapper;
 class vtkVolume;

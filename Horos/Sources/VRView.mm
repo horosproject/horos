@@ -55,7 +55,7 @@
 #include "math.h"
 #import "Wait.h"
 #import "QuicktimeExport.h"
-#include <VTK/vtkImageResample.h>
+#include <vtkImageResample.h>
 #import "VRController.h"
 #import "BrowserController.h"
 #import "DICOMExport.h"
@@ -69,17 +69,17 @@
 #import "N2Debug.h"
 #import "PluginManager.h"
 
-#include <VTK/vtkMath.h>
-#include <VTK/vtkAbstractPropPicker.h>
-#include <VTK/vtkInteractorStyle.h>
-#include <VTK/vtkWorldPointPicker.h>
-//#include <VTK/vtkOpenGLVolumeTextureMapper3D.h>
-#include <VTK/vtkPropAssembly.h>
-#include <VTK/vtkFixedPointRayCastImage.h>
-#include <VTK/vtkSmartVolumeMapper.h>
-#include <VTK/vtkSphereSource.h>
-#include <VTK/vtkAssemblyPath.h>
-#include <VTK/vtkDoubleArray.h>
+#include <vtkMath.h>
+#include <vtkAbstractPropPicker.h>
+#include <vtkInteractorStyle.h>
+#include <vtkWorldPointPicker.h>
+//#include <vtkOpenGLVolumeTextureMapper3D.h>
+#include <vtkPropAssembly.h>
+#include <vtkFixedPointRayCastImage.h>
+#include <vtkSmartVolumeMapper.h>
+#include <vtkSphereSource.h>
+#include <vtkAssemblyPath.h>
+#include <vtkDoubleArray.h>
 
 //#define id Id
 #include <itkImage.h>
@@ -110,7 +110,7 @@
 // ****************************
 #endif
 
-#import <VTK/vtkConfigure.h>
+#import <vtkConfigure.h>
 
 #define MAXDYNAMICVALUE 32000.
 
