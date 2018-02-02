@@ -44,39 +44,28 @@ Aw
                                         <action selector="askLater:" target="-2" id="4kA-8H-RUq"/>
                                     </connections>
                                 </button>
-                                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4np-9z-rA5">
-                                    <rect key="frame" x="270" y="19" width="210" height="35"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <buttonCell key="cell" type="smallSquare" title="Yes, make it local only" bezelStyle="smallSquare" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2mB-nk-qZI">
-                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="system" size="18"/>
-                                    </buttonCell>
-                                    <connections>
-                                        <action selector="dontSync:" target="-2" id="QpO-jJ-Aak"/>
-                                    </connections>
-                                </button>
                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Yty-Ga-bxi">
-                                    <rect key="frame" x="18" y="228" width="715" height="72"/>
+                                    <rect key="frame" x="47" y="235" width="656" height="72"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" id="dA0-CP-hHe">
-                                        <font key="font" metaFont="system" size="20"/>
+                                        <font key="font" metaFont="system" size="18"/>
                                         <string key="title">It seems you are using the iCloud Drive and your Horos local database is being stored and shared via Apple iCloud. This can cause loss of data if you are using Horos on multiple workstations with the same Apple ID.</string>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6ki-VE-6UZ">
-                                    <rect key="frame" x="18" y="153" width="715" height="48"/>
+                                    <rect key="frame" x="18" y="145" width="715" height="66"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" id="L1z-zK-Jgv">
-                                        <font key="font" metaFont="system" size="20"/>
-                                        <string key="title">You can manually disable iCloud Drive in your macOS iCloud settings, or Horos can flag the database folder to do not be stored and shared via Apple iCloud.</string>
+                                        <font key="font" metaFont="system" size="18"/>
+                                        <string key="title">You can manually disable iCloud Drive in your macOS iCloud settings (recommended). Alternativelly, Horos can flag the database folder making it ineligible for iCloud Drive synchronization (experimental).</string>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XL5-xw-6QT">
-                                    <rect key="frame" x="18" y="92" width="715" height="24"/>
+                                    <rect key="frame" x="18" y="90" width="715" height="24"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="Do you want Horos to flag the dabase folder?" id="Ko3-kz-8vd">
                                         <font key="font" metaFont="system" size="20"/>
@@ -93,6 +82,17 @@ Aw
                                     </buttonCell>
                                     <connections>
                                         <action selector="keepSync:" target="-2" id="PVn-j9-KHh"/>
+                                    </connections>
+                                </button>
+                                <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4np-9z-rA5">
+                                    <rect key="frame" x="270" y="19" width="210" height="35"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="smallSquare" title="Yes, make it local only" bezelStyle="smallSquare" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2mB-nk-qZI">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system" size="18"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="dontSync:" target="-2" id="QpO-jJ-Aak"/>
                                     </connections>
                                 </button>
                             </subviews>

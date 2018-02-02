@@ -214,68 +214,20 @@
     [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode)
     {
         if (returnCode == NSAlertSecondButtonReturn) {
-            NSLog(@"Delete was cancelled!");
+            NSLog(@"ICloudDriveDetector - User canceled database migration");
             return;
         }
         
         [NSApp endSheet: [alert window]];
         
-        
-        
         dispatch_async(dispatch_get_main_queue(), ^(void)
         {
-            NSError *error = nil;
             
-            [[NSFileManager defaultManager] createDirectoryAtPath:nosyncPath withIntermediateDirectories:YES attributes:nil error:&error];
-            
-            if (error) {
-                //TODO - Alert user
-                [[self window] close];
-                return;
-            }
-            
-            
-            error = nil;
-            
-            NSString* newDatabasePath = [NSString stringWithFormat:@"%@/%@",nosyncPath,[databasePath lastPathComponent]];
-            [[NSFileManager defaultManager] moveItemAtPath:databasePath toPath:newDatabasePath error:&error];
-            
-            if (error) {
-                //TODO - Alert user
-                [[self window] close];
-                return;
-            }
-            
-            
-            [[NSUserDefaults standardUserDefaults] setObject:newDatabasePath forKey:@"DEFAULT_DATABASELOCATIONURL"];
-            [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            
-            //RESTART or REOPEN DATABSE?
-            
-            // reopenDatabase - it seems it does not work at all
-            /*
-             {
-             [[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
-             [[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
-             [[NSUserDefaults standardUserDefaults] synchronize];
-             
-             [[BrowserController currentBrowser] resetToLocalDatabase];
-             
-             [[self window] close];
-             return;
-             }
-             */
-            
-            // Restart
+            if ([[BrowserController currentBrowser] shouldTerminate:nil] == NO)
             {
-                //reopenDatabase - but it doesn't work at all
-                [[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
-                [[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
-                
-                [[NSUserDefaults standardUserDefaults] synchronize];
-                
-                [[BrowserController currentBrowser] resetToLocalDatabase];
+                NSRunInformationalAlertPanel( NSLocalizedString( @"Failure", nil),
+                                              NSLocalizedString( @"Operation has failed. Horos will restart and try to restore your database.", nil),
+                                              NSLocalizedString( @"Restart", nil), nil, nil, nil );
                 
                 [[self window] orderOut:self];
                 [NSApp stopModal];
@@ -283,8 +235,81 @@
                 int processIdentifier = [[NSProcessInfo processInfo] processIdentifier];
                 NSString *myPath = [NSString stringWithFormat:@"%s", [[[NSBundle mainBundle] executablePath] fileSystemRepresentation]];
                 [NSTask launchedTaskWithLaunchPath:myPath arguments:[NSArray arrayWithObject:[NSString stringWithFormat:@"%d", processIdentifier]]];
+                
                 [NSApp terminate:self];
+                
+                return;
             }
+            
+            
+            
+            NSError *error = nil;
+            [[NSFileManager defaultManager] createDirectoryAtPath:nosyncPath withIntermediateDirectories:YES attributes:nil error:&error];
+            if (error)
+            {
+                NSRunInformationalAlertPanel( NSLocalizedString( @"Failure", nil),
+                                             NSLocalizedString( @"Operation has failed. Horos will restart and try to restore your database.", nil),
+                                             NSLocalizedString( @"Restart", nil), nil, nil, nil );
+                
+                [[self window] orderOut:self];
+                [NSApp stopModal];
+                
+                int processIdentifier = [[NSProcessInfo processInfo] processIdentifier];
+                NSString *myPath = [NSString stringWithFormat:@"%s", [[[NSBundle mainBundle] executablePath] fileSystemRepresentation]];
+                [NSTask launchedTaskWithLaunchPath:myPath arguments:[NSArray arrayWithObject:[NSString stringWithFormat:@"%d", processIdentifier]]];
+                
+                [NSApp terminate:self];
+                
+                return;
+            }
+            
+        
+            
+            NSString* newDatabasePath = [NSString stringWithFormat:@"%@/%@",nosyncPath,[databasePath lastPathComponent]];
+        
+            error = nil;
+            [[NSFileManager defaultManager] moveItemAtPath:databasePath toPath:newDatabasePath error:&error];
+            if (error)
+            {
+                
+                [[NSFileManager defaultManager] removeItemAtPath:newDatabasePath error:nil];
+                
+                NSRunInformationalAlertPanel( NSLocalizedString( @"Failure", nil),
+                                              NSLocalizedString( @"Operation has failed. Horos will restart and try to restore your database.", nil),
+                                              NSLocalizedString( @"Restart", nil), nil, nil, nil );
+                
+                [[self window] orderOut:self];
+                [NSApp stopModal];
+                
+                int processIdentifier = [[NSProcessInfo processInfo] processIdentifier];
+                NSString *myPath = [NSString stringWithFormat:@"%s", [[[NSBundle mainBundle] executablePath] fileSystemRepresentation]];
+                [NSTask launchedTaskWithLaunchPath:myPath arguments:[NSArray arrayWithObject:[NSString stringWithFormat:@"%d", processIdentifier]]];
+                
+                [NSApp terminate:self];
+                
+                return;
+            }
+            
+            
+
+            [[NSUserDefaults standardUserDefaults] setObject:newDatabasePath forKey:@"DEFAULT_DATABASELOCATIONURL"];
+            [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"];
+
+            [[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
+            [[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
+            
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            
+            
+            [[self window] orderOut:self];
+            [NSApp stopModal];
+            
+            int processIdentifier = [[NSProcessInfo processInfo] processIdentifier];
+            NSString *myPath = [NSString stringWithFormat:@"%s", [[[NSBundle mainBundle] executablePath] fileSystemRepresentation]];
+            [NSTask launchedTaskWithLaunchPath:myPath arguments:[NSArray arrayWithObject:[NSString stringWithFormat:@"%d", processIdentifier]]];
+            
+            [NSApp terminate:self];
         });
     }];
 }
