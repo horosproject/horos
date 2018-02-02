@@ -2739,7 +2739,10 @@ static BOOL firstCall = YES;
             NSLog( @"******** FAILED to clean the INCOMING.noindex directory: %@", incomingDirectoryPath);
     }
 
-    [[NSFileManager defaultManager] confirmDirectoryAtPath: incomingDirectoryPath];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[incomingDirectoryPath stringByDeletingLastPathComponent]])
+    {
+        [[NSFileManager defaultManager] confirmDirectoryAtPath: incomingDirectoryPath];
+    }
     
     
     [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints"];
