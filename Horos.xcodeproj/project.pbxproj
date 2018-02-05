@@ -10597,7 +10597,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# git submodule sync # done in dedicated target\n\ncd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo FeedbackReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo dciodvfy.zip\nunzip -uo Ming.zip\n\nunzip -uo weasis-portable*.zip -d weasis\nchmod -R 755 weasis\nfind \"$SRCROOT/Binaries/weasis\" -name __MACOSX | xargs rm -Rf\n\ncd \"$SRCROOT/Binaries/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/DICOMPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\nexit 0";
+			shellScript = "# git submodule sync # done in dedicated target\n\ncd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo FeedbackReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo dciodvfy.zip\nunzip -uo Ming.zip\nunzip -uo homephone.framework.zip\n\nunzip -uo weasis-portable*.zip -d weasis\nchmod -R 755 weasis\nfind \"$SRCROOT/Binaries/weasis\" -name __MACOSX | xargs rm -Rf\n\ncd \"$SRCROOT/Binaries/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/DICOMPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\nexit 0";
 		};
 		59BDEE70117CB3A6007F1F2C /* Zip Horos Launcher into Resources */ = {
 			isa = PBXShellScriptBuildPhase;
