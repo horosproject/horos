@@ -21052,6 +21052,8 @@ static float oldsetww, oldsetwl;
 #ifndef OSIRIX_LIGHT
 - (VRController *)openVRViewerForMode:(NSString *)mode
 {
+    [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_3DVOL_LAUNCHED detail:[NSString stringWithFormat:@"{\"Mode\": \"%@\"}",mode]];
+    
     long i;
     
     [self checkEverythingLoaded];
@@ -21225,6 +21227,8 @@ static float oldsetww, oldsetwl;
 
 - (SRController *)openSRViewer
 {
+    [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_3DSUR_LAUNCHED detail:@"{}"];
+    
     SRController *viewer;
     [self checkEverythingLoaded];
     [self clear8bitRepresentations];
@@ -21282,6 +21286,8 @@ static float oldsetww, oldsetwl;
 
 - (OrthogonalMPRViewer *)openOrthogonalMPRViewer
 {
+    [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_2DMPR_LAUNCHED detail:@"{}"];
+    
     OrthogonalMPRViewer *viewer;
     [self checkEverythingLoaded];
     [self clear8bitRepresentations];
@@ -21330,6 +21336,8 @@ static float oldsetww, oldsetwl;
 #ifndef OSIRIX_LIGHT
 - (OrthogonalMPRPETCTViewer *)openOrthogonalMPRPETCTViewer
 {
+    [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_2DMPR_LAUNCHED detail:@"{}"];
+    
     OrthogonalMPRPETCTViewer  *viewer;
     [self checkEverythingLoaded];
     [self clear8bitRepresentations];
@@ -21466,6 +21474,8 @@ static float oldsetww, oldsetwl;
 #ifndef OSIRIX_LIGHT
 - (EndoscopyViewer *)openEndoscopyViewer
 {
+    [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_3DEND_LAUNCHED detail:@"{}"];
+    
     [self checkEverythingLoaded];
     [self clear8bitRepresentations];
     EndoscopyViewer *viewer;
@@ -21567,6 +21577,8 @@ static float oldsetww, oldsetwl;
 #ifndef OSIRIX_LIGHT
 - (MPRController *)openMPRViewer
 {
+    [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_3DMPR_LAUNCHED detail:@"{}"];
+    
     [self checkEverythingLoaded];
     [self clear8bitRepresentations];
     
@@ -21640,6 +21652,8 @@ static float oldsetww, oldsetwl;
 /** Action to open the CPRViewer */
 - (CPRController *)openCPRViewer
 {
+    [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_3DCPR_LAUNCHED detail:@"{}"];
+    
     [self checkEverythingLoaded];
     [self clear8bitRepresentations];
     
