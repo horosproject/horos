@@ -127,6 +127,8 @@
 #import "ToolBarNSWindow.h"
 #import "RemoteDicomDatabase.h"
 
+#import "homephone/HorosHomePhone.h"
+
 int delayedTileWindows = NO;
 
 #define MAXSCREENS 10
@@ -7789,6 +7791,8 @@ static ViewerController *draggedController = nil;
     [self bind:@"flagListPODComparatives" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:@"values.listPODComparativesIn2DViewer" options:nil];
     
     [ViewerController clearFrontMost2DViewerCache];
+    
+    [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_2D_VIEWER_LAUNCHED detail:@"{}"];
 }
 
 -(void)comparativeRefresh:(NSString*) patientUID
@@ -9409,6 +9413,8 @@ static int avoidReentryRefreshDatabase = 0;
     [imageView stopROIEditingForce: YES];
     
     [PluginManager startProtectForCrashWithFilter: filter];
+    
+    [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_PLUGIN_LAUNCHED detail:[NSString stringWithFormat:@"{\"PluginName\": \"%@\"}",name]];
     
     NSLog( @"executeFilter");
     
