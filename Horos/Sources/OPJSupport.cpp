@@ -46,6 +46,9 @@
 #include <OpenJPEG/openjpeg.h>
 #include <OpenJPEG/format_defs.h>
 
+#define JPT_CFMT 2
+#define OPJ_CODEC_JPT 1
+
 #include <assert.h>
 #include <stdlib.h>
 #include <iostream>
@@ -57,125 +60,6 @@
 //#define OPJ_VERBOSE
 
 
-typedef struct opj_buffer_info {
-    OPJ_BYTE *buf;
-    OPJ_BYTE *cur;
-    OPJ_SIZE_T len;
-} opj_buffer_info_t;
-
-static OPJ_SIZE_T opj_read_from_buffer(void* pdst, OPJ_SIZE_T len, opj_buffer_info_t* psrc) {
-    OPJ_SIZE_T n = psrc->buf + psrc->len - psrc->cur;
-    
-    if (n) {
-        if (n > len)
-            n = len;
-        
-        memcpy (pdst, psrc->cur, n);
-        psrc->cur += n;
-    }
-    else
-        n = (OPJ_SIZE_T)-1;
-    
-    return n;
-}
-
-static OPJ_SIZE_T opj_write_to_buffer(void* p_buffer, OPJ_SIZE_T p_nb_bytes, opj_buffer_info_t* p_source_buffer) {
-    OPJ_BYTE* pbuf = p_source_buffer->buf;
-    OPJ_BYTE* pcur = p_source_buffer->cur;
-    
-    OPJ_SIZE_T len = p_source_buffer->len;
-    
-    if (0 == len)
-        len = 1;
-    
-    OPJ_SIZE_T dist = pcur - pbuf, n = len - dist;
-    assert (dist <= len);
-    
-    while (n < p_nb_bytes) {
-        len *= 2;
-        n = len - dist;
-    }
-    
-    if (len != p_source_buffer->len) {
-        pbuf = (OPJ_BYTE*)malloc(len);
-        
-        if (0 == pbuf)
-            return (OPJ_SIZE_T)-1;
-        
-        if (p_source_buffer->buf) {
-            memcpy (pbuf, p_source_buffer->buf, dist);
-            free(p_source_buffer->buf);
-        }
-        
-        p_source_buffer->buf = pbuf;
-        p_source_buffer->cur = pbuf + dist;
-        p_source_buffer->len = len;
-    }
-    
-    memcpy (p_source_buffer->cur, p_buffer, p_nb_bytes);
-    p_source_buffer->cur += p_nb_bytes;
-    
-    return p_nb_bytes;
-}
-
-static OPJ_SIZE_T opj_skip_from_buffer(OPJ_SIZE_T len, opj_buffer_info_t* psrc) {
-    OPJ_SIZE_T n = psrc->buf + psrc->len - psrc->cur;
-    
-    if (n) {
-        if (n > len)
-            n = len;
-        
-        psrc->cur += len;
-    }
-    else
-        n = (OPJ_SIZE_T)-1;
-    
-    return n;
-}
-
-static OPJ_BOOL opj_seek_from_buffer(OPJ_OFF_T len, opj_buffer_info_t* psrc) {
-    OPJ_SIZE_T n = psrc->len;
-    
-    if (n > len)
-        n = len;
-    
-    psrc->cur = psrc->buf + n;
-    
-    return OPJ_TRUE;
-}
-
-static void opj_free_buffer(opj_buffer_info_t* psrc) {
-    delete psrc;
-}
-
-opj_stream_t * OPJ_CALLCONV opj_stream_create_buffer_stream(OPJ_BYTE *data, OPJ_SIZE_T len, OPJ_BOOL input) {
-    if (!data)
-        return NULL;
-    
-    opj_stream_t* ps = opj_stream_default_create(input);
-    if (!ps)
-        return NULL;
-    
-    opj_buffer_info_t* psrc = new opj_buffer_info_t;
-    if (!psrc)
-        return NULL;
-    
-    psrc->buf = psrc->cur = data;
-    psrc->len = len;
-    
-    opj_stream_set_user_data(ps, psrc, (opj_stream_free_user_data_fn)opj_free_buffer);
-    opj_stream_set_user_data_length(ps, psrc->len);
-    
-    if (input)
-        opj_stream_set_read_function (ps, (opj_stream_read_fn)opj_read_from_buffer);
-    else opj_stream_set_write_function(ps,(opj_stream_write_fn) opj_write_to_buffer);
-    
-    opj_stream_set_skip_function(ps, (opj_stream_skip_fn)opj_skip_from_buffer);
-    opj_stream_set_seek_function(ps, (opj_stream_seek_fn)opj_seek_from_buffer);
-    
-    return ps;
-}
-
 typedef struct decode_info
 {
     opj_codec_t *codec;
@@ -184,6 +68,7 @@ typedef struct decode_info
     opj_codestream_info_v2_t* cstr_info;
     opj_codestream_index_t* cstr_index;
     OPJ_BOOL deleteImage;
+    
 } decode_info_t;
 
 #define JP2_RFC3745_MAGIC "\x00\x00\x00\x0c\x6a\x50\x20\x20\x0d\x0a\x87\x0a"
@@ -191,8 +76,6 @@ typedef struct decode_info
 /* position 45: "\xff\x52" */
 #define J2K_CODESTREAM_MAGIC "\xff\x4f\xff\x51"
 
-//static OFMutex decoderMutex;
-//static OFMutex enconderMutex;
 
 // Adapted from infile_format() in /src/bin/jp2/opj_decompress.c
 static int buffer_format(void * buf)
@@ -295,8 +178,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
                                              long *decompressedBufferSize,
                                              int *colorModel)
 {
-    //decoderMutex.lock();
-    
+    //opj_initialize(NULL);
     opj_dparameters_t parameters;
     int i;
     int width, height;
@@ -306,7 +188,6 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     
     if (jp2DataSize<12)
     {
-        //decoderMutex.unlock();
         
         return 0;
     }
@@ -319,26 +200,13 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     opj_set_default_decoder_parameters(&parameters);
     parameters.decod_format = buffer_format(jp2Data);
     
-    /* RONIN OpenJPEG // Create the stream
-    opj_buffer_info_t bufferInfo;
-    bufferInfo.cur = bufferInfo.buf = (OPJ_BYTE *)jp2Data;
-    bufferInfo.len = (OPJ_SIZE_T) jp2DataSize;
-    // Create the stream
-    decodeInfo.stream = opj_stream_create_buffer_stream(&bufferInfo , OPJ_STREAM_READ);
-     */
-    
-    // OpenJPEG
-    decodeInfo.stream = opj_stream_create_buffer_stream((OPJ_BYTE *)jp2Data, jp2DataSize, OPJ_STREAM_READ);
-    
-    //GROK
-    //decodeInfo.stream = opj_stream_create_buffer_stream((OPJ_BYTE *)jp2Data, (OPJ_SIZE_T) jp2DataSize , OPJ_STREAM_READ);
+    // Create buffer stream
+    decodeInfo.stream = opj_stream_create_buffer_stream((OPJ_BYTE *)jp2Data, (OPJ_SIZE_T) jp2DataSize , false, OPJ_STREAM_READ);
     
     
     if (!decodeInfo.stream)
     {
         fprintf(stderr,"%s:%d:\n\tNO decodeInfo.stream\n",__FILE__,__LINE__);
-        
-        //decoderMutex.unlock();
         
         return NULL;
     }
@@ -347,27 +215,25 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     
     switch (parameters.decod_format)
     {
-        case J2K_CFMT:                      /* JPEG-2000 codestream */
+            case J2K_CFMT:                      /* JPEG-2000 codestream */
             codec_format = OPJ_CODEC_J2K;
             break;
             
-        case JP2_CFMT:                      /* JPEG 2000 compressed image data */
+            case JP2_CFMT:                      /* JPEG 2000 compressed image data */
             codec_format = OPJ_CODEC_JP2;
             break;
             
-        case JPT_CFMT:                      /* JPEG 2000, JPIP */
-            codec_format = OPJ_CODEC_JPT;
+            case JPT_CFMT:                      /* JPEG 2000, JPIP */
+            codec_format = (OPJ_CODEC_FORMAT) OPJ_CODEC_JPT;
             break;
             
-        case -1:
+            case -1:
             
         default:
             
             release(&decodeInfo);
             
             fprintf(stderr,"%s:%d: decode format missing\n",__FILE__,__LINE__);
-            
-             //decoderMutex.unlock();
             
             return NULL;
     }
@@ -451,7 +317,6 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
             if (!opj_decode(decodeInfo.codec, decodeInfo.stream, decodeInfo.image)) {
                 fprintf(stderr,"%s:%d:\n\topj_decode failed\n",__FILE__,__LINE__);
                 
-                //decoderMutex.unlock();
                 
                 return NULL;
             }
@@ -479,7 +344,6 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     
     if (fails)
     {
-        //decoderMutex.unlock();
         
         return NULL;
     }
@@ -522,7 +386,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     long depth = (decodeInfo.image->comps[0].prec + 7)/8;
     long decompressSize = width * height * decodeInfo.image->numcomps * depth;
     if (decompressedBufferSize)
-        *decompressedBufferSize = decompressSize;;
+    *decompressedBufferSize = decompressSize;;
     
     if (!inputBuffer )
     {
@@ -530,7 +394,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     }
     
     if (colorModel)
-        *colorModel = 0;
+    *colorModel = 0;
     
     if ((decodeInfo.image->numcomps >= 3
          && decodeInfo.image->comps[0].dx == decodeInfo.image->comps[1].dx
@@ -552,7 +416,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
         int *red, *green, *blue, *alpha;
         
         if (colorModel)
-            *colorModel = 1;
+        *colorModel = 1;
         
         alpha = NULL;
         
@@ -572,7 +436,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
                 alpha = decodeInfo.image->comps[3].data;
             }
             
-        }	/* if(has_rgb) */
+        }    /* if(has_rgb) */
         else
         {
             red = green = blue = decodeInfo.image->comps[0].data;
@@ -580,7 +444,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
             {
                 alpha = decodeInfo.image->comps[1].data;
             }
-        }	/* if(has_rgb) */
+        }    /* if(has_rgb) */
         
         ac = 255;/* 255: FULLY_OPAQUE; 0: FULLY_TRANSPARENT */
         
@@ -609,7 +473,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
                 *ptrIBody = ac;
                 ptrIBody++;
             }
-        }	/* for(i) */
+        }    /* for(i) */
     }/* if (decodeInfo.image->numcomps >= 3  */
     else if(decodeInfo.image->numcomps == 1) /* Grey */
     {
@@ -695,7 +559,6 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
     release(&decodeInfo);
     opj_destroy_cstr_index(&(decodeInfo.cstr_index));
     
-    //decoderMutex.unlock();
     
     return inputBuffer;
 }
@@ -859,7 +722,6 @@ OPJSupport::compressJPEG2K(void *data,
                            int rate,
                            long *compressedDataSize)
 {
-    //enconderMutex.lock();
     
     opj_cparameters_t parameters;
     
@@ -884,8 +746,7 @@ OPJSupport::compressJPEG2K(void *data,
     OPJ_BOOL forceJ2K = (parameters.cod_format == J2K_CFMT ? OPJ_FALSE:(((OPJ_TRUE /*force here*/))));
     
 #ifdef WITH_OPJ_FILE_STREAM
-    strcpy(parameters.outfile, "/tmp/opjXXXXXX");
-    mkstemp(parameters.outfile);
+    tmpnam(parameters.outfile);
 #endif
     
     image = rawtoimage( (char*) data,
@@ -911,7 +772,6 @@ OPJSupport::compressJPEG2K(void *data,
         
         *compressedDataSize = 0;
         
-        //enconderMutex.unlock();
         
         return NULL;
     }
@@ -920,19 +780,19 @@ OPJSupport::compressJPEG2K(void *data,
     
     switch (parameters.cod_format)
     {
-        case J2K_CFMT:                      /* JPEG-2000 codestream */
+            case J2K_CFMT:                      /* JPEG-2000 codestream */
             codec_format = OPJ_CODEC_J2K;
             break;
             
-        case JP2_CFMT:                      /* JPEG 2000 compressed image data */
+            case JP2_CFMT:                      /* JPEG 2000 compressed image data */
             codec_format = OPJ_CODEC_JP2;
             break;
             
-        case JPT_CFMT:                      /* JPEG 2000, JPIP */
-            codec_format = OPJ_CODEC_JPT;
+            case JPT_CFMT:                      /* JPEG 2000, JPIP */
+            codec_format = (OPJ_CODEC_FORMAT) OPJ_CODEC_JPT;
             break;
             
-        case -1:
+            case -1:
         default:
             fprintf(stderr,"%s:%d: encode format missing\n",__FILE__,__LINE__);
             
@@ -947,7 +807,6 @@ OPJSupport::compressJPEG2K(void *data,
             
             *compressedDataSize = 0;
             
-            //enconderMutex.unlock();
             
             return NULL;
     }
@@ -969,7 +828,6 @@ OPJSupport::compressJPEG2K(void *data,
         
         *compressedDataSize = 0;
         
-        //enconderMutex.unlock();
         
         return NULL;
     }
@@ -996,8 +854,6 @@ OPJSupport::compressJPEG2K(void *data,
         if (image) opj_image_destroy(image);
         
         *compressedDataSize = 0;
-        
-        //enconderMutex.unlock();
         
         return NULL;
     }
@@ -1035,7 +891,6 @@ OPJSupport::compressJPEG2K(void *data,
         
         *compressedDataSize = 0;
         
-        //enconderMutex.unlock();
         
         return NULL;
     }
@@ -1077,7 +932,6 @@ OPJSupport::compressJPEG2K(void *data,
                 
                 *compressedDataSize = 0;
                 
-                //enconderMutex.unlock();
                 
                 return NULL;
             }
@@ -1100,7 +954,6 @@ OPJSupport::compressJPEG2K(void *data,
                     
                     *compressedDataSize = 0;
                     
-                    //enconderMutex.unlock();
                     
                     return NULL;
                 }
@@ -1144,7 +997,7 @@ OPJSupport::compressJPEG2K(void *data,
     {
 #ifdef WITH_OPJ_FILE_STREAM
         if (parameters.outfile[0] != '\0')
-            remove(parameters.outfile);
+        remove(parameters.outfile);
 #endif
     }
     else
@@ -1201,8 +1054,6 @@ OPJSupport::compressJPEG2K(void *data,
         }
 #endif
     }
-    
-    //enconderMutex.unlock();
-    
     return to;
 }
+
