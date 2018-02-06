@@ -141,6 +141,8 @@
 #import "ICloudDriveDetector.h"
 #import "NSException+N2.h"
 
+#import "homephone/HorosHomePhone.h"
+
 #import "url.h"
 
 #ifndef OSIRIX_LIGHT
@@ -14522,6 +14524,7 @@ static NSArray*	openSubSeriesArray = nil;
         [alert release];
     }
     
+    [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_HOROS_STARTED detail:@"{}"];
     
     [ICloudDriveDetector performStartupICloudDriveTasks:self];
     [O2HMigrationAssistant performStartupO2HTasks:self];
@@ -20164,6 +20167,8 @@ restart:
     }
     
     [PluginManager startProtectForCrashWithFilter: filter];
+    
+    [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_PLUGIN_LAUNCHED detail:[NSString stringWithFormat:@"{\"PluginName\": \"%@\"}",name]];
     
     long result = [filter prepareFilter: nil];
     [filter filterImage: name];

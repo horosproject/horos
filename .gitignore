@@ -32,5 +32,7 @@ Binaries/ReportsToPDF/odt2pdf/build/odt2pdf
 Binaries/weasis/
 Binaries/._OsiriX Report.template
 Binaries/FeedbackReporter.framework/
+Binaries/homephone.framework/
 
 *.xcscmblueprint
+
