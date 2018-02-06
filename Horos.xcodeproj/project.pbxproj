@@ -26,6 +26,7 @@
 				71A522FC2021ACE70065793A /* Make */,
 			);
 			dependencies = (
+				99C0EE1F202A104200D88E8D /* PBXTargetDependency */,
 				71A523032021B6810065793A /* PBXTargetDependency */,
 				71A523292021D30C0065793A /* PBXTargetDependency */,
 			);
@@ -108,6 +109,19 @@
 			);
 			name = Submodules;
 			productName = "Git Submodule Sync";
+		};
+		9920CBEC202A0BA600FE0A2A /* Grok */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 9920CBF1202A0BA600FE0A2A /* Build configuration list for PBXAggregateTarget "Grok" */;
+			buildPhases = (
+				9920CBEF202A0BA600FE0A2A /* CMake */,
+				9920CBF0202A0BA600FE0A2A /* Make */,
+			);
+			dependencies = (
+				9920CBED202A0BA600FE0A2A /* PBXTargetDependency */,
+			);
+			name = Grok;
+			productName = Grok;
 		};
 		BF7486A50CC6AA5C00198387 /* Documentation */ = {
 			isa = PBXAggregateTarget;
@@ -3246,6 +3260,34 @@
 			proxyType = 1;
 			remoteGlobalIDString = 4A2F5931078D148300C514A2;
 			remoteInfo = "Unzip Binaries";
+		};
+		9920CBEE202A0BA600FE0A2A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
+			remoteInfo = Submodules;
+		};
+		99C0EE1A202A101000D88E8D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9920CBEC202A0BA600FE0A2A;
+			remoteInfo = Grok;
+		};
+		99C0EE1C202A102600D88E8D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9920CBEC202A0BA600FE0A2A;
+			remoteInfo = Grok;
+		};
+		99C0EE1E202A104200D88E8D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9920CBEC202A0BA600FE0A2A;
+			remoteInfo = Grok;
 		};
 		99FE27FC1CF4A442003C32AB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -9949,6 +9991,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				99C0EE1B202A101000D88E8D /* PBXTargetDependency */,
 				71A523192021D2400065793A /* PBXTargetDependency */,
 				71A523252021D2F70065793A /* PBXTargetDependency */,
 				71A5234D20220F990065793A /* PBXTargetDependency */,
@@ -10025,6 +10068,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				99C0EE1D202A102600D88E8D /* PBXTargetDependency */,
 				71A5231B2021D2480065793A /* PBXTargetDependency */,
 				71A523272021D3010065793A /* PBXTargetDependency */,
 				71A5230B2021C8A80065793A /* PBXTargetDependency */,
@@ -10131,6 +10175,7 @@
 				71A5231C2021D2B50065793A /* OpenJPEG */,
 				71A5232A2021D3420065793A /* OpenSSL */,
 				71E6C0B01FBAD31E00FF75B6 /* Submodules */,
+				9920CBEC202A0BA600FE0A2A /* Grok */,
 			);
 		};
 /* End PBXProject section */
@@ -10856,6 +10901,34 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "git submodule sync --recursive\ngit submodule update --init --recursive";
+		};
+		9920CBEF202A0BA600FE0A2A /* CMake */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = CMake;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/CMake.sh\"";
+		};
+		9920CBF0202A0BA600FE0A2A /* Make */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Make;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Make.sh\"";
 		};
 		AB0F3A3F1046BE51004129DD /* Copy Headers and Create Horos.h */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -12645,6 +12718,26 @@
 			target = 4A2F5931078D148300C514A2 /* Unzip Binaries */;
 			targetProxy = 71E6A23D1FC5ED720099B327 /* PBXContainerItemProxy */;
 		};
+		9920CBED202A0BA600FE0A2A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
+			targetProxy = 9920CBEE202A0BA600FE0A2A /* PBXContainerItemProxy */;
+		};
+		99C0EE1B202A101000D88E8D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9920CBEC202A0BA600FE0A2A /* Grok */;
+			targetProxy = 99C0EE1A202A101000D88E8D /* PBXContainerItemProxy */;
+		};
+		99C0EE1D202A102600D88E8D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9920CBEC202A0BA600FE0A2A /* Grok */;
+			targetProxy = 99C0EE1C202A102600D88E8D /* PBXContainerItemProxy */;
+		};
+		99C0EE1F202A104200D88E8D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9920CBEC202A0BA600FE0A2A /* Grok */;
+			targetProxy = 99C0EE1E202A104200D88E8D /* PBXContainerItemProxy */;
+		};
 		99FE27FD1CF4A442003C32AB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 4A2F5931078D148300C514A2 /* Unzip Binaries */;
@@ -13609,6 +13702,20 @@
 			};
 			name = Debug;
 		};
+		9920CBF2202A0BA600FE0A2A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		9920CBF3202A0BA600FE0A2A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		AB0F3A2E1046BD2D004129DD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -13765,6 +13872,15 @@
 			buildConfigurations = (
 				7E76BED9085757B70073649A /* Debug */,
 				43E98D191A32BF6A001B9E51 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9920CBF1202A0BA600FE0A2A /* Build configuration list for PBXAggregateTarget "Grok" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9920CBF2202A0BA600FE0A2A /* Debug */,
+				9920CBF3202A0BA600FE0A2A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
