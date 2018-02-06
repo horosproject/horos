@@ -13,6 +13,9 @@
 [submodule "OpenJPEG"]
 	path = OpenJPEG
 	url = https://github.com/uclouvain/openjpeg.git
+[submodule "Grok"]
+        path = Grok
+        url = https://github.com/GrokImageCompression/grok.git
 [submodule "OpenSSL"]
 	path = OpenSSL
 	url = https://github.com/openssl/openssl.git
