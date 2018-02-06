@@ -38,7 +38,7 @@
 #ifndef __vtkHorosFixedPointVolumeRayCastMapper_h
 #define __vtkHorosFixedPointVolumeRayCastMapper_h
 
-#include <vtkFixedPointVolumeRayCastMapper.h>
+#include <VTK/vtkFixedPointVolumeRayCastMapper.h>
 
 class  VTKRENDERINGVOLUME_EXPORT vtkHorosFixedPointVolumeRayCastMapper : public vtkFixedPointVolumeRayCastMapper {
     

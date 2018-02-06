@@ -138,7 +138,6 @@
 #import "DicomDir.h"
 #import "CPRVolumeData.h"
 #import "O2HMigrationAssistant.h"
-#import "ICloudDriveDetector.h"
 #import "NSException+N2.h"
 
 #import "homephone/HorosHomePhone.h"
@@ -14526,7 +14525,7 @@ static NSArray*	openSubSeriesArray = nil;
     
     [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_HOROS_STARTED detail:@"{}"];
     
-    [ICloudDriveDetector performStartupICloudDriveTasks:self];
+    
     [O2HMigrationAssistant performStartupO2HTasks:self];
 }
 

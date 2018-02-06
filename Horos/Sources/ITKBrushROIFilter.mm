@@ -37,11 +37,11 @@
 
 //#define id Id
 #include <Accelerate/Accelerate.h>
-#include <itkImage.h>
-#include <itkImportImageFilter.h>
-#include <itkBinaryErodeImageFilter.h>
-#include <itkBinaryDilateImageFilter.h>
-#include <itkBinaryBallStructuringElement.h>
+#include <ITK/itkImage.h>
+#include <ITK/itkImportImageFilter.h>
+#include <ITK/itkBinaryErodeImageFilter.h>
+#include <ITK/itkBinaryDilateImageFilter.h>
+#include <ITK/itkBinaryBallStructuringElement.h>
 //#undef id
 
 #import "ROI.h"

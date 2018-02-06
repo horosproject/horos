@@ -13,8 +13,6 @@ for alt in "${alts[@]}"; do
     cp -R "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/Horos.framework" "$alt_framework_path"
     mv "$alt_framework_path/Versions/A/Horos" "$alt_framework_path/Versions/A/$alt"
     rm "$alt_framework_path/Horos"
-    rm "$alt_framework_path/Headers"
-    rm -rf "$alt_framework_path/Versions/A/Headers"
     cd "$alt_framework_path"
     ln -s "Versions/A/$alt"
     sed -i '' "s/Horos/$alt/" "Versions/A/Resources/Info.plist"

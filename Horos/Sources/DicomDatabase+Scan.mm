@@ -525,8 +525,6 @@ static NSString* _dcmElementKey(DcmElement* element) {
     
     *mode = dialog.choice;
     
-    [dialog.window close];
-    
     [dialog release];
     
 }
