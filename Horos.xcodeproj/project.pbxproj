@@ -412,12 +412,12 @@
 		71AD676D1FC4256E00A1E2F8 /* Tiling3x2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0A81FB59A9000FF75B6 /* Tiling3x2.pdf */; };
 		71AD676E1FC4256E00A1E2F8 /* Tiling3x3.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0A91FB59A9000FF75B6 /* Tiling3x3.pdf */; };
 		71C99EA61D1A81FE00208F3B /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71C99EA51D1A81FE00208F3B /* Growl.framework */; };
-		71C99EA71D1A871700208F3B /* Growl.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 71C99EA51D1A81FE00208F3B /* Growl.framework */; settings = {ATTRIBUTES = (); }; };
+		71C99EA71D1A871700208F3B /* Growl.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 71C99EA51D1A81FE00208F3B /* Growl.framework */; settings = {ATTRIBUTES = ( ); }; };
 		71CE3C19157F489C00AC0112 /* List.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71CE3C18157F489C00AC0112 /* List.pdf */; };
 		71E6C0801FB5943B00FF75B6 /* O2HMigrationAssistant.xib in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0821FB5943B00FF75B6 /* O2HMigrationAssistant.xib */; };
 		71E6C0851FB597FC00FF75B6 /* Decompress in Resources */ = {isa = PBXBuildFile; fileRef = AB724FF60ADE6ECB00A212A0 /* Decompress */; };
 		71E6C0861FB597FF00FF75B6 /* DICOMPrint in Resources */ = {isa = PBXBuildFile; fileRef = CEDF6DD00B46FE99008B45B8 /* DICOMPrint */; };
-		71E6C0AF1FB5B0BF00FF75B6 /* 3DconnexionClient.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 439B8C131A19CCC300F396D7 /* 3DconnexionClient.framework */; settings = {ATTRIBUTES = (); }; };
+		71E6C0AF1FB5B0BF00FF75B6 /* 3DconnexionClient.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 439B8C131A19CCC300F396D7 /* 3DconnexionClient.framework */; settings = {ATTRIBUTES = ( ); }; };
 		71EB83C016DCB7FF00D48646 /* O2DicomPredicateEditor.h in Headers */ = {isa = PBXBuildFile; fileRef = 71EB83B216DCB7FF00D48646 /* O2DicomPredicateEditor.h */; };
 		71EB83C116DCB7FF00D48646 /* O2DicomPredicateEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 71EB83B316DCB7FF00D48646 /* O2DicomPredicateEditor.m */; };
 		71EB83C216DCB7FF00D48646 /* O2DicomPredicateEditorCodeStrings.h in Headers */ = {isa = PBXBuildFile; fileRef = 71EB83B416DCB7FF00D48646 /* O2DicomPredicateEditorCodeStrings.h */; };
@@ -571,7 +571,7 @@
 		992335892009A75A000E10BA /* Horos.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* Horos.framework */; settings = {ATTRIBUTES = (); }; };
 		9939F7A91BCB0BF8009FEB69 /* FVTiff.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FC808F44724002A395F /* FVTiff.m */; };
 		993DB4A01C0243D50084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
-		993DB4A11C0244430084218A /* FeedbackReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; settings = {ATTRIBUTES = (); }; };
+		993DB4A11C0244430084218A /* FeedbackReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; settings = {ATTRIBUTES = ( ); }; };
 		993DB4A31C024FB40084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
 		994FABF11CEBF25800980A15 /* OnOffSwitchControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 994FABED1CEBF25800980A15 /* OnOffSwitchControl.h */; };
 		994FABF21CEBF25800980A15 /* OnOffSwitchControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 994FABEE1CEBF25800980A15 /* OnOffSwitchControl.m */; };
@@ -593,7 +593,7 @@
 		9966A1AC1AE09DB300F2D81A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A21AE09D4800F2D81A /* AVFoundation.framework */; };
 		9966A1AD1AE09DD000F2D81A /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A41AE09D5100F2D81A /* CoreMedia.framework */; };
 		9966A1AE1AE09DE200F2D81A /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1AA1AE09D7C00F2D81A /* Quartz.framework */; };
-		9966A1B51AE0B6EE00F2D81A /* DCM.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* DCM.framework */; settings = {ATTRIBUTES = (); }; };
+		9966A1B51AE0B6EE00F2D81A /* DCM.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* DCM.framework */; settings = {ATTRIBUTES = ( ); }; };
 		9966A2E71AE0C55600F2D81A /* DCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* DCM.framework */; };
 		9966BCB51CEB5BA50086A8D7 /* osirixplugin.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9966BCB41CEB5BA50086A8D7 /* osirixplugin.icns */; };
 		9980BA351FF545BC001D7779 /* COPYING.LESSER in Resources */ = {isa = PBXBuildFile; fileRef = 9980BA341FF545BC001D7779 /* COPYING.LESSER */; };
@@ -3144,13 +3144,6 @@
 			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
 			remoteInfo = "Git Submodule Sync";
 		};
-		99424E612029EE4600824299 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
-			remoteInfo = "Git Submodule Sync";
-		};
 		99FE27FC1CF4A442003C32AB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -3698,7 +3691,6 @@
 		991B8B5B1BB8B279006AF439 /* O2HMigrationAssistant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = O2HMigrationAssistant.png; sourceTree = "<group>"; };
 		9923358B2009A7ED000E10BA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		993DB49F1C0243D50084218A /* FeedbackReporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FeedbackReporter.framework; path = Binaries/FeedbackReporter.framework; sourceTree = "<group>"; };
-		99424E682029EE4600824299 /* Grok.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Grok.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		994FABED1CEBF25800980A15 /* OnOffSwitchControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnOffSwitchControl.h; sourceTree = "<group>"; };
 		994FABEE1CEBF25800980A15 /* OnOffSwitchControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnOffSwitchControl.m; sourceTree = "<group>"; };
 		994FABEF1CEBF25800980A15 /* OnOffSwitchControlCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnOffSwitchControlCell.h; sourceTree = "<group>"; };
@@ -5689,7 +5681,6 @@
 				710BAF411FAB7F10004909E4 /* GDCM.framework */,
 				710BAF601FB1A418004909E4 /* OpenJPEG.framework */,
 				717C19D31FB3712E005A5834 /* OpenSSL.framework */,
-				99424E682029EE4600824299 /* Grok.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -9985,24 +9976,6 @@
 			productReference = 844719AF0FD8EF50003BFDF8 /* DCM.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		99424E5F2029EE4600824299 /* Grok */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 99424E652029EE4600824299 /* Build configuration list for PBXNativeTarget "Grok" */;
-			buildPhases = (
-				99424E622029EE4600824299 /* CMake */,
-				99424E632029EE4600824299 /* Make */,
-				99424E642029EE4600824299 /* Framework */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				99424E602029EE4600824299 /* PBXTargetDependency */,
-			);
-			name = Grok;
-			productName = VTK;
-			productReference = 99424E682029EE4600824299 /* Grok.framework */;
-			productType = "com.apple.product-type.framework";
-		};
 		AB0F3A2B1046BD2B004129DD /* API */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AB0F3A321046BD2D004129DD /* Build configuration list for PBXNativeTarget "API" */;
@@ -10156,7 +10129,6 @@
 				710BAF581FB1A418004909E4 /* OpenJPEG */,
 				717C19CB1FB3712E005A5834 /* OpenSSL */,
 				71E6C0B01FBAD31E00FF75B6 /* Submodules */,
-				99424E5F2029EE4600824299 /* Grok */,
 			);
 		};
 /* End PBXProject section */
@@ -10965,48 +10937,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "git submodule sync --recursive\ngit submodule update --init --recursive";
-		};
-		99424E622029EE4600824299 /* CMake */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = CMake;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/CMake.sh\"";
-		};
-		99424E632029EE4600824299 /* Make */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = Make;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Make.sh\"";
-		};
-		99424E642029EE4600824299 /* Framework */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = Framework;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Framework.sh\"";
 		};
 		AB0F3A3F1046BE51004129DD /* Copy Headers and Create Horos.h */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -12775,11 +12705,6 @@
 			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
 			targetProxy = 71E6C0BF1FBAD35400FF75B6 /* PBXContainerItemProxy */;
 		};
-		99424E602029EE4600824299 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
-			targetProxy = 99424E612029EE4600824299 /* PBXContainerItemProxy */;
-		};
 		99FE27FD1CF4A442003C32AB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 4A2F5931078D148300C514A2 /* Unzip Binaries */;
@@ -13665,20 +13590,6 @@
 			};
 			name = Debug;
 		};
-		99424E662029EE4600824299 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		99424E672029EE4600824299 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 		AB0F3A2E1046BD2D004129DD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -13824,15 +13735,6 @@
 			buildConfigurations = (
 				7E76BED9085757B70073649A /* Debug */,
 				43E98D191A32BF6A001B9E51 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		99424E652029EE4600824299 /* Build configuration list for PBXNativeTarget "Grok" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				99424E662029EE4600824299 /* Debug */,
-				99424E672029EE4600824299 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
