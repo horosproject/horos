@@ -1,9 +1,5 @@
 #!/bin/sh
 
-
-exit 0
-
-
 path="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )/$(basename "${BASH_SOURCE[0]}")"
 
 cd "$TARGET_NAME"; pwd

@@ -1,10 +1,5 @@
 #!/bin/sh
 
-
-
-exit 0
-
-
 set -e; set -o xtrace
 
 source_dir="$PROJECT_DIR/$TARGET_NAME"

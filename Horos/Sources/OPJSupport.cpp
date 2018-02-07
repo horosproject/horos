@@ -178,7 +178,7 @@ void* OPJSupport::decompressJPEG2KWithBuffer(void* inputBuffer,
                                              long *decompressedBufferSize,
                                              int *colorModel)
 {
-    opj_initialize("");
+    //opj_initialize("");
     opj_dparameters_t parameters;
     int i;
     int width, height;
