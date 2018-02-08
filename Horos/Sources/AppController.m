@@ -1212,7 +1212,7 @@ void exceptionHandler(NSException *exception)
 		c = [c substringToIndex: 16];
 	
     if( c.length == 0)
-        c = @"OSIRIX";
+        c = @"HOROS";
     
 	[[NSUserDefaults standardUserDefaults] setObject: c forKey:@"AETITLE"];
 }
@@ -3343,7 +3343,7 @@ static BOOL initialized = NO;
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"RunListenerOnlyIfActive"])
 		{
-			NSLog( @"----- OsiriX : session deactivation: STOP DICOM LISTENER FOR THIS SESSION");
+			NSLog( @"----- Horos : session deactivation: STOP DICOM LISTENER FOR THIS SESSION");
 			
 			[self killDICOMListenerWait: YES];
 			
@@ -3358,7 +3358,7 @@ static BOOL initialized = NO;
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"RunListenerOnlyIfActive"])
 		{
-			NSLog( @"----- OsiriX : session activation: START DICOM LISTENER FOR THIS SESSION");
+			NSLog( @"----- Horos : session activation: START DICOM LISTENER FOR THIS SESSION");
 			
 			// [[BrowserController currentBrowser] loadDatabase: [[BrowserController currentBrowser] currentDatabasePath]]; // TODO: hmm
 			
@@ -3375,7 +3375,7 @@ static BOOL initialized = NO;
 	if( [dcmtkQRSCPTLS running])
 		return YES;
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"NinjaSTORESCP"]) // some undefined external entity is linked to OsiriX for DICOM communications...
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"NinjaSTORESCP"]) // some undefined external entity is linked to Horos for DICOM communications...
         return YES;
 		
 	return NO;
@@ -3443,12 +3443,12 @@ static BOOL initialized = NO;
 		[NSThread detachNewThreadSelector:@selector(checkForUpdates:) toTarget:pluginManager withObject:pluginManager];
 	
     
-    // If OsiriX crashed before...
-    NSString *OsiriXCrashed = @"/tmp/OsiriXCrashed";
+    // If Horos crashed before...
+    NSString *HorosCrashed = @"/tmp/HorosCrashed";
     
-    if( [[NSFileManager defaultManager] fileExistsAtPath: OsiriXCrashed]) // Activate check for update !
+    if( [[NSFileManager defaultManager] fileExistsAtPath: HorosCrashed]) // Activate check for update !
     {
-        [[NSFileManager defaultManager] removeItemAtPath: OsiriXCrashed error: nil];
+        [[NSFileManager defaultManager] removeItemAtPath: HorosCrashed error: nil];
         
         if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CheckHorosUpdates"] == NO)
         {
@@ -4358,7 +4358,7 @@ static BOOL initialized = NO;
 	{
 		NSString *currVersionNumber = [[[NSBundle bundleForClass:[self class]] infoDictionary] objectForKey:@"CFBundleVersion"];
 		NSDictionary *productVersionDict = [NSDictionary dictionaryWithContentsOfURL: url];
-		NSString *latestVersionNumber = [productVersionDict valueForKey:@"OsiriX"];
+		NSString *latestVersionNumber = [productVersionDict valueForKey:@"Horos"];
 		
 		if (productVersionDict && currVersionNumber && latestVersionNumber)
 		{
