@@ -307,7 +307,10 @@ static int gTotalN2ManagedObjectContext = 0;
                 
                 BOOL isNewFile = ![NSFileManager.defaultManager fileExistsAtPath:sqlFilePath];
                 if (isNewFile)
+                {
+                    [[NSFileManager defaultManager] confirmDirectoryAtPath:[sqlFilePath stringByDeletingLastPathComponent]];
                     moc.persistentStoreCoordinator = nil;
+                }
                 
                 if (!moc.persistentStoreCoordinator)
                 {
