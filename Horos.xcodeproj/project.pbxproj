@@ -80,6 +80,7 @@
 			);
 			dependencies = (
 				71A523392021DB340065793A /* PBXTargetDependency */,
+				99C0EE24202A825800D88E8D /* PBXTargetDependency */,
 				71A523432021EA680065793A /* PBXTargetDependency */,
 			);
 			name = ITK;
@@ -108,6 +109,19 @@
 			);
 			name = Submodules;
 			productName = "Git Submodule Sync";
+		};
+		9920CBEC202A0BA600FE0A2A /* Grok */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 9920CBF1202A0BA600FE0A2A /* Build configuration list for PBXAggregateTarget "Grok" */;
+			buildPhases = (
+				9920CBEF202A0BA600FE0A2A /* CMake */,
+				9920CBF0202A0BA600FE0A2A /* Make */,
+			);
+			dependencies = (
+				9920CBED202A0BA600FE0A2A /* PBXTargetDependency */,
+			);
+			name = Grok;
+			productName = Grok;
 		};
 		BF7486A50CC6AA5C00198387 /* Documentation */ = {
 			isa = PBXAggregateTarget;
@@ -397,7 +411,6 @@
 		710EF1F31FD00E29000B555B /* Horos.h in Headers */ = {isa = PBXBuildFile; fileRef = 710EF1F11FD00E28000B555B /* Horos.h */; };
 		710EF1F41FD00E29000B555B /* Horos.m in Sources */ = {isa = PBXBuildFile; fileRef = 710EF1F21FD00E29000B555B /* Horos.m */; };
 		710EF1F61FD025BC000B555B /* Horos.m in Sources */ = {isa = PBXBuildFile; fileRef = 710EF1F21FD00E29000B555B /* Horos.m */; };
-		710EF1F71FD03F64000B555B /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */; };
 		711849771590A377006AB447 /* SMTPClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 711849751590A377006AB447 /* SMTPClient.h */; };
 		711849781590A377006AB447 /* SMTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 711849761590A377006AB447 /* SMTPClient.m */; };
 		7128FD771487D54A00AB54A1 /* N2UnclickableSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7128FD751487D54A00AB54A1 /* N2UnclickableSplitView.h */; };
@@ -3051,13 +3064,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		710BAF6D1FB2438E004909E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7E0B3A3E067526CD00908593;
-			remoteInfo = "Horos DCM";
-		};
 		71A523022021B6810065793A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -3113,20 +3119,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
 			remoteInfo = Submodules;
-		};
-		71A523242021D2F70065793A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 71A5231C2021D2B50065793A;
-			remoteInfo = OpenJPEG;
-		};
-		71A523262021D3010065793A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 71A5231C2021D2B50065793A;
-			remoteInfo = OpenJPEG;
 		};
 		71A523282021D30C0065793A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -3246,6 +3238,41 @@
 			proxyType = 1;
 			remoteGlobalIDString = 4A2F5931078D148300C514A2;
 			remoteInfo = "Unzip Binaries";
+		};
+		9920CBEE202A0BA600FE0A2A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
+			remoteInfo = Submodules;
+		};
+		99C0EE1A202A101000D88E8D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9920CBEC202A0BA600FE0A2A;
+			remoteInfo = Grok;
+		};
+		99C0EE1C202A102600D88E8D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9920CBEC202A0BA600FE0A2A;
+			remoteInfo = Grok;
+		};
+		99C0EE20202A63EA00D88E8D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7E0B3A3E067526CD00908593;
+			remoteInfo = DCM;
+		};
+		99C0EE23202A825800D88E8D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71A5231C2021D2B50065793A;
+			remoteInfo = OpenJPEG;
 		};
 		99FE27FC1CF4A442003C32AB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -3818,6 +3845,7 @@
 		999B0B601BB70F0800AF018A /* O2HMigrationAssistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = O2HMigrationAssistant.h; path = Horos.xcodeproj/../O2HMigrationAssistant.h; sourceTree = "<group>"; };
 		999B0B611BB70F0800AF018A /* O2HMigrationAssistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = O2HMigrationAssistant.m; path = Horos.xcodeproj/../O2HMigrationAssistant.m; sourceTree = "<group>"; };
 		999B0B661BB711ED00AF018A /* CurvedArrowGrayLeft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CurvedArrowGrayLeft.png; sourceTree = "<group>"; };
+		99C0EE22202A70CB00D88E8D /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		A085E103141E53210072BF0D /* DCMUSRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMUSRegion.h; sourceTree = "<group>"; };
 		A085E104141E53210072BF0D /* DCMUSRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMUSRegion.m; sourceTree = "<group>"; };
 		A90202BA0B980CD60001A00B /* PluginManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManagerController.h; sourceTree = "<group>"; };
@@ -5775,6 +5803,7 @@
 		29B97314FDCFA39411CA2CEA /* OsiriX */ = {
 			isa = PBXGroup;
 			children = (
+				99C0EE22202A70CB00D88E8D /* LICENSE */,
 				9980BA341FF545BC001D7779 /* COPYING.LESSER */,
 				71C99EA41D1A7E9F00208F3B /* Info.plist */,
 				710EF1F51FD014E8000B555B /* Horos */,
@@ -9949,8 +9978,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				99C0EE1B202A101000D88E8D /* PBXTargetDependency */,
 				71A523192021D2400065793A /* PBXTargetDependency */,
-				71A523252021D2F70065793A /* PBXTargetDependency */,
 				71A5234D20220F990065793A /* PBXTargetDependency */,
 				71A5233F2021DB770065793A /* PBXTargetDependency */,
 			);
@@ -10025,12 +10054,12 @@
 			buildRules = (
 			);
 			dependencies = (
+				99C0EE1D202A102600D88E8D /* PBXTargetDependency */,
 				71A5231B2021D2480065793A /* PBXTargetDependency */,
-				71A523272021D3010065793A /* PBXTargetDependency */,
 				71A5230B2021C8A80065793A /* PBXTargetDependency */,
 				71A5234F20220FA10065793A /* PBXTargetDependency */,
 				71A523412021DB800065793A /* PBXTargetDependency */,
-				710BAF6E1FB2438E004909E4 /* PBXTargetDependency */,
+				99C0EE21202A63EA00D88E8D /* PBXTargetDependency */,
 			);
 			name = Decompress;
 			productName = SafeDBRebuild;
@@ -10130,6 +10159,7 @@
 				71A5230E2021D1B60065793A /* CharLS */,
 				71A5231C2021D2B50065793A /* OpenJPEG */,
 				71A5232A2021D3420065793A /* OpenSSL */,
+				9920CBEC202A0BA600FE0A2A /* Grok */,
 				71E6C0B01FBAD31E00FF75B6 /* Submodules */,
 			);
 		};
@@ -10856,6 +10886,34 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "git submodule sync --recursive\ngit submodule update --init --recursive";
+		};
+		9920CBEF202A0BA600FE0A2A /* CMake */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = CMake;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/CMake.sh\"";
+		};
+		9920CBF0202A0BA600FE0A2A /* Make */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Make;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Make.sh\"";
 		};
 		AB0F3A3F1046BE51004129DD /* Copy Headers and Create Horos.h */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -12200,7 +12258,6 @@
 				AB724FA40ADE6ECB00A212A0 /* ofstd.cc in Sources */,
 				AB724FA50ADE6ECB00A212A0 /* ofstring.cc in Sources */,
 				AB724FA60ADE6ECB00A212A0 /* ofthread.cc in Sources */,
-				710EF1F71FD03F64000B555B /* DCMAbstractSyntaxUID.m in Sources */,
 				AB724FAA0ADE6ECB00A212A0 /* jaricom.c in Sources */,
 				AB724FAB0ADE6ECB00A212A0 /* jcapimin.c in Sources */,
 				AB724FAC0ADE6ECB00A212A0 /* jcapistd.c in Sources */,
@@ -12505,11 +12562,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		710BAF6E1FB2438E004909E4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7E0B3A3E067526CD00908593 /* DCM */;
-			targetProxy = 710BAF6D1FB2438E004909E4 /* PBXContainerItemProxy */;
-		};
 		71A523032021B6810065793A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
@@ -12549,16 +12601,6 @@
 			isa = PBXTargetDependency;
 			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
 			targetProxy = 71A523202021D2BF0065793A /* PBXContainerItemProxy */;
-		};
-		71A523252021D2F70065793A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 71A5231C2021D2B50065793A /* OpenJPEG */;
-			targetProxy = 71A523242021D2F70065793A /* PBXContainerItemProxy */;
-		};
-		71A523272021D3010065793A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 71A5231C2021D2B50065793A /* OpenJPEG */;
-			targetProxy = 71A523262021D3010065793A /* PBXContainerItemProxy */;
 		};
 		71A523292021D30C0065793A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -12644,6 +12686,31 @@
 			isa = PBXTargetDependency;
 			target = 4A2F5931078D148300C514A2 /* Unzip Binaries */;
 			targetProxy = 71E6A23D1FC5ED720099B327 /* PBXContainerItemProxy */;
+		};
+		9920CBED202A0BA600FE0A2A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
+			targetProxy = 9920CBEE202A0BA600FE0A2A /* PBXContainerItemProxy */;
+		};
+		99C0EE1B202A101000D88E8D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9920CBEC202A0BA600FE0A2A /* Grok */;
+			targetProxy = 99C0EE1A202A101000D88E8D /* PBXContainerItemProxy */;
+		};
+		99C0EE1D202A102600D88E8D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9920CBEC202A0BA600FE0A2A /* Grok */;
+			targetProxy = 99C0EE1C202A102600D88E8D /* PBXContainerItemProxy */;
+		};
+		99C0EE21202A63EA00D88E8D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7E0B3A3E067526CD00908593 /* DCM */;
+			targetProxy = 99C0EE20202A63EA00D88E8D /* PBXContainerItemProxy */;
+		};
+		99C0EE24202A825800D88E8D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71A5231C2021D2B50065793A /* OpenJPEG */;
+			targetProxy = 99C0EE23202A825800D88E8D /* PBXContainerItemProxy */;
 		};
 		99FE27FD1CF4A442003C32AB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -13243,7 +13310,7 @@
 				GCC_PREFIX_HEADER = Horos/prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
-					$CONFIGURATION_TEMP_DIR/OpenJPEG.build/Install/include,
+					$CONFIGURATION_TEMP_DIR/Grok.build/Install/include,
 					$CONFIGURATION_TEMP_DIR/GDCM.build/Install/include,
 					$CONFIGURATION_TEMP_DIR/OpenSSL.build/Install/include,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/include,
@@ -13258,6 +13325,8 @@
 					$CONFIGURATION_TEMP_DIR/GDCM.build/Install/wlib,
 					$CONFIGURATION_TEMP_DIR/ITK.build/Install/wlib,
 					$CONFIGURATION_TEMP_DIR/VTK.build/Install/wlib,
+					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
+					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_LDFLAGS = (
@@ -13271,6 +13340,8 @@
 					"-lGDCM",
 					"-lITK",
 					"-lVTK",
+					"-lopenjp2",
+					"-lCharLS",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.horos;
 				PRODUCT_NAME = Horos;
@@ -13288,13 +13359,13 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCM Framework/prefix.pch";
 				HEADER_SEARCH_PATHS = (
-					$CONFIGURATION_TEMP_DIR/OpenJPEG.build/Install/include,
+					$CONFIGURATION_TEMP_DIR/Grok.build/Install/include,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/include,
 				);
 				INFOPLIST_FILE = "DCM Framework/Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
-					$CONFIGURATION_TEMP_DIR/OpenJPEG.build/Install/lib,
+					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
 				OTHER_CFLAGS = "$(inherited)";
@@ -13331,7 +13402,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Decompress/prefix.pch;
 				HEADER_SEARCH_PATHS = (
-					$CONFIGURATION_TEMP_DIR/OpenJPEG.build/Install/include,
+					$CONFIGURATION_TEMP_DIR/Grok.build/Install/include,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/include,
 					$CONFIGURATION_TEMP_DIR/GDCM.build/Install/include,
 					$CONFIGURATION_TEMP_DIR/VTK.build/Install/include,
@@ -13340,10 +13411,14 @@
 					"$(inherited)",
 					Binaries/Ming,
 					$CONFIGURATION_TEMP_DIR/GDCM.build/Install/wlib,
+					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
+					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lGDCM",
+					"-lopenjp2",
+					"-lCharLS",
 				);
 				PRODUCT_NAME = Decompress;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
@@ -13480,13 +13555,13 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCM Framework/prefix.pch";
 				HEADER_SEARCH_PATHS = (
-					$CONFIGURATION_TEMP_DIR/OpenJPEG.build/Install/include,
+					$CONFIGURATION_TEMP_DIR/Grok.build/Install/include,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/include,
 				);
 				INFOPLIST_FILE = "DCM Framework/Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
-					$CONFIGURATION_TEMP_DIR/OpenJPEG.build/Install/lib,
+					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
 				OTHER_CFLAGS = "$(inherited)";
@@ -13516,7 +13591,7 @@
 				GCC_PREFIX_HEADER = Horos/prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
-					$CONFIGURATION_TEMP_DIR/OpenJPEG.build/Install/include,
+					$CONFIGURATION_TEMP_DIR/Grok.build/Install/include,
 					$CONFIGURATION_TEMP_DIR/GDCM.build/Install/include,
 					$CONFIGURATION_TEMP_DIR/OpenSSL.build/Install/include,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/include,
@@ -13530,6 +13605,8 @@
 					$CONFIGURATION_TEMP_DIR/GDCM.build/Install/wlib,
 					$CONFIGURATION_TEMP_DIR/ITK.build/Install/wlib,
 					$CONFIGURATION_TEMP_DIR/VTK.build/Install/wlib,
+					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
+					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_LDFLAGS = (
@@ -13543,6 +13620,8 @@
 					"-lGDCM",
 					"-lITK",
 					"-lVTK",
+					"-lopenjp2",
+					"-lCharLS",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.horos;
 				PRODUCT_NAME = Horos;
@@ -13609,6 +13688,20 @@
 			};
 			name = Debug;
 		};
+		9920CBF2202A0BA600FE0A2A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		9920CBF3202A0BA600FE0A2A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		AB0F3A2E1046BD2D004129DD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -13629,7 +13722,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Decompress/prefix.pch;
 				HEADER_SEARCH_PATHS = (
-					$CONFIGURATION_TEMP_DIR/OpenJPEG.build/Install/include,
+					$CONFIGURATION_TEMP_DIR/Grok.build/Install/include,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/include,
 					$CONFIGURATION_TEMP_DIR/GDCM.build/Install/include,
 					$CONFIGURATION_TEMP_DIR/VTK.build/Install/include,
@@ -13638,10 +13731,14 @@
 					"$(inherited)",
 					Binaries/Ming,
 					$CONFIGURATION_TEMP_DIR/GDCM.build/Install/wlib,
+					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
+					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lGDCM",
+					"-lopenjp2",
+					"-lCharLS",
 				);
 				PRODUCT_NAME = Decompress;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
@@ -13765,6 +13862,15 @@
 			buildConfigurations = (
 				7E76BED9085757B70073649A /* Debug */,
 				43E98D191A32BF6A001B9E51 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9920CBF1202A0BA600FE0A2A /* Build configuration list for PBXAggregateTarget "Grok" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9920CBF2202A0BA600FE0A2A /* Debug */,
+				9920CBF3202A0BA600FE0A2A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
