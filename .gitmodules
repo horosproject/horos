@@ -1,24 +1,33 @@
 [submodule "ITK"]
 	path = ITK
 	url = https://github.com/InsightSoftwareConsortium/ITK.git
+	ignore=dirty
 [submodule "VTK"]
 	path = VTK
 	url = https://github.com/Kitware/VTK.git
+	ignore=dirty
 [submodule "CharLS"]
 	path = CharLS
 	url = https://github.com/team-charls/charls.git
+	ignore=dirty
 [submodule "GDCM"]
 	path = GDCM
 	url = https://github.com/malaterre/GDCM.git
+	ignore=dirty
 [submodule "OpenJPEG"]
 	path = OpenJPEG
 	url = https://github.com/uclouvain/openjpeg.git
+	ignore=dirty
 [submodule "OpenSSL"]
 	path = OpenSSL
 	url = https://github.com/openssl/openssl.git
+	ignore=dirty
 #[submodule "DCMTK"]
 #	path = DCMTK
 #	url = http://git.dcmtk.org/dcmtk
+#	ignore=dirty
 [submodule "Grok"]
 	path = Grok
 	url = https://github.com/GrokImageCompression/grok.git
+	ignore=dirty
+
