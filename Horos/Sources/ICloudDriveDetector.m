@@ -37,6 +37,37 @@
 #import "BrowserController.h"
 #import "DicomDatabase.h"
 #import "AppController.h"
+#import "NSFileManager+N2.h"
+
+#import <objc/runtime.h>
+
+
+
+
+static NSString* purgedDatabasePath = nil;
+
+@interface NSFileManager (ICloudDriveDetector)
+
+-(NSString*) restricted_confirmDirectoryAtPath:(NSString*)dirPath;
+
+@end
+
+
+@implementation NSFileManager (ICloudDriveDetector)
+
+-(NSString*) restricted_confirmDirectoryAtPath:(NSString*)dirPath
+{
+    if ([dirPath containsString:purgedDatabasePath])
+        return nil;
+    
+    return [self restricted_confirmDirectoryAtPath:dirPath];
+}
+
+@end
+
+
+
+
 
 
 @interface ICloudDriveDetector ()
@@ -126,6 +157,37 @@
 
 + (void) performStartupICloudDriveTasks:(BrowserController*) browserController
 {
+    /*
+     
+    -- NOT USED
+    
+     NSString* purgedDatabaseLocation = [[NSUserDefaults standardUserDefaults] objectForKey:@"PURGED_DATABASELOCATIONURL"];
+    
+    if (purgedDatabaseLocation)
+    {
+        NSError *error = nil;
+        NSArray *folderContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:purgedDatabaseLocation error:&error];
+        if (error == nil && folderContents && folderContents.count == 1)
+        {
+            if ([[folderContents objectAtIndex:0] isEqualToString:@"INCOMING.noindex"])
+            {
+                NSString* toDelete = [NSString stringWithFormat:@"%@/INCOMING.noindex",purgedDatabaseLocation];
+                
+                folderContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:toDelete error:&error];
+                
+                if (error == nil && folderContents && folderContents.count == 0)
+                {
+                    [[NSFileManager defaultManager] removeItemAtPath:toDelete error:nil];
+                    [[NSFileManager defaultManager] removeItemAtPath:purgedDatabaseLocation error:nil];
+                    
+                    [[NSUserDefaults standardUserDefaults] setObject:nil forKey: @"PURGED_DATABASELOCATIONURL"];
+                }
+            }
+        }
+    }
+    */
+    
+    
     if ([ICloudDriveDetector requiresUserNotificationOnICloudDrive])
     {
         //Launch the assistant
@@ -217,67 +279,35 @@
         [[self window] close];
 
         if (returnCode == NSAlertSecondButtonReturn) {
-            NSLog(@"Delete was cancelled!");
+            NSLog(@"ICloudDriveDetector - User canceled database migration");
             return;
         }
         
 //        [@"" writeToFile:[databasePath stringByAppendingPathComponent:@".nosync"] atomically:YES encoding:NSUTF8StringEncoding error:NULL];
         
+        [NSApp endSheet: [alert window]];
         
         dispatch_async(dispatch_get_main_queue(), ^(void)
         {
-            NSError *error = nil;
             
-            [[NSFileManager defaultManager] createDirectoryAtPath:nosyncPath withIntermediateDirectories:YES attributes:nil error:&error];
-            
-            if (error) {
-                //TODO - Alert user
-                [[self window] close];
-                return;
-            }
-            
-            
-            error = nil;
-            
-            NSString* newDatabasePath = [NSString stringWithFormat:@"%@/%@",nosyncPath,[databasePath lastPathComponent]];
-            [[NSFileManager defaultManager] moveItemAtPath:databasePath toPath:newDatabasePath error:&error];
-            
-            if (error) {
-                //TODO - Alert user
-                [[self window] close];
-                return;
-            }
-            
-            
-            [[NSUserDefaults standardUserDefaults] setObject:newDatabasePath forKey:@"DEFAULT_DATABASELOCATIONURL"];
-            [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            
-            //RESTART or REOPEN DATABSE?
-            
-            // reopenDatabase - it seems it does not work at all
-            /*
-             {
-             [[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
-             [[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
-             [[NSUserDefaults standardUserDefaults] synchronize];
-             
-             [[BrowserController currentBrowser] resetToLocalDatabase];
-             
-             [[self window] close];
-             return;
-             }
-             */
-            
-            // Restart
+            if ([[BrowserController currentBrowser] shouldTerminate:nil] == NO)
             {
-                //reopenDatabase - but it doesn't work at all
-                [[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
-                [[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
+                NSRunInformationalAlertPanel( NSLocalizedString( @"Abort", nil),
+                                              NSLocalizedString( @"Operation was aborted because there are background tasks executing.", nil),
+                                              NSLocalizedString( @"Return", nil), nil, nil, nil );
                 
-                [[NSUserDefaults standardUserDefaults] synchronize];
-                
-                [[BrowserController currentBrowser] resetToLocalDatabase];
+                return;
+            }
+            
+            
+            
+            NSError *error = nil;
+            [[NSFileManager defaultManager] createDirectoryAtPath:nosyncPath withIntermediateDirectories:YES attributes:nil error:&error];
+            if (error)
+            {
+                NSRunInformationalAlertPanel( NSLocalizedString( @"Failure", nil),
+                                             NSLocalizedString( @"Operation has failed. Horos will restart and try to restore your database.", nil),
+                                             NSLocalizedString( @"Restart", nil), nil, nil, nil );
                 
                 [[self window] orderOut:self];
                 [NSApp stopModal];
@@ -285,8 +315,99 @@
                 int processIdentifier = [[NSProcessInfo processInfo] processIdentifier];
                 NSString *myPath = [NSString stringWithFormat:@"%s", [[[NSBundle mainBundle] executablePath] fileSystemRepresentation]];
                 [NSTask launchedTaskWithLaunchPath:myPath arguments:[NSArray arrayWithObject:[NSString stringWithFormat:@"%d", processIdentifier]]];
+                
                 [NSApp terminate:self];
+                
+                return;
             }
+            
+        
+            
+            NSString* newDatabasePath = [NSString stringWithFormat:@"%@/%@",nosyncPath,[databasePath lastPathComponent]];
+        
+            error = nil;
+            [[NSFileManager defaultManager] moveItemAtPath:databasePath toPath:newDatabasePath error:&error];
+            if (error)
+            {
+                
+                [[NSFileManager defaultManager] removeItemAtPath:newDatabasePath error:nil];
+                
+                NSRunInformationalAlertPanel( NSLocalizedString( @"Failure", nil),
+                                              NSLocalizedString( @"Operation has failed. Horos will restart and try to restore your database.", nil),
+                                              NSLocalizedString( @"Restart", nil), nil, nil, nil );
+                
+                [[self window] orderOut:self];
+                [NSApp stopModal];
+                
+                int processIdentifier = [[NSProcessInfo processInfo] processIdentifier];
+                NSString *myPath = [NSString stringWithFormat:@"%s", [[[NSBundle mainBundle] executablePath] fileSystemRepresentation]];
+                [NSTask launchedTaskWithLaunchPath:myPath arguments:[NSArray arrayWithObject:[NSString stringWithFormat:@"%d", processIdentifier]]];
+                
+                [NSApp terminate:self];
+                
+                return;
+            }
+            
+            
+
+            [[NSUserDefaults standardUserDefaults] setObject:newDatabasePath forKey:@"DEFAULT_DATABASELOCATIONURL"];
+            [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"DEFAULT_DATABASELOCATION"];
+
+            [[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
+            [[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
+
+            //[[NSUserDefaults standardUserDefaults] setObject:databasePath forKey: @"PURGED_DATABASELOCATIONURL"]; -- NOT USED
+            
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            
+            
+            // Loading this static var to be used byt tge swizzling below
+            purgedDatabasePath = [[NSString stringWithString:databasePath] retain];
+            
+            
+            
+            
+            // Swizzling to avoid creation of old database path directories when terminating - (NSString*)confirmDirectoryAtPath:(NSString*)dirPath;
+            
+            Class class = [NSFileManager class];
+            
+            SEL originalSelector_confirmDirectoryAtPath = @selector(confirmDirectoryAtPath:);
+            SEL swizzledSelector_confirmDirectoryAtPath = @selector(restricted_confirmDirectoryAtPath:);
+            
+            Method originalMethod_confirmDirectoryAtPath = class_getInstanceMethod(class, originalSelector_confirmDirectoryAtPath);
+            Method swizzledMethod_confirmDirectoryAtPath = class_getInstanceMethod(class, swizzledSelector_confirmDirectoryAtPath);
+            
+            BOOL didAddMethod =
+            class_addMethod(class,
+                            originalSelector_confirmDirectoryAtPath,
+                            method_getImplementation(swizzledMethod_confirmDirectoryAtPath),
+                            method_getTypeEncoding(swizzledMethod_confirmDirectoryAtPath));
+            
+            if (didAddMethod)
+            {
+                class_replaceMethod(class,
+                                    swizzledSelector_confirmDirectoryAtPath,
+                                    method_getImplementation(originalMethod_confirmDirectoryAtPath),
+                                    method_getTypeEncoding(originalMethod_confirmDirectoryAtPath));
+            }
+            else
+            {
+                method_exchangeImplementations(originalMethod_confirmDirectoryAtPath, swizzledMethod_confirmDirectoryAtPath);
+            }
+            
+            
+            
+            
+            
+            [[self window] orderOut:self];
+            [NSApp stopModal];
+            
+            int processIdentifier = [[NSProcessInfo processInfo] processIdentifier];
+            NSString *myPath = [NSString stringWithFormat:@"%s", [[[NSBundle mainBundle] executablePath] fileSystemRepresentation]];
+            [NSTask launchedTaskWithLaunchPath:myPath arguments:[NSArray arrayWithObject:[NSString stringWithFormat:@"%d", processIdentifier]]];
+            
+            [NSApp terminate:self];
         });
     }];
 }
@@ -302,3 +423,6 @@
 }
 
 @end
+
+
+
