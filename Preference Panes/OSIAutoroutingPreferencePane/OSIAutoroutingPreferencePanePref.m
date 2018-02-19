@@ -55,6 +55,8 @@
         NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIAutoroutingPreferencePanePref" bundle: nil] autorelease];
         [nib instantiateWithOwner:self topLevelObjects:&_tlos];
         
+        [newRoute retain];
+        
         [self setMainView: [mainWindow contentView]];
         [self mainViewDidLoad];
     }
@@ -137,6 +139,8 @@
     
     [routesArray release];
     [serversArray release];
+    
+    [newRoute release];
     
     [_tlos release]; _tlos = nil;
     
