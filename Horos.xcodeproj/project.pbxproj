@@ -13328,6 +13328,7 @@
 					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -13368,6 +13369,7 @@
 					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -13414,6 +13416,7 @@
 					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lGDCM",
@@ -13431,6 +13434,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				DEVELOPMENT_TEAM = "";
 				LIBRARY_SEARCH_PATHS = DICOMPrint;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = DICOMPrint;
 				USER_HEADER_SEARCH_PATHS = DICOMPrint;
 				VALID_ARCHS = i386;
@@ -13444,6 +13448,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
 				INFOPLIST_FILE = "$(SRCROOT)/API/Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "-fvisibility=default";
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.api;
 				PRODUCT_NAME = Horos;
@@ -13564,6 +13569,7 @@
 					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -13608,6 +13614,7 @@
 					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -13709,6 +13716,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
 				INFOPLIST_FILE = "$(SRCROOT)/API/Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "-fvisibility=default";
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.api;
 				PRODUCT_NAME = Horos;
@@ -13734,6 +13742,7 @@
 					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lGDCM",
@@ -13757,6 +13766,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				LIBRARY_SEARCH_PATHS = DICOMPrint;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = DICOMPrint;
 				USER_HEADER_SEARCH_PATHS = DICOMPrint;
