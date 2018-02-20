@@ -244,6 +244,8 @@
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIHangingPreferencePanePref" bundle: nil] autorelease];
 		[nib instantiateWithOwner:self topLevelObjects:&_tlos];
 		
+        [addWLWWWindow retain];
+        
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
         
@@ -362,6 +364,8 @@
     self.WLWWNewName = nil;
     
     NSLog(@"dealloc OSIHangingPreferencePanePref");
+    
+    [addWLWWWindow release];
     
     [_tlos release]; _tlos = nil;
     

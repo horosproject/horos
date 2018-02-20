@@ -173,6 +173,8 @@ static NSMatrix *gDateMatrix = nil;
 		[nib instantiateWithOwner:self topLevelObjects:&_tlos];
         [_tlos retain];
         
+        [smartAlbumsEditWindow retain];
+        
 		[self setMainView: [mainWindow contentView]];
         
         gDateMatrix = [dateMatrix retain];
@@ -238,6 +240,8 @@ static NSMatrix *gDateMatrix = nil;
     [albumDBArray release];
     
     [gDateMatrix release]; gDateMatrix = nil;
+    
+    [smartAlbumsEditWindow release];
     
     [_tlos release]; _tlos = nil;
     
