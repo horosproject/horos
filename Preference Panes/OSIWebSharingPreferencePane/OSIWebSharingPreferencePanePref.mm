@@ -98,6 +98,8 @@
 		NSNib *nib = [[NSNib alloc] initWithNibNamed: @"OSIWebSharingPreferencePanePref" bundle: nil];
 		[nib instantiateWithOwner:self topLevelObjects:&_tlos];
 		
+        [usersPanel retain];
+        
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
         
@@ -197,6 +199,8 @@
 	NSLog(@"dealloc OSIWebSharingPreferencePanePref");
 	
     [studiesArrayController removeObserver: self forKeyPath: @"selection"];
+    
+    [usersPanel release];
     
     [_tlos release]; _tlos = nil;
     
