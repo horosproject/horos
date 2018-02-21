@@ -95,6 +95,8 @@ static NSArray *languagesToMoveWhenQuitting = nil;
         
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIGeneralPreferencePanePref" bundle: nil] autorelease];
 		[nib instantiateWithOwner:self topLevelObjects:&_tlos];
+        
+        [compressionSettingsWindow retain];
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
@@ -300,6 +302,8 @@ static NSArray *languagesToMoveWhenQuitting = nil;
 	NSLog(@"dealloc OSIGeneralPreferencePanePref");
 	
     [languages release];
+    
+    [compressionSettingsWindow release];
     
     [_tlos release]; _tlos = nil;
     

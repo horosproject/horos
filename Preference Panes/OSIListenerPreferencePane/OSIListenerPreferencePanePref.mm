@@ -83,6 +83,8 @@
 	{
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIListenerPreferencePanePref" bundle: nil] autorelease];
 		[nib instantiateWithOwner:self topLevelObjects:&_tlos];
+        
+        [TLSSettingsWindow retain];
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
@@ -122,6 +124,8 @@
 	[TLSSupportedCipherSuite release];
 	[TLSDHParameterFileURL release];
     [TLSStoreSCPAETITLE release];
+    
+    [TLSSettingsWindow release];
     
     [_tlos release]; _tlos = nil;
 	

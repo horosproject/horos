@@ -77,6 +77,9 @@
 		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSILocationsPreferencePanePref" bundle: nil] autorelease];
 		[nib instantiateWithOwner:self topLevelObjects:&_tlos];
 		
+        [WADOSettings retain];
+        [TLSSettings retain];
+        
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
 	}
@@ -377,6 +380,9 @@
 	[TLSDHParameterFileURL release];
 	[TLSSupportedCipherSuite release];
     [TLSAuthenticationCertificate release];
+    
+    [WADOSettings release];
+    [TLSSettings release];
     
     [_tlos release]; _tlos = nil;
 	
