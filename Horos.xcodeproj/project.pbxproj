@@ -14082,7 +14082,7 @@
 					"$(PROJECT_DIR)/Binaries/openssl/libraries",
 					/usr/local/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-Wno-deprecated",
@@ -14127,6 +14127,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Horos Launcher/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -14172,6 +14173,7 @@
 					"$(PROJECT_DIR)/Binaries/LibTiff",
 					"$(PROJECT_DIR)/Binaries/CharLS",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-seg1addr",
 					0x20000000,
@@ -14342,6 +14344,7 @@
 					"$(PROJECT_DIR)/Binaries/openjpeg",
 					"$(PROJECT_DIR)/Binaries/GDCMLibs",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -14380,6 +14383,7 @@
 					Binaries/LibTiff,
 					AYDicomPrint,
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -14418,6 +14422,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "HorosAPI-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -14448,6 +14453,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Horos Launcher/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -14492,6 +14498,7 @@
 					"$(PROJECT_DIR)/Binaries/LibTiff",
 					"$(PROJECT_DIR)/Binaries/CharLS",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-seg1addr",
 					0x20000000,
@@ -14597,7 +14604,7 @@
 					"$(PROJECT_DIR)/Binaries/openssl/libraries",
 					/usr/local/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-Wno-deprecated",
@@ -14723,6 +14730,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "OsiriXAPI-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -14755,6 +14763,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "OsiriXAPI-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -14799,6 +14808,7 @@
 					"$(PROJECT_DIR)/Binaries/LibTiff",
 					"$(PROJECT_DIR)/Binaries/CharLS",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-seg1addr",
 					0x20000000,
@@ -14845,6 +14855,7 @@
 					"$(PROJECT_DIR)/Binaries/LibTiff",
 					"$(PROJECT_DIR)/Binaries/CharLS",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-seg1addr",
 					0x20000000,
@@ -14881,6 +14892,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "HorosAPI-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -14927,6 +14939,7 @@
 					"$(PROJECT_DIR)/Binaries/openjpeg",
 					"$(PROJECT_DIR)/Binaries/GDCMLibs",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -14979,6 +14992,7 @@
 					Binaries/LibTiff,
 					AYDicomPrint,
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-framework",
