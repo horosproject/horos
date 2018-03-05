@@ -248,7 +248,7 @@
 	<key>LSCanProvideIMVideoDataSource</key>
 	<string>Yes</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.12</string>
+	<string>10.11</string>
 	<key>LSRequiresNativeExecution</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
