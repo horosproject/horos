@@ -436,8 +436,8 @@ static float deg2rad = M_PI / 180.0;
         [[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(updateCurvedPathCost) name:OsirixUpdateCurvedPathCostNotification object: nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(resetSlider) name:OsirixDeletedCurvedPathNotification object: nil];
 
-		[shadingCheck setAction:@selector(switchShading:)];
-		[shadingCheck setTarget:self];
+//        [shadingCheck setAction:@selector(switchShading:)];
+//        [shadingCheck setTarget:self];
 		
 //		self.dcmNumberOfFrames = 50;
 //		self.dcmRotationDirection = 0;
@@ -722,9 +722,11 @@ static float deg2rad = M_PI / 180.0;
 		[verticalSplit setVertical: YES];
 	}
 	
-	[shadingsPresetsController setWindowController: self];
-	[shadingCheck setAction:@selector(switchShading:)];
-	[shadingCheck setTarget:self];
+//    [shadingsPresetsController setWindowController: self];
+//    [shadingsPresetsController addObserver:self forKeyPath:@"selectedObjects" options:0 context:CPRController.class];
+    
+//    [shadingCheck setAction:@selector(switchShading:)];
+//    [shadingCheck setTarget:self];
 }
 
 -(void)splitViewWillResizeSubviews:(NSNotification *)notification
@@ -737,6 +739,8 @@ static float deg2rad = M_PI / 180.0;
 
 - (void) dealloc
 {
+//    [shadingsPresetsController removeObserver:self forKeyPath:@"selectedObjects" context:CPRController.class];
+    
     [cprVolumeData invalidateData];
     [cprVolumeData release];
     
@@ -3690,6 +3694,7 @@ static float deg2rad = M_PI / 180.0;
 	}
 }
 
+/*
 #pragma mark Shadings
 
 - (IBAction)switchShading:(id)sender;
@@ -3767,6 +3772,7 @@ static float deg2rad = M_PI / 180.0;
 	[shadingPanel makeKeyAndOrderFront: self];
 	[self findShadingPreset: self];
 }
+*/
 
 #pragma mark Toolbar
 
@@ -4711,6 +4717,11 @@ static float deg2rad = M_PI / 180.0;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
+//    if (context == CPRController.class && object == shadingsPresetsController && [keyPath isEqualToString:@"selectedObjects"]) {
+//        [self applyShading:self];
+//        return;
+//    }
+    
     if (context == MPRPlaneObservationContext) {        
         if ([keyPath isEqualToString:@"plane"]) {
 			if (object == mprView1) {

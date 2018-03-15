@@ -11,7 +11,7 @@ mkdir -p "$install_dir"
 touch "$install_dir/.incomplete"
 
 args=()
-export MAKEFLAGS='-j 8'
+export MAKEFLAGS="-j $(sysctl -n hw.ncpu)"
 export CC=clang
 export CXX=clang
 export COMMAND_MODE=unix2003

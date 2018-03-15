@@ -780,20 +780,6 @@
 		A97569581237D132003F00D3 /* PathAssistant.png in Resources */ = {isa = PBXBuildFile; fileRef = A97569571237D132003F00D3 /* PathAssistant.png */; };
 		A977ECAD0CD1F7E500C418D8 /* QRpartiallyInDatabase.tif in Resources */ = {isa = PBXBuildFile; fileRef = A977ECAB0CD1F7E500C418D8 /* QRpartiallyInDatabase.tif */; };
 		A977ECAE0CD1F7E500C418D8 /* QRalreadyInDatabase.tif in Resources */ = {isa = PBXBuildFile; fileRef = A977ECAC0CD1F7E500C418D8 /* QRalreadyInDatabase.tif */; };
-		A978DE910CB0D4BE00FB2C3D /* NFHUDSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE680CB0D4BE00FB2C3D /* NFHUDSlider.h */; };
-		A978DE9B0CB0D4BE00FB2C3D /* NFHUDButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A978DE720CB0D4BE00FB2C3D /* NFHUDButtonCell.m */; };
-		A978DE9C0CB0D4BE00FB2C3D /* NFHUDButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE730CB0D4BE00FB2C3D /* NFHUDButtonCell.h */; };
-		A978DE9D0CB0D4BE00FB2C3D /* NFHUDButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A978DE740CB0D4BE00FB2C3D /* NFHUDButton.m */; };
-		A978DE9E0CB0D4BE00FB2C3D /* NFHUDButton.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE750CB0D4BE00FB2C3D /* NFHUDButton.h */; };
-		A978DEA10CB0D4BE00FB2C3D /* NFHUDSliderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A978DE780CB0D4BE00FB2C3D /* NFHUDSliderCell.m */; };
-		A978DEA20CB0D4BE00FB2C3D /* NFHUDSliderCell.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE790CB0D4BE00FB2C3D /* NFHUDSliderCell.h */; };
-		A978DEA30CB0D4BE00FB2C3D /* NFHUDSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = A978DE7A0CB0D4BE00FB2C3D /* NFHUDSlider.m */; };
-		A978DEA40CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A978DE7B0CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.m */; };
-		A978DEA50CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE7C0CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.h */; };
-		A978DEA70CB0D4BE00FB2C3D /* NSImage+FrameworkImage.m in Sources */ = {isa = PBXBuildFile; fileRef = A978DE7E0CB0D4BE00FB2C3D /* NSImage+FrameworkImage.m */; };
-		A978DEA80CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE7F0CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h */; };
-		A978DEB00CB0D4BE00FB2C3D /* NFHUDPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A978DE870CB0D4BE00FB2C3D /* NFHUDPopUpButton.m */; };
-		A978DEB10CB0D4BE00FB2C3D /* NFHUDPopUpButton.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE880CB0D4BE00FB2C3D /* NFHUDPopUpButton.h */; };
 		A97B73980CB380EF00E5348D /* horosplugin.png in Resources */ = {isa = PBXBuildFile; fileRef = A97B73970CB380EF00E5348D /* horosplugin.png */; };
 		A97D4C610CE3459D003FE2E6 /* PieChartImage.h in Headers */ = {isa = PBXBuildFile; fileRef = A97D4C5F0CE3459D003FE2E6 /* PieChartImage.h */; };
 		A97D4C620CE3459D003FE2E6 /* PieChartImage.m in Sources */ = {isa = PBXBuildFile; fileRef = A97D4C600CE3459D003FE2E6 /* PieChartImage.m */; };
@@ -1030,30 +1016,6 @@
 		AB2C24E30677861300A08910 /* PluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = AB2C24E10677861300A08910 /* PluginFilter.h */; };
 		AB2C25220677873200A08910 /* PluginManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AB2C25200677873200A08910 /* PluginManager.m */; };
 		AB2C25230677873200A08910 /* PluginManager.h in Headers */ = {isa = PBXBuildFile; fileRef = AB2C25210677873200A08910 /* PluginManager.h */; };
-		AB3674A90BE0CEB1003634E6 /* HUDButtonFillN.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB3674480BE0CEB0003634E6 /* HUDButtonFillN.tif */; };
-		AB3674AA0BE0CEB1003634E6 /* HUDButtonFillP.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB3674490BE0CEB0003634E6 /* HUDButtonFillP.tif */; };
-		AB3674AB0BE0CEB1003634E6 /* HUDButtonLeftN.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB36744A0BE0CEB0003634E6 /* HUDButtonLeftN.tif */; };
-		AB3674AC0BE0CEB1003634E6 /* HUDButtonLeftP.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB36744B0BE0CEB0003634E6 /* HUDButtonLeftP.tif */; };
-		AB3674AD0BE0CEB1003634E6 /* HUDButtonRightN.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB36744C0BE0CEB0003634E6 /* HUDButtonRightN.tif */; };
-		AB3674AE0BE0CEB1003634E6 /* HUDButtonRightP.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB36744D0BE0CEB0003634E6 /* HUDButtonRightP.tif */; };
-		AB3674AF0BE0CEB1003634E6 /* HUDCheckboxOffN.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB36744E0BE0CEB0003634E6 /* HUDCheckboxOffN.tif */; };
-		AB3674B00BE0CEB1003634E6 /* HUDCheckboxOffP.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB36744F0BE0CEB0003634E6 /* HUDCheckboxOffP.tif */; };
-		AB3674B10BE0CEB1003634E6 /* HUDCheckboxOnN.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB3674500BE0CEB0003634E6 /* HUDCheckboxOnN.tif */; };
-		AB3674B20BE0CEB1003634E6 /* HUDCheckboxOnP.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB3674510BE0CEB0003634E6 /* HUDCheckboxOnP.tif */; };
-		AB3674B30BE0CEB1003634E6 /* HUDCloseButton.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB3674520BE0CEB0003634E6 /* HUDCloseButton.tif */; };
-		AB3674B40BE0CEB1003634E6 /* HUDPopUpFillN.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB3674530BE0CEB0003634E6 /* HUDPopUpFillN.tif */; };
-		AB3674B50BE0CEB1003634E6 /* HUDPopUpFillP.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB3674540BE0CEB0003634E6 /* HUDPopUpFillP.tif */; };
-		AB3674B60BE0CEB1003634E6 /* HUDPopUpLeftN.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB3674550BE0CEB0003634E6 /* HUDPopUpLeftN.tif */; };
-		AB3674B70BE0CEB1003634E6 /* HUDPopUpLeftP.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB3674560BE0CEB0003634E6 /* HUDPopUpLeftP.tif */; };
-		AB3674B80BE0CEB1003634E6 /* HUDPopUpRightN.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB3674570BE0CEB0003634E6 /* HUDPopUpRightN.tif */; };
-		AB3674B90BE0CEB1003634E6 /* HUDPopUpRightP.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB3674580BE0CEB0003634E6 /* HUDPopUpRightP.tif */; };
-		AB3674BA0BE0CEB1003634E6 /* HUDSliderKnob.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB3674590BE0CEB0003634E6 /* HUDSliderKnob.tif */; };
-		AB3674BB0BE0CEB1003634E6 /* HUDSliderKnobRound.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB36745A0BE0CEB0003634E6 /* HUDSliderKnobRound.tif */; };
-		AB3674BC0BE0CEB1003634E6 /* HUDSliderTrack.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB36745B0BE0CEB0003634E6 /* HUDSliderTrack.tif */; };
-		AB3674BD0BE0CEB1003634E6 /* HUDSliderTrack5Tick.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB36745C0BE0CEB0003634E6 /* HUDSliderTrack5Tick.tif */; };
-		AB3674BE0BE0CEB1003634E6 /* HUDSliderTrackFill.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB36745D0BE0CEB1003634E6 /* HUDSliderTrackFill.tif */; };
-		AB3674BF0BE0CEB1003634E6 /* HUDSliderTrackLeft.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB36745E0BE0CEB1003634E6 /* HUDSliderTrackLeft.tif */; };
-		AB3674C00BE0CEB1003634E6 /* HUDSliderTrackRight.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB36745F0BE0CEB1003634E6 /* HUDSliderTrackRight.tif */; };
 		AB3886AC0B2449CD00831F74 /* SagSmallOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB7598280AEE62CE005EE3A9 /* SagSmallOpposite.tif */; };
 		AB3F4A1F0672674000E61A6C /* Window3DController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB3F4A1D0672674000E61A6C /* Window3DController.h */; };
 		AB3F4A200672674000E61A6C /* Window3DController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB3F4A1E0672674000E61A6C /* Window3DController.m */; };
@@ -3937,20 +3899,6 @@
 		A97569571237D132003F00D3 /* PathAssistant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PathAssistant.png; sourceTree = "<group>"; };
 		A977ECAB0CD1F7E500C418D8 /* QRpartiallyInDatabase.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = QRpartiallyInDatabase.tif; path = DatabaseStates/QRpartiallyInDatabase.tif; sourceTree = "<group>"; };
 		A977ECAC0CD1F7E500C418D8 /* QRalreadyInDatabase.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = QRalreadyInDatabase.tif; path = DatabaseStates/QRalreadyInDatabase.tif; sourceTree = "<group>"; };
-		A978DE680CB0D4BE00FB2C3D /* NFHUDSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFHUDSlider.h; sourceTree = "<group>"; };
-		A978DE720CB0D4BE00FB2C3D /* NFHUDButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NFHUDButtonCell.m; sourceTree = "<group>"; };
-		A978DE730CB0D4BE00FB2C3D /* NFHUDButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFHUDButtonCell.h; sourceTree = "<group>"; };
-		A978DE740CB0D4BE00FB2C3D /* NFHUDButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NFHUDButton.m; sourceTree = "<group>"; };
-		A978DE750CB0D4BE00FB2C3D /* NFHUDButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFHUDButton.h; sourceTree = "<group>"; };
-		A978DE780CB0D4BE00FB2C3D /* NFHUDSliderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NFHUDSliderCell.m; sourceTree = "<group>"; };
-		A978DE790CB0D4BE00FB2C3D /* NFHUDSliderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFHUDSliderCell.h; sourceTree = "<group>"; };
-		A978DE7A0CB0D4BE00FB2C3D /* NFHUDSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NFHUDSlider.m; sourceTree = "<group>"; };
-		A978DE7B0CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NFHUDPopUpButtonCell.m; sourceTree = "<group>"; };
-		A978DE7C0CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFHUDPopUpButtonCell.h; sourceTree = "<group>"; };
-		A978DE7E0CB0D4BE00FB2C3D /* NSImage+FrameworkImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSImage+FrameworkImage.m"; sourceTree = "<group>"; };
-		A978DE7F0CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+FrameworkImage.h"; sourceTree = "<group>"; };
-		A978DE870CB0D4BE00FB2C3D /* NFHUDPopUpButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NFHUDPopUpButton.m; sourceTree = "<group>"; };
-		A978DE880CB0D4BE00FB2C3D /* NFHUDPopUpButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFHUDPopUpButton.h; sourceTree = "<group>"; };
 		A97B73970CB380EF00E5348D /* horosplugin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = horosplugin.png; sourceTree = "<group>"; };
 		A97D4C5F0CE3459D003FE2E6 /* PieChartImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PieChartImage.h; sourceTree = "<group>"; };
 		A97D4C600CE3459D003FE2E6 /* PieChartImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PieChartImage.m; sourceTree = "<group>"; };
@@ -4167,30 +4115,6 @@
 		AB2C24E10677861300A08910 /* PluginFilter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginFilter.h; sourceTree = "<group>"; };
 		AB2C25200677873200A08910 /* PluginManager.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginManager.m; sourceTree = "<group>"; };
 		AB2C25210677873200A08910 /* PluginManager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManager.h; sourceTree = "<group>"; };
-		AB3674480BE0CEB0003634E6 /* HUDButtonFillN.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDButtonFillN.tif; sourceTree = "<group>"; };
-		AB3674490BE0CEB0003634E6 /* HUDButtonFillP.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDButtonFillP.tif; sourceTree = "<group>"; };
-		AB36744A0BE0CEB0003634E6 /* HUDButtonLeftN.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDButtonLeftN.tif; sourceTree = "<group>"; };
-		AB36744B0BE0CEB0003634E6 /* HUDButtonLeftP.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDButtonLeftP.tif; sourceTree = "<group>"; };
-		AB36744C0BE0CEB0003634E6 /* HUDButtonRightN.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDButtonRightN.tif; sourceTree = "<group>"; };
-		AB36744D0BE0CEB0003634E6 /* HUDButtonRightP.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDButtonRightP.tif; sourceTree = "<group>"; };
-		AB36744E0BE0CEB0003634E6 /* HUDCheckboxOffN.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDCheckboxOffN.tif; sourceTree = "<group>"; };
-		AB36744F0BE0CEB0003634E6 /* HUDCheckboxOffP.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDCheckboxOffP.tif; sourceTree = "<group>"; };
-		AB3674500BE0CEB0003634E6 /* HUDCheckboxOnN.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDCheckboxOnN.tif; sourceTree = "<group>"; };
-		AB3674510BE0CEB0003634E6 /* HUDCheckboxOnP.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDCheckboxOnP.tif; sourceTree = "<group>"; };
-		AB3674520BE0CEB0003634E6 /* HUDCloseButton.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDCloseButton.tif; sourceTree = "<group>"; };
-		AB3674530BE0CEB0003634E6 /* HUDPopUpFillN.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDPopUpFillN.tif; sourceTree = "<group>"; };
-		AB3674540BE0CEB0003634E6 /* HUDPopUpFillP.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDPopUpFillP.tif; sourceTree = "<group>"; };
-		AB3674550BE0CEB0003634E6 /* HUDPopUpLeftN.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDPopUpLeftN.tif; sourceTree = "<group>"; };
-		AB3674560BE0CEB0003634E6 /* HUDPopUpLeftP.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDPopUpLeftP.tif; sourceTree = "<group>"; };
-		AB3674570BE0CEB0003634E6 /* HUDPopUpRightN.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDPopUpRightN.tif; sourceTree = "<group>"; };
-		AB3674580BE0CEB0003634E6 /* HUDPopUpRightP.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDPopUpRightP.tif; sourceTree = "<group>"; };
-		AB3674590BE0CEB0003634E6 /* HUDSliderKnob.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDSliderKnob.tif; sourceTree = "<group>"; };
-		AB36745A0BE0CEB0003634E6 /* HUDSliderKnobRound.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDSliderKnobRound.tif; sourceTree = "<group>"; };
-		AB36745B0BE0CEB0003634E6 /* HUDSliderTrack.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDSliderTrack.tif; sourceTree = "<group>"; };
-		AB36745C0BE0CEB0003634E6 /* HUDSliderTrack5Tick.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDSliderTrack5Tick.tif; sourceTree = "<group>"; };
-		AB36745D0BE0CEB1003634E6 /* HUDSliderTrackFill.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDSliderTrackFill.tif; sourceTree = "<group>"; };
-		AB36745E0BE0CEB1003634E6 /* HUDSliderTrackLeft.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDSliderTrackLeft.tif; sourceTree = "<group>"; };
-		AB36745F0BE0CEB1003634E6 /* HUDSliderTrackRight.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = HUDSliderTrackRight.tif; sourceTree = "<group>"; };
 		AB38FC99057A9B050041FEBB /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
 		AB3C6A8E057ADCA60001052D /* NSFont_OpenGL.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NSFont_OpenGL.h; path = ../../NSFont_OpenGL/NSFont_OpenGL.h; sourceTree = "<group>"; };
 		AB3C6A8F057ADCA60001052D /* NSFont_OpenGL.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = NSFont_OpenGL.m; path = ../../NSFont_OpenGL/NSFont_OpenGL.m; sourceTree = "<group>"; };
@@ -6926,52 +6850,6 @@
 			name = Plugins;
 			sourceTree = "<group>";
 		};
-		AB36742F0BE0CEB0003634E6 /* iLifeControls */ = {
-			isa = PBXGroup;
-			children = (
-				A978DE720CB0D4BE00FB2C3D /* NFHUDButtonCell.m */,
-				A978DE730CB0D4BE00FB2C3D /* NFHUDButtonCell.h */,
-				A978DE740CB0D4BE00FB2C3D /* NFHUDButton.m */,
-				A978DE750CB0D4BE00FB2C3D /* NFHUDButton.h */,
-				A978DE780CB0D4BE00FB2C3D /* NFHUDSliderCell.m */,
-				A978DE790CB0D4BE00FB2C3D /* NFHUDSliderCell.h */,
-				A978DE7A0CB0D4BE00FB2C3D /* NFHUDSlider.m */,
-				A978DE680CB0D4BE00FB2C3D /* NFHUDSlider.h */,
-				A978DE7B0CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.m */,
-				A978DE7C0CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.h */,
-				A978DE7E0CB0D4BE00FB2C3D /* NSImage+FrameworkImage.m */,
-				A978DE7F0CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h */,
-				A978DE870CB0D4BE00FB2C3D /* NFHUDPopUpButton.m */,
-				A978DE880CB0D4BE00FB2C3D /* NFHUDPopUpButton.h */,
-				AB3674480BE0CEB0003634E6 /* HUDButtonFillN.tif */,
-				AB3674490BE0CEB0003634E6 /* HUDButtonFillP.tif */,
-				AB36744A0BE0CEB0003634E6 /* HUDButtonLeftN.tif */,
-				AB36744B0BE0CEB0003634E6 /* HUDButtonLeftP.tif */,
-				AB36744C0BE0CEB0003634E6 /* HUDButtonRightN.tif */,
-				AB36744D0BE0CEB0003634E6 /* HUDButtonRightP.tif */,
-				AB36744E0BE0CEB0003634E6 /* HUDCheckboxOffN.tif */,
-				AB36744F0BE0CEB0003634E6 /* HUDCheckboxOffP.tif */,
-				AB3674500BE0CEB0003634E6 /* HUDCheckboxOnN.tif */,
-				AB3674510BE0CEB0003634E6 /* HUDCheckboxOnP.tif */,
-				AB3674520BE0CEB0003634E6 /* HUDCloseButton.tif */,
-				AB3674530BE0CEB0003634E6 /* HUDPopUpFillN.tif */,
-				AB3674540BE0CEB0003634E6 /* HUDPopUpFillP.tif */,
-				AB3674550BE0CEB0003634E6 /* HUDPopUpLeftN.tif */,
-				AB3674560BE0CEB0003634E6 /* HUDPopUpLeftP.tif */,
-				AB3674570BE0CEB0003634E6 /* HUDPopUpRightN.tif */,
-				AB3674580BE0CEB0003634E6 /* HUDPopUpRightP.tif */,
-				AB3674590BE0CEB0003634E6 /* HUDSliderKnob.tif */,
-				AB36745A0BE0CEB0003634E6 /* HUDSliderKnobRound.tif */,
-				AB36745B0BE0CEB0003634E6 /* HUDSliderTrack.tif */,
-				AB36745C0BE0CEB0003634E6 /* HUDSliderTrack5Tick.tif */,
-				AB36745D0BE0CEB1003634E6 /* HUDSliderTrackFill.tif */,
-				AB36745E0BE0CEB1003634E6 /* HUDSliderTrackLeft.tif */,
-				AB36745F0BE0CEB1003634E6 /* HUDSliderTrackRight.tif */,
-			);
-			name = iLifeControls;
-			path = Binaries/iLifeControls;
-			sourceTree = SOURCE_ROOT;
-		};
 		AB451835149F4758006674BF /* dcmjpls */ = {
 			isa = PBXGroup;
 			children = (
@@ -7135,7 +7013,6 @@
 				CE087B0A0DE9BD6E000E5593 /* GLString.m */,
 				59E379CD116B293A00E84FE3 /* NSImage+OsiriX.h */,
 				59E379CE116B293A00E84FE3 /* NSImage+OsiriX.m */,
-				AB36742F0BE0CEB0003634E6 /* iLifeControls */,
 				BF5C0185065320A800BAFCF7 /* ImageAndTextCell.h */,
 				BF5C0186065320A800BAFCF7 /* ImageAndTextCell.m */,
 				CEA20533073A810100F0DAB7 /* Photos.h */,
@@ -9645,13 +9522,6 @@
 				CED2CF980C9B288C0047F123 /* CIADICOMField.h in Headers */,
 				DB5961380CAB447B00809190 /* OSIVoxel.h in Headers */,
 				BF6F18DC0CAD6ACF006DE602 /* FlyThruStepsArrayController.h in Headers */,
-				A978DE910CB0D4BE00FB2C3D /* NFHUDSlider.h in Headers */,
-				A978DE9C0CB0D4BE00FB2C3D /* NFHUDButtonCell.h in Headers */,
-				A978DE9E0CB0D4BE00FB2C3D /* NFHUDButton.h in Headers */,
-				A978DEA20CB0D4BE00FB2C3D /* NFHUDSliderCell.h in Headers */,
-				A978DEA50CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.h in Headers */,
-				A978DEA80CB0D4BE00FB2C3D /* NSImage+FrameworkImage.h in Headers */,
-				A978DEB10CB0D4BE00FB2C3D /* NFHUDPopUpButton.h in Headers */,
 				BF84E5410CB16A2900431BC2 /* FlyThruTableView.h in Headers */,
 				CEDC793C0CBB7EF600411DDB /* ITKSegmentation3DController.h in Headers */,
 				CE4700FF0CC51A6600ECF78A /* WindowLayoutManager.h in Headers */,
@@ -10340,33 +10210,9 @@
 				CEBD8EF80B6761CC008FD772 /* PropagateOn.tif in Resources */,
 				71AD674B1FC4248100A1E2F8 /* GEcolor.plist in Resources */,
 				AB10FA680B96C95500D74684 /* OsirixDownload.icns in Resources */,
-				AB3674A90BE0CEB1003634E6 /* HUDButtonFillN.tif in Resources */,
-				AB3674AA0BE0CEB1003634E6 /* HUDButtonFillP.tif in Resources */,
-				AB3674AB0BE0CEB1003634E6 /* HUDButtonLeftN.tif in Resources */,
 				71AD675A1FC4248100A1E2F8 /* Rainbow.plist in Resources */,
-				AB3674AC0BE0CEB1003634E6 /* HUDButtonLeftP.tif in Resources */,
-				AB3674AD0BE0CEB1003634E6 /* HUDButtonRightN.tif in Resources */,
-				AB3674AE0BE0CEB1003634E6 /* HUDButtonRightP.tif in Resources */,
-				AB3674AF0BE0CEB1003634E6 /* HUDCheckboxOffN.tif in Resources */,
-				AB3674B00BE0CEB1003634E6 /* HUDCheckboxOffP.tif in Resources */,
-				AB3674B10BE0CEB1003634E6 /* HUDCheckboxOnN.tif in Resources */,
-				AB3674B20BE0CEB1003634E6 /* HUDCheckboxOnP.tif in Resources */,
-				AB3674B30BE0CEB1003634E6 /* HUDCloseButton.tif in Resources */,
-				AB3674B40BE0CEB1003634E6 /* HUDPopUpFillN.tif in Resources */,
-				AB3674B50BE0CEB1003634E6 /* HUDPopUpFillP.tif in Resources */,
-				AB3674B60BE0CEB1003634E6 /* HUDPopUpLeftN.tif in Resources */,
-				AB3674B70BE0CEB1003634E6 /* HUDPopUpLeftP.tif in Resources */,
-				AB3674B80BE0CEB1003634E6 /* HUDPopUpRightN.tif in Resources */,
-				AB3674B90BE0CEB1003634E6 /* HUDPopUpRightP.tif in Resources */,
-				AB3674BA0BE0CEB1003634E6 /* HUDSliderKnob.tif in Resources */,
-				AB3674BB0BE0CEB1003634E6 /* HUDSliderKnobRound.tif in Resources */,
-				AB3674BC0BE0CEB1003634E6 /* HUDSliderTrack.tif in Resources */,
 				71AD67571FC4248100A1E2F8 /* PPU Magma.plist in Resources */,
 				999B0B681BB7309200AF018A /* Osirix.icns in Resources */,
-				AB3674BD0BE0CEB1003634E6 /* HUDSliderTrack5Tick.tif in Resources */,
-				AB3674BE0BE0CEB1003634E6 /* HUDSliderTrackFill.tif in Resources */,
-				AB3674BF0BE0CEB1003634E6 /* HUDSliderTrackLeft.tif in Resources */,
-				AB3674C00BE0CEB1003634E6 /* HUDSliderTrackRight.tif in Resources */,
 				CED80C8C0BF187930058A469 /* Autofill.tif in Resources */,
 				CED80C8D0BF187930058A469 /* AddLink.tif in Resources */,
 				CED80C990BF18BAF0058A469 /* Save.tif in Resources */,
@@ -11400,13 +11246,6 @@
 				A98FFBE60CA92B58000291C8 /* altivecFunctions.c in Sources */,
 				DB5961390CAB447B00809190 /* OSIVoxel.m in Sources */,
 				BF6F18DD0CAD6AD0006DE602 /* FlyThruStepsArrayController.m in Sources */,
-				A978DE9B0CB0D4BE00FB2C3D /* NFHUDButtonCell.m in Sources */,
-				A978DE9D0CB0D4BE00FB2C3D /* NFHUDButton.m in Sources */,
-				A978DEA10CB0D4BE00FB2C3D /* NFHUDSliderCell.m in Sources */,
-				A978DEA30CB0D4BE00FB2C3D /* NFHUDSlider.m in Sources */,
-				A978DEA40CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.m in Sources */,
-				A978DEA70CB0D4BE00FB2C3D /* NSImage+FrameworkImage.m in Sources */,
-				A978DEB00CB0D4BE00FB2C3D /* NFHUDPopUpButton.m in Sources */,
 				BF84E5420CB16A2900431BC2 /* FlyThruTableView.m in Sources */,
 				CE4701000CC51A6600ECF78A /* WindowLayoutManager.m in Sources */,
 				A97D4C620CE3459D003FE2E6 /* PieChartImage.m in Sources */,
@@ -13328,7 +13167,6 @@
 					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -13348,7 +13186,6 @@
 				PRODUCT_NAME = Horos;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
-				STRIP_STYLE = debugging;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
 			};
 			name = Release;
@@ -13369,7 +13206,6 @@
 					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -13416,7 +13252,6 @@
 					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lGDCM",
@@ -13434,7 +13269,6 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				DEVELOPMENT_TEAM = "";
 				LIBRARY_SEARCH_PATHS = DICOMPrint;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = DICOMPrint;
 				USER_HEADER_SEARCH_PATHS = DICOMPrint;
 				VALID_ARCHS = i386;
@@ -13448,7 +13282,6 @@
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
 				INFOPLIST_FILE = "$(SRCROOT)/API/Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "-fvisibility=default";
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.api;
 				PRODUCT_NAME = Horos;
@@ -13569,7 +13402,6 @@
 					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -13614,7 +13446,6 @@
 					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -13634,7 +13465,6 @@
 				PRODUCT_NAME = Horos;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
-				STRIP_STYLE = debugging;
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
 			};
 			name = Debug;
@@ -13716,7 +13546,6 @@
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
 				INFOPLIST_FILE = "$(SRCROOT)/API/Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "-fvisibility=default";
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.api;
 				PRODUCT_NAME = Horos;
@@ -13742,7 +13571,6 @@
 					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lGDCM",
@@ -13766,7 +13594,6 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				LIBRARY_SEARCH_PATHS = DICOMPrint;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = DICOMPrint;
 				USER_HEADER_SEARCH_PATHS = DICOMPrint;

@@ -12,7 +12,7 @@ mkdir -p "$install_dir"
 touch "$install_dir/.incomplete"
 
 args=()
-export MAKEFLAGS='-j 8'
+export MAKEFLAGS="-j $(sysctl -n hw.ncpu)"
 
 cd "$cmake_dir"
 make "${args[@]}" vtkIOImage vtkFiltersGeneral vtkImagingStencil vtkRenderingOpenGL2 vtkRenderingVolumeOpenGL2 vtkRenderingAnnotation vtkInteractionWidgets vtkIOGeometry vtkIOExport vtkFiltersTexture vtktiff

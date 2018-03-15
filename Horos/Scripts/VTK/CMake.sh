@@ -22,8 +22,6 @@ mv "$cmake_dir" "$cmake_dir.tmp"
 rm -Rf "$cmake_dir.tmp" "$install_dir.tmp"
 mkdir -p "$cmake_dir"; cd "$cmake_dir"
 
-echo "$hash" > .cmakehash
-
 args=("$PROJECT_DIR/$TARGET_NAME") # -G Xcode
 cxxfs=( -w -fvisibility=default )
 args+=(-DVTK_USE_OFFSCREEN_EGL:BOOL=OFF)
@@ -55,5 +53,7 @@ if [ ${#cxxfs[@]} -ne 0 ]; then
 fi
 
 cmake "${args[@]}"
+
+echo "$hash" > "$cmake_dir/.cmakehash"
 
 exit 0

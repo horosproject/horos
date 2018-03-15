@@ -18,13 +18,10 @@ fi
 command -v cmake >/dev/null 2>&1 || { echo >&2 "error: building $TARGET_NAME requires CMake. Please install CMake. Aborting."; exit 1; }
 command -v pkg-config >/dev/null 2>&1 || { echo >&2 "error: building $TARGET_NAME requires pkg-config. Please install pkg-config. Aborting."; exit 1; }
 
-cd ..
 mv "$cmake_dir" "$cmake_dir.tmp"
 [ -d "$install_dir" ] && mv "$install_dir" "$install_dir.tmp"
 rm -Rf "$cmake_dir.tmp" "$install_dir.tmp"
 mkdir -p "$cmake_dir"; cd "$cmake_dir"
-
-echo "$hash" > .cmakehash
 
 args=("$PROJECT_DIR/$TARGET_NAME") # -G Xcode
 cxxfs=( -fvisibility=default )
@@ -66,5 +63,7 @@ fi
 #args+=(-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON)
 
 cmake "${args[@]}"
+
+echo "$hash" > "$cmake_dir/.cmakehash"
 
 exit 0

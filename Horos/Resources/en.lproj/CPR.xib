@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
         <capability name="box content view" minToolsVersion="7.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="CPRController">
@@ -92,15 +93,19 @@
                                         <subviews>
                                             <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1174" customClass="CPRView">
                                                 <rect key="frame" x="0.0" y="0.0" width="295" height="217"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             </customView>
                                             <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1176" customClass="CPRTransverseView">
                                                 <rect key="frame" x="294" y="144" width="72" height="72"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             </customView>
                                             <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1177" customClass="CPRTransverseView">
                                                 <rect key="frame" x="294" y="74" width="72" height="72"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             </customView>
                                             <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1178" customClass="CPRTransverseView">
                                                 <rect key="frame" x="294" y="0.0" width="72" height="75"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             </customView>
                                         </subviews>
                                         <connections>
@@ -275,7 +280,7 @@ Gw
                                     </connections>
                                 </matrix>
                                 <slider verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="441">
-                                    <rect key="frame" x="160" y="246" width="200" height="20"/>
+                                    <rect key="frame" x="160" y="246" width="200" height="18"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="200" id="gLH-sN-hxC"/>
                                     </constraints>
@@ -300,7 +305,7 @@ Gw
                                     </connections>
                                 </slider>
                                 <slider verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="489">
-                                    <rect key="frame" x="160" y="54" width="159" height="20"/>
+                                    <rect key="frame" x="160" y="54" width="159" height="18"/>
                                     <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="1" maxValue="200" doubleValue="40" tickMarkPosition="below" numberOfTickMarks="20" sliderType="linear" id="490">
                                         <font key="font" size="12" name="Helvetica-Bold"/>
                                     </sliderCell>
@@ -330,7 +335,7 @@ Gw
                                     </connections>
                                 </slider>
                                 <slider verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1199">
-                                    <rect key="frame" x="160" y="107" width="159" height="20"/>
+                                    <rect key="frame" x="160" y="107" width="159" height="18"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="159" id="Pk1-Yg-SET"/>
                                     </constraints>
@@ -424,7 +429,7 @@ Gw
                                     </connections>
                                 </textField>
                                 <slider verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1361">
-                                    <rect key="frame" x="160" y="18" width="159" height="20"/>
+                                    <rect key="frame" x="160" y="18" width="159" height="18"/>
                                     <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="1" maxValue="50" doubleValue="40" tickMarkPosition="below" numberOfTickMarks="20" sliderType="linear" id="1367">
                                         <font key="font" size="12" name="Helvetica-Bold"/>
                                     </sliderCell>
@@ -740,8 +745,6 @@ Gw
                             <constraint firstItem="440" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="426" secondAttribute="leading" constant="29" id="tif-fg-E79"/>
                             <constraint firstItem="1361" firstAttribute="top" secondItem="489" secondAttribute="bottom" constant="16" id="yNN-BS-NKR"/>
                         </constraints>
-                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="425">
                         <rect key="frame" x="100" y="495" width="176" height="22"/>
@@ -920,7 +923,7 @@ Gw
                 <string>shadingEditable</string>
             </declaredKeys>
         </arrayController>
-        <box autoresizesSubviews="NO" title="Box" borderType="none" titlePosition="noTitle" id="652" userLabel="tb LOD">
+        <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="652" userLabel="tb LOD">
             <rect key="frame" x="0.0" y="0.0" width="120" height="31"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <view key="contentView" id="Pie-Zj-9G9">
@@ -936,7 +939,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="653">
-                        <rect key="frame" x="1" y="-2" width="116" height="17"/>
+                        <rect key="frame" x="1" y="0.0" width="116" height="15"/>
                         <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" minValue="1" maxValue="6" doubleValue="2" tickMarkPosition="below" numberOfTickMarks="6" sliderType="linear" id="658">
                             <font key="font" size="12" name="Helvetica"/>
                         </sliderCell>
@@ -963,10 +966,8 @@ Gw
                 <constraint firstItem="655" firstAttribute="leading" secondItem="652" secondAttribute="leading" constant="-2" id="tO7-Sw-Hee"/>
                 <constraint firstItem="655" firstAttribute="top" secondItem="652" secondAttribute="top" constant="1" id="z5w-wV-qqf"/>
             </constraints>
-            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
         </box>
-        <box autoresizesSubviews="NO" title="Box" borderType="none" titlePosition="noTitle" id="659" userLabel="tb Thick Slab">
+        <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="659" userLabel="tb Thick Slab">
             <rect key="frame" x="0.0" y="0.0" width="225" height="40"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
             <view key="contentView" id="DXN-lk-wZT">
@@ -974,7 +975,7 @@ Gw
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="663">
-                        <rect key="frame" x="61" y="2" width="155" height="17"/>
+                        <rect key="frame" x="61" y="4" width="155" height="15"/>
                         <sliderCell key="cell" controlSize="mini" continuous="YES" enabled="NO" alignment="left" maxValue="200" doubleValue="1" tickMarkPosition="below" numberOfTickMarks="20" sliderType="linear" id="664">
                             <font key="font" size="12" name="Helvetica"/>
                         </sliderCell>
@@ -1041,10 +1042,8 @@ Gw
                 <constraint firstItem="660" firstAttribute="leading" secondItem="661" secondAttribute="trailing" constant="8" symbolic="YES" id="npL-kV-FJM"/>
                 <constraint firstItem="660" firstAttribute="trailing" secondItem="663" secondAttribute="trailing" id="uCQ-Rl-kxa"/>
             </constraints>
-            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
         </box>
-        <box autoresizesSubviews="NO" title="Box" borderType="none" titlePosition="noTitle" id="672" userLabel="tb WLWW">
+        <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="672" userLabel="tb WLWW">
             <rect key="frame" x="0.0" y="0.0" width="155" height="64"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <view key="contentView" id="VFf-A8-hPZ">
@@ -1147,10 +1146,8 @@ Gw
                 <constraint firstItem="676" firstAttribute="baseline" secondItem="678" secondAttribute="baseline" id="oOJ-jl-0WM"/>
                 <constraint firstItem="677" firstAttribute="baseline" secondItem="675" secondAttribute="baseline" id="vwp-cR-eJL"/>
             </constraints>
-            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
         </box>
-        <box autoresizesSubviews="NO" title="Box" borderType="none" titlePosition="noTitle" id="697" userLabel="tb Tools">
+        <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="697" userLabel="tb Tools">
             <rect key="frame" x="0.0" y="0.0" width="261" height="49"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <view key="contentView" id="GTK-xS-ty9">
@@ -1311,8 +1308,6 @@ Gw
                 <constraint firstAttribute="bottom" secondItem="700" secondAttribute="bottom" constant="8" id="ouA-jk-FWl"/>
                 <constraint firstItem="700" firstAttribute="leading" secondItem="697" secondAttribute="leading" id="xwY-RJ-PHZ"/>
             </constraints>
-            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
         </box>
         <userDefaultsController representsSharedInstance="YES" id="753"/>
         <customView id="816" userLabel="tb Axis Colors">
@@ -1360,7 +1355,7 @@ Gw
             <rect key="frame" x="0.0" y="0.0" width="173" height="36"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="844">
+                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="844">
                     <rect key="frame" x="133" y="23" width="39" height="11"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="10 im/s" id="855">
                         <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="# im/s" negativeFormat="# im/s" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="309" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix=" im/s" negativePrefix="-" negativeSuffix=" im/s" id="885">
@@ -1375,7 +1370,7 @@ Gw
                         <binding destination="342" name="value" keyPath="selection.movieRate" id="876"/>
                     </connections>
                 </textField>
-                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="845">
+                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="845">
                     <rect key="frame" x="16" y="9" width="22" height="11"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Pos:" id="854">
                         <font key="font" metaFont="miniSystem"/>
@@ -1383,7 +1378,7 @@ Gw
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <slider verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="846">
+                <slider verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="846">
                     <rect key="frame" x="38" y="22" width="95" height="12"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="95" id="WrX-2Z-Gdq"/>
@@ -1396,7 +1391,7 @@ Gw
                         <binding destination="342" name="value" keyPath="selection.movieRate" id="872"/>
                     </connections>
                 </slider>
-                <slider verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="847">
+                <slider verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="847">
                     <rect key="frame" x="38" y="6" width="95" height="17"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="95" id="gYq-B5-vYK"/>
@@ -1410,7 +1405,7 @@ Gw
                         <binding destination="342" name="enabled" keyPath="selection.movieDataAvailable" id="883"/>
                     </connections>
                 </slider>
-                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="848">
+                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="848">
                     <rect key="frame" x="12" y="24" width="26" height="11"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Rate:" id="851">
                         <font key="font" metaFont="miniSystem"/>
@@ -1418,7 +1413,7 @@ Gw
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="849">
+                <button verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="849">
                     <rect key="frame" x="139" y="2" width="30" height="19"/>
                     <constraints>
                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="30" id="CFd-gJ-MvM"/>
@@ -1537,14 +1532,14 @@ Gw
                 <constraint firstItem="859" firstAttribute="top" secondItem="857" secondAttribute="bottom" constant="3" id="pzH-Ho-ey3"/>
             </constraints>
         </customView>
-        <box autoresizesSubviews="NO" misplaced="YES" title="Box" borderType="none" titlePosition="noTitle" id="1105" userLabel="tb Sync Zoom">
+        <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="1105" userLabel="tb Sync Zoom">
             <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <view key="contentView" id="EnB-W9-tdY">
                 <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
-                    <button misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1140">
+                    <button translatesAutoresizingMaskIntoConstraints="NO" id="1140">
                         <rect key="frame" x="1" y="5" width="40" height="32"/>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="Propagate" imagePosition="only" alignment="center" alternateImage="PropagateOn" inset="2" id="1141">
                             <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
@@ -1561,10 +1556,8 @@ Gw
                 <constraint firstAttribute="trailing" secondItem="1140" secondAttribute="trailing" constant="-4" id="cz2-gI-DfV"/>
                 <constraint firstItem="1140" firstAttribute="leading" secondItem="1105" secondAttribute="leading" constant="-2" id="tIo-Za-dkN"/>
             </constraints>
-            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
         </box>
-        <box autoresizesSubviews="NO" title="Box" borderType="none" titlePosition="noTitle" id="1163" userLabel="tbStraightenedCPRAngle">
+        <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="1163" userLabel="tbStraightenedCPRAngle">
             <rect key="frame" x="0.0" y="0.0" width="120" height="35"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <view key="contentView" id="5hj-u4-kjx">
@@ -1583,7 +1576,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1166">
-                        <rect key="frame" x="1" y="1" width="117" height="17"/>
+                        <rect key="frame" x="1" y="3" width="117" height="15"/>
                         <sliderCell key="cell" controlSize="mini" continuous="YES" alignment="left" maxValue="360" tickMarkPosition="below" numberOfTickMarks="9" sliderType="linear" id="1167">
                             <font key="font" size="12" name="Helvetica"/>
                         </sliderCell>
@@ -1613,10 +1606,8 @@ Gw
                 <constraint firstItem="1165" firstAttribute="trailing" secondItem="1166" secondAttribute="trailing" id="ZWT-dG-a6y"/>
                 <constraint firstItem="1166" firstAttribute="leading" secondItem="1164" secondAttribute="leading" id="pks-Gh-bbz"/>
             </constraints>
-            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
         </box>
-        <box autoresizesSubviews="NO" title="Box" borderType="none" titlePosition="noTitle" id="1403" userLabel="tbCPRType">
+        <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="1403" userLabel="tbCPRType">
             <rect key="frame" x="0.0" y="0.0" width="100" height="44"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
             <view key="contentView" id="mW9-oO-4yA">
@@ -1656,10 +1647,8 @@ Gw
                 <constraint firstItem="1425" firstAttribute="leading" secondItem="1403" secondAttribute="leading" constant="2" id="c5q-GC-8Vv"/>
                 <constraint firstItem="1425" firstAttribute="centerX" secondItem="1403" secondAttribute="centerX" id="d06-mX-W1X"/>
             </constraints>
-            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
         </box>
-        <box autoresizesSubviews="NO" title="Box" borderType="none" titlePosition="noTitle" id="1449" userLabel="tbHighRes">
+        <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="1449" userLabel="tbHighRes">
             <rect key="frame" x="0.0" y="0.0" width="83" height="44"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
             <view key="contentView" id="OCF-iw-Tkb">
@@ -1699,10 +1688,8 @@ Gw
                 <constraint firstAttribute="trailing" secondItem="1450" secondAttribute="trailing" constant="3" id="mSV-HL-qY5"/>
                 <constraint firstItem="1450" firstAttribute="centerX" secondItem="1449" secondAttribute="centerX" id="ndJ-iG-V3W"/>
             </constraints>
-            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
         </box>
-        <box autoresizesSubviews="NO" title="Box" borderType="none" titlePosition="noTitle" id="1440" userLabel="tbCPRPathMode">
+        <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="1440" userLabel="tbCPRPathMode">
             <rect key="frame" x="0.0" y="0.0" width="122" height="44"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
             <view key="contentView" id="l2B-ID-Pef">
@@ -1711,6 +1698,7 @@ Gw
                 <subviews>
                     <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1441">
                         <rect key="frame" x="10" y="4" width="100" height="38"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         <size key="cellSize" width="101" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
@@ -1736,10 +1724,8 @@ Gw
                     </matrix>
                 </subviews>
             </view>
-            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
         </box>
-        <box autoresizesSubviews="NO" title="Box" borderType="none" titlePosition="noTitle" id="1430" userLabel="tbViewsPosition">
+        <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="1430" userLabel="tbViewsPosition">
             <rect key="frame" x="0.0" y="0.0" width="123" height="44"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
             <view key="contentView" id="cfd-mT-Wpb">
@@ -1747,7 +1733,7 @@ Gw
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1436">
-                        <rect key="frame" x="9" y="11" width="104" height="25"/>
+                        <rect key="frame" x="10" y="11" width="103" height="25"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="22" id="Lxc-tS-G2S"/>
                         </constraints>
@@ -1775,10 +1761,8 @@ Gw
                 <constraint firstItem="1436" firstAttribute="centerX" secondItem="1430" secondAttribute="centerX" id="jyD-Qb-mQJ"/>
                 <constraint firstItem="1436" firstAttribute="top" secondItem="1430" secondAttribute="top" constant="7" id="pS1-wM-niO"/>
             </constraints>
-            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
         </box>
-        <box autoresizesSubviews="NO" wantsLayer="YES" title="Box" borderType="none" titlePosition="noTitle" id="1465" userLabel="tbPathAssistant">
+        <box autoresizesSubviews="NO" wantsLayer="YES" borderType="none" title="Box" titlePosition="noTitle" id="1465" userLabel="tbPathAssistant">
             <rect key="frame" x="0.0" y="0.0" width="214" height="53"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <view key="contentView" id="qWw-5l-CeW">
@@ -1831,10 +1815,8 @@ Gw
                 <constraint firstItem="1570" firstAttribute="centerX" secondItem="1571" secondAttribute="centerX" id="jbK-6F-Wbo"/>
                 <constraint firstItem="1571" firstAttribute="top" secondItem="1465" secondAttribute="top" constant="5" id="k1C-c5-OkK"/>
             </constraints>
-            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
         </box>
-        <box autoresizesSubviews="NO" title="Box" borderType="none" titlePosition="noTitle" id="ezI-rd-S8b" userLabel="tbInterpolationMode">
+        <box autoresizesSubviews="NO" borderType="none" title="Box" titlePosition="noTitle" id="ezI-rd-S8b" userLabel="tbInterpolationMode">
             <rect key="frame" x="0.0" y="0.0" width="126" height="50"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
             <view key="contentView" id="XK2-Z8-KwN">
@@ -1843,6 +1825,7 @@ Gw
                 <subviews>
                     <matrix verticalHuggingPriority="750" fixedFrame="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="G3c-9Y-X1P">
                         <rect key="frame" x="5" y="10" width="116" height="38"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         <size key="cellSize" width="115" height="18"/>
                         <size key="intercellSpacing" width="4" height="2"/>
@@ -1868,8 +1851,6 @@ Gw
                     </matrix>
                 </subviews>
             </view>
-            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
         </box>
     </objects>
     <resources>
