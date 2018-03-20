@@ -92,8 +92,24 @@ static NSString* purgedDatabasePath = nil;
     
 + (BOOL) isICloudDriveEnabled
 {
-    NSString* mobileDocumentsPath = [NSString stringWithFormat:@"%@/Library/Mobile Documents/com~apple~CloudDocs", NSHomeDirectory()];
-    return [[NSFileManager defaultManager] fileExistsAtPath:mobileDocumentsPath isDirectory:nil];
+    
+    /* General iCloud Drive enabled check */
+    //NSString* mobileDocumentsPath = [NSString stringWithFormat:@"%@/Library/Mobile Documents/com~apple~CloudDocs", NSHomeDirectory()];
+    //return [[NSFileManager defaultManager] fileExistsAtPath:mobileDocumentsPath isDirectory:nil];
+    
+    NSString* mobileDocumentsPath = [NSString stringWithFormat:@"%@/Library/Mobile Documents/com~apple~CloudDocs/Documents", NSHomeDirectory()];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:mobileDocumentsPath isDirectory:nil])
+    {
+        NSError* e = nil;
+        NSDictionary* attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:mobileDocumentsPath error:&e];
+        
+        if (e == nil && [[attributes objectForKey:NSFileType] isEqualToString:NSFileTypeSymbolicLink])
+        {
+            return YES;
+        }
+    }
+    
+    return NO;
 }
     
     
@@ -133,9 +149,6 @@ static NSString* purgedDatabasePath = nil;
 + (BOOL) requiresUserNotificationOnICloudDrive
 {
     NSString* databasePath = [NSString stringWithString:[ICloudDriveDetector databasePath]];
-    
-//    if ([[NSFileManager defaultManager] fileExistsAtPath:[databasePath stringByAppendingPathComponent:@".nosync"]])
-//        return NO; // the database contains a .nosync file
     
     if (![ICloudDriveDetector hasUserIgnoredICloudDriveSyncRisk])
     {
@@ -229,6 +242,7 @@ static NSString* purgedDatabasePath = nil;
                                        NSHeight([[self window] frame])) display:YES];
 }
     
+    
 - (void)windowWillClose:(NSNotification *)notification
 {
     if ([NSApp isHidden])
@@ -252,6 +266,8 @@ static NSString* purgedDatabasePath = nil;
     
     NSString* nosyncPath = [NSString stringWithFormat:@"%@.nosync",databasePath];
     
+    
+    
     while ([[NSFileManager defaultManager] fileExistsAtPath:nosyncPath])
     {
         // Convert date object to desired output format
@@ -260,7 +276,7 @@ static NSString* purgedDatabasePath = nil;
         NSDate *date = [NSDate date];
         NSString* timestamp = [dateFormat stringFromDate:date];
         [dateFormat release];
-
+        
         nosyncPath = [NSString stringWithFormat:@"%@_%@.nosync",databasePath,timestamp];
     }
 
@@ -268,22 +284,17 @@ static NSString* purgedDatabasePath = nil;
     //ALERT user about the operation - Missing localization
     NSAlert *alert = [[NSAlert alloc] init];
     [alert setMessageText:[NSString stringWithFormat:@"Please, confirm you want to stop using iCloud Drive for your Horos database."]];
-//    [alert setInformativeText:[NSString stringWithFormat:@"Your Horos database and image files will be moved from \"%@\" to \"%@\". Horos will be restarted after this operation is concluded.",databasePath,nosyncPath]];
+    [alert setInformativeText:[NSString stringWithFormat:@"Your Horos database and image files will be moved from \"%@\" to \"%@\". Horos will be restarted after this operation is concluded.",databasePath,nosyncPath]];
     [alert addButtonWithTitle:@"Continue"];
     [alert addButtonWithTitle:@"Cancel"];
     [alert setAlertStyle:NSWarningAlertStyle];
     
     [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode)
     {
-        [NSApp endSheet: [alert window]];
-        [[self window] close];
-
         if (returnCode == NSAlertSecondButtonReturn) {
             NSLog(@"ICloudDriveDetector - User canceled database migration");
             return;
         }
-        
-//        [@"" writeToFile:[databasePath stringByAppendingPathComponent:@".nosync"] atomically:YES encoding:NSUTF8StringEncoding error:NULL];
         
         [NSApp endSheet: [alert window]];
         
@@ -416,10 +427,10 @@ static NSString* purgedDatabasePath = nil;
     
 - (IBAction) keepSync:(id)sender
 {
-    [[self window] close];
-
     [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:1] forKey:@"ICLOUD_DRIVE_SYNC_RISK_USER_IGNORED"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [[self window] close];
 }
 
 @end
