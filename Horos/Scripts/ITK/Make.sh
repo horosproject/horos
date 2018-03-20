@@ -14,8 +14,7 @@ args=()
 export MAKEFLAGS="-j $(sysctl -n hw.ncpu)"
 
 cd "$cmake_dir"
-make "${args[@]}" ITKIOImageBase ITKStatistics ITKTransform ITKVTK ITKNrrdIO
-make install
+make "${args[@]}" install
 
 # wrap the libs into one
 mkdir -p "$install_dir/wlib"

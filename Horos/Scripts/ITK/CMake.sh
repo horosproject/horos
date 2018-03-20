@@ -34,6 +34,16 @@ args+=(-DBUILD_TESTING=OFF)
 args+=(-DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET")
 args+=(-DCMAKE_OSX_ARCHITECTURES="$ARCHS")
 
+args+=(-DITK_BUILD_DEFAULT_MODULES=OFF)
+args+=(-DModule_ITKIOImageBase=ON)
+args+=(-DModule_ITKStatistics=ON)
+args+=(-DModule_ITKTransform=ON)
+args+=(-DModule_ITKVTK=ON)
+args+=(-DModule_ITKNrrdIO=ON)
+args+=(-DModule_ITKRegionGrowing=ON)
+args+=(-DModule_ITKCurvatureFlow=ON)
+args+=(-DModule_ITKLevelSets=ON)
+
 args+=(-DCMAKE_INSTALL_PREFIX="$install_dir")
 args+=(-DITK_INSTALL_INCLUDE_DIR="include")
 

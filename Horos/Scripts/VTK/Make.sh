@@ -15,8 +15,7 @@ args=()
 export MAKEFLAGS="-j $(sysctl -n hw.ncpu)"
 
 cd "$cmake_dir"
-make "${args[@]}" vtkIOImage vtkFiltersGeneral vtkImagingStencil vtkRenderingOpenGL2 vtkRenderingVolumeOpenGL2 vtkRenderingAnnotation vtkInteractionWidgets vtkIOGeometry vtkIOExport vtkFiltersTexture vtktiff
-make install
+make "${args[@]}" install
 
 # missing tiff headers
 mkdir -p "$install_dir/include/vtktiff/libtiff"
