@@ -92,8 +92,24 @@ static NSString* purgedDatabasePath = nil;
     
 + (BOOL) isICloudDriveEnabled
 {
+    
+    /* General iCloud Drive enabled check */
+    //NSString* mobileDocumentsPath = [NSString stringWithFormat:@"%@/Library/Mobile Documents/com~apple~CloudDocs", NSHomeDirectory()];
+    //return [[NSFileManager defaultManager] fileExistsAtPath:mobileDocumentsPath isDirectory:nil];
+    
     NSString* mobileDocumentsPath = [NSString stringWithFormat:@"%@/Library/Mobile Documents/com~apple~CloudDocs/Documents", NSHomeDirectory()];
-    return [[NSFileManager defaultManager] fileExistsAtPath:mobileDocumentsPath isDirectory:nil];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:mobileDocumentsPath isDirectory:nil])
+    {
+        NSError* e = nil;
+        NSDictionary* attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:mobileDocumentsPath error:&e];
+        
+        if (e == nil && [[attributes objectForKey:NSFileType] isEqualToString:NSFileTypeSymbolicLink])
+        {
+            return YES;
+        }
+    }
+    
+    return NO;
 }
     
     
