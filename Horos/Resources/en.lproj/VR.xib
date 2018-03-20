@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13196" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13196"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
         <capability name="box content view" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -220,6 +220,7 @@
                     <constraint firstItem="1243" firstAttribute="top" secondItem="145" secondAttribute="top" constant="3" id="sVB-PG-kSc"/>
                 </constraints>
             </view>
+            <point key="canvasLocation" x="251" y="31"/>
         </window>
         <window title="Setup Geometry" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="2363">
             <windowStyleMask key="styleMask" titled="YES"/>
@@ -2765,7 +2766,7 @@ Gw
                 <rect key="frame" x="0.0" y="0.0" width="329" height="202"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1058" customClass="NFHUDSlider">
+                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1058">
                         <rect key="frame" x="197" y="117" width="124" height="18"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="124" id="a7L-yD-WOr"/>
@@ -2783,7 +2784,7 @@ Gw
                             </binding>
                         </connections>
                     </slider>
-                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1059" customClass="NFHUDSlider">
+                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1059">
                         <rect key="frame" x="197" y="91" width="124" height="18"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="124" id="FYp-Hf-s8U"/>
@@ -2797,7 +2798,7 @@ Gw
                             <binding destination="1089" name="value" keyPath="selection.diffuse" id="1196"/>
                         </connections>
                     </slider>
-                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1060" customClass="NFHUDSlider">
+                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1060">
                         <rect key="frame" x="197" y="59" width="124" height="18"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="124" id="2GI-xh-EVW"/>
@@ -2815,7 +2816,7 @@ Gw
                             </binding>
                         </connections>
                     </slider>
-                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1061" customClass="NFHUDSlider">
+                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1061">
                         <rect key="frame" x="197" y="33" width="124" height="18"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="124" id="RlC-27-k63"/>
@@ -2891,14 +2892,14 @@ Gw
                         </textFieldCell>
                         <connections>
                             <binding destination="1089" name="enabled" keyPath="enableEditing" id="1348"/>
-                            <binding destination="1089" name="value" keyPath="selection.name" id="1187">
+                            <binding destination="1089" name="value" keyPath="selection.name" id="BGn-ah-7kz">
                                 <dictionary key="options">
-                                    <integer key="NSAllowsEditingMultipleValuesSelection" value="0"/>
+                                    <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
                                 </dictionary>
                             </binding>
                         </connections>
                     </textField>
-                    <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1215" customClass="NFHUDPopUpButton">
+                    <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1215">
                         <rect key="frame" x="120" y="173" width="154" height="22"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="148" id="LXB-Fd-MpG"/>
@@ -2915,8 +2916,8 @@ Gw
                             </menu>
                         </popUpButtonCell>
                         <connections>
-                            <binding destination="1089" name="contentValues" keyPath="arrangedObjects.name" id="1221"/>
-                            <binding destination="1089" name="selectedIndex" keyPath="selectionIndex" previousBinding="1221" id="1224"/>
+                            <binding destination="1089" name="contentValues" keyPath="arrangedObjects.name" id="oN2-k0-eIW"/>
+                            <binding destination="1089" name="selectedIndex" keyPath="selectionIndex" previousBinding="oN2-k0-eIW" id="GU5-gj-oIC"/>
                         </connections>
                     </popUpButton>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1292">
@@ -2973,7 +2974,7 @@ Gw
                         <connections>
                             <action selector="applyShading:" target="-2" id="1338"/>
                             <binding destination="1089" name="enabled" keyPath="enableEditing" id="1327"/>
-                            <binding destination="1089" name="value" keyPath="selection.ambient" id="1300"/>
+                            <binding destination="1089" name="value" keyPath="selection.ambient" id="Qzy-nB-hCd"/>
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1297">
@@ -2996,7 +2997,7 @@ Gw
                         <connections>
                             <action selector="applyShading:" target="-2" id="1339"/>
                             <binding destination="1089" name="enabled" keyPath="enableEditing" id="1329"/>
-                            <binding destination="1089" name="value" keyPath="selection.diffuse" id="1301"/>
+                            <binding destination="1089" name="value" keyPath="selection.diffuse" id="LzP-Wg-E1h"/>
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1298">
@@ -3019,7 +3020,7 @@ Gw
                         <connections>
                             <action selector="applyShading:" target="-2" id="1340"/>
                             <binding destination="1089" name="enabled" keyPath="enableEditing" id="1330"/>
-                            <binding destination="1089" name="value" keyPath="selection.specular" id="1303"/>
+                            <binding destination="1089" name="value" keyPath="selection.specular" id="XFU-hL-M2a"/>
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1299">
@@ -3042,7 +3043,7 @@ Gw
                         <connections>
                             <action selector="applyShading:" target="-2" id="1341"/>
                             <binding destination="1089" name="enabled" keyPath="enableEditing" id="1332"/>
-                            <binding destination="1089" name="value" keyPath="selection.specularPower" id="1304"/>
+                            <binding destination="1089" name="value" keyPath="selection.specularPower" id="h6V-2u-7hu"/>
                         </connections>
                     </textField>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="2010">
@@ -3124,6 +3125,7 @@ Gw
                     <constraint firstItem="1298" firstAttribute="leading" secondItem="1299" secondAttribute="leading" id="yjR-WJ-NYP"/>
                 </constraints>
             </view>
+            <point key="canvasLocation" x="167" y="486"/>
         </window>
         <arrayController automaticallyPreparesContent="YES" preservesSelection="NO" id="1089" userLabel="shadings" customClass="ShadingArrayController">
             <declaredKeys>

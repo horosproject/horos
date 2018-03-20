@@ -602,7 +602,9 @@ static float deg2rad = M_PI/180.0;
 {
 	[self applyViewsPosition];
     
-	[shadingsPresetsController setWindowController: self];
+//    [shadingsPresetsController setWindowController: self];
+    [shadingsPresetsController addObserver:self forKeyPath:@"selectedObjects" options:0 context:MPRController.class];
+    
 	[shadingCheck setAction:@selector(switchShading:)];
 	[shadingCheck setTarget:self];
 	
@@ -616,6 +618,8 @@ static float deg2rad = M_PI/180.0;
 
 - (void) dealloc
 {
+    [shadingsPresetsController removeObserver:self forKeyPath:@"selectedObjects" context:MPRController.class];
+    
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self forKeyPath: @"values.exportDCMIncludeAllViews"];
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self forKeyPath: @"values.MPR2DViewsPosition"];
 	
@@ -2017,6 +2021,11 @@ static float deg2rad = M_PI/180.0;
 
 - (void) observeValueForKeyPath:(NSString*)keyPath ofObject:(id)obj change:(NSDictionary*)change context:(void*)context
 {
+    if (context == MPRController.class && obj == shadingsPresetsController && [keyPath isEqualToString:@"selectedObjects"]) {
+        [self applyShading:self];
+        return;
+    }
+    
 	if( [keyPath isEqualToString: @"values.exportDCMIncludeAllViews"])
 	{
 		self.dcmFormat = 0; // Screen capture

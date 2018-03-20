@@ -47,13 +47,13 @@
 	[super add:sender];
 }
 
-- (IBAction)remove:(id)sender{
-	[super remove:sender];
-	
-	if( [[self content] count] == 0) [self add: self];
-	
-	[self setSelectionIndex: 0];
-}
+//- (IBAction)remove:(id)sender{
+//    [super remove:sender];
+//
+//    if( [[self content] count] == 0) [self add: self];
+//
+//    [self setSelectionIndex: 0];
+//}
 
 - (void)addObject:(id)object
 {
@@ -79,13 +79,19 @@
 	
 	[super addObject:object];
 	
-	[self setSelectionIndex:[[self arrangedObjects] indexOfObject:object]];
+//    [self setSelectionIndex:[[self arrangedObjects] indexOfObject:object]];
 }
 
-- (void)setWindowController:(OSIWindowController*) ctrl;
-{
-	winController = ctrl;
-}
+//- (void)setNilValueForKey:(NSString *)key {
+//    if ([key isEqualToString:@"selectionIndex"])
+//        [self setSelectionIndex:NSNotFound];
+//    else [super setNilValueForKey:key];
+//}
+
+//- (void)setWindowController:(OSIWindowController*) ctrl;
+//{
+//    winController = ctrl;
+//}
 
 - (BOOL)enableEditing{
 	return _enableEditing;
@@ -95,16 +101,16 @@
 	_enableEditing = enable;
 }
 
-- (BOOL)setSelectionIndex:(NSUInteger)index
-{	
-	BOOL v = [super setSelectionIndex:(unsigned int)index];
-    
-    if( winController == nil)
-        N2LogStackTrace( @"winController == nil in shadingArrayController");
-    
-	[winController applyShading: self];
-	return v;
-}
+//- (BOOL)setSelectionIndex:(NSUInteger)index
+//{
+//    BOOL v = [super setSelectionIndex:(unsigned int)index];
+//
+//    if( winController == nil)
+//        N2LogStackTrace( @"winController == nil in shadingArrayController");
+//
+//    [winController applyShading: self];
+//    return v;
+//}
 
 - (void) prepareContent
 {

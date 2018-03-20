@@ -237,10 +237,19 @@
 	[moviePosSlider setEnabled: NO];
 	[moviePlayStop setEnabled: NO];
 	
-	[shadingsPresetsController setWindowController: self];
+//    [shadingsPresetsController setWindowController: self];
+//    [shadingsPresetsController addObserver:self forKeyPath:@"selectedObjects" options:0 context:EndoscopyVRController.class]; // already established by VRController superclass
     
     return self;
 }
+
+- (void)dealloc {
+//    [shadingsPresetsController removeObserver:self forKeyPath:@"selectedObjects" context:EndoscopyVRController.class];
+    
+    [super dealloc];
+}
+
+
 
 -(void) save3DState
 {

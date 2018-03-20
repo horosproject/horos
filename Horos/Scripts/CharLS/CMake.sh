@@ -8,6 +8,7 @@ hash="$(find . \( -name CMakeLists.txt -o -name '*.cmake' \) -type f -exec md5 -
 set -e; set -o xtrace
 
 cmake_dir="$TARGET_TEMP_DIR/CMake"
+install_dir="$TARGET_TEMP_DIR/Install"
 
 mkdir -p "$cmake_dir"; cd "$cmake_dir"
 if [ -e Makefile -a -f .cmakehash ] && [ "$(cat '.cmakehash')" = "$hash" ]; then
@@ -32,7 +33,7 @@ args+=(-DBUILD_TESTING=OFF)
 
 args+=(-DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET")
 args+=(-DCMAKE_OSX_ARCHITECTURES="$ARCHS")
-args+=(-DCMAKE_INSTALL_PREFIX="$TARGET_TEMP_DIR/Install")
+args+=(-DCMAKE_INSTALL_PREFIX="$install_dir")
 
 if [ ! -z "$CLANG_CXX_LIBRARY" ] && [ "$CLANG_CXX_LIBRARY" != 'compiler-default' ]; then
 #  args+=(-DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY="$CLANG_CXX_LIBRARY")

@@ -40,11 +40,11 @@
 
 @interface ShadingArrayController : NSArrayController {
 	BOOL				_enableEditing;
-	OSIWindowController	*winController;
+//    OSIWindowController    *winController;
 }
 
 - (BOOL)enableEditing;
 - (void)setEnableEditing:(BOOL)enable;
-- (void)setWindowController:(OSIWindowController*) ctrl;
+//- (void)setWindowController:(OSIWindowController*) ctrl;
 
 @end

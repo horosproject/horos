@@ -838,7 +838,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
             [[self window] setFrameUsingName:@"3D Panel"];
         }
         
-        [shadingsPresetsController setWindowController: self];
+//        [shadingsPresetsController setWindowController: self];
+        [shadingsPresetsController addObserver:self forKeyPath:@"selectedObjects" options:0 context:VRController.class];
         
         [self setupToolbar];
     }
@@ -850,6 +851,13 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     }
     
     return self;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
+    if (context == VRController.class && object == shadingsPresetsController && [keyPath isEqualToString:@"selectedObjects"]) {
+        [self applyShading:self];
+        return;
+    }
 }
 
 + (NSString*) getUniqueFilenameScissorStateFor:(NSManagedObject*) obj
@@ -1127,6 +1135,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 {
     NSLog(@"Dealloc VRController");
     
+    [shadingsPresetsController removeObserver:self forKeyPath:@"selectedObjects" context:VRController.class];
+    
     [style release];
     
     // Release Undo system
@@ -1380,7 +1390,10 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 - (IBAction) applyShading:(id) sender
 {
-    NSDictionary	*dict = [[shadingsPresetsController selectedObjects] lastObject];
+    NSDictionary *dict = [shadingsPresetsController.selectedObjects lastObject];
+    
+    if (!dict)
+        return;
     
     float ambient, diffuse, specular, specularpower;
     

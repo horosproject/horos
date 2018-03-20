@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13196" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="101100" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13196"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
         <capability name="box content view" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -763,7 +763,7 @@ Gw
                 <rect key="frame" x="0.0" y="0.0" width="332" height="202"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <slider verticalHuggingPriority="750" id="546" customClass="NFHUDSlider">
+                    <slider verticalHuggingPriority="750" id="546">
                         <rect key="frame" x="200" y="116" width="124" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="1" doubleValue="0.14999999999999999" tickMarkPosition="below" numberOfTickMarks="10" sliderType="linear" id="547">
@@ -775,7 +775,7 @@ Gw
                             <binding destination="595" name="value" keyPath="selection.ambient" id="596"/>
                         </connections>
                     </slider>
-                    <slider verticalHuggingPriority="750" id="545" customClass="NFHUDSlider">
+                    <slider verticalHuggingPriority="750" id="545">
                         <rect key="frame" x="200" y="88" width="124" height="19"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="1" doubleValue="0.90000000000000002" tickMarkPosition="below" numberOfTickMarks="10" sliderType="linear" id="548">
@@ -787,7 +787,7 @@ Gw
                             <binding destination="595" name="value" keyPath="selection.diffuse" id="598"/>
                         </connections>
                     </slider>
-                    <slider verticalHuggingPriority="750" id="544" customClass="NFHUDSlider">
+                    <slider verticalHuggingPriority="750" id="544">
                         <rect key="frame" x="200" y="61" width="124" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="4" doubleValue="0.29999999999999999" tickMarkPosition="below" numberOfTickMarks="10" sliderType="linear" id="549">
@@ -799,7 +799,7 @@ Gw
                             <binding destination="595" name="value" keyPath="selection.specular" id="601"/>
                         </connections>
                     </slider>
-                    <slider verticalHuggingPriority="750" id="543" customClass="NFHUDSlider">
+                    <slider verticalHuggingPriority="750" id="543">
                         <rect key="frame" x="200" y="33" width="124" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" maxValue="50" doubleValue="15" tickMarkPosition="below" numberOfTickMarks="10" sliderType="linear" id="550">
@@ -846,7 +846,7 @@ Gw
                             <binding destination="595" name="value" keyPath="selection.name" id="626"/>
                         </connections>
                     </textField>
-                    <popUpButton verticalHuggingPriority="750" id="536" customClass="NFHUDPopUpButton">
+                    <popUpButton verticalHuggingPriority="750" id="536">
                         <rect key="frame" x="123" y="173" width="154" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="560" id="557">

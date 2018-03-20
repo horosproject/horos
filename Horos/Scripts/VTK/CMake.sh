@@ -22,20 +22,31 @@ mv "$cmake_dir" "$cmake_dir.tmp"
 rm -Rf "$cmake_dir.tmp" "$install_dir.tmp"
 mkdir -p "$cmake_dir"; cd "$cmake_dir"
 
-echo "$hash" > .cmakehash
-
 args=("$PROJECT_DIR/$TARGET_NAME") # -G Xcode
 cxxfs=( -w -fvisibility=default )
 args+=(-DVTK_USE_OFFSCREEN_EGL:BOOL=OFF)
 args+=(-DVTK_USE_X:BOOL=OFF)
 args+=(-DVTK_USE_COCOA:BOOL=ON)
-args+=(-DVTK_USE_64BITS_IDS=ON)
+#args+=(-DVTK_USE_64BITS_IDS=ON) 
 args+=(-DBUILD_DOCUMENTATION=OFF)
 args+=(-DBUILD_EXAMPLES=OFF)
 args+=(-DBUILD_SHARED_LIBS=OFF)
 args+=(-DBUILD_TESTING=OFF)
 args+=(-DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET")
 args+=(-DCMAKE_OSX_ARCHITECTURES="$ARCHS")
+
+args+=(-DVTK_Group_StandAlone=OFF -DVTK_Group_Rendering=OFF) # disable the default groups
+args+=(-DModule_vtkIOImage=ON)
+args+=(-DModule_vtkFiltersGeneral=ON)
+args+=(-DModule_vtkImagingStencil=ON)
+args+=(-DModule_vtkRenderingOpenGL2=ON)
+args+=(-DModule_vtkRenderingVolumeOpenGL2=ON)
+args+=(-DModule_vtkRenderingAnnotation=ON)
+args+=(-DModule_vtkInteractionWidgets=ON)
+args+=(-DModule_vtkIOGeometry=ON)
+args+=(-DModule_vtkIOExport=ON)
+args+=(-DModule_vtkFiltersTexture=ON)
+args+=(-DModule_vtktiff=ON)
 
 args+=(-DCMAKE_INSTALL_PREFIX="$install_dir")
 args+=(-DVTK_INSTALL_INCLUDE_DIR="include")
@@ -55,5 +66,7 @@ if [ ${#cxxfs[@]} -ne 0 ]; then
 fi
 
 cmake "${args[@]}"
+
+echo "$hash" > "$cmake_dir/.cmakehash"
 
 exit 0

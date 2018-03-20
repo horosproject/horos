@@ -93,7 +93,7 @@ typedef NSInteger CPRExportRotationSpan;
 	IBOutlet NSObjectController *ob;
 	
 	// To be able to use Cocoa bindings with toolbar...
-	IBOutlet NSView *tbLOD, *tbThickSlab, *tbWLWW, *tbTools, *tbShading, *tbMovie, *tbBlending, *tbSyncZoomLevel, *tbHighResolution, *tbInterpolationMode;
+	IBOutlet NSView *tbLOD, *tbThickSlab, *tbWLWW, *tbTools, /**tbShading,*/ *tbMovie, *tbBlending, *tbSyncZoomLevel, *tbHighResolution, *tbInterpolationMode;
 	
     IBOutlet NSView *tbPathAssistant;
     IBOutlet NSView *testView;
@@ -194,11 +194,11 @@ typedef NSInteger CPRExportRotationSpan;
 	float LOD;
 	BOOL lowLOD;
 	
-	IBOutlet NSPanel *shadingPanel;
-	IBOutlet ShadingArrayController *shadingsPresetsController;
-	BOOL shadingEditable;
-	IBOutlet NSButton *shadingCheck;
-	IBOutlet NSTextField *shadingValues;
+//    IBOutlet NSPanel *shadingPanel;
+//    IBOutlet ShadingArrayController *shadingsPresetsController;
+//    BOOL shadingEditable;
+//    IBOutlet NSButton *shadingCheck;
+//    IBOutlet NSTextField *shadingValues;
 	
 	IBOutlet NSView *tbAxisColors;
 	NSColor *colorAxis1, *colorAxis2, *colorAxis3;
@@ -269,8 +269,8 @@ typedef NSInteger CPRExportRotationSpan;
 - (void)ApplyWLWW:(id)sender;
 - (void)applyWLWWForString:(NSString *)menuString;
 - (void) updateViewsAccordingToFrame:(id) sender;
-- (void)findShadingPreset:(id) sender;
-- (IBAction)editShadingValues:(id) sender;
+//- (void)findShadingPreset:(id) sender;
+//- (IBAction)editShadingValues:(id) sender;
 - (void) moviePlayStop:(id) sender;
 - (IBAction) endDCMExportSettings:(id) sender;
 - (void) addMoviePixList:(NSMutableArray*) pix :(NSData*) vData;
