@@ -923,6 +923,11 @@
     
 	@try
     {
+        __block NSInteger selectedCompressionMode;
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            selectedCompressionMode = [compressionMode selectedTag];
+        });
+        
         NSEnumerator *enumerator;
         if( anonymizedFiles) enumerator = [anonymizedFiles objectEnumerator];
         else enumerator = [files objectEnumerator];
@@ -940,8 +945,15 @@
             [manager createDirectoryAtPath:burnFolder withIntermediateDirectories:YES attributes:nil error:NULL];
         if( ![manager fileExistsAtPath:subFolder])
             [manager createDirectoryAtPath:subFolder withIntermediateDirectories:YES attributes:nil error:NULL];
-        if( ![manager fileExistsAtPath:dicomdirPath])
-            [manager copyItemAtPath:[[NSBundle mainBundle] pathForResource:@"DICOMDIR" ofType:nil] toPath:dicomdirPath error:NULL];
+        
+        /*
+        
+        FAUZE - 24-Mar-2018: Not clear why the statement below is needed. Causing abortion of thread because DICOMDIR resource not present
+         
+        if( ![manager fileExistsAtPath:dicomdirPath]);
+        [manager copyItemAtPath:[[NSBundle mainBundle] pathForResource:@"DICOMDIR" ofType:nil] toPath:dicomdirPath error:NULL];
+        
+        */
             
         NSMutableArray *newFiles = [NSMutableArray array];
         NSMutableArray *compressedArray = [NSMutableArray array];
@@ -959,7 +971,7 @@
                     if( [[DicomFile getDicomField: @"TransferSyntaxUID" forFile: newPath] isEqualToString: DCM_ExplicitVRBigEndian])
                        [bigEndianFilesToConvert addObject: newPath];
                     
-                    switch( [compressionMode selectedTag])
+                    switch(selectedCompressionMode)
                     {
                         case 0:
                         break;
@@ -986,7 +998,7 @@
             NSArray *copyCompressionSettings = nil;
             NSArray *copyCompressionSettingsLowRes = nil;
             
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"JPEGinsteadJPEG2000"] && [compressionMode selectedTag] == 1) // Temporarily switch the prefs... ugly....
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"JPEGinsteadJPEG2000"] && selectedCompressionMode == 1) // Temporarily switch the prefs... ugly....
             {
                 copyCompressionSettings = [[NSUserDefaults standardUserDefaults] objectForKey: @"CompressionSettings"];
                 copyCompressionSettingsLowRes = [[NSUserDefaults standardUserDefaults] objectForKey: @"CompressionSettingsLowRes"];
@@ -1003,7 +1015,7 @@
 
                 
                 
-                switch( [compressionMode selectedTag])
+                switch(selectedCompressionMode)
                 {
                     case 1:
                         [[[BrowserController currentBrowser] database] processFilesAtPaths:compressedArray intoDirAtPath:nil mode:Compress];
@@ -1050,6 +1062,10 @@
                 }
             }
             
+            /*
+             
+            FAUZE - 24-Mar-2018 - Light viewer does not exist.
+             
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"] && cancelled == NO)
             {
                 thread.name = NSLocalizedString( @"Burning...", nil);
@@ -1068,6 +1084,7 @@
                 
                 [unzipTask release];
             }
+            */
             
             if(  [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnHtml"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO && cancelled == NO)
             {
