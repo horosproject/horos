@@ -1055,6 +1055,11 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 		installDirectoryPath = oldPath;
 	else
 		installDirectoryPath = [PluginManager userActivePluginsDirectoryPath];
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:installDirectoryPath])
+    {
+        [[NSFileManager defaultManager] createDirectoryAtPath:installDirectoryPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
 	
     // Install the plugin
 	[PluginManager movePluginFromPath:pluginPath toPath: installDirectoryPath];	
