@@ -934,8 +934,11 @@
             [manager createDirectoryAtPath:burnFolder attributes:nil];
         if( ![manager fileExistsAtPath:subFolder])
             [manager createDirectoryAtPath:subFolder attributes:nil];
-        if( ![manager fileExistsAtPath:dicomdirPath])
+        
+        /*
+         if( ![manager fileExistsAtPath:dicomdirPath])
             [manager copyPath:[[NSBundle mainBundle] pathForResource:@"DICOMDIR" ofType:nil] toPath:dicomdirPath handler:nil];
+        */
             
         NSMutableArray *newFiles = [NSMutableArray array];
         NSMutableArray *compressedArray = [NSMutableArray array];
@@ -1041,6 +1044,7 @@
                 }
             }
             
+            /*
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"] && cancelled == NO)
             {
                 thread.name = NSLocalizedString( @"Burning...", nil);
@@ -1059,6 +1063,7 @@
                 
                 [unzipTask release];
             }
+            */
             
             if(  [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnHtml"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO && cancelled == NO)
             {
