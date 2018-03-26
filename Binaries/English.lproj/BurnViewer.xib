@@ -222,7 +222,7 @@ DQ
                             <binding destination="38" name="value" keyPath="values.BurnWeasis" id="151"/>
                         </connections>
                     </button>
-                    <button horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="146">
+                    <button hidden="YES" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="146">
                         <rect key="frame" x="114" y="119" width="325" height="18"/>
                         <buttonCell key="cell" type="check" title="Include Horos Lite viewer (mac only, about 8MB)" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" enabled="NO" inset="2" id="147">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>

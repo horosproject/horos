@@ -917,6 +917,11 @@
     
 	@try
     {
+        __block NSInteger selectedCompressionMode;
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            selectedCompressionMode = [compressionMode selectedTag];
+        });
+        
         NSEnumerator *enumerator;
         if( anonymizedFiles) enumerator = [anonymizedFiles objectEnumerator];
         else enumerator = [files objectEnumerator];
@@ -956,7 +961,7 @@
                     if( [[DicomFile getDicomField: @"TransferSyntaxUID" forFile: newPath] isEqualToString: DCM_ExplicitVRBigEndian])
                        [bigEndianFilesToConvert addObject: newPath];
                     
-                    switch( [compressionMode selectedTag])
+                    switch(selectedCompressionMode)
                     {
                         case 0:
                         break;
@@ -983,7 +988,7 @@
             NSArray *copyCompressionSettings = nil;
             NSArray *copyCompressionSettingsLowRes = nil;
             
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"JPEGinsteadJPEG2000"] && [compressionMode selectedTag] == 1) // Temporarily switch the prefs... ugly....
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"JPEGinsteadJPEG2000"] && selectedCompressionMode == 1) // Temporarily switch the prefs... ugly....
             {
                 copyCompressionSettings = [[NSUserDefaults standardUserDefaults] objectForKey: @"CompressionSettings"];
                 copyCompressionSettingsLowRes = [[NSUserDefaults standardUserDefaults] objectForKey: @"CompressionSettingsLowRes"];
@@ -997,7 +1002,7 @@
             
             @try
             {
-                switch( [compressionMode selectedTag])
+                switch(selectedCompressionMode)
                 {
                     case 1:
                         [[BrowserController currentBrowser] decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'C']];
