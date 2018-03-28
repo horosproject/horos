@@ -214,6 +214,8 @@ static NSMutableArray *pluginWithHTTPResponses = nil;
     self.parameters = nil;
 	self.session = nil;
     
+    self.requestedPath = nil;
+    
     if ([_independentDicomDatabase.managedObjectContext hasChanges])
         [_independentDicomDatabase save];
     [_independentDicomDatabase release];
@@ -459,9 +461,11 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	[response.tokens setObject:parameters forKey:@"Request"];
 	
 	// find the name of the requested file
+    NSString *requestedPath = [urlComponenents objectAtIndex:0];
 	// SECURITY: we cannot allow the client to read any file on the hard disk (outside the shared dir), so no ".."
     //FIXED 20170312: path traversal bug, added extra filtering patterns: https://www.exploit-db.com/exploits/40930/ https://github.com/horosproject/horos/issues/163
-	requestedPath = [[urlComponenents objectAtIndex:0] stringByReplacingOccurrencesOfString:@"../" withString:@""];
+    // TODO: I am convinced the next lines aren't doing what they were supposed to be doing, basically only the last one has any effect since all these lines don't consider the previous changes
+    requestedPath = [[urlComponenents objectAtIndex:0] stringByReplacingOccurrencesOfString:@"../" withString:@""];
     requestedPath = [[urlComponenents objectAtIndex:0] stringByReplacingOccurrencesOfString:@"/../" withString:@""];
     requestedPath = [[urlComponenents objectAtIndex:0] stringByReplacingOccurrencesOfString:@"..//" withString:@""];
     requestedPath = [[urlComponenents objectAtIndex:0] stringByReplacingOccurrencesOfString:@"/../" withString:@""];
@@ -469,14 +473,13 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
     requestedPath = [[urlComponenents objectAtIndex:0] stringByReplacingOccurrencesOfString:@"//.." withString:@""];
     requestedPath = [[urlComponenents objectAtIndex:0] stringByReplacingOccurrencesOfString:@"//../" withString:@""];
     
+    self.requestedPath = requestedPath;
     
-    
-	
 //	NSString* userAgent = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"User-Agent") autorelease];
 //	BOOL isIOS [userAgent contains:@"iPhone"] || [userAgent contains:@"iPad"];	
 //	BOOL isMacOS [userAgent contains:@"Mac OS"];	
 
-	NSString* ext = [requestedPath pathExtension];
+	NSString* ext = [self.requestedPath pathExtension];
 	if ([ext compare:@"jar" options:NSCaseInsensitiveSearch|NSLiteralSearch] == NSOrderedSame)
 		response.mimeType = @"application/java-archive";
 	if ([ext compare:@"swf" options:NSCaseInsensitiveSearch|NSLiteralSearch] == NSOrderedSame)
@@ -488,15 +491,26 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 //    [response.httpHeaders setObject: @"no-cache" forKey: @"Cache-Control"];
     
-	if ([requestedPath hasPrefix:@"/weasis/"])
+	if ([self.requestedPath hasPrefix:@"/weasis/"])
 	{
 		#ifndef OSIRIX_LIGHT
-		response.data = [NSData dataWithContentsOfFile:[[[AppController sharedAppController] weasisBasePath] stringByAppendingPathComponent:requestedPath]];
+        BOOL assigned = false;
+        for (NSString *dir in self.portal.dirsToScanForFiles) {
+            NSString *path = [dir stringByAppendingPathComponent:self.requestedPath];
+            BOOL isDir;
+            if ([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && !isDir)
+                if ((response.data = [NSData dataWithContentsOfFile:path])) {
+                    assigned = YES;
+                    break;
+                }
+        }
+        if (!assigned)
+            response.data = [NSData dataWithContentsOfFile:[[[AppController sharedAppController] weasisBasePath] stringByAppendingPathComponent:self.requestedPath]];
 		#else
 		response.statusCode = 404;
 		#endif
 	}
-	else if ([requestedPath rangeOfString:@".pvt."].length)
+	else if ([self.requestedPath rangeOfString:@".pvt."].length)
     {
 		response.statusCode = 404;
 	}
@@ -520,7 +534,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
             
             for( id plugin in pluginWithHTTPResponses)
             {
-                NSData *data = [plugin performSelector: @selector(httpResponseForPath:forConnection:) withObject: requestedPath withObject: self];
+                NSData *data = [plugin performSelector:@selector(httpResponseForPath:forConnection:) withObject:self.requestedPath withObject:self];
                 
                 if( data.length)
                 {
@@ -538,84 +552,84 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
         {
             @try
             {
-                if ([requestedPath isEqualToString:@"/"] || [requestedPath hasPrefix: @"/index"])
+                if ([self.requestedPath isEqualToString:@"/"] || [self.requestedPath hasPrefix: @"/index"])
                     [self processIndexHtml];
                 else
-                if ([requestedPath isEqualToString: @"/main"])
+                if ([self.requestedPath isEqualToString: @"/main"])
                     [self processMainHtml];
                 else
-                if ([requestedPath isEqualToString:@"/logs"])
+                if ([self.requestedPath isEqualToString:@"/logs"])
                     [self processLogsListHtml];
                 else
-                if ([requestedPath isEqualToString:@"/studyList"])
+                if ([self.requestedPath isEqualToString:@"/studyList"])
                     [self processStudyListHtml];
                 else	
-                if ([requestedPath isEqualToString:@"/studyList.json"])
+                if ([self.requestedPath isEqualToString:@"/studyList.json"])
                     [self processStudyListJson];
                 else
-                if ([requestedPath isEqualToString:@"/study"])
+                if ([self.requestedPath isEqualToString:@"/study"])
                     [self processStudyHtml];
                 else
-                if ([requestedPath isEqualToString:@"/wado"])
+                if ([self.requestedPath isEqualToString:@"/wado"])
                     [self processWado];
                 else
-                if ([requestedPath isEqualToString:@"/thumbnail"])
+                if ([self.requestedPath isEqualToString:@"/thumbnail"])
                     [self processThumbnail];
                 else
-                if ([requestedPath isEqualToString:@"/series.pdf"])
+                if ([self.requestedPath isEqualToString:@"/series.pdf"])
                     [self processSeriesPdf];
                 else
-                if ([requestedPath isEqualToString:@"/series"])
+                if ([self.requestedPath isEqualToString:@"/series"])
                     [self processSeriesHtml];
                 else
-                if ([requestedPath isEqualToString:@"/keyroisimages"])
+                if ([self.requestedPath isEqualToString:@"/keyroisimages"])
                     [self processKeyROIsImagesHtml];
                 else
-                if ([requestedPath isEqualToString:@"/series.json"])
+                if ([self.requestedPath isEqualToString:@"/series.json"])
                     [self processSeriesJson];
                 else
-                if ([requestedPath hasPrefix:@"/report"])
+                if ([self.requestedPath hasPrefix:@"/report"])
                     [self processReport];
                 else
-                if ([requestedPath hasSuffix:@".zip"] || [requestedPath hasSuffix:@".osirixzip"])
+                if ([self.requestedPath hasSuffix:@".zip"] || [self.requestedPath hasSuffix:@".osirixzip"])
                     [self processZip];
                 else
-                if ([requestedPath hasPrefix:@"/image."])
+                if ([self.requestedPath hasPrefix:@"/image."])
                     [self processImage];
                 else
-                if ([requestedPath hasPrefix:@"/imageAsScreenCapture."])
+                if ([self.requestedPath hasPrefix:@"/imageAsScreenCapture."])
                     [self processImageAsScreenCapture: YES];
                 else
-                if ([requestedPath isEqualToString:@"/movie.mov"] || [requestedPath isEqualToString:@"/movie.m4v"] || [requestedPath isEqualToString:@"/movie.mp4"] || [requestedPath isEqualToString:@"/movie.swf"])
+                if ([self.requestedPath isEqualToString:@"/movie.mov"] || [self.requestedPath isEqualToString:@"/movie.m4v"] || [self.requestedPath isEqualToString:@"/movie.mp4"] || [self.requestedPath isEqualToString:@"/movie.swf"])
                     [self processMovie];
                 else
-                if ([requestedPath isEqualToString:@"/password_forgotten"])
+                if ([self.requestedPath isEqualToString:@"/password_forgotten"])
                     [self processPasswordForgottenHtml];
                 else
-                if ([requestedPath isEqualToString: @"/account"])
+                if ([self.requestedPath isEqualToString: @"/account"])
                     [self processAccountHtml];
                 else
-                if ([requestedPath isEqualToString:@"/albums.json"])
+                if ([self.requestedPath isEqualToString:@"/albums.json"])
                     [self processAlbumsJson];
                 else
-                if ([requestedPath isEqualToString:@"/seriesList.json"])
+                if ([self.requestedPath isEqualToString:@"/seriesList.json"])
                     [self processSeriesListJson];
                 else
-                if ([requestedPath hasSuffix:@"weasis.jnlp"])
+                if ([self.requestedPath hasSuffix:@"weasis.jnlp"])
                     [self processWeasisJnlp];
                 else
-                if ([requestedPath isEqualToString:@"/weasis.xml"])
+                if ([self.requestedPath isEqualToString:@"/weasis.xml"])
                     [self processWeasisXml];
                 else
-                if ([requestedPath isEqualToString:@"/admin/"] || [requestedPath isEqualToString:@"/admin/index"])
+                if ([self.requestedPath isEqualToString:@"/admin/"] || [self.requestedPath isEqualToString:@"/admin/index"])
                     [self processAdminIndexHtml];
                 else
-                if ([requestedPath isEqualToString:@"/admin/user"])
+                if ([self.requestedPath isEqualToString:@"/admin/user"])
                     [self processAdminUserHtml];
                 else
-                if ([requestedPath isEqualToString:@"/quitOsiriX"] && user.isAdmin.boolValue)
+                if ([self.requestedPath isEqualToString:@"/quitOsiriX"] && user.isAdmin.boolValue)
                     exit(0);
-                else if ([requestedPath isEqualToString:@"/testdbalive"])
+                else if ([self.requestedPath isEqualToString:@"/testdbalive"])
                 {
                     [self.portal.dicomDatabase.managedObjectContext lock]; // Can we obtain a lock on the main db?
                     [self.portal.dicomDatabase.managedObjectContext unlock];
@@ -637,7 +651,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
                 }
                 else
                 {
-                    response.data = [self.portal dataForPath:requestedPath];
+                    response.data = [self.portal dataForPath:self.requestedPath];
                 }
                 
                 if (!response.data.length && !response.statusCode)

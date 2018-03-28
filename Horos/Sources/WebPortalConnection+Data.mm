@@ -2901,7 +2901,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
     if( asDisplayed)
     {
-        if ([requestedPath.pathExtension isEqualToString:@"jpg"])
+        if ([self.requestedPath.pathExtension isEqualToString:@"jpg"])
         {
             // waitUntileDone is very risky... cross lock possible ?!
             [self performSelectorOnMainThread: @selector( saveImageAsScreenCapture:) withObject: dicomImage.XID waitUntilDone: YES];
@@ -2962,13 +2962,13 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	NSBitmapImageRep* imageRep = [NSBitmapImageRep imageRepWithData:image.TIFFRepresentation];
 	
 	NSDictionary *imageProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
-	if ([requestedPath.pathExtension isEqualToString:@"png"])
+	if ([self.requestedPath.pathExtension isEqualToString:@"png"])
     {
 		response.data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
 		response.mimeType = @"image/png";
 		
 	}
-    else if ([requestedPath.pathExtension isEqualToString:@"jpg"])
+    else if ([self.requestedPath.pathExtension isEqualToString:@"jpg"])
     {
 		response.data = [imageRep representationUsingType:NSJPEGFileType properties:imageProps];
 		response.mimeType = @"image/jpeg";
@@ -2987,7 +2987,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	if (!series)
 		return;
 	
-	response.data = [self produceMovieForSeries:series fileURL:requestedPath];
+	response.data = [self produceMovieForSeries:series fileURL:self.requestedPath];
 	
 	//if (data == nil || [data length] == 0)
 	//	NSLog( @"****** movie data == nil");

@@ -48,7 +48,7 @@
 	WebPortalUser* user;
 	WebPortalSession* session;
 	
-	NSString* requestedPath;
+//    NSString* requestedPath;
 	NSString* GETParams;
 	NSDictionary* parameters; // GET and POST params
 	
@@ -73,6 +73,7 @@
 @property(retain) NSDictionary* parameters;
 @property(retain) NSString* GETParams;
 @property(retain,readonly) DicomDatabase* independentDicomDatabase;
+@property(strong) NSString *requestedPath;
 
 @property(assign,readonly) WebPortalServer* server;
 @property(assign,readonly) WebPortal* portal;

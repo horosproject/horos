@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE jnlp PUBLIC "-//Sun Microsystems, Inc//DTD JNLP Descriptor 6.0//EN" "http://java.sun.com/dtd/JNLP-6.0.dtd">
-<jnlp spec="1.5+" version="1.0.7" codebase="%X:Info.baseUrl%/weasis/" href="">
+<jnlp spec="1.6+" version="" codebase="">
 	<information>
 		<title>Weasis</title>
-		<vendor>H&#244;pitaux Universitaires de Gen&#232;ve (HUG)</vendor>
+		<vendor>Weasis Team</vendor>
 
 		<description>DICOM images viewer</description>
 		<description kind="short">An application to visualize and analyze DICOM images.</description>
@@ -11,14 +11,8 @@
 		<description kind="one-line">DICOM images viewer</description>
 		<description kind="tooltip">Weasis</description>
 		
-		<icon href="%X:Info.baseUrl%/weasis/images/logo-button.png" kind="default"/>
-		<icon href="%X:Info.baseUrl%/weasis/images/about.png" kind="splash"/>
-		
-		<shortcut online="false">
-			<desktop/>
-			<menu submenu="Weasis"/>
-		</shortcut>
-		
+		<icon href="%X:Info.baseUrl%/weasis/resources/images/logo-button.png" kind="default"/>
+		<icon href="%X:Info.baseUrl%/weasis/resources/images/about.png" kind="splash"/>
 	</information>
 	
 	<security>
@@ -26,43 +20,49 @@
 	</security>
 	
 	<resources>
-		<!--  Requires Java SE 6 update 10 release for jnlp extension without codebase (substance.jnlp) -->
-		<j2se version="1.6.0_10+" href="http://java.sun.com/products/autodl/j2se" initial-heap-size="128m" max-heap-size="512m" />
-		<j2se version="1.6.0_10+" initial-heap-size="128m" max-heap-size="512m" />
+		<!-- Requires Java SE 8 for Weasis 2.5 and superior -->
 
-		<!-- Allows to get files in pack200 compression -->
+		<java version="9+" href="http://java.sun.com/products/autodl/j2se" java-vm-args="--add-modules java.xml.bind --add-exports=java.base/sun.net.www.protocol.http=ALL-UNNAMED --add-exports=java.base/sun.net.www.protocol.https=ALL-UNNAMED --add-exports=java.base/sun.net.www.protocol.file=ALL-UNNAMED --add-exports=java.base/sun.net.www.protocol.ftp=ALL-UNNAMED --add-exports=java.base/sun.net.www.protocol.jar=ALL-UNNAMED --add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.security=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.desktop/javax.imageio.stream=ALL-UNNAMED --add-opens=java.desktop/javax.imageio=ALL-UNNAMED --add-opens=java.desktop/com.sun.awt=ALL-UNNAMED" initial-heap-size="128m" max-heap-size="768m" />
+		<j2se version="9+" java-vm-args="--add-modules java.xml.bind --add-exports=java.base/sun.net.www.protocol.http=ALL-UNNAMED --add-exports=java.base/sun.net.www.protocol.https=ALL-UNNAMED --add-exports=java.base/sun.net.www.protocol.file=ALL-UNNAMED --add-exports=java.base/sun.net.www.protocol.ftp=ALL-UNNAMED --add-exports=java.base/sun.net.www.protocol.jar=ALL-UNNAMED --add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.security=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.desktop/javax.imageio.stream=ALL-UNNAMED --add-opens=java.desktop/javax.imageio=ALL-UNNAMED --add-opens=java.desktop/com.sun.awt=ALL-UNNAMED" initial-heap-size="128m" max-heap-size="768m" />
+
+		<j2se version="1.8+" href="http://java.sun.com/products/autodl/j2se" initial-heap-size="128m" max-heap-size="768m" />
+		<j2se version="1.8+" initial-heap-size="128m" max-heap-size="768m" />
+	
+		<!-- Allows to get files in pack200 compression, only since Weasis 1.1.2 -->
 		<property name="jnlp.packEnabled" value="true" />
+		<property name="jnlp.versionEnabled" value="false"/>
 		
 		<jar href="%X:Info.baseUrl%/weasis/weasis-launcher.jar" main="true" />
 		<jar href="%X:Info.baseUrl%/weasis/felix.jar" />
+		<jar href="%X:Info.baseUrl%/weasis/substance.jar" />
 		
-		<!-- Optional library (Substance Look and feel, only since version 1.0.8). Requires the new Java Plug-in introduced in the Java SE 6 update 10 release.For previous JRE 6, substance.jnlp needs a static codebase URL -->
-		<!-- <extension href="%X:Info.baseUrl%/weasis/substance.jnlp" /> -->
+		<!-- Required parameter. Define the location of config.properties (the OSGI configuration and the list of plug-ins to install/start) -->
+		<property name="jnlp.weasis.felix.config.properties" value="%X:Info.baseUrl%/weasis/conf/config.properties" />
 
+		<!-- Optional parameter. Define the location of ext-config.properties (extend/override config.properties) -->
+		<property name="jnlp.weasis.felix.extended.config.properties" value="%X:Info.baseUrl%/weasis/conf/ext-config.properties" />
+
+		<!-- Required parameter. Define the code base of Weasis for the JNLP -->
+		<property name="jnlp.weasis.weasis.codebase.url" value="%X:Info.baseUrl%/weasis" />
+
+		<!-- Optional parameter. Define the code base ext of Weasis for the JNLP -->
+		<!--property name="jnlp.weasis.weasis.codebase.ext.url" value="${cdb-ext}" /-->
+
+		<!-- Required parameter. OSGI console parameter -->
+		<property name="jnlp.weasis.gosh.args" value="-sc telnetd -p 17179 start" />
+
+		<!-- Optional parameter. Allows to have the Weasis menu bar in the top bar on Mac OS X (works only with the native Aqua look and feel) -->
+		<property name="jnlp.weasis.apple.laf.useScreenMenuBar" value="true" />
+
+		<!-- Optional parameter. Allows to get plug-ins translations -->
+		<property name="jnlp.weasis.weasis.i18n" value="%X:Info.baseUrl%/weasis/bundle-i18n" />
+		
+		<!-- Optional Weasis Documentation -->
+		<!--property name="jnlp.weasis.weasis.help.url" value="${cdb}/../weasis-doc" /-->
+		
 	</resources>
 	
 	<application-desc main-class="org.weasis.launcher.WebstartLauncher">
-		<!-- Should be in property tag of resources. Workaround for having a fully trusted application with dynamic jnlp (only since weasis 1.1.2, for previous version see revision=16573), http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6653241 -->
-
-		<!-- Required parameter. Define the location of config.properties (the OSGI configuration and the list of plug-ins to install/start) -->
-		<argument>-VMPfelix.config.properties="%X:Info.baseUrl%/weasis/conf/config.properties"</argument>
-
-        <!-- Optional parameter. Define the location of ext-config.properties (extend/override config.properties) -->
-		<argument>-VMPfelix.extended.config.properties="%X:Info.baseUrl%/weasis/conf/ext-config.properties"</argument>
-		
-		<!-- Required parameter. Define the code base of Weasis for the JNLP -->
-		<argument>-VMPweasis.codebase.url="%X:Info.baseUrl%/weasis"</argument>
-		
-		<!-- Required parameter. Start local OSGI console on the port 17179 -->
-		<argument>-VMPgosh.args="-sc telnetd -p 17179 start"</argument>
-		
-		<!-- Optional parameter. Allows to have the Weasis menu bar in the top bar on Mac OS X (works only with the native Aqua look and feel) -->
-		<argument>-VMPapple.laf.useScreenMenuBar="true"</argument>
-		
-		<!-- Optional parameter. Allows to get plug-ins translations -->
-		<argument>-VMPweasis.i18n="%X:Info.baseUrl%/weasis/bundle-i18n"</argument>
-		
-		<argument>$dicom:get -w %X:Info.baseUrl%/weasis.xml?%[IF:User%username=%U:User.name%&token=%U:X:Info.newToken%&%]IF:User%%Info.allParameters%</argument>
-
+        <argument>$dicom:get -w %X:Info.baseUrl%/weasis.xml?%[IF:User%username=%U:User.name%\&token=%U:X:Info.newToken%\&%]IF:User%%CONENC:Info.allParameters%</argument>
 	</application-desc>
 </jnlp>

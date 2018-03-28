@@ -46,10 +46,14 @@ function checkboxChanged(form) {
 }
 
 function onSubmitForm(form) {
-	if (document.submitting == 'Weasis')
-		form.action ="%X:Study.name%-weasis.jnlp";
-	else form.action = document.location;
-	if( form.message) {
+    if (document.submitting == 'Weasis') {
+        form.method = "get";
+        form.action ="%Info.baseJnlpUrl%/%X:Study.name%-weasis.jnlp";
+    } else {
+        form.method = "post";
+        form.action = document.location;
+    }
+    if (form.message) {
 		if (form.message.value == form.message.defaultValue)
 			form.message.value = '';
 	}
@@ -167,7 +171,7 @@ function shareDestinationChange(select) {
                         %]IF:Info.proposeZipDownload%
                     
                         %[IF:Info.proposeWeasis%
-                            <a href="/%X:ComparativeStudy.name%-%X:ComparativeStudy.studyName%-weasis.jnlp?xid=%ComparativeStudy.XID%"><img src="images/weasisSmall.png" style="vertical-align:middle"/></a>
+                            <a href="%Info.baseJnlpUrl%/%X:ComparativeStudy.name%-%X:ComparativeStudy.studyName%-weasis.jnlp?xid=%ComparativeStudy.XID%"><img src="images/weasisSmall.png" style="vertical-align:middle"/></a>
                         %]IF:Info.proposeWeasis%
 					
                         %[IF:ComparativeStudy.studyInstanceUID==Study.studyInstanceUID%
@@ -268,7 +272,7 @@ function shareDestinationChange(select) {
 
 						%[IF:Info.proposeWeasis%
 						<td class="narrow middle">
-                            <a href="/%X:Study.name%-weasis.jnlp?xid=%Series.XID%"><img src="images/weasis.png"/></a>
+                            <a href="%Info.baseJnlpUrl%/%X:Study.name%-weasis.jnlp?xid=%Series.XID%"><img src="images/weasis.png"/></a>
 						</td>
 						%]IF:Info.proposeWeasis%
                         
