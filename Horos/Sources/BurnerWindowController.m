@@ -934,7 +934,7 @@
         
         NSString *file;
         NSString *burnFolder = [self folderToBurn];
-        NSString *dicomdirPath = [NSString stringWithFormat:@"%@/DICOMDIR",burnFolder];
+        //NSString *dicomdirPath = [NSString stringWithFormat:@"%@/DICOMDIR",burnFolder];
         NSString *subFolder = [NSString stringWithFormat:@"%@/DICOM",burnFolder];
         NSFileManager *manager = [NSFileManager defaultManager];
         int i = 0;
