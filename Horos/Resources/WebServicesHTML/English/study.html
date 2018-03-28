@@ -46,10 +46,14 @@ function checkboxChanged(form) {
 }
 
 function onSubmitForm(form) {
-	if (document.submitting == 'Weasis')
-		form.action ="%Info.baseJnlpUrl%/%X:Study.name%-weasis.jnlp";
-	else form.action = document.location;
-	if( form.message) {
+    if (document.submitting == 'Weasis') {
+        form.method = "get";
+        form.action ="%Info.baseJnlpUrl%/%X:Study.name%-weasis.jnlp";
+    } else {
+        form.method = "post";
+        form.action = document.location;
+    }
+    if (form.message) {
 		if (form.message.value == form.message.defaultValue)
 			form.message.value = '';
 	}

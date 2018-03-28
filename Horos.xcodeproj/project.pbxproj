@@ -9884,7 +9884,7 @@
 			buildPhases = (
 				AB28B42A05B7921E00A9906C /* Headers */,
 				AB28B42B05B7921E00A9906C /* Resources */,
-				7183153F161065BE0098576F /* Replace Weasis ext-config.properties */,
+				7183153F161065BE0098576F /* Replace Weasis ext-config.properties and zip resources */,
 				59BDEE70117CB3A6007F1F2C /* Zip Horos Launcher into Resources */,
 				AB28B42C05B7921E00A9906C /* Sources */,
 				AB28B42D05B7921E00A9906C /* Frameworks */,
@@ -10479,7 +10479,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# git submodule sync # done in dedicated target\n\ncd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo FeedbackReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo dciodvfy.zip\nunzip -uo Ming.zip\nunzip -uo homephone.framework.zip\n\nunzip -uo weasis-portable*.zip -d weasis\nchmod -R 755 weasis\nfind \"$SRCROOT/Binaries/weasis\" -name __MACOSX | xargs rm -Rf\n\ncd \"$SRCROOT/Binaries/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/DICOMPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\nexit 0";
+			shellScript = "# git submodule sync # done in dedicated target\n\ncd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo FeedbackReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo dciodvfy.zip\nunzip -uo Ming.zip\nunzip -uo homephone.framework.zip\n\nunzip -uo weasis-portable*.zip -d weasis\nchmod -R 755 weasis\nfind \"$SRCROOT/Binaries/weasis\" -name __MACOSX | xargs rm -Rf\nzip\n\ncd \"$SRCROOT/Binaries/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/DICOMPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\nexit 0";
 		};
 		59BDEE70117CB3A6007F1F2C /* Zip Horos Launcher into Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10523,19 +10523,20 @@
 			shellPath = /bin/sh;
 			shellScript = "echo \"$TARGET_BUILD_DIR/$FULL_PRODUCT_NAME\" > \"$TARGET_TEMP_DIR/Product.path\"";
 		};
-		7183153F161065BE0098576F /* Replace Weasis ext-config.properties */ = {
+		7183153F161065BE0098576F /* Replace Weasis ext-config.properties and zip resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Replace Weasis ext-config.properties";
+			name = "Replace Weasis ext-config.properties and zip resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -fp \"$PROJECT_DIR/Horos/Resources/weasis-ext-config.properties\" \"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/weasis/weasis/conf/ext-config.properties\"";
+			shellScript = "cp -fp \"$PROJECT_DIR/Horos/Resources/weasis-ext-config.properties\" \"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/weasis/weasis/conf/ext-config.properties\"\ncd \"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/weasis/weasis/resources\"\nzip -r ../resources.zip . -x \".*\" -x \"*/.*\"\n";
+			showEnvVarsInLog = 0;
 		};
 		71A522FB2021AB450065793A /* CMake */ = {
 			isa = PBXShellScriptBuildPhase;
