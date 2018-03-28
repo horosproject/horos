@@ -555,6 +555,8 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 		return [NSNumber numberWithBool: wpc.portal.passwordRestoreAllowed];
 	if ([key isEqualToString:@"baseUrl"])
 		return wpc.portalURL;
+    if ([key isEqualToString:@"baseJnlpUrl"])
+        return [@"jnlp" stringByAppendingString:[wpc.portalURL substringFromIndex:4]];
     if ([key isEqualToString:@"clientAddress"])
 		return wpc.asyncSocket.connectedHost;
     if ([key isEqualToString:@"isLAN"])

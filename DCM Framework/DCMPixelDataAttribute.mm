@@ -206,7 +206,7 @@ unsigned char scanJpegDataForBitDepth(
                 offset +=2;
                 break;
             case 0xffda: // SOS
-                return 0; // SOS is Start Of Scan, there won't be any further markers // offset += readUint16(data+offset+2)+2;
+                return 0; // SOS is Start Of Scan, there won't be any further markers // was: offset += readUint16(data+offset+2)+2;
                 break;
             case 0xffdb: // DQT
                 offset += readUint16(data+offset+2)+2;
