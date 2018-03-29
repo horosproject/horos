@@ -1052,9 +1052,21 @@
                     [[NSFileManager defaultManager] copyItemAtPath:[weasisPath stringByAppendingPathComponent:subpath] toPath:[burnFolder stringByAppendingPathComponent:subpath] error:NULL];
                 
                 NSString *burnWeasisPath = [burnFolder stringByAppendingPathComponent:@"weasis"];
-                for (NSString *weasisPath in [Horos WeasisCustomizationPaths])
-                    for (NSString* subpath in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:weasisPath error:NULL])
-                        [[NSFileManager defaultManager] copyItemAtPath:[weasisPath stringByAppendingPathComponent:subpath] toPath:[burnWeasisPath stringByAppendingPathComponent:subpath] error:NULL];
+                NSArray *skips = @[ @".DS_Store" ];
+                for (NSString *weasisPath in [[Horos WeasisCustomizationPaths] reverseObjectEnumerator]) { // reversed to mimic the WebPortal priorities
+                    NSDirectoryEnumerator *de = [[NSFileManager defaultManager] enumeratorAtPath:weasisPath];
+                    for (NSString *subpath in de)
+                        if (![skips containsObject:subpath.lastPathComponent]) {
+                            NSString *source = [weasisPath stringByAppendingPathComponent:subpath], *dest = [burnWeasisPath stringByAppendingPathComponent:subpath];;
+                            if ([de.fileAttributes[NSFileType] isEqual:NSFileTypeDirectory]) {
+                                [[NSFileManager defaultManager] createDirectoryAtPath:dest withIntermediateDirectories:YES attributes:nil error:NULL];
+                            } else {
+                                if ([[NSFileManager defaultManager] fileExistsAtPath:dest])
+                                    [[NSFileManager defaultManager] removeItemAtPath:dest error:NULL];
+                                [[NSFileManager defaultManager] copyItemAtPath:[weasisPath stringByAppendingPathComponent:subpath] toPath:dest error:NULL];
+                            }
+                        }
+                }
                 
                 // Change Label in Autorun.inf
                 NSStringEncoding encoding;
