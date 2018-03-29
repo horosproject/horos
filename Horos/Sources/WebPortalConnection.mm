@@ -75,6 +75,7 @@
 #import "N2Alignment.h"
 #import "AppController.h"
 #import "PluginManager.h"
+#import "Horos.h"
 
 #import "JSON.h"
 
@@ -495,8 +496,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	{
 		#ifndef OSIRIX_LIGHT
         BOOL assigned = false;
-        for (NSString *dir in self.portal.dirsToScanForFiles) {
-            NSString *path = [dir stringByAppendingPathComponent:self.requestedPath];
+        for (NSString *dir in [Horos WeasisCustomizationPaths]) {
+            NSString *path = [dir stringByAppendingPathComponent:[self.requestedPath substringFromIndex:8]];
             BOOL isDir;
             if ([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && !isDir)
                 if ((response.data = [NSData dataWithContentsOfFile:path])) {
