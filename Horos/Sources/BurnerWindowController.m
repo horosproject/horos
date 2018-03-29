@@ -61,6 +61,7 @@
 #import "DicomFileDCMTKCategory.h"
 #import "DCMUIDs.h"
 #import "DicomDatabase+DCMTK.h"
+#import "Horos.h"
 
 @implementation BurnerWindowController
 
@@ -1045,9 +1046,15 @@
             {
                 thread.name = NSLocalizedString( @"Burning...", nil);
                 thread.status = NSLocalizedString( @"Adding Weasis...", nil);
+                
                 NSString* weasisPath = [[AppController sharedAppController] weasisBasePath];
                 for (NSString* subpath in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:weasisPath error:NULL])
                     [[NSFileManager defaultManager] copyItemAtPath:[weasisPath stringByAppendingPathComponent:subpath] toPath:[burnFolder stringByAppendingPathComponent:subpath] error:NULL];
+                
+                NSString *burnWeasisPath = [burnFolder stringByAppendingPathComponent:@"weasis"];
+                for (NSString *weasisPath in [Horos WeasisCustomizationPaths])
+                    for (NSString* subpath in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:weasisPath error:NULL])
+                        [[NSFileManager defaultManager] copyItemAtPath:[weasisPath stringByAppendingPathComponent:subpath] toPath:[burnWeasisPath stringByAppendingPathComponent:subpath] error:NULL];
                 
                 // Change Label in Autorun.inf
                 NSStringEncoding encoding;
