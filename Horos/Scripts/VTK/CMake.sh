@@ -35,6 +35,8 @@ args+=(-DBUILD_TESTING=OFF)
 args+=(-DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET")
 args+=(-DCMAKE_OSX_ARCHITECTURES="$ARCHS")
 
+[ "$CONFIGURATION" == 'Release' ] && args+=(-DCMAKE_BUILD_TYPE=RELEASE)
+
 args+=(-DVTK_Group_StandAlone=OFF -DVTK_Group_Rendering=OFF) # disable the default groups
 args+=(-DModule_vtkIOImage=ON)
 args+=(-DModule_vtkFiltersGeneral=ON)
