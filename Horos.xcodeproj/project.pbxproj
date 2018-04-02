@@ -11,7 +11,7 @@
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 7E76BECF085757B70073649A /* Build configuration list for PBXAggregateTarget "Unzip Binaries" */;
 			buildPhases = (
-				4A2F5930078D148300C514A2 /* Run Script */,
+				4A2F5930078D148300C514A2 /* Unzip Binaries */,
 			);
 			dependencies = (
 			);
@@ -10467,19 +10467,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		4A2F5930078D148300C514A2 /* Run Script */ = {
+		4A2F5930078D148300C514A2 /* Unzip Binaries */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Run Script";
+			name = "Unzip Binaries";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# git submodule sync # done in dedicated target\n\ncd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo FeedbackReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo dciodvfy.zip\nunzip -uo Ming.zip\nunzip -uo homephone.framework.zip\n\nunzip -uo weasis-portable*.zip -d weasis\nchmod -R 755 weasis\nfind \"$SRCROOT/Binaries/weasis\" -name __MACOSX | xargs rm -Rf\nzip\n\ncd \"$SRCROOT/Binaries/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/DICOMPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\nexit 0";
+			shellScript = "sh \"Horos/Scripts/Horos/Unzip.sh\"";
 		};
 		59BDEE70117CB3A6007F1F2C /* Zip Horos Launcher into Resources */ = {
 			isa = PBXShellScriptBuildPhase;

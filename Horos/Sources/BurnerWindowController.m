@@ -1057,7 +1057,7 @@
                     NSDirectoryEnumerator *de = [[NSFileManager defaultManager] enumeratorAtPath:weasisPath];
                     for (NSString *subpath in de)
                         if (![skips containsObject:subpath.lastPathComponent]) {
-                            NSString *source = [weasisPath stringByAppendingPathComponent:subpath], *dest = [burnWeasisPath stringByAppendingPathComponent:subpath];;
+                            NSString *dest = [burnWeasisPath stringByAppendingPathComponent:subpath];
                             if ([de.fileAttributes[NSFileType] isEqual:NSFileTypeDirectory]) {
                                 [[NSFileManager defaultManager] createDirectoryAtPath:dest withIntermediateDirectories:YES attributes:nil error:NULL];
                             } else {
