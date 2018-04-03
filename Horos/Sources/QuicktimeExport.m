@@ -53,6 +53,8 @@
     self = [super init];
     
     [[NSBundle bundleForClass:self.class] loadNibNamed:@"QuicktimeExport" owner:self topLevelObjects:&_tlos];
+  
+    [_tlos retain];
     
     object = [o retain];
     selector = s;
@@ -313,7 +315,8 @@
                     [pool release];
                 }
                 [writerInput markAsFinished];
-                [writer finishWriting];
+                [writer finishWritingWithCompletionHandler:^{ }];
+                //instead of deprecated [writer finishWriting];
                 
                 [object performSelector: selector withObject: [NSNumber numberWithLong: 0] withObject:[NSNumber numberWithLong: numberOfFrames]];
                 
