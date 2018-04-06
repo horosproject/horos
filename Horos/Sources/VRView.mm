@@ -5023,15 +5023,17 @@ public:
     
     double delta = [firstObject pixelSpacingX]*factor;
     
+    double flyToFactor = 1/15.0f;
+    
     for (j=0; j<3; j++)
     {
-        focalPt[j] = flyFrom[j] + d[j]*delta*incFlyTo;
+        focalPt[j] = flyFrom[j] + d[j]*delta*flyToFactor;
     }
     
     aRenderer->GetActiveCamera()->SetFocalPoint(focalPt);
     
     double distance = aCamera->GetDistance();
-    aCamera->SetDistance( 10.*[firstObject pixelSpacingX]*factor);
+    aCamera->SetDistance( 10.*delta);
     aRenderer->GetActiveCamera()->Dolly( 0.15 + 1.0);
     aCamera->SetDistance( distance);
     aRenderer->GetActiveCamera()->OrthogonalizeViewUp();
@@ -5114,7 +5116,6 @@ public:
             if( [self get3DPixelUnder2DPositionX:mousePoint.x Y:mousePoint.y pixel:pix position:flyToDestination value:&value])
             {
                 flyto = YES;
-                incFlyTo = 0.95f;
             }
             else flyto = NO;
         }
