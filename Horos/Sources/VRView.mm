@@ -5005,8 +5005,6 @@ public:
     NSLog(@"Scissor End");
 }
 
-#define FLYTO 30
-
 - (void) flyTo:(float) x :(float) y :(float) z
 {
     double flyFrom[3], flyTo[3];
@@ -5023,18 +5021,19 @@ public:
     }
     
     
-    double delta = [firstObject pixelSpacingX]*factor/FLYTO;
-    if( incFlyTo < FLYTO) incFlyTo++;
+    double delta = [firstObject pixelSpacingX]*factor;
+    
+    double flyToFactor = 1/15.0f;
     
     for (j=0; j<3; j++)
     {
-        focalPt[j] = flyFrom[j] + d[j]*delta*incFlyTo;
+        focalPt[j] = flyFrom[j] + d[j]*delta*flyToFactor;
     }
     
     aRenderer->GetActiveCamera()->SetFocalPoint(focalPt);
     
     double distance = aCamera->GetDistance();
-    aCamera->SetDistance( 10.*[firstObject pixelSpacingX]*factor);
+    aCamera->SetDistance( 10.*delta);
     aRenderer->GetActiveCamera()->Dolly( 0.15 + 1.0);
     aCamera->SetDistance( distance);
     aRenderer->GetActiveCamera()->OrthogonalizeViewUp();
@@ -5117,7 +5116,6 @@ public:
             if( [self get3DPixelUnder2DPositionX:mousePoint.x Y:mousePoint.y pixel:pix position:flyToDestination value:&value])
             {
                 flyto = YES;
-                incFlyTo = 1;
             }
             else flyto = NO;
         }
