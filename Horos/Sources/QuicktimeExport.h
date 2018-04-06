@@ -45,12 +45,14 @@
 	id						object;
 	SEL						selector;
 	long					numberOfFrames;
-	unsigned long			codec;
+    unsigned long			codec;
 	long					quality;
 	
 	NSSavePanel				*panel;
 	NSArray					*exportTypes;
 	
+    IBOutlet NSTextField    *rateValue;
+    
 	IBOutlet NSView			*view;
     IBOutlet NSPopUpButton	*type;
     
