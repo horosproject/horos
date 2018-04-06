@@ -171,7 +171,7 @@ function shareDestinationChange(select) {
                         %]IF:Info.proposeZipDownload%
                     
                         %[IF:Info.proposeWeasis%
-                            <a href="%Info.baseJnlpUrl%/%X:ComparativeStudy.name%-%X:ComparativeStudy.studyName%-weasis.jnlp?xid=%ComparativeStudy.XID%"><img src="images/weasisSmall.png" style="vertical-align:middle"/></a>
+                            <a href="%Info.baseJnlpUrl%/%X:ComparativeStudy.name%-%X:ComparativeStudy.studyName%-weasis.jnlp?xid=%ComparativeStudy.XID%&sid=%Info.SID%"><img src="images/weasisSmall.png" style="vertical-align:middle"/></a>
                         %]IF:Info.proposeWeasis%
 					
                         %[IF:ComparativeStudy.studyInstanceUID==Study.studyInstanceUID%
@@ -244,6 +244,7 @@ function shareDestinationChange(select) {
 		
 		<div class="separated title">Series</div>
         <form id="form" method="post" onsubmit="return onSubmitForm(this);">
+            <input type="hidden" name="sid" value="%Info.SID%" />
 		<div class="noleftmargin">
 			<table class="wide fat">
 				%[FOREACH:Series:Series%
@@ -272,7 +273,7 @@ function shareDestinationChange(select) {
 
 						%[IF:Info.proposeWeasis%
 						<td class="narrow middle">
-                            <a href="%Info.baseJnlpUrl%/%X:Study.name%-weasis.jnlp?xid=%Series.XID%"><img src="images/weasis.png"/></a>
+                            <a href="%Info.baseJnlpUrl%/%X:Study.name%-weasis.jnlp?xid=%Series.XID%&sid=%Info.SID%"><img src="images/weasis.png"/></a>
 						</td>
 						%]IF:Info.proposeWeasis%
                         

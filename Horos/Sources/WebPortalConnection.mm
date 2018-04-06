@@ -1081,8 +1081,12 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
         {
 			NSDictionary* params = [WebPortalConnection ExtractParams:urlComponenents.lastObject];
 			NSString* username = [params objectForKey:@"username"];
-			NSString* token = [params objectForKey:@"token"];
+            NSString* token = [params objectForKey:@"token"];
 //            NSString* sha1 = [params objectForKey:@"sha1"];
+            
+            NSString* sid = [params objectForKey:@"sid"];
+            if (sid)
+                self.session = [self.portal sessionForId:sid];
             
 			if (username && token) // has token, user exists
             {
