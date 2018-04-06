@@ -643,6 +643,10 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 		} else
 			return @NO;
 	}
+    
+    if ([key isEqualToString:@"SID"])
+        return wpc.session.sid;
+    
 	if ([key hasPrefix:@"getParameters"] || [key hasPrefix:@"allParameters"]) {
 		NSString* rest = [key substringFromIndex:13];
 		if (rest.length && [rest characterAtIndex:0] == '(' && [rest characterAtIndex:rest.length-1] == ')') {
