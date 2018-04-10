@@ -2596,8 +2596,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                 NSXMLElement* studyNode = [NSXMLNode elementWithName:@"Study"];
                 [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyInstanceUID" stringValue: [dcmFile elementForKey: @"studyID"]]];
                 [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyDescription" stringValue: [dcmFile elementForKey: @"studyDescription"]]];
-                [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyDate" stringValue: [dcmFile elementForKey: @"studyDate"]]];
-                [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyTime" stringValue: [dcmFile elementForKey: @"studyDate"]]];
+                if ([dcmFile elementForKey:@"studyDate"]) [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyDate" stringValue:[dateFormatter stringFromDate:[dcmFile elementForKey:@"studyDate"]]]];
+                if ([dcmFile elementForKey:@"studyDate"]) [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyTime" stringValue:[timeFormatter stringFromDate:[dcmFile elementForKey:@"studyDate"]]]];
                 [studyNode addAttribute:[NSXMLNode attributeWithName:@"AccessionNumber" stringValue: [dcmFile elementForKey: @"accessionNumber"]]];
                 [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyID" stringValue: [dcmFile elementForKey: @"studyID"]]]; // ?
                 [studyNode addAttribute:[NSXMLNode attributeWithName:@"ReferringPhysicianName" stringValue: [dcmFile elementForKey: @"referringPhysiciansName"]]];
@@ -2626,8 +2626,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                 if (!patientDataSet)
                 {
                     [patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientName" stringValue: [dcmFile elementForKey: @"patientName"]]];
-                    [patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientBirthDate" stringValue: [dcmFile elementForKey: @"patientBirthDate"]]];
-                    [patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientSex" stringValue: [dcmFile elementForKey: @"patientSex"]]];
+                    if ([dcmFile elementForKey:@"patientBirthDate"]) [patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientBirthDate" stringValue:[dateFormatter stringFromDate:[dcmFile elementForKey:@"patientBirthDate"]]]];
+                    if ([dcmFile elementForKey: @"patientSex"]) [patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientSex" stringValue: [dcmFile elementForKey: @"patientSex"]]];
                 }
             }
             @catch (NSException *exception) {
