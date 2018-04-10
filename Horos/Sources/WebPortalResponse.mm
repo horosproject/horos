@@ -376,11 +376,13 @@ static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 		return [evaldToken xmlEscapedString];
 	}
     
+    /*
     if ([part0 isEqualToString:@"CONENC"]) { // this encoding system replaces & with \&, required by the console that runs within Weasis and loads the parameters
         token = [[parts subarrayWithRange:NSMakeRange(1,(long)parts.count-1)] componentsJoinedByString:@":"];
         NSString* str = [self evaluateToken:token withDictionary:dict context:context mustReevaluate:mustReevaluate];
         return [str stringByReplacingOccurrencesOfString:@"&" withString:@"\\&"];
     }
+    */
 
     if ([part0 isEqualToString:@"LOCNUM"])
     {
