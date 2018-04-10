@@ -213,7 +213,6 @@ typedef char* VTKStereoVRView;
 {
 	NSTimer						*autoRotate, *startAutoRotate;
 	BOOL						isRotating, flyto;
-	int							incFlyTo;
 	
     int                         engine;
     
