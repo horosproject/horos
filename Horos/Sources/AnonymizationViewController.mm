@@ -45,6 +45,7 @@
 #import "N2TextField.h"
 #import "N2CustomTitledPopUpButtonCell.h"
 #import "NSUserDefaultsController+N2.h"
+#import "BrowserController.h"
 #include <cmath>
 #include <algorithm>
 
@@ -313,6 +314,15 @@ NSInteger CompareArraysByNameOfDCMAttributeTagAtIndexZero(id arg1, id arg2, void
 	[self observeValueForKeyPath:NULL ofObject:NULL change:NULL context:self.tagsView];
     
     NSEnableScreenUpdates();
+    
+    /* UGLY HOTFIX / WORKAROUND UNTIL REVIEWING N2AdaptiveBox
+     ------------------------------------------------------ */
+    NSRect frame =  [[[BrowserController currentBrowser] window] frame];
+    frame.size.width--;
+    [[[BrowserController currentBrowser] window] setFrame:frame display:YES];
+    frame.size.width++;
+    [[[BrowserController currentBrowser] window] setFrame:frame display:YES];
+    /* ---------------------------------------------------- */
     
 	[zeroTags release];
 }
