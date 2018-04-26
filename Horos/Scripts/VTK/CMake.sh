@@ -40,6 +40,7 @@ args+=(-DCMAKE_OSX_ARCHITECTURES="$ARCHS")
 args+=(-DVTK_Group_StandAlone=OFF -DVTK_Group_Rendering=OFF) # disable the default groups
 args+=(-DModule_vtkIOImage=ON)
 args+=(-DModule_vtkFiltersGeneral=ON)
+args+=(-DModule_vtkImagingMorphological=ON)
 args+=(-DModule_vtkImagingStencil=ON)
 args+=(-DModule_vtkRenderingOpenGL2=ON)
 args+=(-DModule_vtkRenderingVolumeOpenGL2=ON)
