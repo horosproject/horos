@@ -1683,9 +1683,7 @@ Gw
                 </subviews>
             </view>
             <constraints>
-                <constraint firstItem="1450" firstAttribute="leading" secondItem="1449" secondAttribute="leading" constant="2" id="Y9M-xN-aJm"/>
                 <constraint firstItem="1450" firstAttribute="top" secondItem="1449" secondAttribute="top" id="cun-1v-krR"/>
-                <constraint firstAttribute="trailing" secondItem="1450" secondAttribute="trailing" constant="3" id="mSV-HL-qY5"/>
                 <constraint firstItem="1450" firstAttribute="centerX" secondItem="1449" secondAttribute="centerX" id="ndJ-iG-V3W"/>
             </constraints>
         </box>
