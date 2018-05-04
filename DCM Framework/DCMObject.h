@@ -287,6 +287,10 @@
 /** Return the named attribute . */
 - (DCMAttribute *)attributeWithName:(NSString *)name;
 
+/** Return the array of values for the attribute with the key
+ * @param key The element as a string 0XGGGGWWWW */
+- (NSArray *)attributeArrayForKey:(NSString *)key;
+
 /** Return the array of values for the named attribute */
 - (NSArray *)attributeArrayWithName:(NSString *)name;
 
