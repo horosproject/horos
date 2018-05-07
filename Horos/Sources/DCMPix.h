@@ -134,8 +134,9 @@ extern "C"
     float				halflife, frameReferenceTime, philipsFactor;
     
     // DICOM params for Overlays - 0x6000 group
-    int					oRows, oColumns, oType, oOrigin[ 2], oBits, oBitPosition;
-    unsigned char		*oData;
+    BOOL                overlaysChannelON[16];
+    int					oRows[16], oColumns[16], oType[16], oOrigin[16][ 2], oBits[16], oBitPosition[16];
+    unsigned char		*oData[16];
     
     //	DSA-subtraction
     float				*subtractedfImage;

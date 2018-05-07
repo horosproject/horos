@@ -1319,6 +1319,10 @@ PixelRepresentation
 	return [[self attributeForTag:[DCMAttributeTag tagWithName:name]] values];
 }
 
+- (NSArray *)attributeArrayForKey:(NSString *)key{
+    return [[attributes objectForKey:key] values];
+}
+
 - (void)setAttribute:(DCMAttribute *)attr{
 	[attributes setObject:attr  forKey:[(DCMAttributeTag *)[attr attrTag] stringValue]];
 }
