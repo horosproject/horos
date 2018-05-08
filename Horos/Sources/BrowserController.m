@@ -18589,6 +18589,8 @@ restart:
     
     if( item)
     {
+        [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_HOROS_REPORT_REQUESTED detail:[NSString stringWithFormat:@"{\"reportsMode\": \"%d\"}",reportsMode]];
+        
         if( reportsMode == 0 && [[NSWorkspace sharedWorkspace] fullPathForApplication:@"Microsoft Word"] == nil) // Would absolutePathForAppBundleWithIdentifier be better here? (DDP)
         {
             NSRunAlertPanel( NSLocalizedString(@"Report Error", nil), NSLocalizedString(@"Microsoft Word is required to open/generate '.doc' reports. You can change it to TextEdit in the Preferences.", nil), nil, nil, nil);
