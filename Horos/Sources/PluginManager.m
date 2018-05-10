@@ -762,7 +762,7 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
         foundHorosCloud = YES;
     }
     
-    //if (!foundHorosCloud)
+    if (!foundHorosCloud)
     {
         NSString* srcPath = [[NSBundle mainBundle] pathForResource:@"HorosCloud.horosplugin" ofType:@"zip"];
         if ([[NSFileManager defaultManager] fileExistsAtPath:srcPath])
