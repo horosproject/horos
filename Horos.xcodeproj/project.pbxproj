@@ -693,6 +693,7 @@
 		999B0B641BB70F0800AF018A /* O2HMigrationAssistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 999B0B611BB70F0800AF018A /* O2HMigrationAssistant.m */; };
 		999B0B671BB711ED00AF018A /* CurvedArrowGrayLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = 999B0B661BB711ED00AF018A /* CurvedArrowGrayLeft.png */; };
 		999B0B681BB7309200AF018A /* Osirix.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9966A1AF1AE09FFE00F2D81A /* Osirix.icns */; };
+		99BA4CD820A4BE0B00B5CD02 /* HorosCloud.horosplugin.zip in Copy HorosCloud */ = {isa = PBXBuildFile; fileRef = 99BA4CD620A4BDDA00B5CD02 /* HorosCloud.horosplugin.zip */; };
 		99C32EEF1CFF78E7001E71F3 /* PluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = AB2C24E10677861300A08910 /* PluginFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A0344496143DE4AA003E1AFA /* DCMUSRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = A085E104141E53210072BF0D /* DCMUSRegion.m */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
@@ -3246,6 +3247,27 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		99BA4CC920A4AFFA00B5CD02 /* Copy Embedded Plugins */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+			);
+			name = "Copy Embedded Plugins";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		99BA4CCC20A4B51D00B5CD02 /* Copy HorosCloud */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+				99BA4CD820A4BE0B00B5CD02 /* HorosCloud.horosplugin.zip in Copy HorosCloud */,
+			);
+			name = "Copy HorosCloud";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CECA66E306CD8C1500D8750E /* Copy Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3807,6 +3829,7 @@
 		999B0B601BB70F0800AF018A /* O2HMigrationAssistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = O2HMigrationAssistant.h; path = Horos.xcodeproj/../O2HMigrationAssistant.h; sourceTree = "<group>"; };
 		999B0B611BB70F0800AF018A /* O2HMigrationAssistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = O2HMigrationAssistant.m; path = Horos.xcodeproj/../O2HMigrationAssistant.m; sourceTree = "<group>"; };
 		999B0B661BB711ED00AF018A /* CurvedArrowGrayLeft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CurvedArrowGrayLeft.png; sourceTree = "<group>"; };
+		99BA4CD620A4BDDA00B5CD02 /* HorosCloud.horosplugin.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = HorosCloud.horosplugin.zip; path = Binaries/EmbeddedPlugins/HorosCloud.horosplugin.zip; sourceTree = SOURCE_ROOT; };
 		99C0EE22202A70CB00D88E8D /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		A085E103141E53210072BF0D /* DCMUSRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMUSRegion.h; sourceTree = "<group>"; };
 		A085E104141E53210072BF0D /* DCMUSRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMUSRegion.m; sourceTree = "<group>"; };
@@ -6120,6 +6143,8 @@
 		719D3F261FB46892004CFB27 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				99BA4CCB20A4B3A400B5CD02 /* HorosCloud */,
+				99BA4CC620A4ACF300B5CD02 /* EmbeddedPlugins */,
 				71EB83D216DD0F1800D48646 /* dicom3tools-libsrc-standard-strval-base.tpl */,
 				71EB83D316DD0F1800D48646 /* osirix-complementary.tpl */,
 				59D9471C125333640095680D /* SWFInit.as */,
@@ -6501,6 +6526,21 @@
 				71E6C0821FB5943B00FF75B6 /* O2HMigrationAssistant.xib */,
 			);
 			name = MigrationAssitant;
+			sourceTree = "<group>";
+		};
+		99BA4CC620A4ACF300B5CD02 /* EmbeddedPlugins */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = EmbeddedPlugins;
+			sourceTree = "<group>";
+		};
+		99BA4CCB20A4B3A400B5CD02 /* HorosCloud */ = {
+			isa = PBXGroup;
+			children = (
+				99BA4CD620A4BDDA00B5CD02 /* HorosCloud.horosplugin.zip */,
+			);
+			path = HorosCloud;
 			sourceTree = "<group>";
 		};
 		A90C722016E4D8AE0060302F /* Data */ = {
@@ -9891,6 +9931,8 @@
 				CECA66E306CD8C1500D8750E /* Copy Frameworks */,
 				71BC461D1F27308D00FD6CCF /* Copy Horos Framework */,
 				ABF307FB1443330100BBC96A /* Copy odt2pdf script */,
+				99BA4CCC20A4B51D00B5CD02 /* Copy HorosCloud */,
+				99BA4CC920A4AFFA00B5CD02 /* Copy Embedded Plugins */,
 				59F69A4E1056328D008585F5 /* API */,
 				CE48FEFE181E486C00A0910B /* Git Hash */,
 				CED88262125064F70085A861 /* CodeSigning */,

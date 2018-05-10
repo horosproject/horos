@@ -735,6 +735,90 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 }
 
 
++ (void) deployHorosCloudPluginAtPath:(NSString*) path deployedPlugins:(NSMutableArray*) deployedPlugins
+{
+    BOOL foundHorosCloud = NO;
+    
+    NSNumber* flag = [[NSUserDefaults standardUserDefaults] objectForKey:@"HOROSCLOUD_PLUGIN_DEPLOYED"];
+    if (flag == nil || [flag integerValue] == 0)
+    {
+        for (NSInteger i = deployedPlugins.count-1; i >= 0; --i)
+        {
+            NSBundle* bundle = [NSBundle bundleWithPath:[deployedPlugins objectAtIndex:i]];
+            NSString* name = [bundle.infoDictionary objectForKey:@"CFBundleName"];
+            if (!name)
+            {
+                name = [[[deployedPlugins objectAtIndex:i] lastPathComponent] stringByDeletingPathExtension];
+            }
+            
+            if( [name caseInsensitiveCompare:@"HorosCloud"] == NSOrderedSame ) {
+                foundHorosCloud = YES;
+                break;
+            }
+        }
+    }
+    else
+    {
+        foundHorosCloud = YES;
+    }
+    
+    //if (!foundHorosCloud)
+    {
+        NSString* srcPath = [[NSBundle mainBundle] pathForResource:@"HorosCloud.horosplugin" ofType:@"zip"];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:srcPath])
+        {
+            NSString* dstPath = [NSString stringWithFormat:@"%@/HorosCloud.horosplugin.zip",path];
+            
+            [[NSFileManager defaultManager] removeItemAtPath:dstPath error:nil];
+
+            if (![[NSFileManager defaultManager] fileExistsAtPath:dstPath])
+            {
+                [[NSFileManager defaultManager] copyItemAtPath:srcPath toPath:dstPath error:nil];
+                
+                if ([[NSFileManager defaultManager] fileExistsAtPath:dstPath])
+                {
+                    //Unzip plugin
+                    @try
+                    {
+                        NSTask *aTask = [[NSTask alloc] init];
+                        NSMutableArray *args = [NSMutableArray array];
+                        
+                        [args addObject:@"-o"];
+                        [args addObject:dstPath];
+                        [args addObject:@"-d"];
+                        [args addObject:[dstPath stringByDeletingLastPathComponent]];
+                        [aTask setLaunchPath:@"/usr/bin/unzip"];
+                        [aTask setArguments:args];
+                        [aTask launch];
+                        while( [aTask isRunning])
+                            [NSThread sleepForTimeInterval: 0.1];
+                        
+                        //[aTask waitUntilExit]; // <- This is VERY DANGEROUS : the main runloop is continuing...
+                        [aTask release];
+                    }
+                    @catch (NSException *e)
+                    {
+                        NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                    }
+                    
+                    
+                    //Clean
+                    [[NSFileManager defaultManager] removeItemAtPath:dstPath error:nil];
+                    
+                    
+                    //Add to list of deployedPlugins
+                    NSString* pluginPath = [NSString stringWithFormat:@"%@/HorosCloud.horosplugin",path];
+                    if ([[NSFileManager defaultManager] fileExistsAtPath:pluginPath])
+                    {
+                        [deployedPlugins addObject:pluginPath];
+                    }
+                }
+            }
+        }
+    }
+}
+
+
 + (void) discoverPlugins
 {
 	@try
@@ -849,6 +933,8 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
         
 //        NSLog(@"paths: %@", pathsOfPluginsToLoad);
 
+        [self deployHorosCloudPluginAtPath:userPath deployedPlugins:pathsOfPluginsToLoad];
+        
         // some plugins require other plugins to be loaded before them
         for (__block NSInteger i = pathsOfPluginsToLoad.count-1; i >= 0; --i) {
             
