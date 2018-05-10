@@ -6143,7 +6143,6 @@
 		719D3F261FB46892004CFB27 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				99BA4CCB20A4B3A400B5CD02 /* HorosCloud */,
 				99BA4CC620A4ACF300B5CD02 /* EmbeddedPlugins */,
 				71EB83D216DD0F1800D48646 /* dicom3tools-libsrc-standard-strval-base.tpl */,
 				71EB83D316DD0F1800D48646 /* osirix-complementary.tpl */,
@@ -6531,16 +6530,10 @@
 		99BA4CC620A4ACF300B5CD02 /* EmbeddedPlugins */ = {
 			isa = PBXGroup;
 			children = (
-			);
-			path = EmbeddedPlugins;
-			sourceTree = "<group>";
-		};
-		99BA4CCB20A4B3A400B5CD02 /* HorosCloud */ = {
-			isa = PBXGroup;
-			children = (
 				99BA4CD620A4BDDA00B5CD02 /* HorosCloud.horosplugin.zip */,
 			);
-			path = HorosCloud;
+			name = EmbeddedPlugins;
+			path = ../../Binaries/EmbeddedPlugins;
 			sourceTree = "<group>";
 		};
 		A90C722016E4D8AE0060302F /* Data */ = {
