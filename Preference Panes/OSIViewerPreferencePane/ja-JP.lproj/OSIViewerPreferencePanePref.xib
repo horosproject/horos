@@ -1,0 +1,828 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13196" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+    <dependencies>
+        <deployment version="101100" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13196"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="OSIViewerPreferencePanePref">
+            <connections>
+                <outlet property="_window" destination="12" id="26"/>
+                <outlet property="mainWindow" destination="12" id="467"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="&lt;&lt; do not localize &gt;&gt;" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="12" userLabel="PrefPane">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
+            <rect key="contentRect" x="0.0" y="0.0" width="788" height="855"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <view key="contentView" horizontalCompressionResistancePriority="1000" id="6">
+                <rect key="frame" x="0.0" y="0.0" width="788" height="855"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <box horizontalCompressionResistancePriority="1000" title="Miscellaneous" id="100">
+                        <rect key="frame" x="8" y="10" width="770" height="318"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <view key="contentView" id="ooz-Jl-NPP">
+                            <rect key="frame" x="2" y="2" width="766" height="298"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <button horizontalCompressionResistancePriority="1000" id="104">
+                                    <rect key="frame" x="10" y="277" width="196" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Save left button mouse tool" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="342">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.RestoreLeftMouseTool" id="441"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="197">
+                                    <rect key="frame" x="10" y="257" width="208" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Reverse scroll wheel direction" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="343">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.Scroll Wheel Reversed" id="537"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="229">
+                                    <rect key="frame" x="416" y="217" width="187" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="No interpolation for zoom" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="345">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.NOINTERPOLATION" id="329"/>
+                                    </connections>
+                                </button>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" id="275">
+                                    <rect key="frame" x="517" y="13" width="228" height="22"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="346">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.ALBUMNAME" id="535"/>
+                                    </connections>
+                                </textField>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" id="276">
+                                    <rect key="frame" x="416" y="15" width="94" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Photos Album:" id="347">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <button horizontalCompressionResistancePriority="1000" id="301">
+                                    <rect key="frame" x="10" y="217" width="232" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Zoom with horizontal scrollwheel" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="348">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.ZoomWithHorizonScroll" id="309"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="425">
+                                    <rect key="frame" x="10" y="237" width="288" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Loop in the series with mouse scroll wheel" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="426">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.loopScrollWheel" id="427"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="313">
+                                    <rect key="frame" x="10" y="197" width="248" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="No 'Propagate settings in series' for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="349">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.IndependentCRWLWW" id="315"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="323">
+                                    <rect key="frame" x="10" y="177" width="375" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Apply Next/Previous Series button to all opened viewers" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="350">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.nextSeriesToAllViewers" id="324"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="327">
+                                    <rect key="frame" x="416" y="197" width="216" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="High Quality Zoom (Lanczos 5)" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="351">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="enabled" keyPath="values.NOINTERPOLATION" id="331">
+                                            <dictionary key="options">
+                                                <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                            </dictionary>
+                                        </binding>
+                                        <binding destination="308" name="value" keyPath="values.SOFTWAREINTERPOLATION" id="328"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="415">
+                                    <rect key="frame" x="416" y="177" width="256" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Show Magnifying Lens with 'shift' key" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="416">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.magnifyingLens" id="417"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="421">
+                                    <rect key="frame" x="416" y="157" width="209" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Mark ROI image as Key image" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="422">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.markROIImageAsKeyImage" id="424"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="434">
+                                    <rect key="frame" x="416" y="117" width="198" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Full 32-bit OpenGL pipeline" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="435">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.FULL32BITPIPELINE" id="436"/>
+                                        <binding destination="308" name="enabled" keyPath="values.hasFULL32BITPIPELINE" id="453"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="458">
+                                    <rect key="frame" x="416" y="97" width="265" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Select window when using scroll wheel" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="459">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.SelectWindowScrollWheel" id="462"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="480">
+                                    <rect key="frame" x="416" y="77" width="270" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Switch to 1x1 Tiling in Fullscreen mode" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="481">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.NoImageTilingInFullscreen" id="484"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="372">
+                                    <rect key="frame" x="10" y="137" width="319" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Spline Rendering for polygons and pencils ROIs" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="373">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.splineForROI" id="374"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="418">
+                                    <rect key="frame" x="10" y="117" width="168" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="New ROIs are unnamed" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="419">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.EmptyNameForNewROIs" id="420"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="431">
+                                    <rect key="frame" x="10" y="97" width="248" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Scroll through image and series for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="432">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeries" id="433"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="454">
+                                    <rect key="frame" x="10" y="77" width="329" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Keep CLUT Bars when exporting Screen Captures" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="455">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.keepCLUTBarsForSecondaryCapture" id="457"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="463">
+                                    <rect key="frame" x="10" y="17" width="267" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Zoom centered around mouse position" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="464">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.MouseClickZoomCentered" id="466"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="mzt-vU-47c">
+                                    <rect key="frame" x="416" y="277" width="261" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Convert RTSTRUCT ROIs to Brush ROIs" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="zMF-Em-hzR">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.RSTRUCTConvertToBrush" id="dYU-iE-hXn"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="472">
+                                    <rect key="frame" x="10" y="37" width="339" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Use FrameofReferenceUID for cross reference lines" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="473">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.UseFrameofReferenceUID" id="479"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="540">
+                                    <rect key="frame" x="10" y="57" width="274" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Compute Skewness and Kurtosis for ROI" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="541">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.ROIComputeSkewnessAndKurtosis" id="543"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="544">
+                                    <rect key="frame" x="416" y="57" width="164" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Display Overflow Lines" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="545">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.OVERFLOWLINES" id="547"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="JNW-Zo-Pk3">
+                                    <rect key="frame" x="416" y="37" width="227" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Display the Center of Circle ROIs" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="cnn-XX-QeR">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.drawROICircleCenter" id="YHd-Bw-WPz"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="437">
+                                    <rect key="frame" x="416" y="137" width="274" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Only display images of the same patient" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="438">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.onlyDisplayImagesOfSamePatient" id="439"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="375">
+                                    <rect key="frame" x="10" y="157" width="170" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Use VOI LUT if available" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="376">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.UseVOILUT" id="377"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="555">
+                                    <rect key="frame" x="416" y="257" width="265" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Don't switch series if already displayed" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="556">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.showWindowInsteadOfSwitching" id="558"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="412">
+                                    <rect key="frame" x="416" y="237" width="240" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Open PDF with Preview application" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="413">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.openPDFwithPreview" id="440"/>
+                                    </connections>
+                                </button>
+                                <popUpButton verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" id="1Xf-Mw-WhA">
+                                    <rect key="frame" x="269" y="193" width="100" height="26"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <popUpButtonCell key="cell" type="push" title="Modalities" bezelStyle="rounded" alignment="center" scrollable="YES" lineBreakMode="clipping" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" selectedItem="5Jf-1n-5Bm" id="fhV-XV-SCY">
+                                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="menu"/>
+                                        <menu key="menu" title="OtherViews" id="jDc-fg-eC3">
+                                            <items>
+                                                <menuItem title="Modalities" hidden="YES" id="rUf-a6-mNm">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                </menuItem>
+                                                <menuItem title="CR" state="on" id="FOf-lv-Yw4">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.noPropagateInSeriesForCR" id="F8f-OF-O5Z"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="DX" id="jbC-CP-MNd">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.noPropagateInSeriesForDX" id="SYc-fl-hLB"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="DR" id="WGV-vh-73b">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.noPropagateInSeriesForDR" id="p4b-ru-lzE"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="RF" id="uMP-Y0-V9I">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.noPropagateInSeriesForRF" id="1Hb-Hi-T3N"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="XA" id="bs8-nn-AfS">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.noPropagateInSeriesForXA" id="2ry-T6-XZ2"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="MG" id="6kW-Wr-Cu0">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.noPropagateInSeriesForMG" id="CeE-wL-CzV"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="US" id="5Jf-1n-5Bm">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.noPropagateInSeriesForUS" id="zYM-1T-AAJ"/>
+                                                    </connections>
+                                                </menuItem>
+                                            </items>
+                                        </menu>
+                                    </popUpButtonCell>
+                                    <connections>
+                                        <binding destination="308" name="enabled" keyPath="values.IndependentCRWLWW" id="l3E-9x-q7V"/>
+                                    </connections>
+                                </popUpButton>
+                                <popUpButton verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" id="Pyh-nV-fiK">
+                                    <rect key="frame" x="269" y="93" width="100" height="26"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <popUpButtonCell key="cell" type="push" title="Modalities" bezelStyle="rounded" alignment="center" scrollable="YES" lineBreakMode="clipping" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" id="XCc-0E-TE4">
+                                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="menu"/>
+                                        <menu key="menu" title="OtherViews" id="3N3-Wh-vx1">
+                                            <items>
+                                                <menuItem title="Modalities" hidden="YES" id="M0C-0c-XXi">
+                                                    <modifierMask key="keyEquivalentModifierMask"/>
+                                                </menuItem>
+                                                <menuItem title="CR" state="on" id="8uS-Ii-xSk">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForCR" id="EY1-Fq-jfi"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="DX" id="ai8-gB-ewz">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForDX" id="afJ-VH-28l"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="DR" id="cza-Ci-dMD">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForDR" id="lps-qo-ERK"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="RF" id="seo-e0-Zo4">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForRF" id="8g1-Bh-6qC"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="XA" id="pNw-K4-kef">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForXA" id="Bri-xQ-4zc"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="MG" id="n0T-TJ-mPS">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForMG" id="xRu-9U-IGO"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="OT" id="pDt-aZ-dzv">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForOT" id="95I-qW-siZ"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="CT" id="7zl-Dg-jTQ">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForCT" id="meA-EN-rgb"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="MR" id="Mb4-tf-Nb8">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForMR" id="Xe2-sM-DwO"/>
+                                                    </connections>
+                                                </menuItem>
+                                                <menuItem title="US" id="Sdk-1a-N7y">
+                                                    <connections>
+                                                        <binding destination="308" name="value" keyPath="values.scrollThroughSeriesForUS" id="bba-Cu-NYV"/>
+                                                    </connections>
+                                                </menuItem>
+                                            </items>
+                                        </menu>
+                                    </popUpButtonCell>
+                                    <connections>
+                                        <binding destination="308" name="enabled" keyPath="values.scrollThroughSeries" id="g5L-aQ-wtn"/>
+                                    </connections>
+                                </popUpButton>
+                            </subviews>
+                        </view>
+                        <font key="titleFont" metaFont="system"/>
+                    </box>
+                    <box horizontalCompressionResistancePriority="1000" title="TIFF, JPEG, Quicktime, DICOM Export" id="110">
+                        <rect key="frame" x="8" y="755" width="770" height="92"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <view key="contentView" id="By2-Ex-NNc">
+                            <rect key="frame" x="2" y="2" width="766" height="72"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <button id="133">
+                                    <rect key="frame" x="18" y="12" width="585" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Automatically open the exported images after exporting with Preview or Quicktime Player" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="352">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.OPENVIEWER" id="538"/>
+                                    </connections>
+                                </button>
+                                <button id="339">
+                                    <rect key="frame" x="18" y="30" width="470" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="If there are tiled views, export all tiled views, not only the selected view" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="353">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.includeAllTiledViews" id="340"/>
+                                    </connections>
+                                </button>
+                                <button id="405">
+                                    <rect key="frame" x="18" y="48" width="312" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Automatically crop the view to the image area" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="406">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.ScreenCaptureSmartCropping" id="407"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                        </view>
+                        <font key="titleFont" metaFont="system"/>
+                    </box>
+                    <box horizontalCompressionResistancePriority="1000" title="Screens &amp; Window size" id="149">
+                        <rect key="frame" x="8" y="332" width="770" height="423"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <view key="contentView" id="mWb-81-f5v">
+                            <rect key="frame" x="2" y="2" width="766" height="403"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" id="250">
+                                    <rect key="frame" x="135" y="237" width="320" height="38"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    <size key="cellSize" width="153" height="18"/>
+                                    <size key="intercellSpacing" width="4" height="2"/>
+                                    <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="366">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <cells>
+                                        <column>
+                                            <buttonCell type="radio" title="Fullscreen" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="253">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <buttonCell type="radio" title="At 100% of resolution" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="255">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                        </column>
+                                        <column>
+                                            <buttonCell type="radio" title="At 150% of resolution" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="254">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <buttonCell type="radio" title="At 200% of resolution" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="3" inset="2" id="256">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                        </column>
+                                    </cells>
+                                    <connections>
+                                        <binding destination="308" name="enabled" keyPath="values.AUTOTILING" id="318">
+                                            <dictionary key="options">
+                                                <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                            </dictionary>
+                                        </binding>
+                                        <binding destination="308" name="selectedTag" keyPath="values.WINDOWSIZEVIEWER" id="533"/>
+                                    </connections>
+                                </matrix>
+                                <button verticalHuggingPriority="751" horizontalCompressionResistancePriority="1000" id="298">
+                                    <rect key="frame" x="130" y="211" width="434" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Automatically Tile Windows when closing or opening a new series" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="358">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.AUTOTILING" id="539"/>
+                                    </connections>
+                                </button>
+                                <button verticalHuggingPriority="752" horizontalCompressionResistancePriority="1000" id="319">
+                                    <rect key="frame" x="130" y="281" width="294" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Group series of same study on same screen" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="359">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.KeepStudiesTogetherOnSameScreen" id="322"/>
+                                    </connections>
+                                </button>
+                                <button verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" id="497">
+                                    <rect key="frame" x="130" y="321" width="306" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Reserve the database screen for the database" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="498">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.ReserveScreenForDB" id="501"/>
+                                    </connections>
+                                </button>
+                                <button verticalHuggingPriority="755" horizontalCompressionResistancePriority="1000" id="522">
+                                    <rect key="frame" x="130" y="301" width="216" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Use database screen in the last" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="523">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="enabled" keyPath="values.ReserveScreenForDB" id="527">
+                                            <dictionary key="options">
+                                                <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                            </dictionary>
+                                        </binding>
+                                        <binding destination="308" name="value" keyPath="values.UseDBScreenAtLast" id="525"/>
+                                    </connections>
+                                </button>
+                                <button verticalHuggingPriority="753" horizontalCompressionResistancePriority="1000" id="325">
+                                    <rect key="frame" x="130" y="191" width="253" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Magnetic Windows for move &amp; resize" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="360">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.MagneticWindows" id="326"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="335">
+                                    <rect key="frame" x="130" y="107" width="401" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Automatically save Workspace State when closing all viewers" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="362">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.automaticWorkspaceSave" id="337"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="336">
+                                    <rect key="frame" x="130" y="87" width="388" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Automatically load Workspace State when opening a study" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="363">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.automaticWorkspaceLoad" id="338"/>
+                                    </connections>
+                                </button>
+                                <button verticalHuggingPriority="754" horizontalCompressionResistancePriority="1000" id="368">
+                                    <rect key="frame" x="130" y="171" width="297" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Stretch last windows to fill the entire screen" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="369">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.StrechWindows" id="371"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="Aob-dY-jNd">
+                                    <rect key="frame" x="130" y="63" width="196" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Single Series List per screen" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="Uq0-8g-c6d">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.UseFloatingThumbnailsList" id="F0g-Gj-5MF"/>
+                                    </connections>
+                                </button>
+                                <button verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" id="528">
+                                    <rect key="frame" x="130" y="151" width="337" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Order windows from most recent to oldest studies" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="529">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="enabled" keyPath="values.AUTOTILING" id="532"/>
+                                        <binding destination="308" name="value" keyPath="values.tileWindowsOrderByStudyDate" id="531"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="548">
+                                    <rect key="frame" x="146" y="131" width="117" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Reversed order" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="549">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="enabled" keyPath="values.AUTOTILING" id="550"/>
+                                        <binding destination="308" name="value" keyPath="values.reversedTileWindowsOrderByStudyDate" id="552"/>
+                                        <binding destination="308" name="enabled2" keyPath="values.tileWindowsOrderByStudyDate" previousBinding="550" id="554">
+                                            <dictionary key="options">
+                                                <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                                <integer key="NSNoSelectionPlaceholder" value="-1"/>
+                                                <integer key="NSNotApplicablePlaceholder" value="-1"/>
+                                                <integer key="NSNullPlaceholder" value="-1"/>
+                                            </dictionary>
+                                        </binding>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="390">
+                                    <rect key="frame" x="130" y="39" width="542" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Automatically enable 12 Bit Totoku Display support for CR, MG, DX, DR, XA and RF" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="391">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                        <connections>
+                                            <binding destination="308" name="value" keyPath="values.automatic12BitTotoku" id="399"/>
+                                        </connections>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.automatic12BitTotoku" id="394"/>
+                                        <binding destination="308" name="enabled" keyPath="values.is12bitPluginAvailable" id="443"/>
+                                    </connections>
+                                </button>
+                                <button horizontalCompressionResistancePriority="1000" id="401">
+                                    <rect key="frame" x="130" y="15" width="375" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Always 'scale to fit' when displaying or resizing windows" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="402">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.AlwaysScaleToFit" id="404"/>
+                                    </connections>
+                                </button>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" id="503">
+                                    <rect key="frame" x="74" y="376" width="56" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Screens:" id="504">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" id="505">
+                                    <rect key="frame" x="43" y="258" width="87" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Window Size:" id="506">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" id="509">
+                                    <rect key="frame" x="86" y="213" width="44" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Tiling:" id="510">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" id="511">
+                                    <rect key="frame" x="19" y="108" width="111" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Workspace State:" id="512">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" id="Y64-NI-ERD">
+                                    <rect key="frame" x="59" y="64" width="71" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Series List:" id="uep-14-VL5">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" id="515">
+                                    <rect key="frame" x="39" y="40" width="91" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="12bit Display:" id="516">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" id="517">
+                                    <rect key="frame" x="90" y="17" width="40" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Scale:" id="518">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <customView id="521" customClass="O2ScreensPrefsView">
+                                    <rect key="frame" x="132" y="345" width="623" height="48"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                </customView>
+                                <button horizontalCompressionResistancePriority="1000" id="GQO-4f-FAV">
+                                    <rect key="frame" x="338" y="63" width="225" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Automatically show/hide the list" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="G7b-Qw-REH">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <binding destination="308" name="value" keyPath="values.AUTOHIDEMATRIX" id="7bu-pc-zQ9"/>
+                                        <binding destination="308" name="enabled" keyPath="values.UseFloatingThumbnailsList" id="LRK-Sn-vNt">
+                                            <dictionary key="options">
+                                                <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                            </dictionary>
+                                        </binding>
+                                    </connections>
+                                </button>
+                            </subviews>
+                        </view>
+                        <font key="titleFont" metaFont="system"/>
+                    </box>
+                </subviews>
+            </view>
+        </window>
+        <userDefaultsController representsSharedInstance="YES" id="308" userLabel="Shared Defaults"/>
+    </objects>
+</document>

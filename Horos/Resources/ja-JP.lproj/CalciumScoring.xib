@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="CalciumScoringWindowController">
+            <connections>
+                <outlet property="_printView" destination="67" id="106"/>
+                <outlet property="window" destination="5" id="14"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="Calcium Scoring" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="5" userLabel="Window" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" utility="YES"/>
+            <rect key="contentRect" x="0.0" y="0.0" width="371" height="450"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <value key="minSize" type="size" width="213" height="113"/>
+            <view key="contentView" id="6">
+                <rect key="frame" x="0.0" y="0.0" width="371" height="450"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <comboBox verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="10">
+                        <rect key="frame" x="14" y="332" width="347" height="22"/>
+                        <comboBoxCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" title="Left Anterior Descending Artery" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="139">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            <objectValues>
+                                <string>Left Anterior Descending Artery</string>
+                                <string>Left Coronary Artery</string>
+                                <string>Left Circumflex Artery</string>
+                                <string>Right Coronary Artery</string>
+                            </objectValues>
+                        </comboBoxCell>
+                        <connections>
+                            <binding destination="-2" name="value" keyPath="roiName" previousBinding="46" id="47"/>
+                            <binding destination="-2" name="contentValues" keyPath="vesselNames" id="46"/>
+                        </connections>
+                    </comboBox>
+                    <box title="CT" translatesAutoresizingMaskIntoConstraints="NO" id="12">
+                        <rect key="frame" x="11" y="363" width="350" height="78"/>
+                        <view key="contentView" id="USi-i7-hrH">
+                            <rect key="frame" x="2" y="2" width="346" height="61"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <matrix verticalHuggingPriority="750" misplaced="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7">
+                                    <rect key="frame" x="17" y="13" width="238" height="38"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    <size key="cellSize" width="233" height="18"/>
+                                    <size key="intercellSpacing" width="4" height="2"/>
+                                    <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="158">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <cells>
+                                        <column>
+                                            <buttonCell type="radio" title="Multislice (Threshold: 90HU)" imagePosition="left" alignment="left" state="on" inset="2" id="8">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <buttonCell type="radio" title="Electron Beam (Threshold: 130HU)" bezelStyle="regularSquare" imagePosition="left" alignment="left" tag="1" inset="2" id="9">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                        </column>
+                                    </cells>
+                                    <connections>
+                                        <binding destination="-2" name="selectedIndex" keyPath="ctType" id="15"/>
+                                    </connections>
+                                </matrix>
+                            </subviews>
+                        </view>
+                        <constraints>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="7" secondAttribute="trailing" constant="10" id="611-84-Zbt"/>
+                            <constraint firstItem="7" firstAttribute="top" secondItem="12" secondAttribute="top" constant="25" id="V52-tL-dvU"/>
+                            <constraint firstItem="7" firstAttribute="leading" secondItem="12" secondAttribute="leading" constant="16" id="ZbM-By-jyH"/>
+                            <constraint firstAttribute="bottom" secondItem="7" secondAttribute="bottom" constant="11" id="o7r-53-KDu"/>
+                        </constraints>
+                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    </box>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="20">
+                        <rect key="frame" x="94" y="309" width="98" height="13"/>
+                        <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="(Click in the image)" id="140">
+                            <font key="font" metaFont="system" size="10"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="21">
+                        <rect key="frame" x="12" y="308" width="80" height="14"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Starting Point:" id="141">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="22">
+                        <rect key="frame" x="18" y="271" width="174" height="14"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="170" id="ADb-ps-hhJ"/>
+                        </constraints>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="142">
+                            <font key="font" metaFont="smallSystem"/>
+                            <string key="title">px:		x:0 y:0 z:0</string>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <binding destination="-2" name="value" keyPath="startingPointWorldPosition" id="26"/>
+                        </connections>
+                    </textField>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="23">
+                        <rect key="frame" x="18" y="255" width="174" height="14"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="170" id="kd4-Jp-o45"/>
+                        </constraints>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="143">
+                            <font key="font" metaFont="smallSystem"/>
+                            <string key="title">value:	0</string>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <binding destination="-2" name="value" keyPath="startingPointValue" id="27"/>
+                        </connections>
+                    </textField>
+                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="24">
+                        <rect key="frame" x="18" y="287" width="174" height="14"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="170" id="ZsE-J2-3Og"/>
+                        </constraints>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="144">
+                            <font key="font" metaFont="smallSystem"/>
+                            <string key="title">mm:		x:0 y:0 z:0</string>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <binding destination="-2" name="value" keyPath="startingPointPixelPosition" id="25"/>
+                        </connections>
+                    </textField>
+                    <scrollView horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="50">
+                        <rect key="frame" x="14" y="39" width="344" height="208"/>
+                        <clipView key="contentView" id="Ien-UO-Vf7">
+                            <rect key="frame" x="1" y="0.0" width="342" height="207"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" headerView="170" id="51">
+                                    <rect key="frame" x="0.0" y="0.0" width="342" height="184"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <size key="intercellSpacing" width="3" height="2"/>
+                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                    <tableColumns>
+                                        <tableColumn width="200" minWidth="200" maxWidth="200" id="52">
+                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Vessel">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
+                                            </tableHeaderCell>
+                                            <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="160">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                            <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                            <connections>
+                                                <binding destination="48" name="value" keyPath="arrangedObjects.vesselName" id="57"/>
+                                            </connections>
+                                        </tableColumn>
+                                        <tableColumn width="40" minWidth="40" maxWidth="40" id="53">
+                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Score">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
+                                            </tableHeaderCell>
+                                            <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="123" id="161">
+                                                <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" hasThousandSeparators="NO" thousandSeparator="'" id="62">
+                                                    <attributedString key="attributedStringForZero">
+                                                        <fragment content="0"/>
+                                                    </attributedString>
+                                                    <decimal key="minimum" value="NaN"/>
+                                                    <decimal key="maximum" value="NaN"/>
+                                                </numberFormatter>
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                            <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                            <connections>
+                                                <binding destination="48" name="value" keyPath="arrangedObjects.score" id="58"/>
+                                            </connections>
+                                        </tableColumn>
+                                        <tableColumn width="45" minWidth="45" maxWidth="45" id="54">
+                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Volume">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                            </tableHeaderCell>
+                                            <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="123" id="162">
+                                                <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" hasThousandSeparators="NO" thousandSeparator="'" id="63">
+                                                    <attributedString key="attributedStringForZero">
+                                                        <fragment content="0"/>
+                                                    </attributedString>
+                                                    <decimal key="minimum" value="NaN"/>
+                                                    <decimal key="maximum" value="NaN"/>
+                                                </numberFormatter>
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                            <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                            <connections>
+                                                <binding destination="48" name="value" keyPath="arrangedObjects.volume" id="61"/>
+                                            </connections>
+                                        </tableColumn>
+                                        <tableColumn width="45" minWidth="45" maxWidth="45" id="55">
+                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Mass">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                            </tableHeaderCell>
+                                            <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="123" id="163">
+                                                <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" hasThousandSeparators="NO" thousandSeparator="'" id="64">
+                                                    <attributedString key="attributedStringForZero">
+                                                        <fragment content="0"/>
+                                                    </attributedString>
+                                                    <decimal key="minimum" value="NaN"/>
+                                                    <decimal key="maximum" value="NaN"/>
+                                                </numberFormatter>
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                            <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                            <connections>
+                                                <binding destination="48" name="value" keyPath="arrangedObjects.mass" id="60"/>
+                                            </connections>
+                                        </tableColumn>
+                                    </tableColumns>
+                                    <connections>
+                                        <binding destination="48" name="content" keyPath="arrangedObjects" id="56"/>
+                                    </connections>
+                                </tableView>
+                            </subviews>
+                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </clipView>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="208" id="S5S-lL-LNf"/>
+                            <constraint firstAttribute="width" constant="344" id="kI6-qY-DF9"/>
+                        </constraints>
+                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="169">
+                            <rect key="frame" x="-100" y="-100" width="232" height="15"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="168">
+                            <rect key="frame" x="-100" y="-100" width="15" height="151"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                        <tableHeaderView key="headerView" id="170">
+                            <rect key="frame" x="0.0" y="0.0" width="342" height="23"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </tableHeaderView>
+                    </scrollView>
+                    <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="65">
+                        <rect key="frame" x="225" y="2" width="70" height="32"/>
+                        <buttonCell key="cell" type="push" title="Print" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="146">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="print:" target="-2" id="109"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="107">
+                        <rect key="frame" x="295" y="2" width="69" height="32"/>
+                        <buttonCell key="cell" type="push" title="Save" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="147">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="saveDocument:" target="-1" id="108"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="107" firstAttribute="baseline" secondItem="65" secondAttribute="baseline" id="00g-hL-HWg"/>
+                    <constraint firstItem="50" firstAttribute="leading" secondItem="21" secondAttribute="leading" id="3Cv-e0-nGL"/>
+                    <constraint firstItem="12" firstAttribute="top" secondItem="6" secondAttribute="top" constant="9" id="3TZ-eF-xI4"/>
+                    <constraint firstAttribute="trailing" secondItem="12" secondAttribute="trailing" constant="13" id="7sZ-Qn-1iP"/>
+                    <constraint firstItem="23" firstAttribute="top" secondItem="22" secondAttribute="bottom" constant="2" id="8D6-WE-Icw"/>
+                    <constraint firstItem="10" firstAttribute="trailing" secondItem="50" secondAttribute="trailing" id="EAb-t4-eVS"/>
+                    <constraint firstItem="50" firstAttribute="top" secondItem="23" secondAttribute="bottom" constant="8" symbolic="YES" id="KXA-jB-Fly"/>
+                    <constraint firstItem="107" firstAttribute="trailing" secondItem="50" secondAttribute="trailing" id="N3r-Gh-ePg"/>
+                    <constraint firstAttribute="bottom" secondItem="65" secondAttribute="bottom" constant="9" id="NRm-Pt-Biu"/>
+                    <constraint firstItem="22" firstAttribute="top" secondItem="24" secondAttribute="bottom" constant="2" id="U8L-Va-2mv"/>
+                    <constraint firstItem="10" firstAttribute="trailing" secondItem="12" secondAttribute="trailing" id="Wzp-WJ-aQz"/>
+                    <constraint firstItem="21" firstAttribute="top" secondItem="10" secondAttribute="bottom" constant="14" id="ZiY-jN-VFz"/>
+                    <constraint firstItem="24" firstAttribute="top" secondItem="20" secondAttribute="bottom" constant="8" symbolic="YES" id="d71-7v-Rk3"/>
+                    <constraint firstItem="20" firstAttribute="leading" secondItem="21" secondAttribute="trailing" constant="6" id="dAh-xY-XPH"/>
+                    <constraint firstItem="12" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="14" id="fTb-zy-kAQ"/>
+                    <constraint firstItem="65" firstAttribute="top" secondItem="50" secondAttribute="bottom" constant="9" id="h5G-fn-HDL"/>
+                    <constraint firstItem="10" firstAttribute="leading" secondItem="12" secondAttribute="leading" id="ofx-MN-wPD"/>
+                    <constraint firstItem="24" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="20" symbolic="YES" id="pBk-0D-qkd"/>
+                    <constraint firstItem="21" firstAttribute="top" secondItem="20" secondAttribute="top" id="qd3-Za-MhV"/>
+                    <constraint firstItem="22" firstAttribute="leading" secondItem="23" secondAttribute="leading" id="u6H-RA-xoW"/>
+                    <constraint firstItem="10" firstAttribute="top" secondItem="12" secondAttribute="bottom" constant="14" id="vt4-ts-ioF"/>
+                    <constraint firstItem="22" firstAttribute="leading" secondItem="24" secondAttribute="leading" id="wWk-4S-XYD"/>
+                    <constraint firstItem="21" firstAttribute="leading" secondItem="10" secondAttribute="leading" id="xhI-bE-wZ5"/>
+                    <constraint firstItem="107" firstAttribute="leading" secondItem="65" secondAttribute="trailing" constant="12" symbolic="YES" id="z4h-nc-gZe"/>
+                </constraints>
+            </view>
+        </window>
+        <arrayController id="48" userLabel="VesselsController">
+            <declaredKeys>
+                <string>vesselName</string>
+                <string>score</string>
+                <string>mass</string>
+                <string>Volume</string>
+                <string>volume</string>
+                <string>patientDOB</string>
+            </declaredKeys>
+            <connections>
+                <binding destination="-2" name="contentArray" keyPath="vessels" id="49"/>
+            </connections>
+        </arrayController>
+        <customView id="67" userLabel="View">
+            <rect key="frame" x="0.0" y="0.0" width="452" height="590"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="132">
+                    <rect key="frame" x="10" y="20" width="425" height="84"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="152">
+                        <font key="font" metaFont="smallSystem"/>
+                        <string key="title">Calcium Score: Risk of Coronary Disease
+0: No identifiable plaque. Very low risk, generally less than 5%
+1-10: Minimal identifiable plaque. Low risk.
+11-100: Definite plaque.  Moderate risk.
+101-400: Definite plaque. Moderately High risk.
+401+: Extensive atherosclerotic. High likelihood of at least one stenosis.</string>
+                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="113">
+                    <rect key="frame" x="385" y="117" width="51" height="14"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="-100 HU" id="151">
+                        <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0 HU" negativeFormat="-0 HU" hasThousandSeparators="NO" thousandSeparator="'" id="114">
+                            <attributedString key="attributedStringForZero">
+                                <fragment content="0 HU"/>
+                            </attributedString>
+                            <decimal key="minimum" value="NaN"/>
+                            <decimal key="maximum" value="NaN"/>
+                        </numberFormatter>
+                        <font key="font" metaFont="smallSystem"/>
+                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                    <connections>
+                        <binding destination="-2" name="value" keyPath="lowerThreshold" id="124"/>
+                    </connections>
+                </textField>
+                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="112">
+                    <rect key="frame" x="276" y="117" width="107" height="14"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Calcium Threshold:" id="150">
+                        <font key="font" metaFont="smallSystem"/>
+                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="111">
+                    <rect key="frame" x="172" y="564" width="103" height="17"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Calcium Score" id="149">
+                        <font key="font" metaFont="systemBold"/>
+                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <scrollView borderType="none" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" hasHorizontalScroller="NO" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="92">
+                    <rect key="frame" x="20" y="135" width="412" height="253"/>
+                    <clipView key="contentView" id="Y9W-ac-BxB">
+                        <rect key="frame" x="0.0" y="0.0" width="412" height="253"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" headerView="173" id="93">
+                                <rect key="frame" x="0.0" y="0.0" width="412" height="230"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <size key="intercellSpacing" width="3" height="2"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                <tableColumns>
+                                    <tableColumn width="250" minWidth="250" maxWidth="250" id="100">
+                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Vessel">
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
+                                        </tableHeaderCell>
+                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="167">
+                                            <font key="font" metaFont="system" size="10"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                        <connections>
+                                            <binding destination="48" name="value" keyPath="arrangedObjects.vesselName" id="102"/>
+                                        </connections>
+                                    </tableColumn>
+                                    <tableColumn width="50" minWidth="50" maxWidth="50" id="98">
+                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Score">
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
+                                        </tableHeaderCell>
+                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="center" title="123" id="166">
+                                            <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" hasThousandSeparators="NO" thousandSeparator="'" id="99">
+                                                <attributedString key="attributedStringForZero">
+                                                    <fragment content="0"/>
+                                                </attributedString>
+                                                <decimal key="minimum" value="NaN"/>
+                                                <decimal key="maximum" value="NaN"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="system" size="10"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                        <connections>
+                                            <binding destination="48" name="value" keyPath="arrangedObjects.score" id="103"/>
+                                        </connections>
+                                    </tableColumn>
+                                    <tableColumn width="50" minWidth="50" maxWidth="50" id="96">
+                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Volume">
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                        </tableHeaderCell>
+                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="center" title="123" id="165">
+                                            <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" hasThousandSeparators="NO" thousandSeparator="'" id="97">
+                                                <attributedString key="attributedStringForZero">
+                                                    <fragment content="0"/>
+                                                </attributedString>
+                                                <decimal key="minimum" value="NaN"/>
+                                                <decimal key="maximum" value="NaN"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="system" size="10"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                        <connections>
+                                            <binding destination="48" name="value" keyPath="arrangedObjects.volume" id="104"/>
+                                        </connections>
+                                    </tableColumn>
+                                    <tableColumn width="50" minWidth="50" maxWidth="50" id="94">
+                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Mass">
+                                            <font key="font" metaFont="smallSystem"/>
+                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                        </tableHeaderCell>
+                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="center" title="123" id="164">
+                                            <numberFormatter key="formatter" formatterBehavior="10_0" positiveFormat="0" negativeFormat="-0" hasThousandSeparators="NO" thousandSeparator="'" id="95">
+                                                <attributedString key="attributedStringForZero">
+                                                    <fragment content="0"/>
+                                                </attributedString>
+                                                <decimal key="minimum" value="NaN"/>
+                                                <decimal key="maximum" value="NaN"/>
+                                            </numberFormatter>
+                                            <font key="font" metaFont="system" size="10"/>
+                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                        <connections>
+                                            <binding destination="48" name="value" keyPath="arrangedObjects.mass" id="105"/>
+                                        </connections>
+                                    </tableColumn>
+                                </tableColumns>
+                                <connections>
+                                    <binding destination="48" name="content" keyPath="arrangedObjects" id="101"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </clipView>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="253" id="Dcr-jE-mOa"/>
+                        <constraint firstAttribute="width" constant="412" id="qR6-ln-SUk"/>
+                    </constraints>
+                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="172">
+                        <rect key="frame" x="-100" y="-100" width="400" height="15"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </scroller>
+                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="171">
+                        <rect key="frame" x="-100" y="-100" width="15" height="212"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </scroller>
+                    <tableHeaderView key="headerView" id="173">
+                        <rect key="frame" x="0.0" y="0.0" width="412" height="23"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </tableHeaderView>
+                </scrollView>
+                <form verticalHuggingPriority="750" mode="track" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="69">
+                    <rect key="frame" x="17" y="396" width="415" height="160"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="415" id="2cY-pv-WnG"/>
+                    </constraints>
+                    <color key="backgroundColor" red="0.50196081000000004" green="0.0" blue="0.50196081000000004" alpha="1" colorSpace="calibratedRGB"/>
+                    <size key="cellSize" width="415" height="16"/>
+                    <size key="intercellSpacing" width="1" height="8"/>
+                    <formCell key="prototype" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" alignment="justified" title="Field:" id="159">
+                        <font key="font" metaFont="cellTitle"/>
+                        <font key="titleFont" metaFont="cellTitle"/>
+                    </formCell>
+                    <cells>
+                        <column>
+                            <formCell scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" alignment="justified" title="Institution:" id="85">
+                                <font key="font" metaFont="cellTitle"/>
+                                <font key="titleFont" metaFont="cellTitle"/>
+                                <connections>
+                                    <binding destination="-2" name="value" keyPath="institution" id="115"/>
+                                </connections>
+                            </formCell>
+                            <formCell scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" alignment="justified" tag="1" title="Patient's Name:" id="86">
+                                <font key="font" metaFont="cellTitle"/>
+                                <font key="titleFont" metaFont="cellTitle"/>
+                                <connections>
+                                    <binding destination="-2" name="value" keyPath="patientsName" id="116"/>
+                                </connections>
+                            </formCell>
+                            <formCell scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" alignment="justified" tag="2" title="Patient ID:" id="87">
+                                <font key="font" metaFont="cellTitle"/>
+                                <font key="titleFont" metaFont="cellTitle"/>
+                                <connections>
+                                    <binding destination="-2" name="value" keyPath="patientID" id="117"/>
+                                </connections>
+                            </formCell>
+                            <formCell scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" alignment="justified" tag="3" title="Patient's DOB:" id="88">
+                                <dateFormatter key="formatter" formatterBehavior="pre10_4" dateFormat="%d %b %Y" id="130"/>
+                                <font key="font" metaFont="cellTitle"/>
+                                <font key="titleFont" metaFont="cellTitle"/>
+                                <connections>
+                                    <binding destination="-2" name="value" keyPath="patientsDOB" id="128"/>
+                                </connections>
+                            </formCell>
+                            <formCell scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" alignment="justified" tag="4" title="Patient's Age:" id="89">
+                                <font key="font" metaFont="cellTitle"/>
+                                <font key="titleFont" metaFont="cellTitle"/>
+                                <connections>
+                                    <binding destination="-2" name="value" keyPath="patientsAge" id="119"/>
+                                </connections>
+                            </formCell>
+                            <formCell scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="justified" tag="5" title="Patient's Sex:" id="90">
+                                <font key="font" metaFont="cellTitle"/>
+                                <font key="titleFont" metaFont="cellTitle"/>
+                                <connections>
+                                    <binding destination="-2" name="value" keyPath="patientsSex" id="175"/>
+                                </connections>
+                            </formCell>
+                            <formCell scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" alignment="justified" tag="6" title="Exam Date:" id="91">
+                                <dateFormatter key="formatter" formatterBehavior="custom10_4" dateStyle="full" timeStyle="medium" id="174"/>
+                                <font key="font" metaFont="cellTitle"/>
+                                <font key="titleFont" metaFont="cellTitle"/>
+                                <connections>
+                                    <binding destination="-2" name="value" keyPath="studyDate" id="127"/>
+                                </connections>
+                            </formCell>
+                        </column>
+                    </cells>
+                </form>
+            </subviews>
+            <constraints>
+                <constraint firstItem="132" firstAttribute="leading" secondItem="67" secondAttribute="leading" constant="12" id="9lY-ug-f2g"/>
+                <constraint firstItem="132" firstAttribute="top" secondItem="112" secondAttribute="bottom" constant="13" id="EFK-Ej-4YK"/>
+                <constraint firstAttribute="trailing" secondItem="132" secondAttribute="trailing" constant="19" id="HPW-xQ-U9F"/>
+                <constraint firstItem="111" firstAttribute="top" secondItem="67" secondAttribute="top" constant="9" id="Qjz-zR-Zuq"/>
+                <constraint firstItem="112" firstAttribute="baseline" secondItem="113" secondAttribute="baseline" id="RII-lw-qPO"/>
+                <constraint firstItem="112" firstAttribute="top" secondItem="92" secondAttribute="bottom" constant="4" id="WFT-w1-lda"/>
+                <constraint firstAttribute="centerX" secondItem="111" secondAttribute="centerX" constant="3" id="azz-tq-5N1"/>
+                <constraint firstItem="69" firstAttribute="leading" secondItem="67" secondAttribute="leading" constant="17" id="bnQ-ZW-8aD"/>
+                <constraint firstAttribute="bottom" secondItem="132" secondAttribute="bottom" constant="20" id="dKg-Hd-EVa"/>
+                <constraint firstItem="113" firstAttribute="trailing" secondItem="92" secondAttribute="trailing" constant="2" id="f7c-ji-1X3"/>
+                <constraint firstItem="92" firstAttribute="top" secondItem="69" secondAttribute="bottom" constant="8" symbolic="YES" id="fAa-JZ-RrZ"/>
+                <constraint firstItem="69" firstAttribute="top" secondItem="111" secondAttribute="bottom" constant="8" symbolic="YES" id="oNj-1I-N4r"/>
+                <constraint firstAttribute="trailing" secondItem="92" secondAttribute="trailing" constant="20" symbolic="YES" id="oQb-GB-suk"/>
+                <constraint firstItem="113" firstAttribute="leading" secondItem="112" secondAttribute="trailing" constant="6" id="qOF-mu-p6w"/>
+                <constraint firstItem="92" firstAttribute="leading" secondItem="67" secondAttribute="leading" constant="20" symbolic="YES" id="sCp-qf-jGO"/>
+                <constraint firstAttribute="trailing" secondItem="113" secondAttribute="trailing" constant="18" id="wY5-xM-7pw"/>
+            </constraints>
+        </customView>
+    </objects>
+</document>

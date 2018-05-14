@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="AnonymizationViewController">
+            <connections>
+                <outlet property="annotationsBox" destination="103" id="118"/>
+                <outlet property="deleteTemplateButton" destination="105" id="131"/>
+                <outlet property="saveTemplateButton" destination="106" id="132"/>
+                <outlet property="tagsView" destination="114" id="129"/>
+                <outlet property="templatesPopup" destination="104" id="120"/>
+                <outlet property="view" destination="23" id="35"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="23" userLabel="Anonymization View">
+            <rect key="frame" x="0.0" y="0.0" width="500" height="260"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <box autoresizesSubviews="NO" borderType="line" title="Templates" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="103" customClass="N2AdaptiveBox">
+                    <rect key="frame" x="17" y="23" width="466" height="211"/>
+                    <view key="contentView" id="Qja-8y-Xta">
+                        <rect key="frame" x="1" y="1" width="464" height="209"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="114" customClass="AnonymizationTagsView">
+                                <rect key="frame" x="18" y="21" width="428" height="170"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="428" id="Lxx-0z-erV"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="170" id="vhp-4O-UDj"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="anonymizationViewController" destination="-2" id="130"/>
+                                </connections>
+                            </customView>
+                        </subviews>
+                    </view>
+                    <constraints>
+                        <constraint firstAttribute="bottom" secondItem="114" secondAttribute="bottom" constant="18" id="6IH-YC-JOn"/>
+                        <constraint firstAttribute="trailing" secondItem="114" secondAttribute="trailing" constant="16" id="Guq-Sj-6b6"/>
+                        <constraint firstItem="114" firstAttribute="top" secondItem="103" secondAttribute="top" constant="17" id="QQT-Ny-IW6"/>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="200" id="h08-Vl-675"/>
+                        <constraint firstItem="114" firstAttribute="leading" secondItem="103" secondAttribute="leading" constant="16" id="yBi-sJ-2oM"/>
+                    </constraints>
+                </box>
+                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="104">
+                    <rect key="frame" x="27" y="219" width="156" height="22"/>
+                    <constraints>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="150" id="Uvj-LD-y6Q"/>
+                    </constraints>
+                    <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="113" id="109">
+                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="smallSystem"/>
+                        <menu key="menu" title="OtherViews" id="110">
+                            <items>
+                                <menuItem title="Item 1" state="on" id="113"/>
+                                <menuItem title="Item 2" id="112"/>
+                                <menuItem title="Item 3" id="111"/>
+                            </items>
+                        </menu>
+                    </popUpButtonCell>
+                </popUpButton>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="105">
+                    <rect key="frame" x="123" y="13" width="100" height="28"/>
+                    <constraints>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="90" id="auD-kt-Lfj"/>
+                    </constraints>
+                    <buttonCell key="cell" type="push" title="削除" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="108">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" size="11" name=".HiraKakuInterface-W3"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="deleteTemplateAction:" target="-2" id="134"/>
+                    </connections>
+                </button>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="106">
+                    <rect key="frame" x="25" y="13" width="100" height="28"/>
+                    <constraints>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="90" id="7Lq-fe-z7D"/>
+                    </constraints>
+                    <buttonCell key="cell" type="push" title="保存" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="107">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" size="11" name=".HiraKakuInterface-W3"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="saveTemplateAction:" target="-2" id="133"/>
+                        <binding destination="-2" name="enabled" keyPath="formatsAreOk" id="140"/>
+                    </connections>
+                </button>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="103" secondAttribute="bottom" constant="27" id="KvX-x3-A6w"/>
+                <constraint firstAttribute="trailing" secondItem="103" secondAttribute="trailing" constant="20" symbolic="YES" id="LWg-bz-Qwi"/>
+                <constraint firstItem="103" firstAttribute="top" secondItem="23" secondAttribute="top" constant="28" id="Mag-wr-avN"/>
+                <constraint firstAttribute="bottom" secondItem="106" secondAttribute="bottom" constant="19" id="QOo-3t-Dvk"/>
+                <constraint firstItem="105" firstAttribute="leading" secondItem="106" secondAttribute="trailing" constant="8" symbolic="YES" id="VHK-19-JTb"/>
+                <constraint firstItem="103" firstAttribute="leading" secondItem="23" secondAttribute="leading" constant="20" symbolic="YES" id="XBX-KZ-afr"/>
+                <constraint firstItem="104" firstAttribute="top" secondItem="23" secondAttribute="top" constant="20" symbolic="YES" id="ZRu-X1-KJ4"/>
+                <constraint firstItem="106" firstAttribute="leading" secondItem="104" secondAttribute="leading" id="o2w-Jg-Iiu"/>
+                <constraint firstItem="105" firstAttribute="baseline" secondItem="106" secondAttribute="baseline" id="pXv-i2-qwg"/>
+                <constraint firstItem="104" firstAttribute="leading" secondItem="23" secondAttribute="leading" constant="30" id="ttu-Yk-gfO"/>
+            </constraints>
+        </customView>
+        <userDefaultsController representsSharedInstance="YES" id="137"/>
+    </objects>
+</document>
