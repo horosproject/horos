@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="Wait">
+            <connections>
+                <outlet property="abort" destination="23" id="26"/>
+                <outlet property="elapsed" destination="22" id="25"/>
+                <outlet property="progress" destination="5" id="11"/>
+                <outlet property="text" destination="15" id="27"/>
+                <outlet property="window" destination="6" id="16"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="none" id="6" userLabel="Panel" customClass="NSPanel">
+            <windowStyleMask key="styleMask" miniaturizable="YES" resizable="YES" utility="YES" nonactivatingPanel="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="740" y="818" width="284" height="95"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
+            <value key="minSize" type="size" width="284" height="95"/>
+            <value key="maxSize" type="size" width="284" height="95"/>
+            <view key="contentView" id="8">
+                <rect key="frame" x="0.0" y="0.0" width="284" height="95"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <progressIndicator wantsLayer="YES" verticalHuggingPriority="750" maxValue="100" bezeled="NO" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="5">
+                        <rect key="frame" x="19" y="45" width="246" height="20"/>
+                    </progressIndicator>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="15">
+                        <rect key="frame" x="66" y="64" width="152" height="17"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="しばらくお待ちください..." id="29">
+                            <font key="font" size="13" name=".HiraKakuInterface-W3"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="22">
+                        <rect key="frame" x="123" y="29" width="142" height="13"/>
+                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="残り時間を計算中..." id="30">
+                            <font key="font" size="10" name=".HiraKakuInterface-W3"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <button hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="23">
+                        <rect key="frame" x="113" y="9" width="56" height="28"/>
+                        <buttonCell key="cell" type="push" title="Abort" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="31">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="abortButton:" target="-2" id="24"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="centerX" secondItem="15" secondAttribute="centerX" constant="0.5" id="1rS-iy-Gkq"/>
+                    <constraint firstItem="23" firstAttribute="top" secondItem="22" secondAttribute="bottom" constant="3" id="70R-Fg-9NM"/>
+                    <constraint firstItem="5" firstAttribute="leading" secondItem="8" secondAttribute="leading" constant="19" id="Lc3-0y-g2R"/>
+                    <constraint firstAttribute="trailing" secondItem="22" secondAttribute="trailing" constant="21" id="QYy-XO-fZH"/>
+                    <constraint firstItem="15" firstAttribute="top" secondItem="8" secondAttribute="top" constant="14" id="UAb-4l-PoI"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="15" secondAttribute="trailing" constant="16" id="V8z-kU-34r"/>
+                    <constraint firstItem="15" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8" secondAttribute="leading" constant="16" id="Ve1-SC-aEr"/>
+                    <constraint firstAttribute="centerX" secondItem="23" secondAttribute="centerX" constant="1" id="dFh-cD-FZY"/>
+                    <constraint firstAttribute="trailing" secondItem="5" secondAttribute="trailing" constant="19" id="q0N-9C-UWM"/>
+                    <constraint firstItem="5" firstAttribute="top" secondItem="15" secondAttribute="bottom" constant="4" id="sWA-eg-h0Y"/>
+                    <constraint firstItem="22" firstAttribute="top" secondItem="5" secondAttribute="bottom" id="x1U-N3-yjx"/>
+                </constraints>
+            </view>
+            <connections>
+                <outlet property="delegate" destination="-2" id="32"/>
+            </connections>
+        </window>
+    </objects>
+</document>
