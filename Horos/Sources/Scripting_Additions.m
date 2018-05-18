@@ -79,7 +79,6 @@
 		{
 			NSLog( @"%@", convertedPath);
 			
-			//[[[BrowserController currentBrowser] database] addFilesAtPaths:@[convertedPath]]; this was 
             [[BrowserController currentBrowser] addFilesAndFolderToDatabase: [NSArray arrayWithObject: convertedPath]];
 			
 			if( [[BrowserController currentBrowser] findAndSelectFile: convertedPath image: nil shouldExpand :YES])
