@@ -9868,7 +9868,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             NSBundle *bundle = [NSBundle bundleForClass:[DCMView class]];
             if(!loupeImage)
             {
-                loupeImage = [[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:@"loupe_Horos.png"]];
+                loupeImage = [[NSImage alloc] initWithContentsOfFile:[bundle pathForImageResource:@"loupe.png"]];
                 loupeTextureWidth = [loupeImage size].width;
                 loupeTextureHeight = [loupeImage size].height;
             }
