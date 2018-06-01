@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="WaitRendering">
+            <connections>
+                <outlet property="abort" destination="31" id="33"/>
+                <outlet property="currentTimeText" destination="37" id="39"/>
+                <outlet property="lastTimeText" destination="35" id="38"/>
+                <outlet property="message" destination="18" id="28"/>
+                <outlet property="progress" destination="5" id="21"/>
+                <outlet property="window" destination="6" id="16"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="none" id="6" userLabel="Panel" customClass="NSPanel">
+            <windowStyleMask key="styleMask" utility="YES" nonactivatingPanel="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="299" y="668" width="278" height="80"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <value key="minSize" type="size" width="122" height="50"/>
+            <view key="contentView" id="8">
+                <rect key="frame" x="0.0" y="0.0" width="278" height="80"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <progressIndicator horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="5">
+                        <rect key="frame" x="130" y="30" width="16" height="16"/>
+                    </progressIndicator>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="18">
+                        <rect key="frame" x="59" y="50" width="159" height="17"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Rendering in progress..." id="41">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <button hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="31">
+                        <rect key="frame" x="110" y="-1" width="56" height="28"/>
+                        <buttonCell key="cell" type="push" title="Abort" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="42">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="abort:" target="-2" id="32"/>
+                        </connections>
+                    </button>
+                    <textField hidden="YES" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="35">
+                        <rect key="frame" x="211" y="5" width="63" height="22"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" id="43">
+                            <font key="font" metaFont="miniSystem"/>
+                            <string key="title">Last Duration
+00:00:00</string>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField hidden="YES" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="37">
+                        <rect key="frame" x="3" y="5" width="62" height="22"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" id="44">
+                            <font key="font" metaFont="miniSystem"/>
+                            <string key="title">Elapsed Time
+00:00:00</string>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="31" firstAttribute="top" secondItem="5" secondAttribute="bottom" constant="7" id="00c-Jg-zuT"/>
+                    <constraint firstAttribute="centerX" secondItem="31" secondAttribute="centerX" constant="1" id="762-pa-Qjw"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="18" secondAttribute="trailing" constant="16" id="C7d-oj-iVE"/>
+                    <constraint firstItem="18" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="8" secondAttribute="leading" constant="16" id="EYh-8Y-Jhh"/>
+                    <constraint firstItem="18" firstAttribute="top" secondItem="8" secondAttribute="top" constant="13" id="HXO-GZ-JzX"/>
+                    <constraint firstItem="37" firstAttribute="leading" secondItem="8" secondAttribute="leading" constant="5" id="IyU-EU-jQy"/>
+                    <constraint firstAttribute="trailing" secondItem="35" secondAttribute="trailing" constant="6" id="JwX-Ut-CtE"/>
+                    <constraint firstItem="37" firstAttribute="bottom" secondItem="31" secondAttribute="bottom" id="N9h-aw-jgQ"/>
+                    <constraint firstItem="5" firstAttribute="top" secondItem="18" secondAttribute="bottom" constant="4" id="ZOW-bm-uMn"/>
+                    <constraint firstItem="35" firstAttribute="baseline" secondItem="37" secondAttribute="baseline" id="eLD-9r-4AH"/>
+                    <constraint firstItem="31" firstAttribute="centerX" secondItem="5" secondAttribute="centerX" id="oQN-n2-TFT"/>
+                    <constraint firstAttribute="centerX" secondItem="18" secondAttribute="centerX" constant="0.5" id="xJJ-9F-ajq"/>
+                </constraints>
+            </view>
+        </window>
+    </objects>
+</document>

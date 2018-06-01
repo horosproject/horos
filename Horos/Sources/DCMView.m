@@ -2748,6 +2748,41 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     {
         short   inc, previmage = curImage;
         
+        if(lensTexture)
+        {
+            if(c == 45) //  '-'
+            {
+                if(lensZoomFactor < 4.0f) {
+                    lensZoomFactor += 0.2;
+                }
+                [self setNeedsDisplay:TRUE];
+                return;
+            }
+            else if(c == 43) //  '+'
+            {
+                if(lensZoomFactor > 0.2f) {
+                    lensZoomFactor -= 0.2;
+                }
+                [self setNeedsDisplay:TRUE];
+
+                return;
+            }
+            else if(c == 63232) //  ARROW UP
+            {
+                lensSizeFactor *= 1.5f;
+                [self computeMagnifyLens: NSMakePoint( mouseXPos, mouseYPos)];
+                [self setNeedsDisplay:TRUE];
+                return;
+            }
+            else if(c == 63233) //  ARROW DOWN
+            {
+                lensSizeFactor /= 1.5f;
+                [self computeMagnifyLens: NSMakePoint( mouseXPos, mouseYPos)];
+                [self setNeedsDisplay:TRUE];
+                return;
+            }
+        }
+        
         if( flippedData)
         {
             if (c == NSLeftArrowFunctionKey) c = NSRightArrowFunctionKey;
@@ -3518,7 +3553,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     if( needToLoadTexture)
         [self loadTexturesCompute];
     
-    LENSSIZE = 100 / scaleValue;
+    lensSize = 100 / scaleValue;
     
     [self deleteLens];
     
@@ -3535,19 +3570,23 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     {
         src = resampledBaseAddr;
         dcmWidth = textureWidth;
-        
+     
         LENSRATIO = (float) textureWidth / (float) [curDCM pwidth];
-        LENSSIZE *= LENSRATIO;
+        lensSize *= LENSRATIO;
     }
     else LENSRATIO = 1;
     
-    if( LENSSIZE < textureWidth)
+    int lensActualSize = (int)(lensSize*lensSizeFactor);
+    
+    if( lensActualSize < textureWidth)
     {
-        lensTexture = calloc( LENSSIZE * LENSSIZE, 4);
+        lensTexture = calloc( lensActualSize * lensActualSize, 4);
         
         if( lensTexture && src)
         {
-            NSRect l = NSMakeRect( p.x*LENSRATIO - (LENSSIZE/2), p.y*LENSRATIO - (LENSSIZE/2), LENSSIZE, LENSSIZE);
+            //NSRect l = NSMakeRect( p.x*LENSRATIO - (lensActualSize/2), p.y*LENSRATIO - (lensActualSize/2), lensActualSize, lensActualSize);
+            //  The rect is the area that comprises the square under the loupe
+            NSRect l = NSMakeRect( p.x*LENSRATIO - (lensActualSize/2), p.y*LENSRATIO - (lensActualSize/2), lensActualSize, lensActualSize);
             
             int sx = l.origin.x, sy = l.origin.y;
             int ex = l.size.width, ey = l.size.height;
@@ -3576,7 +3615,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 for( int y = sy ; y < sy+ey ; y++)
                 {
                     char *sr = &src[ sx*4 +y*dcmWidth*4];
-                    char *dr = &lensTexture[ sxx*4 + (y-sy+syy)*LENSSIZE*4];
+                    char *dr = &lensTexture[ sxx*4 + (y-sy+syy)*lensActualSize*4];
                     
                     int x = ex;
                     while( x-- > 0)
@@ -3595,7 +3634,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 for( int y = sy ; y < sy+ey ; y++)
                 {
                     char *sr = &src[ sx +y*dcmWidth];
-                    char *dr = &lensTexture[ sxx*4 + (y-sy+syy)*LENSSIZE*4];
+                    char *dr = &lensTexture[ sxx*4 + (y-sy+syy)*lensActualSize*4];
                     
                     int x = ex;
                     while( x-- > 0)
@@ -3614,13 +3653,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 vImage_Buffer src;
                 vImage_Buffer dst;
                 
-                src.height = LENSSIZE;
-                src.width = LENSSIZE;
+                src.height = lensActualSize;
+                src.width = lensActualSize;
                 src.rowBytes = src.width * 4;
                 src.data = lensTexture;
                 
-                dst.height = LENSSIZE * curDCM.pixelRatio;
-                dst.width = LENSSIZE;
+                dst.height = lensActualSize * curDCM.pixelRatio;
+                dst.width = lensActualSize;
                 dst.rowBytes = dst.width * 4;
                 dst.data = calloc( dst.height * dst.rowBytes, 1);
                 if( dst.data)
@@ -3628,11 +3667,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                     vImageScale_ARGB8888( &src, &dst, nil, kvImageHighQualityResampling);
                     
                     if( curDCM.pixelRatio > 1.0)
-                        memcpy( lensTexture, dst.data + dst.rowBytes*((dst.height-src.height)/2), LENSSIZE*LENSSIZE*4);
+                        memcpy( lensTexture, dst.data + dst.rowBytes*((dst.height-src.height)/2), lensActualSize*lensActualSize*4);
                     else
                     {
-                        memset( lensTexture, 0, LENSSIZE*LENSSIZE*4);
-                        memcpy( lensTexture + src.rowBytes*((src.height-dst.height)/2), dst.data, LENSSIZE*dst.height*4);
+                        memset( lensTexture, 0, lensActualSize*lensActualSize*4);
+                        memcpy( lensTexture + src.rowBytes*((src.height-dst.height)/2), dst.data, lensActualSize*dst.height*4);
                     }
                     free( dst.data);
                 }
@@ -3642,7 +3681,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             {
                 int		x,y;
                 int		xsqr;
-                int		rad = LENSSIZE/2;
+                int		rad = lensActualSize/2;
                 
                 x = rad;
                 while( x-- > 0)
@@ -3653,10 +3692,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                     {
                         //						if( (xsqr + y*y) < radsqr)
                         {
-                            lensTexture[ (rad+x)*4 + (rad+y)*LENSSIZE*4] = 0xff;
-                            lensTexture[ (rad-x)*4 + (rad+y)*LENSSIZE*4] = 0xff;
-                            lensTexture[ (rad+x)*4 + (rad-y)*LENSSIZE*4] = 0xff;
-                            lensTexture[ (rad-x)*4 + (rad-y)*LENSSIZE*4] = 0xff;
+                            lensTexture[ (rad+x)*4 + (rad+y)*lensActualSize*4] = 0xff;
+                            lensTexture[ (rad-x)*4 + (rad+y)*lensActualSize*4] = 0xff;
+                            lensTexture[ (rad+x)*4 + (rad-y)*lensActualSize*4] = 0xff;
+                            lensTexture[ (rad-x)*4 + (rad-y)*lensActualSize*4] = 0xff;
                         }
                     }
                 }
@@ -9821,7 +9860,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             glClear (GL_COLOR_BUFFER_BIT);
         }
         
-#ifndef new_loupe
+        #ifndef new_loupe
         if( lensTexture)
         {
             /* creating Loupe textures (mask and border) */
@@ -9872,8 +9911,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             eventLocation.x = xx;
             eventLocation.y = yy;
             
-            eventLocation.x -= LENSSIZE*2*scaleValue/LENSRATIO;
-            eventLocation.y -= LENSSIZE*2*scaleValue/LENSRATIO;
+            float actualLensSize = lensSize * lensSizeFactor;
+            
+            float lensTopLeftX = eventLocation.x - actualLensSize/**2/2*/*scaleValue/LENSRATIO;
+            float lensTopLeftY = eventLocation.y - actualLensSize/**2/2*/*scaleValue/LENSRATIO;
             
             glMatrixMode (GL_MODELVIEW);
             glLoadIdentity ();
@@ -9886,7 +9927,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             GLuint textID;
             
             glEnable(TEXTRECTMODE);
-            glPixelStorei(GL_UNPACK_ROW_LENGTH, LENSSIZE);
+            glPixelStorei(GL_UNPACK_ROW_LENGTH, actualLensSize);
             glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
             glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
             
@@ -9907,9 +9948,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             
             glColor4f( 1, 1, 1, 1);
 #if __BIG_ENDIAN__
-            glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, LENSSIZE, LENSSIZE, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, lensTexture);
+            glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, actualLensSize, actualLensSize, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, lensTexture);
 #else
-            glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, LENSSIZE, LENSSIZE, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, lensTexture);
+            glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, actualLensSize, actualLensSize, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, lensTexture);
 #endif
             
             glEnable(GL_BLEND);
@@ -9945,21 +9986,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             glEnable(TEXTRECTMODE);
             
             glBegin (GL_QUAD_STRIP);
-            glMultiTexCoord2f (GL_TEXTURE1, 0, 0); // lensTexture : upper left in texture coordinates
+            glMultiTexCoord2f (GL_TEXTURE1, 0 + actualLensSize - lensZoomFactor*actualLensSize/4.0f, 0+ actualLensSize - lensZoomFactor*actualLensSize/4.0f); // lensTexture : upper left in texture coordinates
             glMultiTexCoord2f (GL_TEXTURE0, 0, 0); // mask texture : upper left in texture coordinates
-            glVertex3d (eventLocation.x, eventLocation.y, 0.0);
+            glVertex3d (lensTopLeftX, lensTopLeftY, 0.0);
             
-            glMultiTexCoord2f (GL_TEXTURE1, LENSSIZE, 0); // lensTexture : lower left in texture coordinates
+            glMultiTexCoord2f (GL_TEXTURE1, actualLensSize - (actualLensSize - lensZoomFactor*actualLensSize/4.0f), 0 + actualLensSize - lensZoomFactor*actualLensSize/4.0f); // lensTexture : lower left in texture coordinates
             glMultiTexCoord2f (GL_TEXTURE0, loupeMaskTextureWidth, 0); // mask texture : lower left in texture coordinates
-            glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y, 0.0);
+            glVertex3d (lensTopLeftX+actualLensSize*2*scaleValue/LENSRATIO, lensTopLeftY, 0.0);
             
-            glMultiTexCoord2f (GL_TEXTURE1, 0, LENSSIZE); // lensTexture : upper right in texture coordinates
+            glMultiTexCoord2f (GL_TEXTURE1, 0+ actualLensSize - lensZoomFactor*actualLensSize/4.0f, actualLensSize - (actualLensSize - lensZoomFactor*actualLensSize/4.0f)); // lensTexture : upper right in texture coordinates
             glMultiTexCoord2f (GL_TEXTURE0, 0, loupeMaskTextureHeight); // mask texture : upper right in texture coordinates
-            glVertex3d (eventLocation.x, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
+            glVertex3d (lensTopLeftX, lensTopLeftY+actualLensSize*2*scaleValue/LENSRATIO, 0.0);
             
-            glMultiTexCoord2f (GL_TEXTURE1, LENSSIZE, LENSSIZE); // lensTexture : lower right in texture coordinates
+            glMultiTexCoord2f (GL_TEXTURE1, actualLensSize - (actualLensSize - lensZoomFactor*actualLensSize/4.0f), actualLensSize - (actualLensSize - lensZoomFactor*actualLensSize/4.0f)); // lensTexture : lower right in texture coordinates
             glMultiTexCoord2f (GL_TEXTURE0, loupeMaskTextureWidth, loupeMaskTextureHeight); // mask texture : lower right in texture coordinates
-            glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
+            glVertex3d (lensTopLeftX+actualLensSize*2*scaleValue/LENSRATIO, lensTopLeftY+actualLensSize*2*scaleValue/LENSRATIO, 0.0);
             glEnd();
             
             glActiveTexture(GL_TEXTURE1); // deactivate multitexturing
@@ -9984,13 +10025,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 
                 glBegin(GL_QUAD_STRIP);
                 glTexCoord2f(0, 0);
-                glVertex3d (eventLocation.x, eventLocation.y, 0.0);
+                glVertex3d (lensTopLeftX, lensTopLeftY, 0.0);
                 glTexCoord2f(loupeTextureWidth, 0);
-                glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y, 0.0);
+                glVertex3d (lensTopLeftX+actualLensSize*2*scaleValue/LENSRATIO, lensTopLeftY, 0.0);
                 glTexCoord2f(0, loupeTextureHeight);
-                glVertex3d (eventLocation.x, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
+                glVertex3d (lensTopLeftX, lensTopLeftY+actualLensSize*2*scaleValue/LENSRATIO, 0.0);
                 glTexCoord2f(loupeTextureWidth, loupeTextureHeight);
-                glVertex3d (eventLocation.x+LENSSIZE*4*scaleValue/LENSRATIO, eventLocation.y+LENSSIZE*4*scaleValue/LENSRATIO, 0.0);
+                glVertex3d (lensTopLeftX+actualLensSize*2*scaleValue/LENSRATIO, lensTopLeftY+actualLensSize*2*scaleValue/LENSRATIO, 0.0);
                 glEnd();
                 
                 glDisable(GL_TEXTURE_RECTANGLE_EXT);
@@ -12635,6 +12676,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         
         noScale = NO;
         flippedData = NO;
+        
+        lensZoomFactor = 4;
+        lensSizeFactor = 1.0f;
         
         //notifications
         NSNotificationCenter *nc;

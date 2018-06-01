@@ -617,45 +617,63 @@
                          [routingRule valueForKey:@"toTime"])
                 {
                     NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
-                    [dateFormatter setDateFormat:@"HH:mm"];
+                    //[dateFormatter setDefaultDate:[NSDate date]];
+                    [dateFormatter setDateFormat: @"EEEE, dd MMMM yyyy HH:mm:ss zzzzzzzzz"];
                     
                     NSString* fromTimeString = [routingRule valueForKey:@"fromTime"];
+                    //NSLog(@"fromTimeString = %@", fromTimeString);
                     NSDate* fromTime = [dateFormatter dateFromString:fromTimeString];
+                    //  throwing out the year information (in fact, it is coming with 31 Dec 1969...)
+                    [dateFormatter setDateFormat: @"HH:mm:ss"];
+                    NSString *fromTimeString_justHHmm = [dateFormatter stringFromDate:fromTime];
+                    //NSLog(@"fromTimeString_justHHmm = %@", fromTimeString_justHHmm);
+                    fromTime = [dateFormatter dateFromString:fromTimeString_justHHmm];
+                    
+                    [dateFormatter setDateFormat: @"EEEE, dd MMMM yyyy HH:mm:ss zzzzzzzzz"];
                     
                     NSString* toTimeString = [routingRule valueForKey:@"toTime"];
+                    //NSLog(@"toTimeString = %@", toTimeString);
                     NSDate* toTime = [dateFormatter dateFromString:toTimeString];
-                    
-                    [dateFormatter release];
+                    //  throwing out the year information (in fact, it is coming with 31 Dec 1969...)
+                    [dateFormatter setDateFormat: @"HH:mm:ss"];
+                    NSString *toTimeString_justHHmm = [dateFormatter stringFromDate:toTime];
+                    //NSLog(@"toTimeString_justHHmm = %@", toTimeString_justHHmm);
+                    toTime = [dateFormatter dateFromString:toTimeString_justHHmm];
                     
                     NSCalendar *calendar = [NSCalendar currentCalendar];
-                    NSDateComponents *components = [calendar components:(NSHourCalendarUnit | NSMinuteCalendarUnit) fromDate:[NSDate date]];
+                    NSDateComponents *components = [calendar components:(NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit) fromDate:[NSDate date]];
                     NSInteger currentHour = [components hour];
                     NSInteger currentMinute = [components minute];
-                    
-                    NSDate* currentTime = [dateFormatter dateFromString:[NSString stringWithFormat:@"%2ld%2ld",currentHour,currentMinute]];
+                    NSInteger currentSecond = [components second];
+                    NSDate* currentTime = [dateFormatter dateFromString:[NSString stringWithFormat:@"%2ld:%2ld:%2ld",currentHour,currentMinute,currentSecond]];
+                    //NSLog(@"currentTime = %@", [dateFormatter stringFromDate:currentTime]);
                     
                     int64_t delayInSeconds = 0;
 
+                    //  fromTime to toTime crosses a day
                     if ([toTime timeIntervalSinceDate:fromTime] < 0)
                     {
                         [toTime dateByAddingTimeInterval:60*60*24*1]; //Add 1 day to "toTime"
                     }
                     
+                    //  Autorouting time interval is ahead. Let's schedule
                     if ([currentTime timeIntervalSinceDate:fromTime] <= 0)
                     {
-                        delayInSeconds = (long long) fabs([currentTime timeIntervalSinceDate:currentTime]);
+                        delayInSeconds = fabs([fromTime timeIntervalSinceDate:currentTime]);
+                        //NSLog(@"We are ahead of time. delayInSeconds = %lld", delayInSeconds);
                     }
-                    
-                    else if ([currentTime timeIntervalSinceDate:fromTime] > 0)
+                    else
                     {
+                        //  We are inside the interval. Let's route immediately
                         if ([currentTime timeIntervalSinceDate:toTime] <= 0)
                         {
                             delayInSeconds = (long long) 0;
                         }
-                        else if ([currentTime timeIntervalSinceDate:toTime] > 0)
+                        else    //  Autorouting time interval already passed. Let's schedule for tomorrow
                         {
-                            [fromTime dateByAddingTimeInterval:60*60*24*1]; //Add 1 day to "fromTime"
-                            delayInSeconds = (long long) fabs([currentTime timeIntervalSinceDate:fromTime]);
+                            //Add 1 day
+                            delayInSeconds = (long long) fabs([fromTime timeIntervalSinceDate:currentTime]) + 60*60*24*1;
+                            //NSLog(@"Time passed. Tomorrow we autoroute. delayInSeconds = %lld", delayInSeconds);
                         }
                     }
                     
