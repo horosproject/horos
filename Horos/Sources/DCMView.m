@@ -2750,7 +2750,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         
         if(lensTexture)
         {
-            if(c == 45) //  '-'
+            if(c == 45 || c == 95) //  '-' (numeric keypad) or '_' (standard keyboard)
             {
                 if(lensZoomFactor < 4.0f) {
                     lensZoomFactor += 0.2;
