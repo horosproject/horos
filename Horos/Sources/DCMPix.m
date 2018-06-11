@@ -6058,15 +6058,50 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 
                 DCMSequenceAttribute *pixelMeasureSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"PixelMeasuresSequence"];
                 DCMObject *pixelMeasureObject = [[pixelMeasureSequence sequence] objectAtIndex:0];
-                if( pixelMeasureObject)
-                    [self dcmFrameworkLoad0x0018: pixelMeasureObject];
-                if( pixelMeasureObject)
-                    [self dcmFrameworkLoad0x0028: pixelMeasureObject];
+                //  This sequence has only one item, comprising SliceThickness and PixelSpacing (DICOM spec 2015a)
+                if(pixelMeasureObject)
+                {
+                    if( [pixelMeasureObject attributeValueWithName:@"SliceThickness"])
+                        sliceThickness = [[pixelMeasureObject attributeValueWithName:@"SliceThickness"] doubleValue];
+                    if( [pixelMeasureObject attributeArrayWithName:@"PixelSpacing"])
+                    {
+                        NSArray *pixelSpacing = [pixelMeasureObject attributeArrayWithName:@"PixelSpacing"];
+                        if(pixelSpacing.count >= 2)
+                        {
+                            pixelSpacingY = [[pixelSpacing objectAtIndex:0] doubleValue];
+                            pixelSpacingX = [[pixelSpacing objectAtIndex:1] doubleValue];
+                        }
+                        else if(pixelSpacing.count == 1)
+                        {
+                            pixelSpacingY = [[pixelSpacing objectAtIndex:0] doubleValue];
+                            pixelSpacingX = [[pixelSpacing objectAtIndex:0] doubleValue];
+                        }
+                    }
+                }
                 
                 DCMSequenceAttribute *pixelTransformationSequence = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"PixelValueTransformationSequence"];
                 DCMObject *pixelTransformationSequenceObject = [[pixelTransformationSequence sequence] objectAtIndex:0];
+                //  This sequence has only one item, comprising RescaleIntercept/Slope/Type (DICOM spec 2015a)
                 if( pixelTransformationSequenceObject)
-                    [self dcmFrameworkLoad0x0028: pixelTransformationSequenceObject];
+                {
+                    if ([pixelTransformationSequenceObject attributeValueWithName:@"RescaleIntercept"])
+                        offset = [[pixelTransformationSequenceObject attributeValueWithName:@"RescaleIntercept"] floatValue];
+                    if ([pixelTransformationSequenceObject attributeValueWithName:@"RescaleSlope"])
+                    {
+                        slope = [[pixelTransformationSequenceObject attributeValueWithName:@"RescaleSlope"] floatValue];
+                        if( slope == 0) slope = 1.0;
+                    }
+                    
+                    if( [[pixelTransformationSequenceObject attributeValueWithName:@"RescaleType"] isEqualToString: @"US"] == NO)
+                    {
+                        self.rescaleType = [pixelTransformationSequenceObject attributeValueWithName:@"RescaleType"];
+                        if (self.rescaleType == nil)
+                            self.rescaleType = @"";
+                        
+                        if( [self.rescaleType.lowercaseString isEqualToString: @"houndsfield unit"])
+                            self.rescaleType = @"HU";
+                    }
+                }
             }
         }
         
@@ -6099,22 +6134,29 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     if ((seq = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"MREchoSequence"]) && [seq isKindOfClass:[DCMSequenceAttribute class]])
                     {
                         if ((object = [[seq sequence] objectAtIndex:0]))
-                            [self dcmFrameworkLoad0x0018:object];
+                            [self dcmFrameworkLoad0x0018:object];   //  NOTE - this may lead to problems here in multi-frame... we should see which items are allowed in MREchoSequence and load just them
                     }
                     
                     if ((seq = (DCMSequenceAttribute*)[sequenceItem attributeWithName:@"PixelMeasuresSequence"]) && [seq isKindOfClass:[DCMSequenceAttribute class]])
                     {
                         if ((object = [[seq sequence] objectAtIndex:0])) {
-                            [self dcmFrameworkLoad0x0018:object];
+                            [self dcmFrameworkLoad0x0018:object];   //  NOTE - this may lead to problems here in multi-frame... we should see which items are allowed in PixelMeasuresSequence and load just them
                             [self dcmFrameworkLoad0x0028:object];
                         }
                     }
                     
                     if ((seq = (DCMSequenceAttribute*)[sequenceItem attributeWithName:@"PlanePositionSequence"]) && [seq isKindOfClass:[DCMSequenceAttribute class]])
                     {
+                        //  This sequence has only one item, comprising Origin (DICOM spec 2015a)
                         if ((object = [[seq sequence] objectAtIndex:0])) {
-                            [self dcmFrameworkLoad0x0020:object];
-                            [self dcmFrameworkLoad0x0028:object];
+                            NSArray *ipp = [dcmObject attributeArrayWithName:@"ImagePositionPatient"];
+                            if( ipp && [ipp count] >= 3)
+                            {
+                                originX = [[ipp objectAtIndex:0] doubleValue];
+                                originY = [[ipp objectAtIndex:1] doubleValue];
+                                originZ = [[ipp objectAtIndex:2] doubleValue];
+                                isOriginDefined = YES;
+                            }
                         }
                     }
                     
