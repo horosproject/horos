@@ -1977,6 +1977,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	dontCheckRoiChange = NO;
 }
 
+
+// Probably could use MPRDCMView's method if refactored to a shared parent class as code is identical
+
 - (void) mouseDraggedImageScroll:(NSEvent *) event
 {
 	[self checkCursor];
@@ -1990,7 +1993,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	float delta = 0.0;
 	
 	if (scrollMode == ScrollModeVertical) {
-		delta = ((previous.y - current.y) * 512. )/ ([self convertSizeToBacking: self.frame.size].width/2);
+		delta = ((previous.y - current.y) * 512. )/ ([self convertSizeToBacking: self.frame.size].height/2);
 	} else if (scrollMode == ScrollModeHorizontal) {
 		delta = ((current.x - previous.x) * 512. )/ ([self convertSizeToBacking: self.frame.size].width/2);
 	}
