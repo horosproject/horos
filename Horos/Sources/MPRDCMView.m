@@ -1768,12 +1768,12 @@ unsigned int minimumStep;
 		[self establishScrollModeFromInitialDragWithPoint: current];
 	}
 	
-	float delta;
-	
-	if( scrollMode == 1)
-		delta = ((previous.y - current.y) * 512. )/ ([self convertSizeToBacking: self.frame.size].width/2);
-	else
-		delta = ((current.x - previous.x) * 512. )/ ([self convertSizeToBacking: self.frame.size].width/2);
+	float delta = 0.0;
+	if (scrollMode == ScrollModeVertical) {
+		delta = ((previous.y - current.y) * 512. ) / ([self convertSizeToBacking: self.frame.size].width/2);
+	} else if (scrollMode == ScrollModeHorizontal) {
+		delta = ((current.x - previous.x) * 512. ) / ([self convertSizeToBacking: self.frame.size].width/2);
+	}
 	
 	[self restoreCamera];
 	windowController.lowLOD = YES;
