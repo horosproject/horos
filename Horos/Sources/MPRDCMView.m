@@ -1764,16 +1764,8 @@ unsigned int minimumStep;
 	
 	NSPoint current = [self currentPointInView: event];
 	
-	if( scrollMode == 0)
-	{
-		if( fabs( start.x - current.x) < fabs( start.y - current.y))
-		{
-			if( fabs( start.y - current.y) > 3) scrollMode = 1;
-		}
-		else if( fabs( start.x - current.x) >= fabs( start.y - current.y))
-		{
-			if( fabs( start.x - current.x) > 3) scrollMode = 2;
-		}
+	if (scrollMode == ScrollModeReady) {
+		[self establishScrollModeFromInitialDragWithPoint: current];
 	}
 	
 	float delta;
