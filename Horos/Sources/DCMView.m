@@ -5579,8 +5579,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     self.rotation = rot;
 }
 
-#pragma mark - Image scrolling
-
 - (void) establishScrollModeFromInitialDragWithPoint: (NSPoint) currentPoint
 {
 	if (fabs(start.x - currentPoint.x) < fabs(start.y - currentPoint.y))

@@ -2989,7 +2989,7 @@ public:
 	{
         delta *= -1.0;
 	}
-//NSLog(@"VRView scrollInStack: %.1f", delta);
+
     return [self scrollInStack: delta];
 }
 
