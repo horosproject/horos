@@ -1998,9 +1998,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		delta = ((current.x - previous.x) * 512. )/ ([self convertSizeToBacking: self.frame.size].width/2);
 	}
 
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"] &&
-		![[NSUserDefaults standardUserDefaults] boolForKey: @"com.apple.swipescrolldirection"])
-	{
+	if ([self shouldReverseScrollDirectionForMouseDrag]) {
         delta *= -1.0;
 	}
 	

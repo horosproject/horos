@@ -4913,8 +4913,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ZoomWithHorizonScroll"] == NO) deltaX = 0;
     
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"] &&
-    	! [[NSUserDefaults standardUserDefaults] boolForKey: @"com.apple.swipescrolldirection"])
+	if ([self shouldReverseScrollDirectionForMouseWheel])
 	{
 		reverseScrollWheel = -1.0;
     } else {
@@ -5592,7 +5591,31 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 }
 
 
-// Scrolling through images with Mouse
+- (BOOL) shouldReverseScrollDirectionForMouseWheel
+{
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"com.apple.swipescrolldirection"]) {
+		return NO;		// System scroll setting "natural" - no need to reverse.
+	}
+	
+	// System scroll setting "normal", use app's scroll setting, which defaults to YES.
+
+	return [[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"];
+}
+
+
+- (BOOL) shouldReverseScrollDirectionForMouseDrag
+{
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"com.apple.swipescrolldirection"]) {
+		return YES;		// System scroll setting "natural" - reverse mouse drag to complement mouse-wheel.
+	}
+
+	// System scroll setting "normal", use app's scroll setting, to match mouse-wheel.
+
+	return [[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"];
+}
+
+
+// Scrolling through images with mouse
 // could be cleaned up by subclassing DCMView
 - (void) mouseDraggedImageScroll: (NSEvent *)event
 {
@@ -5607,9 +5630,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     if (movie4Dmove == NO)				// Currently always called.  For future functionality.
     {
         CGFloat scrollWheelDirection = 1.0;
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"com.apple.swipescrolldirection"] ||
-			[[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"])
-		{
+		if ([self shouldReverseScrollDirectionForMouseDrag]) {
 			scrollWheelDirection = -1.0;
 		}
 		

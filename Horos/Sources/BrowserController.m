@@ -9263,9 +9263,7 @@ static BOOL withReset = NO;
 {
     float reverseScrollWheel;
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"] &&
-    	! [[NSUserDefaults standardUserDefaults] boolForKey: @"com.apple.swipescrolldirection"])
-	{
+	if ([imageView shouldReverseScrollDirectionForMouseWheel]) {
 		reverseScrollWheel = -1.0;
     } else {
 		reverseScrollWheel = 1.0;

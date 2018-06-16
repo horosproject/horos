@@ -101,9 +101,7 @@
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ZoomWithHorizonScroll"] == NO) deltaX = 0;
 	
-    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"] &&
-    	! [[NSUserDefaults standardUserDefaults] boolForKey: @"com.apple.swipescrolldirection"])
-    {
+	if ([self shouldReverseScrollDirectionForMouseWheel]) {
         reverseScrollWheel = 1.0;
 	} else {
         reverseScrollWheel = -1.0;
@@ -1055,13 +1053,13 @@
 		long from, to;
 		if (scrollMode == ScrollModeHorizontal)
 		{
-			from = current.x;
-			to = start.x;
+			from = start.x;
+			to = current.x;
 		}
 		else if (scrollMode == ScrollModeVertical)
 		{
-			from = start.y;
-			to = current.y;
+			from = current.y;
+			to = start.y;
 		}
 		else
 		{
@@ -1069,9 +1067,7 @@
 			to = 0;
 		}
 
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"com.apple.swipescrolldirection"] &&
-			![[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"])
-		{
+		if ([self shouldReverseScrollDirectionForMouseDrag]) {
 			long temp = to;
 			to = from;
 			from = temp;

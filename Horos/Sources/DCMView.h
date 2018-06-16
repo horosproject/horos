@@ -589,6 +589,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void)mouseDraggedTranslate:(NSEvent *)event;
 - (void)mouseDraggedRotate:(NSEvent *)event;
 - (void) establishScrollModeFromInitialDragWithPoint: (NSPoint) currentPoint;
+- (BOOL) shouldReverseScrollDirectionForMouseWheel;
+- (BOOL) shouldReverseScrollDirectionForMouseDrag;
 - (void)mouseDraggedImageScroll:(NSEvent *)event;
 - (void)mouseDraggedBlending:(NSEvent *)event;
 - (void)mouseDraggedWindowLevel:(NSEvent *)event;

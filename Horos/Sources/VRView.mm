@@ -2984,10 +2984,11 @@ public:
     if ([self eventToPlugins:theEvent]) return;
     
 	float delta = [theEvent deltaY];
- 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"] &&
- 		![[NSUserDefaults standardUserDefaults] boolForKey: @"com.apple.swipescrolldirection"])
-	{
-        delta *= -1.0;
+	// Match behaviour of -[DCMView shouldReverseScrollDirectionForMouseWheel]
+ 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"com.apple.swipescrolldirection"]) {
+ 		delta *= -1.0;
+	} else if (![[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"]) {
+		delta *= -1.0;
 	}
 
     return [self scrollInStack: delta];
