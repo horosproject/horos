@@ -1770,7 +1770,7 @@ unsigned int minimumStep;
 	
 	float delta = 0.0;
 	if (scrollMode == ScrollModeVertical) {
-		delta = ((previous.y - current.y) * 512. ) / ([self convertSizeToBacking: self.frame.size].width/2);
+		delta = ((previous.y - current.y) * 512. ) / ([self convertSizeToBacking: self.frame.size].height/2);
 	} else if (scrollMode == ScrollModeHorizontal) {
 		delta = ((current.x - previous.x) * 512. ) / ([self convertSizeToBacking: self.frame.size].width/2);
 	}
