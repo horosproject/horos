@@ -2983,7 +2983,14 @@ public:
 {
     if ([self eventToPlugins:theEvent]) return;
     
-    return [self scrollInStack: [theEvent deltaY]];
+	float delta = [theEvent deltaY];
+ 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"] &&
+ 		![[NSUserDefaults standardUserDefaults] boolForKey: @"com.apple.swipescrolldirection"])
+	{
+        delta *= -1.0;
+	}
+//NSLog(@"VRView scrollInStack: %.1f", delta);
+    return [self scrollInStack: delta];
 }
 
 - (void)otherMouseDown:(NSEvent *)theEvent
