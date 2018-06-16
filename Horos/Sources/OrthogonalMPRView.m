@@ -1065,6 +1065,12 @@
 			from = 0;
 			to = 0;
 		}
+
+		if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"] ) {
+			long temp = to;
+			to = from;
+			from = temp;
+		}
 		
 		if (abs((int)(from-to)) >= 1) {
 			[self scrollTool: from : to];
