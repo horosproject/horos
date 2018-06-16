@@ -101,13 +101,16 @@
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ZoomWithHorizonScroll"] == NO) deltaX = 0;
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"])
-		reverseScrollWheel = -1.0;
-	else
-		reverseScrollWheel = 1.0;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"] &&
+    	! [[NSUserDefaults standardUserDefaults] boolForKey: @"com.apple.swipescrolldirection"])
+    {
+        reverseScrollWheel = 1.0;
+	} else {
+        reverseScrollWheel = -1.0;
+    }
 	
 	if( flippedData) reverseScrollWheel *= -1.0;
-	
+
     if( dcmPixList)
 	{
 		[[self controller] saveCrossPositions];
@@ -1066,7 +1069,9 @@
 			to = 0;
 		}
 
-		if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"] ) {
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"com.apple.swipescrolldirection"] &&
+			![[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"])
+		{
 			long temp = to;
 			to = from;
 			from = temp;
