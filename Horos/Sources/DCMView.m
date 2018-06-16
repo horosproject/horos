@@ -5595,7 +5595,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 // could be cleaned up by subclassing DCMView
 - (void) mouseDraggedImageScroll: (NSEvent *)event
 {
-    short   previmage;
+    short   previmage = curImage;
     BOOL	movie4Dmove = NO;
     NSPoint current = [self currentPointInView:event];
     if (scrollMode == ScrollModeReady)
@@ -5605,15 +5605,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     
     if (movie4Dmove == NO)				// Currently always called.  For future functionality.
     {
-        previmage = curImage;
-        
+        CGFloat scrollWheelDirection = 1.0;
+		if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"] ) {
+			scrollWheelDirection = -1.0;
+		}
+		
         if (scrollMode == ScrollModeHorizontal)
         {
-            curImage = startImage + ((current.x - start.x) * [dcmPixList count] )/ ([self frame].size.width/2);
+            curImage = startImage + ((current.x - start.x) * [dcmPixList count] * scrollWheelDirection) / ([self frame].size.width/2);
         }
         else if (scrollMode == ScrollModeVertical)
         {
-            curImage = startImage + ((start.y - current.y) * [dcmPixList count] )/ ([self frame].size.height/2);
+            curImage = startImage + ((start.y - current.y) * [dcmPixList count] * scrollWheelDirection) / ([self frame].size.height/2);
         }
         
         if( curImage < 0) curImage = 0;
