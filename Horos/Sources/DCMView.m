@@ -4311,7 +4311,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             startScaleValue = scaleValue;
             rotationStart = rotation;
             blendingFactorStart = blendingFactor;
-            scrollMode = 0;
+            scrollMode = ScrollModeReady;
             resizeTotal = 1;
             
             originStart = origin;
@@ -5576,34 +5576,42 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     self.rotation = rot;
 }
 
-//Scrolling through images with Mouse
+#pragma mark - Image scrolling
+
+- (void) establishScrollModeFromInitialDragWithPoint: (NSPoint) currentPoint
+{
+	if (fabs(start.x - currentPoint.x) < fabs(start.y - currentPoint.y))
+	{
+		if (fabs(start.y - currentPoint.y) > 3) { scrollMode = ScrollModeVertical; }
+	}
+	else if (fabs(start.x - currentPoint.x) >= fabs(start.y - currentPoint.y))
+	{
+		if (fabs(start.x - currentPoint.x) > 3) { scrollMode = ScrollModeHorizontal; }
+	}
+}
+
+
+// Scrolling through images with Mouse
 // could be cleaned up by subclassing DCMView
-- (void)mouseDraggedImageScroll:(NSEvent *)event
+- (void) mouseDraggedImageScroll: (NSEvent *)event
 {
     short   previmage;
     BOOL	movie4Dmove = NO;
     NSPoint current = [self currentPointInView:event];
-    if( scrollMode == 0)
+    if (scrollMode == ScrollModeReady)
     {
-        if( fabs( start.x - current.x) < fabs( start.y - current.y))
-        {
-            if( fabs( start.y - current.y) > 3) scrollMode = 1;
-        }
-        else if( fabs( start.x - current.x) >= fabs( start.y - current.y))
-        {
-            if( fabs( start.x - current.x) > 3) scrollMode = 2;
-        }
+        [self establishScrollModeFromInitialDragWithPoint: current];
     }
     
-    if( movie4Dmove == NO)
+    if (movie4Dmove == NO)				// Currently always called.  For future functionality.
     {
         previmage = curImage;
         
-        if( scrollMode == 2)
+        if (scrollMode == ScrollModeHorizontal)
         {
             curImage = startImage + ((current.x - start.x) * [dcmPixList count] )/ ([self frame].size.width/2);
         }
-        else if( scrollMode == 1)
+        else if (scrollMode == ScrollModeVertical)
         {
             curImage = startImage + ((start.y - current.y) * [dcmPixList count] )/ ([self frame].size.height/2);
         }
@@ -5631,6 +5639,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         }
     }
 }
+
+#pragma mark -
 
 - (void)mouseDraggedBlending:(NSEvent *)event
 {
