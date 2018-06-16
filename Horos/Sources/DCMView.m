@@ -4913,10 +4913,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ZoomWithHorizonScroll"] == NO) deltaX = 0;
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"])
-        reverseScrollWheel = -1.0;
-    else
+	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"] &&
+    	! [[NSUserDefaults standardUserDefaults] boolForKey: @"com.apple.swipescrolldirection"])
+	{
+		reverseScrollWheel = -1.0;
+    } else {
         reverseScrollWheel = 1.0;
+	}
     
     if( flippedData) reverseScrollWheel *= -1.0;
     
@@ -5606,7 +5609,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     if (movie4Dmove == NO)				// Currently always called.  For future functionality.
     {
         CGFloat scrollWheelDirection = 1.0;
-		if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"] ) {
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"com.apple.swipescrolldirection"] ||
+			[[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"])
+		{
 			scrollWheelDirection = -1.0;
 		}
 		
