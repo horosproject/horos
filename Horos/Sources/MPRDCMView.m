@@ -1774,6 +1774,10 @@ unsigned int minimumStep;
 	} else if (scrollMode == ScrollModeHorizontal) {
 		delta = ((current.x - previous.x) * 512. ) / ([self convertSizeToBacking: self.frame.size].width/2);
 	}
+
+    if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"] ) {
+        delta *= -1.0;
+	}
 	
 	[self restoreCamera];
 	windowController.lowLOD = YES;
