@@ -9263,10 +9263,13 @@ static BOOL withReset = NO;
 {
     float reverseScrollWheel;
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"])
-        reverseScrollWheel = -1.0;
-    else
-        reverseScrollWheel = 1.0;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"] &&
+    	! [[NSUserDefaults standardUserDefaults] boolForKey: @"com.apple.swipescrolldirection"])
+	{
+		reverseScrollWheel = -1.0;
+    } else {
+		reverseScrollWheel = 1.0;
+	}
     
     float change = reverseScrollWheel * [theEvent deltaY];
     
