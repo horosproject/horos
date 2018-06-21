@@ -739,27 +739,34 @@ BOOL gPluginsAlertAlreadyDisplayed = NO;
 {
     BOOL foundHorosCloud = NO;
     
-    NSNumber* flag = [[NSUserDefaults standardUserDefaults] objectForKey:@"HOROSCLOUD_PLUGIN_DEPLOYED"];
-    if (flag == nil || [flag integerValue] == 0)
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path] == NO)
     {
-        for (NSInteger i = deployedPlugins.count-1; i >= 0; --i)
-        {
-            NSBundle* bundle = [NSBundle bundleWithPath:[deployedPlugins objectAtIndex:i]];
-            NSString* name = [bundle.infoDictionary objectForKey:@"CFBundleName"];
-            if (!name)
-            {
-                name = [[[deployedPlugins objectAtIndex:i] lastPathComponent] stringByDeletingPathExtension];
-            }
-            
-            if( [name caseInsensitiveCompare:@"HorosCloud"] == NSOrderedSame ) {
-                foundHorosCloud = YES;
-                break;
-            }
-        }
+        [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
     }
     else
     {
-        foundHorosCloud = YES;
+        NSNumber* flag = [[NSUserDefaults standardUserDefaults] objectForKey:@"HOROSCLOUD_PLUGIN_DEPLOYED"];
+        if (flag == nil || [flag integerValue] == 0)
+        {
+            for (NSInteger i = deployedPlugins.count-1; i >= 0; --i)
+            {
+                NSBundle* bundle = [NSBundle bundleWithPath:[deployedPlugins objectAtIndex:i]];
+                NSString* name = [bundle.infoDictionary objectForKey:@"CFBundleName"];
+                if (!name)
+                {
+                    name = [[[deployedPlugins objectAtIndex:i] lastPathComponent] stringByDeletingPathExtension];
+                }
+                
+                if( [name caseInsensitiveCompare:@"HorosCloud"] == NSOrderedSame ) {
+                    foundHorosCloud = YES;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            foundHorosCloud = YES;
+        }
     }
     
     if (!foundHorosCloud)
