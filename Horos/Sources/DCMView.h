@@ -320,8 +320,10 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	BOOL			is2DViewerCached, is2DViewerValue;
 	
 	char*	lensTexture;
-	int LENSSIZE;
+    int lensSize;
+	float lensSizeFactor;
 	float LENSRATIO;
+    float lensZoomFactor;
 	BOOL cursorhidden;
 	int avoidRecursiveSync;
 	BOOL avoidMouseMovedRecursive;
