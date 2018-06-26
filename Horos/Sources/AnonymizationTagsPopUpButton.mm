@@ -66,22 +66,25 @@ NSInteger CompareDCMAttributeTagStringValues(id lsp, id rsp, void* context) {
 
 + (NSArray*) tagsForFile: (NSString*) dicomFile
 {
-	if([DicomFile isDICOMFile: dicomFile])
-	{
-		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: dicomFile decodingPixelData:NO];
-		
-		NSArray *sortedKeys = [[[dcmObject attributes] allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-		NSMutableArray *tags = [NSMutableArray arrayWithCapacity: [sortedKeys count]];
+    if(dicomFile)
+    {
+        if([DicomFile isDICOMFile: dicomFile])
+        {
+            DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: dicomFile decodingPixelData:NO];
+            
+            NSArray *sortedKeys = [[[dcmObject attributes] allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+            NSMutableArray *tags = [NSMutableArray arrayWithCapacity: [sortedKeys count]];
 
-		for( NSString *key in sortedKeys)
-		{
-			DCMAttribute *attr = [[dcmObject attributes] objectForKey: key];
-			if( attr)
-				[tags addObject: attr];
-		}
-		
-		return tags;
-	}
+            for( NSString *key in sortedKeys)
+            {
+                DCMAttribute *attr = [[dcmObject attributes] objectForKey: key];
+                if( attr)
+                    [tags addObject: attr];
+            }
+            
+            return tags;
+        }
+    }
 	return nil;
 }
 
