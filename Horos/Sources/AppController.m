@@ -4434,7 +4434,7 @@ static BOOL initialized = NO;
     }
     else
     {
-        double delayInSeconds = 1;
+        double delayInSeconds = 60;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
         dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
             dispatch_async(dispatch_get_main_queue(), ^{
