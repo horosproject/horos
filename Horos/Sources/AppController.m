@@ -4337,6 +4337,33 @@ static BOOL initialized = NO;
 
 #ifndef OSIRIX_LIGHT
 #ifndef MACAPPSTORE
+
+- (IBAction) checkForUpdatesDisabled: (id) sender
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CheckHorosUpdates"] != NO)
+    {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [NSThread detachNewThreadSelector:@selector(checkForUpdates:) toTarget:self withObject:self];
+            });
+        });
+    }
+    else
+    {
+        double delayInSeconds = 60;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [NSThread detachNewThreadSelector:@selector(checkForUpdatesDisabled:) toTarget:self withObject:self];
+            });
+        });
+    }
+    
+    [pool release];
+}
+
 - (IBAction) checkForUpdates: (id) sender
 {
 	NSURL *url;
@@ -4389,7 +4416,34 @@ static BOOL initialized = NO;
 		}
 	}
 	
-	[pool release];
+    if (verboseUpdateCheck)
+    {
+        [pool release];
+        return;
+    }
+
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"CheckHorosUpdates"] != NO)
+    {
+        double delayInSeconds = 3600;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [NSThread detachNewThreadSelector:@selector(checkForUpdates:) toTarget:self withObject:self];
+            });
+        });
+    }
+    else
+    {
+        double delayInSeconds = 1;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [NSThread detachNewThreadSelector:@selector(checkForUpdatesDisabled:) toTarget:self withObject:self];
+            });
+        });
+    }
+    
+    [pool release];
 }
 #endif
 #endif
