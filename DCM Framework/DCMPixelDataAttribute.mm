@@ -2769,9 +2769,7 @@ void info_callback(const char *msg, void *a) {
                         {
                             for( x = 0; x < width; x++)
                             {
-                                if (clutDepthR != 16 || clutDepthG != 16 || clutDepthB != 16)
-                                    pixelR = pixelG = pixelB = bufPtr[y*width + x];
-                                else pixelR = pixelG = pixelB = bufPtr16[y*width + x];
+                                pixelR = pixelG = pixelB = bufPtr[y*width + x];
                                 
                                 if( pixelR > clutEntryR) {	pixelR = clutEntryR-1;}
                                 if( pixelG > clutEntryG) {	pixelG = clutEntryG-1;}
@@ -2854,7 +2852,7 @@ void info_callback(const char *msg, void *a) {
     if (shortBlue != nil)
         free(shortBlue);
     //NSLog(@"end palette conversion end length: %d", [rgbData length]);
-    _pixelDepth = 8;
+
     return rgbData;
     
 }
@@ -3232,8 +3230,6 @@ void info_callback(const char *msg, void *a) {
         [_dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:7]] forName:@"HighBit"];
         
         _samplesPerPixel = [[[_dcmObject attributeForTag:[DCMAttributeTag tagWithName:@"SamplesperPixel"]] value] intValue];
-        
-        _pixelDepth = 8;
     }
     
 }
