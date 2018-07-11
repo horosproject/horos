@@ -3347,6 +3347,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     
     mouseDragging = NO;
     
+    //int test=0;
+    for( ROI *r in curRoiList)//by air 'r' or 'ROI' **you can move this code proper as you like by inomata **
+    {
+        int test;
+        NSLog(@"for-loop in mouseUp");
+        [r setRoiColor:test];
+        test = test +1;
+    }
+
+    
     // get rid of timer
     [self deleteMouseDownTimer];
     
