@@ -383,7 +383,9 @@ enum
 @property(readonly) NSTimer	*timer;
 @property(readonly) NSButton *keyImageCheck;
 @property(readonly) NSSlider *speedSlider;
+@property(readonly) NSSlider *movieRateSlider;
 @property(readonly) NSTextField *speedText;
+@property(readonly) NSTextField *movieTextSlide;
 //@property(readonly) NSSplitView *leftSplitView;
 @property(retain) NSString *windowsStateName;
 /** Accessors for plugins using blending window */
@@ -684,6 +686,7 @@ enum
 - (void) PlayStop:(id) sender;
 - (short) getNumberOfImages;
 - (float) frameRate;
+- (float) movieRate;
 - (void) adjustSlider;
 - (IBAction) sliderFusionAction:(id) sender;
 - (IBAction) popFusionAction:(id) sender;
