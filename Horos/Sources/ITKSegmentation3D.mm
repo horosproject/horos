@@ -569,7 +569,6 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 
 		[itkImage itkImporter]->Update();
 		thresholdFilter->SetInput([itkImage itkImporter]->GetOutput());
-		thresholdFilter->Update();
 
 		caster->SetInput(thresholdFilter->GetOutput());	// <- FLOAT TO CHAR
 	}
@@ -596,8 +595,6 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		[itkImage itkImporter]->Update();
 		neighborhoodFilter->SetInput([itkImage itkImporter]->GetOutput());
 
-		neighborhoodFilter->Update();
-
 		caster->SetInput(neighborhoodFilter->GetOutput());	// <- FLOAT TO CHAR
 	}
 	// Confidence Connected filter
@@ -616,7 +613,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 		confidenceFilter->SetSeed(index);
 		[itkImage itkImporter]->Update();
 		confidenceFilter->SetInput([itkImage itkImporter]->GetOutput());
-		confidenceFilter->Update();
+
 		caster->SetInput(confidenceFilter->GetOutput());	// <- FLOAT TO CHAR
 	}
 
@@ -640,10 +637,10 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	}
 	
 	NSLog(@"Done...");
-
-	caster->Update();
 	
-    if( succeed && caster->GetOutput() && caster->GetOutput()->GetBufferPointer())
+    unsigned char *buff = caster->GetOutput()->GetBufferPointer();
+    
+    if( succeed && caster->GetOutput() && buff)
     { 
         [wait setString: NSLocalizedString(@"Preparing Results...",@"Preparing Results...")];
         // PRODUCE A NEW SERIES
@@ -780,7 +777,6 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
             else
             {
                 // result of the segmentation will only contain one slice.
-                unsigned char *buff = caster->GetOutput()->GetBufferPointer();
                 
                 int buffHeight = [[[srcViewer pixList] objectAtIndex: 0] pheight];
                 int buffWidth = [[[srcViewer pixList] objectAtIndex: 0] pwidth];
@@ -834,10 +830,6 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
         {
             long	i, x;
             long	startSlice, endSlice;
-            OutputImageType::Pointer frameImage = caster->GetOutput();
-            
-            
-            frameImage->Update();
             
             if( slice == -1)
             {
@@ -851,39 +843,29 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
             }
 
             //------------------------------------------------------------------------
-            // ITK to VTK pipeline connection.
+            // ITK to VTK
             //------------------------------------------------------------------------
-
-            typedef itk::VTKImageExport<OutputImageType> ImageExportType;
-
-            // Create the itk::VTKImageExport instance and connect it to the
-            // itk::CurvatureFlowImageFilter.
-            ImageExportType::Pointer itkExporter = ImageExportType::New();
-            itkExporter->SetInput( frameImage);
-
-            // Create the vtkImageImport and connect it to the
-            // itk::VTKImageExport instance.
-            vtkImageImport* vtkImporter = vtkImageImport::New();
-            ConnectPipelines(itkExporter, vtkImporter);
-            vtkImporter->Update();
+        
+            int dataExtent[ 6] = {
+                (int)caster->GetOutput()->GetLargestPossibleRegion().GetIndex(0), (int)caster->GetOutput()->GetLargestPossibleRegion().GetSize(0),
+                (int)caster->GetOutput()->GetLargestPossibleRegion().GetIndex(1), (int)caster->GetOutput()->GetLargestPossibleRegion().GetSize(1),
+                (int)caster->GetOutput()->GetLargestPossibleRegion().GetIndex(2), (int)caster->GetOutput()->GetLargestPossibleRegion().GetSize(2),
+            };
             
-            int dataExtent[ 6];
-            vtkImporter->GetDataExtent( dataExtent);
-                    
             for( i = startSlice; i < endSlice; i++)
             {
-                long			imageSize = (dataExtent[ 1]+1) * (dataExtent[ 3]+1);
-                unsigned char	*image2Ddata = (unsigned char*) malloc( imageSize), *tempPtr;
+                long			imageSize = dataExtent[1] * dataExtent[3];    //  before: (dataExtent[ 1]+1) * (dataExtent[ 3]+1);
+                unsigned char	*image2Ddata = (unsigned char*) malloc(imageSize), *tempPtr;
                 vtkImageImport	*image2D;
                 DCMPix			*curPix = [[srcViewer pixList] objectAtIndex: i];
                 
-                if( slice == -1)
-                    memcpy( image2Ddata, ((unsigned char*) vtkImporter->GetOutput()->GetScalarPointer()) + (i * imageSize), imageSize);
-                else
-                    memcpy( image2Ddata, ((unsigned char*) vtkImporter->GetOutput()->GetScalarPointer()), imageSize);
-
+                int buffHeight = [[[srcViewer pixList] objectAtIndex: i] pheight];
+                int buffWidth = [[[srcViewer pixList] objectAtIndex: i] pwidth];
+                
+                memcpy( image2Ddata, buff, imageSize);
+                
                 image2D = vtkImageImport::New();
-                image2D->SetWholeExtent(0, dataExtent[ 1], 0, dataExtent[ 3], 0, 0);
+                image2D->SetWholeExtent(0, dataExtent[1] - 1, 0, dataExtent[3] - 1, 0, 0);  //  before: (0, dataExtent[1], 0, dataExtent[3], 0, 0)
                 image2D->SetDataExtentToWholeExtent();
                 image2D->SetDataScalarTypeToUnsignedChar();
                 image2D->SetImportVoidPointer(image2Ddata);		
@@ -916,8 +898,6 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
                     // VTK MARCHING SQUARE
                     //------------------------------------------------------------------------
                     
-                    int dataExtent[ 6];
-                    vtkImporter->GetDataExtent( dataExtent);
                 //	NSLog(@"%d, %d, %d, %d", dataExtent[0], dataExtent[1], dataExtent[2], dataExtent[3]);
                     
     //				if( slice == -1)
@@ -930,11 +910,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
                     
                     isoContour->SetValue(0, 1);
                     isoContour->SetInputConnection( image2D->GetOutputPort());
-                    isoContour->Update();
-
-                    image2D->GetDataExtent( dataExtent);
-                    NSLog(@"%d, %d, %d, %d, %d, %d", dataExtent[0], dataExtent[1], dataExtent[2], dataExtent[3], dataExtent[4], dataExtent[5]);
-                    
+                   
                     vtkPolyDataConnectivityFilter	*filter = vtkPolyDataConnectivityFilter::New();
                     filter->SetColorRegions( 1);
                     filter->SetExtractionModeToLargestRegion();
@@ -944,6 +920,8 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
                     filter2->SetColorRegions( 1);
                     filter2->SetExtractionModeToLargestRegion();
                     filter2->SetInputConnection( filter->GetOutputPort());
+                    
+                    filter2->Update();
                     
                     vtkPolyData *output = filter2->GetOutput();
                     
@@ -1039,9 +1017,9 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
                 
                 image2D->Delete();
                 free( image2Ddata);
+                
+                buff += buffHeight*buffWidth;
             }
-            
-            vtkImporter->Delete();
         }
     }
     
