@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SplashScreen">
@@ -17,14 +18,14 @@
         <window title="About Horos..." allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" visibleAtLaunch="NO" animationBehavior="default" id="6" userLabel="Panel" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" texturedBackground="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="532" height="757"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
             <value key="minSize" type="size" width="213" height="113"/>
             <view key="contentView" id="8">
                 <rect key="frame" x="0.0" y="0.0" width="532" height="757"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="18">
-                        <rect key="frame" x="11" y="48" width="111" height="19"/>
+                    <button verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="18">
+                        <rect key="frame" x="20" y="19" width="111" height="19"/>
                         <buttonCell key="cell" type="squareTextured" title="Visit Horos web site" bezelStyle="texturedSquare" alignment="center" controlSize="small" borderStyle="border" inset="2" id="30">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -33,25 +34,7 @@
                             <action selector="openHorosWebPage:" target="-1" id="19"/>
                         </connections>
                     </button>
-                    <imageView translatesAutoresizingMaskIntoConstraints="NO" id="22">
-                        <rect key="frame" x="11" y="70" width="513" height="681"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="513" id="FAS-sD-KZx"/>
-                            <constraint firstAttribute="height" constant="681" id="zyX-DF-koA"/>
-                        </constraints>
-                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="axesIndependently" image="Logo" id="31"/>
-                    </imageView>
-                    <button misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="26">
-                        <rect key="frame" x="434" y="48" width="90" height="14"/>
-                        <buttonCell key="cell" type="square" title="Version Number" bezelStyle="shadowlessSquare" alignment="right" inset="2" id="32">
-                            <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="switchVersion:" target="-2" id="27"/>
-                        </connections>
-                    </button>
-                    <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="33">
+                    <textField verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="33">
                         <rect key="frame" x="85" y="20" width="362" height="28"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" id="34">
                             <font key="font" metaFont="smallSystem"/>
@@ -61,20 +44,65 @@ horos@horosproject.org</string>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <tabView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nul-pd-YIZ">
+                        <rect key="frame" x="-1" y="65" width="532" height="678"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <font key="font" metaFont="system"/>
+                        <tabViewItems>
+                            <tabViewItem label="About" identifier="" id="8Mr-sd-2aE">
+                                <view key="view" ambiguous="YES" id="ufT-es-MWi">
+                                    <rect key="frame" x="10" y="33" width="512" height="632"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <imageView ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="22">
+                                            <rect key="frame" x="-3" y="-3" width="518" height="638"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="513" id="FAS-sD-KZx"/>
+                                                <constraint firstAttribute="height" constant="681" id="zyX-DF-koA"/>
+                                            </constraints>
+                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="axesIndependently" image="Logo" id="31"/>
+                                        </imageView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="22" firstAttribute="top" secondItem="ufT-es-MWi" secondAttribute="top" constant="-4" id="Qu6-KF-ksm"/>
+                                        <constraint firstAttribute="trailing" secondItem="22" secondAttribute="trailing" constant="2" id="a4n-Ic-tKI"/>
+                                        <constraint firstItem="22" firstAttribute="leading" secondItem="ufT-es-MWi" secondAttribute="leading" constant="-3" id="aRC-93-bV8"/>
+                                    </constraints>
+                                </view>
+                            </tabViewItem>
+                            <tabViewItem label="Release Notes" identifier="" id="bYE-FV-4vT">
+                                <view key="view" id="4r2-Q0-fnR">
+                                    <rect key="frame" x="10" y="33" width="512" height="632"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                </view>
+                            </tabViewItem>
+                            <tabViewItem label="Horos Team" identifier="" id="bQe-Rs-204">
+                                <view key="view" id="EQm-ae-Ogm">
+                                    <rect key="frame" x="10" y="33" width="512" height="632"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                </view>
+                            </tabViewItem>
+                        </tabViewItems>
+                    </tabView>
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="26">
+                        <rect key="frame" x="428" y="20" width="90" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="square" title="Version Number" bezelStyle="shadowlessSquare" alignment="right" inset="2" id="32">
+                            <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="switchVersion:" target="-2" id="27"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="22" firstAttribute="top" secondItem="8" secondAttribute="top" constant="6" id="Mo9-63-pOR"/>
                     <constraint firstAttribute="centerX" secondItem="33" secondAttribute="centerX" constant="-2" id="VB8-OQ-qPN"/>
                     <constraint firstItem="33" firstAttribute="top" secondItem="18" secondAttribute="bottom" constant="8" symbolic="YES" id="eM4-ph-9i2"/>
-                    <constraint firstItem="18" firstAttribute="leading" secondItem="22" secondAttribute="leading" id="ecC-Av-zoi"/>
-                    <constraint firstItem="26" firstAttribute="top" secondItem="22" secondAttribute="bottom" constant="2" id="hEo-Uk-XsO"/>
-                    <constraint firstAttribute="trailing" secondItem="22" secondAttribute="trailing" constant="8" id="qcG-y3-ZlR"/>
-                    <constraint firstItem="22" firstAttribute="leading" secondItem="8" secondAttribute="leading" constant="11" id="v6x-l9-RDj"/>
-                    <constraint firstItem="18" firstAttribute="top" secondItem="22" secondAttribute="bottom" constant="3" id="xHm-oc-wxV"/>
-                    <constraint firstItem="22" firstAttribute="trailing" secondItem="26" secondAttribute="trailing" id="zpg-8V-gGT"/>
                 </constraints>
             </view>
             <contentBorderThickness minY="0.0" maxY="0.0"/>
+            <point key="canvasLocation" x="139" y="164.5"/>
         </window>
     </objects>
     <resources>
