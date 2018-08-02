@@ -126,6 +126,26 @@ BOOL useQuartz() {
 }
 @implementation SplashScreen
 
+
+- (void) awakeFromNib
+{
+    {
+        NSURL * theURL = [NSURL URLWithString:@"https://horosproject.org/about/"];
+        NSURLRequest * theURLRequest = [NSURLRequest requestWithURL:theURL];
+        WebFrame * mf = [aboutWebView mainFrame];
+        [mf loadRequest:theURLRequest];;
+    }
+    
+    {
+        NSURL * theURL = [NSURL URLWithString:@"https://horosproject.org/download/"];
+        NSURLRequest * theURLRequest = [NSURLRequest requestWithURL:theURL];
+        WebFrame * mf = [releaseNotesWebView mainFrame];
+        [mf loadRequest:theURLRequest];;
+    }
+    
+    self.window.level = NSFloatingWindowLevel;
+}
+
 - (void)windowDidLoad
 { 
 	[[self window] center];
@@ -252,5 +272,10 @@ BOOL useQuartz() {
     }
 }
 
+
+- (IBAction) openHorosWebsite:(id) sender
+{
+     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://www.horosproject.org"]];
+}
 
 @end
