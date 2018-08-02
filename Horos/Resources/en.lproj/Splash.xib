@@ -10,6 +10,7 @@
         <customObject id="-2" userLabel="File's Owner" customClass="SplashScreen">
             <connections>
                 <outlet property="aboutWebView" destination="V6v-ct-6uH" id="qSy-Lm-wbV"/>
+                <outlet property="partnersWebView" destination="qnW-mu-Ask" id="pCv-gy-k4X"/>
                 <outlet property="releaseNotesWebView" destination="yID-yd-Yj8" id="sAV-pr-waR"/>
                 <outlet property="version" destination="26" id="28"/>
                 <outlet property="window" destination="6" id="13"/>
@@ -32,12 +33,27 @@
                         <font key="font" metaFont="system"/>
                         <tabViewItems>
                             <tabViewItem label="About" identifier="" id="8Mr-sd-2aE">
-                                <view key="view" id="ufT-es-MWi">
-                                    <rect key="frame" x="10" y="33" width="620" height="643"/>
+                                <view key="view" ambiguous="YES" id="ufT-es-MWi">
+                                    <rect key="frame" x="10" y="33" width="620" height="608"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <webView fixedFrame="YES" maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V6v-ct-6uH">
-                                            <rect key="frame" x="-1" y="-3" width="622" height="648"/>
+                                            <rect key="frame" x="-1" y="-3" width="622" height="613"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12" plugInsEnabled="NO" javaEnabled="NO" javaScriptCanOpenWindowsAutomatically="NO">
+                                                <nil key="identifier"/>
+                                            </webPreferences>
+                                        </webView>
+                                    </subviews>
+                                </view>
+                            </tabViewItem>
+                            <tabViewItem label="Partners" identifier="" id="KCS-hh-M43">
+                                <view key="view" id="5m4-aI-kwc">
+                                    <rect key="frame" x="10" y="33" width="620" height="608"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <webView fixedFrame="YES" maintainsBackForwardList="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qnW-mu-Ask">
+                                            <rect key="frame" x="-1" y="-3" width="622" height="613"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12" plugInsEnabled="NO" javaEnabled="NO" javaScriptCanOpenWindowsAutomatically="NO">
                                                 <nil key="identifier"/>
@@ -47,7 +63,7 @@
                                 </view>
                             </tabViewItem>
                             <tabViewItem label="Release Notes" identifier="" id="bYE-FV-4vT">
-                                <view key="view" ambiguous="YES" id="4r2-Q0-fnR">
+                                <view key="view" id="4r2-Q0-fnR">
                                     <rect key="frame" x="10" y="33" width="620" height="608"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>

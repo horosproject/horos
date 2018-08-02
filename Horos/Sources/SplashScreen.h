@@ -50,6 +50,7 @@
 	int         versionType;
     
     IBOutlet    WebView *aboutWebView;
+    IBOutlet    WebView *partnersWebView;
     IBOutlet    WebView *releaseNotesWebView;
 }
 

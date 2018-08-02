@@ -130,19 +130,26 @@ BOOL useQuartz() {
 - (void) awakeFromNib
 {
     {
-        NSURL * theURL = [NSURL URLWithString:@"https://horosproject.org/about/"];
+        NSURL * theURL = [NSURL URLWithString:@"http://127.0.0.1:8887/about.html"];
         NSURLRequest * theURLRequest = [NSURLRequest requestWithURL:theURL];
         WebFrame * mf = [aboutWebView mainFrame];
         [mf loadRequest:theURLRequest];;
     }
     
     {
-        NSURL * theURL = [NSURL URLWithString:@"https://horosproject.org/download/"];
+        NSURL * theURL = [NSURL URLWithString:@"http://127.0.0.1:8887/partners.html"];
+        NSURLRequest * theURLRequest = [NSURLRequest requestWithURL:theURL];
+        WebFrame * mf = [partnersWebView mainFrame];
+        [mf loadRequest:theURLRequest];;
+    }
+    
+    {
+        NSURL * theURL = [NSURL URLWithString:@"http://127.0.0.1:8887/releasenotes.html"];
         NSURLRequest * theURLRequest = [NSURLRequest requestWithURL:theURL];
         WebFrame * mf = [releaseNotesWebView mainFrame];
         [mf loadRequest:theURLRequest];;
     }
-    
+  
     self.window.level = NSFloatingWindowLevel;
 }
 
