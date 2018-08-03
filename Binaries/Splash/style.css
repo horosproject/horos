@@ -1,0 +1,141 @@
+body {
+	font-size: 12px;
+	font-family: "Lucida Grande";
+	margin: 0;
+}
+
+#header {
+	padding-top: 1rem;
+}
+
+#header:after {
+	content: '';
+	position: absolute;
+	top: 49px;
+	left: 0;
+	right: 0;
+	border-bottom: 1px solid #E6E6E6;
+}
+
+.title-box {
+	background-color: #008bd2;
+	color: white;
+	padding: 1.25rem 1.5rem 1.25rem 4.5rem;
+	display: inline-block;
+	border-bottom-right-radius: 10px;
+	border-top-right-radius: 10px;
+	position: relative;
+	z-index: 10;
+	min-width: 8rem;
+}
+
+.horos-logo {
+	width: 44px;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	left: 1rem;
+}
+
+h1 {
+	margin: 0;
+	font-size: 22px;
+	color: white;
+}
+
+h2 {
+	color: #008bd2;
+	margin-top: 0;
+	margin-bottom: 0.75rem;
+}
+
+p {
+	margin-top: 0;
+	margin-bottom: 0.5rem;
+}
+
+#content {
+	padding: 1.5rem 1.5rem 0;
+}
+
+.content-block {
+	margin-bottom: 1.5rem;
+}
+
+.box-list {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0.25rem -0.25rem -0.25rem -0.25rem;
+}
+.box {
+	margin: 0.25rem;
+	background-color: #e3eff6;
+	padding: 0.5rem;
+	border-radius: 5px;
+	font-size: 13px;
+	flex-grow: 1;
+	font-weight: bold;
+}
+.box-link {
+	font-size: 11px;
+	font-weight: normal;
+	color: rgba(0,0,0,0.5);
+}
+
+.card-list {
+	display: flex;
+	flex-wrap: wrap;
+	margin: -0.5rem;
+}
+.card {
+	text-align: center;
+	padding: 1rem;
+	flex-basis: 40%;
+	flex-grow: 1;
+	border-radius: 8px;
+	margin: 0.5rem;
+	box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3), 0px 2px 1px 0px rgba(0, 0, 0, 0.2);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-direction: column;
+	min-height: 120px;
+}
+.partner-logo {
+	max-width: 200px;
+	margin: 1rem 0;
+}
+.line-break-fix {
+	max-width: 190px;
+}
+.card-link {
+	font-size: 12px;
+	font-weight: normal;
+	color: rgba(0,0,0,0.5);
+  margin-top: auto;
+}
+.partners-invite {
+  font-size: 14px;
+	color: rgba(0,0,0,0.7);
+	text-align: center;
+  margin-top: 3rem;
+}
+.partners-invite-mail {
+  font-weight: bold;
+	margin-top: -0.25rem;
+}
+
+ul {
+	padding-left: 1.75rem;
+	margin-top: 0.5rem;
+	margin-bottom: 1rem;
+}
+
+.version {
+	padding: 0.25rem 0.5rem;
+	font-weight: 600;
+	font-size: 12px;
+	background-color: #F0F0F0;
+	border-radius: 5px;
+	display: inline-block;
+}
