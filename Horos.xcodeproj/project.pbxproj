@@ -672,6 +672,7 @@
 		9953013F1CE8B06D00B3FB2C /* ofstring.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3E6509B6828B00545F5E /* ofstring.cc */; };
 		9953FE521BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 9953FE4E1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx */; };
 		9953FE531BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 9953FE4F1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h */; };
+		99645870211507A000A6EDD1 /* Splash in Resources */ = {isa = PBXBuildFile; fileRef = 9964586F2115079F00A6EDD1 /* Splash */; };
 		9966A1A11AE09D3F00F2D81A /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A01AE09D3F00F2D81A /* AddressBook.framework */; };
 		9966A1A31AE09D4800F2D81A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A21AE09D4800F2D81A /* AVFoundation.framework */; };
 		9966A1A51AE09D5100F2D81A /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9966A1A41AE09D5100F2D81A /* CoreMedia.framework */; };
@@ -3879,6 +3880,7 @@
 		9952F2702020C21D0020CCD4 /* ICloudDriveDetector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ICloudDriveDetector.m; sourceTree = "<group>"; };
 		9953FE4E1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vtkHorosFixedPointVolumeRayCastMIPHelper.cxx; sourceTree = "<group>"; };
 		9953FE4F1BF540D000BD0DA6 /* vtkHorosFixedPointVolumeRayCastMIPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkHorosFixedPointVolumeRayCastMIPHelper.h; sourceTree = "<group>"; };
+		9964586F2115079F00A6EDD1 /* Splash */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Splash; path = Binaries/Splash; sourceTree = SOURCE_ROOT; };
 		9966A1A01AE09D3F00F2D81A /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		9966A1A21AE09D4800F2D81A /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		9966A1A41AE09D5100F2D81A /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -6209,6 +6211,7 @@
 		719D3F261FB46892004CFB27 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				9964586F2115079F00A6EDD1 /* Splash */,
 				99BA4CC620A4ACF300B5CD02 /* EmbeddedPlugins */,
 				71EB83D216DD0F1800D48646 /* dicom3tools-libsrc-standard-strval-base.tpl */,
 				71EB83D316DD0F1800D48646 /* osirix-complementary.tpl */,
@@ -10521,6 +10524,7 @@
 				A9701A9415C9587C0019EE55 /* burn_anim04.tif in Resources */,
 				A9701A9615C9587C0019EE55 /* burn_anim05.tif in Resources */,
 				A9701A9815C9587C0019EE55 /* burn_anim06.tif in Resources */,
+				99645870211507A000A6EDD1 /* Splash in Resources */,
 				A9701A9A15C9587C0019EE55 /* burn_anim07.tif in Resources */,
 				A9701A9C15C9587C0019EE55 /* burn_anim08.tif in Resources */,
 				A9701A9E15C9587C0019EE55 /* burn_anim09.tif in Resources */,
@@ -13336,6 +13340,7 @@
 					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -13375,6 +13380,7 @@
 					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -13421,6 +13427,7 @@
 					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lGDCM",
@@ -13438,6 +13445,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				DEVELOPMENT_TEAM = "";
 				LIBRARY_SEARCH_PATHS = DICOMPrint;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = DICOMPrint;
 				USER_HEADER_SEARCH_PATHS = DICOMPrint;
 				VALID_ARCHS = i386;
@@ -13451,6 +13459,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
 				INFOPLIST_FILE = "$(SRCROOT)/API/Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "-fvisibility=default";
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.api;
 				PRODUCT_NAME = Horos;
@@ -13571,6 +13580,7 @@
 					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -13615,6 +13625,7 @@
 					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -13715,6 +13726,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
 				INFOPLIST_FILE = "$(SRCROOT)/API/Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_CFLAGS = "-fvisibility=default";
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.api;
 				PRODUCT_NAME = Horos;
@@ -13740,6 +13752,7 @@
 					$CONFIGURATION_TEMP_DIR/Grok.build/Install/lib,
 					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/lib,
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lGDCM",
@@ -13763,6 +13776,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				LIBRARY_SEARCH_PATHS = DICOMPrint;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = DICOMPrint;
 				USER_HEADER_SEARCH_PATHS = DICOMPrint;

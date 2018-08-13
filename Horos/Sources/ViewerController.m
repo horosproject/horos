@@ -8374,6 +8374,12 @@ static int avoidReentryRefreshDatabase = 0;
                     [movieRateSlider setEnabled: NO];
                     [moviePosSlider setEnabled: NO];
                     [moviePlayStop setEnabled:NO];
+
+                    if( [[NSUserDefaults standardUserDefaults] floatForKey: @"defaultMovieRate"])
+                    {
+                        [movieRateSlider setFloatValue: [[NSUserDefaults standardUserDefaults] floatForKey: @"defaultMovieRate"]];
+                        [movieTextSlide setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%0.0f im/s", @"im/s = images per second"), (float) [self movieRate]]];
+                    }
                     
                     [speedText setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%0.1f im/s",  @"im/s = images per second"), (float) [self frameRate]*direction]];
                     
@@ -17442,6 +17448,11 @@ static float oldsetww, oldsetwl;
     return [speedSlider floatValue];
 }
 
+- (float) movieRate
+{
+    return [movieRateSlider floatValue];
+}
+
 - (void) speedSliderAction:(id) sender
 {
     [speedText setStringValue:[NSString stringWithFormat: NSLocalizedString( @"%0.1f im/s", @"im/s = images per second"), (float) [self frameRate] * direction]];
@@ -17468,7 +17479,28 @@ static float oldsetww, oldsetwl;
 
 - (void) movieRateSliderAction:(id) sender
 {
-    [movieTextSlide setStringValue:[NSString stringWithFormat: NSLocalizedString( @"%0.0f im/s", @"im/s = images per second"), (float) [movieRateSlider floatValue]]];
+    float movieRate = (float) [self movieRate];
+
+    [movieTextSlide setStringValue:[NSString stringWithFormat: NSLocalizedString( @"%0.0f im/s", @"im/s = images per second"), movieRate]];
+
+    if( [[self window] isKeyWindow])
+    {
+        for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+        {
+            if( v != self)
+            {
+                if( [v movieRate] == [[NSUserDefaults standardUserDefaults] floatForKey: @"defaultMovieRate"])
+                {
+                    if( v.movieRateSlider.floatValue != movieRate)
+                    {
+                        v.movieRateSlider.floatValue = movieRate;
+                        v.movieTextSlide.stringValue = [NSString stringWithFormat: NSLocalizedString( @"%0.0f im/s", @"im/s = images per second"), movieRate];
+                    }
+                }
+            }
+        }
+        [[NSUserDefaults standardUserDefaults] setFloat: movieRate forKey: @"defaultMovieRate"];
+    }
 }
 
 -(NSSlider*) moviePosSlider
