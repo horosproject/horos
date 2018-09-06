@@ -1462,11 +1462,15 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		
 		opacity = ROIOpacity;
         
-        color = colorRotationTable[globalColorRotationState++ % 10];
-		/* We are not using the standard ROI color anymore... but maybe in some automatic ROI creation, such as segmentation... Aug/2018
-        color.red = ROIColorR;
-		color.green = ROIColorG;
-		color.blue = ROIColorB;*/
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ROIColorRotation"])
+        {
+            color = colorRotationTable[globalColorRotationState++ % 10];
+        }
+        else {
+            color.red = ROIColorR;
+            color.green = ROIColorG;
+            color.blue = ROIColorB;
+        }
 		
 		mousePosMeasure = -1;
 		
