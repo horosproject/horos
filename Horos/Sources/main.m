@@ -35,29 +35,21 @@
  Ê Ê PURPOSE.
  ============================================================================*/
 
+
 #import <Cocoa/Cocoa.h>
 #import "NSFont_OpenGL.h"
 
 #include "options.h"
 
 #ifndef OSIRIX_LIGHT
-//extern "C"
-//{
 #include "FVTiff.h"
-//}
 #endif
-
-#include "vtkSmartPointer.h"
-#include "vtkImageImport.h"
 
 int main(int argc, const char *argv[])
-{
-    ////////////vtkImageImport* test = vtkSmartPointer<vtkImageImport>::New();
-    
-    
-#ifndef OSIRIX_LIGHT
+{	
+	#ifndef OSIRIX_LIGHT
     FVTIFFInitialize();
-#endif
-    
+	#endif
+	
     return NSApplicationMain(argc, argv);
 }

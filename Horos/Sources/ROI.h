@@ -211,6 +211,7 @@ enum
 - (void) setThickness:(float) a globally: (BOOL) g;
 - (void) setOpacity:(float)newOpacity globally: (BOOL) g;
 - (void) addPointUnderMouse: (NSPoint) pt scale:(float) scale;
+- (void) setRoiColorIndex:(int)n;// setter for ROI color by air,HInomata
 
 /** Set default ROI name (if not set, then default name is the currentTool) */
 + (void) setDefaultName:(NSString*) n;
