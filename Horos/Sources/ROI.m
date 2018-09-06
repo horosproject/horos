@@ -1462,7 +1462,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		
 		opacity = ROIOpacity;
         
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ROIColorRotation"])
+        if ([[NSUserDefaults standardUserDefaults] boolForKey: @"ROIColorRotation"] == YES)
         {
             color = colorRotationTable[globalColorRotationState++ % 10];
         }

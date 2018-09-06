@@ -14524,6 +14524,13 @@ static NSArray*	openSubSeriesArray = nil;
         [alert release];
     }
     
+    
+    NSUserDefaults *userDefaults= [NSUserDefaults standardUserDefaults];
+    if ([[[userDefaults dictionaryRepresentation] allKeys] containsObject:@"ROIColorRotation"] == NO)
+    {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ROIColorRotation"];
+    }
+    
     [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_HOROS_STARTED detail:@"{}"];
     
     [ICloudDriveDetector performStartupICloudDriveTasks:self];
