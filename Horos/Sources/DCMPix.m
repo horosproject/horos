@@ -64,7 +64,7 @@
 
 #import "DCMWaveform.h"
 
-#import "DCMView.h"
+#import <DCMView.h>
 
 #import "ThickSlabController.h"
 #import "DicomFile.h"
