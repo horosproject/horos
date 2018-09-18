@@ -36,3 +36,4 @@ Binaries/homephone.framework/
 Binaries/EmbeddedPlugins/HorosCloud.horosplugin
 
 *.xcscmblueprint
+DICOMPrint/DICOMPrint
