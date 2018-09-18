@@ -36,3 +36,5 @@ Binaries/homephone.framework/
 Binaries/EmbeddedPlugins/HorosCloud.horosplugin
 
 *.xcscmblueprint
+DICOMPrint/DICOMPrint
+Horos.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
