@@ -1169,6 +1169,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"ROIDrawPlainEdge"];
     [defaultValues setObject:@"1" forKey:@"PACSOnDemandForSearchField"];
     [defaultValues setObject:@"1" forKey:@"CloseAllWindowsBeforeXMLRPCOpen"];
+    [defaultValues setObject:@"1" forKey:@"ROIColorRotation"];
     
     [defaultValues setObject:@"1" forKey:@"scrollThroughSeries"];
     [defaultValues setObject:@"1" forKey:@"scrollThroughSeriesForCR"];

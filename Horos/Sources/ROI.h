@@ -90,7 +90,6 @@ enum
 	NSRecursiveLock *roiLock;
 	
 	int				textureWidth, textureHeight;
-    int             roicolor;//for management ROI color add by air, rename by h.inomata
 
 	unsigned char   *textureBuffer, *textureBufferSelected;
     
@@ -212,7 +211,6 @@ enum
 - (void) setThickness:(float) a globally: (BOOL) g;
 - (void) setOpacity:(float)newOpacity globally: (BOOL) g;
 - (void) addPointUnderMouse: (NSPoint) pt scale:(float) scale;
-- (void) setRoiColor:(int)n;// setter for ROI color by air,HInomata
 
 /** Set default ROI name (if not set, then default name is the currentTool) */
 + (void) setDefaultName:(NSString*) n;

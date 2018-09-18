@@ -47,10 +47,13 @@
 #import "options.h"
 
 #include <vtkAutoInit.h>
+
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkRenderingVolumeOpenGL2);
+VTK_MODULE_INIT(vtkInteractionStyle);
 VTK_MODULE_INIT(vtkRenderingFreeType);
 
+                
 #import <AppKit/AppKit.h>
 
 #ifdef __cplusplus
