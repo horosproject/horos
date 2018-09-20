@@ -411,6 +411,7 @@
 		710EF1F31FD00E29000B555B /* Horos.h in Headers */ = {isa = PBXBuildFile; fileRef = 710EF1F11FD00E28000B555B /* Horos.h */; };
 		710EF1F41FD00E29000B555B /* Horos.m in Sources */ = {isa = PBXBuildFile; fileRef = 710EF1F21FD00E29000B555B /* Horos.m */; };
 		710EF1F61FD025BC000B555B /* Horos.m in Sources */ = {isa = PBXBuildFile; fileRef = 710EF1F21FD00E29000B555B /* Horos.m */; };
+		71125D4B215376FC00EB0AA5 /* PathForImage.h in Headers */ = {isa = PBXBuildFile; fileRef = 71125D4A215376FC00EB0AA5 /* PathForImage.h */; };
 		711849771590A377006AB447 /* SMTPClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 711849751590A377006AB447 /* SMTPClient.h */; };
 		711849781590A377006AB447 /* SMTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 711849761590A377006AB447 /* SMTPClient.m */; };
 		7128FD771487D54A00AB54A1 /* N2UnclickableSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7128FD751487D54A00AB54A1 /* N2UnclickableSplitView.h */; };
@@ -3627,6 +3628,7 @@
 		59FB652912312D8900EBA136 /* weasis */ = {isa = PBXFileReference; lastKnownFileType = folder; name = weasis; path = Binaries/weasis; sourceTree = SOURCE_ROOT; };
 		710EF1F11FD00E28000B555B /* Horos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Horos.h; sourceTree = "<group>"; };
 		710EF1F21FD00E29000B555B /* Horos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Horos.m; sourceTree = "<group>"; };
+		71125D4A215376FC00EB0AA5 /* PathForImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathForImage.h; sourceTree = "<group>"; };
 		711849751590A377006AB447 /* SMTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTPClient.h; sourceTree = "<group>"; };
 		711849761590A377006AB447 /* SMTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTPClient.m; sourceTree = "<group>"; };
 		7128FD751487D54A00AB54A1 /* N2UnclickableSplitView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2UnclickableSplitView.h; sourceTree = "<group>"; };
@@ -5840,6 +5842,7 @@
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				32E422140C97301600E193CA /* altivecFunctions.h */,
 				434B46151A19F2A3008CF8CF /* options.h */,
+				71125D4A215376FC00EB0AA5 /* PathForImage.h */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -9437,6 +9440,7 @@
 				BFBF41B309B6828D00545F5E /* dsrscotn.h in Headers */,
 				BFBF41B509B6828D00545F5E /* dsrscovl.h in Headers */,
 				BFBF41B709B6828D00545F5E /* dsrsoprf.h in Headers */,
+				71125D4B215376FC00EB0AA5 /* PathForImage.h in Headers */,
 				BFBF41B909B6828D00545F5E /* dsrstrvl.h in Headers */,
 				BFBF41BB09B6828D00545F5E /* dsrtcodt.h in Headers */,
 				BFBF41BD09B6828D00545F5E /* dsrtcosp.h in Headers */,
@@ -13260,6 +13264,7 @@
 		43E98D191A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -13314,14 +13319,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Horos/prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = (
-					$CONFIGURATION_TEMP_DIR/Grok.build/Install/include,
-					$CONFIGURATION_TEMP_DIR/GDCM.build/Install/include,
-					$CONFIGURATION_TEMP_DIR/OpenSSL.build/Install/include,
-					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/include,
-					$CONFIGURATION_TEMP_DIR/ITK.build/Install/include,
-					$CONFIGURATION_TEMP_DIR/VTK.build/Install/include,
-				);
 				INFOPLIST_FILE = Horos/Info.plist;
 				KEEP_PRIVATE_EXTERNS = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -13354,6 +13351,7 @@
 				PRODUCT_NAME = Horos;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
+				SYSTEM_HEADER_SEARCH_PATHS = "$CONFIGURATION_TEMP_DIR/Grok.build/Install/include $CONFIGURATION_TEMP_DIR/GDCM.build/Install/include $CONFIGURATION_TEMP_DIR/OpenSSL.build/Install/include $CONFIGURATION_TEMP_DIR/CharLS.build/Install/include $CONFIGURATION_TEMP_DIR/ITK.build/Install/include $CONFIGURATION_TEMP_DIR/VTK.build/Install/include";
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
 			};
 			name = Release;
@@ -13408,12 +13406,6 @@
 				FRAMEWORK_SEARCH_PATHS = Binaries;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Decompress/prefix.pch;
-				HEADER_SEARCH_PATHS = (
-					$CONFIGURATION_TEMP_DIR/Grok.build/Install/include,
-					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/include,
-					$CONFIGURATION_TEMP_DIR/GDCM.build/Install/include,
-					$CONFIGURATION_TEMP_DIR/VTK.build/Install/include,
-				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries/Ming,
@@ -13429,6 +13421,7 @@
 					"-lCharLS",
 				);
 				PRODUCT_NAME = Decompress;
+				SYSTEM_HEADER_SEARCH_PATHS = "$CONFIGURATION_TEMP_DIR/Grok.build/Install/include $CONFIGURATION_TEMP_DIR/CharLS.build/Install/include $CONFIGURATION_TEMP_DIR/GDCM.build/Install/include $CONFIGURATION_TEMP_DIR/VTK.build/Install/include Binaries/Ming";
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
 			};
 			name = Release;
@@ -13601,14 +13594,6 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Horos/prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = (
-					$CONFIGURATION_TEMP_DIR/Grok.build/Install/include,
-					$CONFIGURATION_TEMP_DIR/GDCM.build/Install/include,
-					$CONFIGURATION_TEMP_DIR/OpenSSL.build/Install/include,
-					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/include,
-					$CONFIGURATION_TEMP_DIR/ITK.build/Install/include,
-					$CONFIGURATION_TEMP_DIR/VTK.build/Install/include,
-				);
 				INFOPLIST_FILE = Horos/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -13640,6 +13625,7 @@
 				PRODUCT_NAME = Horos;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
+				SYSTEM_HEADER_SEARCH_PATHS = "$CONFIGURATION_TEMP_DIR/Grok.build/Install/include $CONFIGURATION_TEMP_DIR/GDCM.build/Install/include $CONFIGURATION_TEMP_DIR/OpenSSL.build/Install/include $CONFIGURATION_TEMP_DIR/CharLS.build/Install/include $CONFIGURATION_TEMP_DIR/ITK.build/Install/include $CONFIGURATION_TEMP_DIR/VTK.build/Install/include";
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
 			};
 			name = Debug;
@@ -13654,6 +13640,7 @@
 		7E76BED9085757B70073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -13734,12 +13721,6 @@
 				FRAMEWORK_SEARCH_PATHS = Binaries;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Decompress/prefix.pch;
-				HEADER_SEARCH_PATHS = (
-					$CONFIGURATION_TEMP_DIR/Grok.build/Install/include,
-					$CONFIGURATION_TEMP_DIR/CharLS.build/Install/include,
-					$CONFIGURATION_TEMP_DIR/GDCM.build/Install/include,
-					$CONFIGURATION_TEMP_DIR/VTK.build/Install/include,
-				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries/Ming,
@@ -13755,6 +13736,7 @@
 					"-lCharLS",
 				);
 				PRODUCT_NAME = Decompress;
+				SYSTEM_HEADER_SEARCH_PATHS = "$CONFIGURATION_TEMP_DIR/Grok.build/Install/include $CONFIGURATION_TEMP_DIR/CharLS.build/Install/include $CONFIGURATION_TEMP_DIR/GDCM.build/Install/include $CONFIGURATION_TEMP_DIR/VTK.build/Install/include Binaries/Ming";
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
 			};
 			name = Debug;
