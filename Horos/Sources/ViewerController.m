@@ -393,6 +393,7 @@ enum
 @synthesize timer, keyImageCheck, injectionDateTime, blendedWindow;
 @synthesize blendingTypeWindow, blendingTypeMultiply, blendingTypeSubtract, blendingTypeRGB, blendingPlugins, blendingResample;
 @synthesize flagListPODComparatives, windowsStateName, titledGantry;
+@synthesize movieRateSlider = movieRateSlider, movieTextSlide = movieTextSlide;
 
 // WARNING: If you add or modify this list, check ViewerController.m, DCMView.h and HotKey Pref Pane
 static int hotKeyToolCrossTable[] =

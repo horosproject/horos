@@ -52,8 +52,8 @@
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
-#include "djdecode.h"  /* for dcmjpeg decoders */
-#include "djencode.h"  /* for dcmjpeg encoders */
+#include "dcmjpeg/djdecode.h"  /* for dcmjpeg decoders */
+#include "dcmjpeg/djencode.h"  /* for dcmjpeg encoders */
 #include "dcrledrg.h"  /* for DcmRLEDecoderRegistration */
 #include "dcrleerg.h"  /* for DcmRLEEncoderRegistration */
 #include "djrploss.h"
