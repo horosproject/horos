@@ -6838,7 +6838,7 @@ static NSConditionLock *threadLock = nil;
                     if (!value || ([value isKindOfClass:[NSString class]] && [(NSString*)value length] == 0))
                         gray = YES;
                 }
-            [cell setTextColor: gray? [NSColor grayColor] : [NSColor blackColor]];
+            [cell setTextColor: gray? [NSColor disabledControlTextColor] : [NSColor controlTextColor]];
         }
     }
     @catch (NSException * e)

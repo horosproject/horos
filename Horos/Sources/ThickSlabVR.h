@@ -75,7 +75,7 @@
 #include <vtkPiecewiseFunction.h>
 #include <vtkColorTransferFunction.h>
 #include <vtkVolumeProperty.h>
-#include <vtkVolumeRayCastCompositeFunction.h>
+//#include <vtkVolumeRayCastCompositeFunction.h>
 #include <vtkVolumeRayCastMapper.h>
 #include <vtkVolumeRayCastMIPFunction.h>
 #include <vtkImageFlip.h>
@@ -101,7 +101,7 @@
 	vtkVolumeProperty					*volumeProperty;
 	vtkColorTransferFunction			*colorTransferFunction;
 	vtkImageImport						*reader;
-	vtkVolumeRayCastCompositeFunction   *compositeFunction;
+//    vtkVolumeRayCastCompositeFunction   *compositeFunction;
 	vtkPiecewiseFunction				*opacityTransferFunction;
 	vtkImageFlip						*flipReader;
 	

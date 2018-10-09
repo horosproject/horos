@@ -76,7 +76,7 @@
 #include <vtkPiecewiseFunction.h>
 #include <vtkColorTransferFunction.h>
 #include <vtkVolumeProperty.h>
-#include <vtkVolumeRayCastCompositeFunction.h>
+//#include <vtkVolumeRayCastCompositeFunction.h>
 #include <vtkVolumeRayCastMapper.h>
 #include <vtkVolumeRayCastMIPFunction.h>
 #include <vtkFixedPointVolumeRayCastMapper.h>
@@ -104,7 +104,7 @@
 #include <vtkImageFlip.h>
 #include <vtkAnnotatedCubeActor.h>
 #include <vtkOrientationMarkerWidget.h>
-#include <vtkVolumeTextureMapper2D.h>
+//#include <vtkVolumeTextureMapper2D.h>
 #include <vtkSmartVolumeMapper.h>
 #include <vtkGPUVolumeRayCastMapper.h>
 #include "vtkHorosFixedPointVolumeRayCastMapper.h"
@@ -154,7 +154,7 @@ typedef char* vtkVolume;
 
 
 typedef char* vtkPiecewiseFunction;
-typedef char* vtkVolumeTextureMapper2D;
+//typedef char* vtkVolumeTextureMapper2D;
 typedef char* vtkPolyData;
 typedef char* vtkVolumeProperty;
 typedef char* vtkPolyDataMapper2D;
@@ -163,7 +163,7 @@ typedef char* vtkColorTransferFunction;
 typedef char* vtkActor2D;
 typedef char* vtkMyCallback;
 typedef char* vtkBoxWidget;
-typedef char* vtkVolumeRayCastCompositeFunction;
+//typedef char* vtkVolumeRayCastCompositeFunction;
 
 typedef char* vtkRenderer;
 typedef char* vtkVolumeTextureMapper3D;
@@ -234,7 +234,7 @@ typedef char* VTKStereoVRView;
 	vtkVolume					*blendingVolume;
 	vtkVolumeProperty			*blendingVolumeProperty;
 	vtkColorTransferFunction	*blendingColorTransferFunction;
-	vtkVolumeRayCastCompositeFunction *blendingCompositeFunction;
+//    vtkVolumeRayCastCompositeFunction *blendingCompositeFunction;
 	vtkPiecewiseFunction		*blendingOpacityTransferFunction;
 	double						blendingtable[257][3];
 	
@@ -318,7 +318,7 @@ typedef char* VTKStereoVRView;
 	vtkTextActor				*oText[ 5];
 	char						WLWWString[ 200];
 	vtkImageImport				*reader;
-	vtkVolumeRayCastCompositeFunction  *compositeFunction;
+//    vtkVolumeRayCastCompositeFunction  *compositeFunction;
 	vtkPiecewiseFunction		*opacityTransferFunction;
 	
 	vtkColorTransferFunction	*red, *green, *blue;

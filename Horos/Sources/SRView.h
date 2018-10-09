@@ -77,7 +77,7 @@
 #include <vtkPiecewiseFunction.h>
 #include <vtkColorTransferFunction.h>
 #include <vtkVolumeProperty.h>
-#include <vtkVolumeRayCastCompositeFunction.h>
+//#include <vtkVolumeRayCastCompositeFunction.h>
 #include <vtkVolumeRayCastMapper.h>
 #include <vtkVolumeRayCastMIPFunction.h>
 
