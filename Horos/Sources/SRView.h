@@ -78,8 +78,8 @@
 #include <vtkColorTransferFunction.h>
 #include <vtkVolumeProperty.h>
 //#include <vtkVolumeRayCastCompositeFunction.h>
-#include <vtkVolumeRayCastMapper.h>
-#include <vtkVolumeRayCastMIPFunction.h>
+//#include <vtkVolumeRayCastMapper.h>
+//#include <vtkVolumeRayCastMIPFunction.h>
 
 #include <vtkTransform.h>
 #include <vtkSphere.h>
@@ -139,8 +139,8 @@ typedef char* vtkOutlineFilter;
 typedef char* vtkLineWidget;
 
 typedef char* vtkTextActor;
-typedef char* vtkVolumeRayCastMapper;
-typedef char* vtkVolumeRayCastMIPFunction;
+//typedef char* vtkVolumeRayCastMapper;
+//typedef char* vtkVolumeRayCastMIPFunction;
 typedef char* vtkVolume;
 
 

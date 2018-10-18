@@ -81,12 +81,11 @@
 #include <vtkBoxWidget.h>
 #include <vtkPlaneWidget.h>
 #include <vtkPiecewiseFunction.h>
-#include <vtkPiecewiseFunction.h>
 #include <vtkColorTransferFunction.h>
 #include <vtkVolumeProperty.h>
 //#include <vtkVolumeRayCastCompositeFunction.h>
-#include <vtkVolumeRayCastMapper.h>
-#include <vtkVolumeRayCastMIPFunction.h>
+//#include <vtkVolumeRayCastMapper.h>
+//#include <vtkVolumeRayCastMIPFunction.h>
 #include <vtkCleanPolyData.h>
 #include <vtkTransform.h>
 #include <vtkSphere.h>
