@@ -160,7 +160,7 @@
 
 	NSBezierPath *borderFrame = [NSBezierPath bezierPathWithRect: rect];
 	
-	[[NSColor whiteColor] set];
+    [[NSColor controlBackgroundColor] set];
 	[borderFrame fill];
 	
 	[borderFrame setLineWidth:2.0];
