@@ -3076,7 +3076,7 @@ update to OsiriX 64-bit:</string>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <clipView key="contentView" id="x65-cS-UGw">
                             <rect key="frame" x="1" y="1" width="582" height="128"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" selectionByRect="NO" autosizesCells="NO" id="12805">
                                     <rect key="frame" x="0.0" y="0.0" width="111" height="113"/>
@@ -3097,7 +3097,6 @@ update to OsiriX 64-bit:</string>
                                     </cells>
                                 </matrix>
                             </subviews>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </clipView>
                         <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="13479">
                             <rect key="frame" x="1" y="113" width="582" height="16"/>
@@ -3157,7 +3156,7 @@ Gw
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <clipView key="contentView" id="q7Q-H8-RIB">
                             <rect key="frame" x="1" y="1" width="582" height="128"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" selectionByRect="NO" autosizesCells="NO" id="12937">
                                     <rect key="frame" x="0.0" y="0.0" width="111" height="113"/>
@@ -3178,7 +3177,6 @@ Gw
                                     </cells>
                                 </matrix>
                             </subviews>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </clipView>
                         <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="13481">
                             <rect key="frame" x="1" y="113" width="582" height="16"/>
@@ -3470,7 +3468,7 @@ Gw
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <clipView key="contentView" id="M3f-Ie-25N">
                                         <rect key="frame" x="1" y="0.0" width="742" height="160"/>
-                                        <autoresizingMask key="autoresizingMask"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" autosaveColumns="NO" autosaveName="emailNotificationTable" rowHeight="14" headerView="13882" id="13881">
                                                 <rect key="frame" x="0.0" y="0.0" width="742" height="137"/>
@@ -3761,7 +3759,7 @@ Gw
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <clipView key="contentView" id="nhs-LN-IpG">
                                         <rect key="frame" x="1" y="0.0" width="742" height="203"/>
-                                        <autoresizingMask key="autoresizingMask"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" autosaveColumns="NO" autosaveName="emailNotificationTable" rowHeight="14" headerView="13942" id="13943">
                                                 <rect key="frame" x="0.0" y="0.0" width="742" height="180"/>

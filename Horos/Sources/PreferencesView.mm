@@ -110,11 +110,11 @@ static const NSInteger labelHeight = 38, labelSeparator = 3;
 	NSMutableParagraphStyle* style = [[[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
 	[style setAlignment:NSCenterTextAlignment];
 	NSFont* font = [NSFont labelFontOfSize:[NSFont smallSystemFontSize]];
-	NSDictionary* attributes = [NSDictionary dictionaryWithObjectsAndKeys:
-									style, NSParagraphStyleAttributeName,
-									font, NSFontAttributeName,
-								NULL];
-	[self.title drawInRect:labelRect withAttributes:attributes];
+    
+    [self.title drawInRect:labelRect
+            withAttributes:@{ NSParagraphStyleAttributeName: style,
+                              NSFontAttributeName: font,
+                              NSForegroundColorAttributeName: [NSColor controlTextColor] }];
 }
 
 @end
@@ -243,9 +243,15 @@ static const NSUInteger colWidth = 80, colSeparator = 1, rowHeight = 101, titleH
 //	[[self backgroundColor] setFill];
 //	[NSBezierPath fillRect:frame];
 	
-    [[NSColor colorWithCalibratedWhite:.89 alpha:1] setFill];
-    [[NSColor colorWithCalibratedWhite:.80 alpha:1] setStroke];
-	[NSBezierPath setDefaultLineWidth:1];
+    if (@available(macOS 10.14, *)) {
+        [[NSColor alternatingContentBackgroundColors][1] setFill];
+        [[NSColor separatorColor] setStroke];
+    } else {
+        [[NSColor colorWithCalibratedWhite:.89 alpha:1] setFill];
+        [[NSColor colorWithCalibratedWhite:.80 alpha:1] setStroke];
+    }
+
+    [NSBezierPath setDefaultLineWidth:1];
 	for (NSUInteger r = 1; r < groups.count; r += 2) {
 		NSRect rect = NSMakeRect(0, frame.size.height-rowHeight*r-rowHeight-padding[0], frame.size.width, rowHeight);
 		[NSBezierPath fillRect:rect];
