@@ -569,6 +569,8 @@
             [templatesArray addObject: filename];
 	}
 	
+    [templatesArray sortUsingSelector:@selector(compare:)];
+    
 	return templatesArray;
 }
 
@@ -1029,6 +1031,8 @@ static int Pages5orHigher = -1;
                 [templatesArray addObject: file];
         }
         
+        [templatesArray sortUsingSelector:@selector(compare:)];
+        
         return templatesArray;
     }
     else
@@ -1050,6 +1054,8 @@ static int Pages5orHigher = -1;
             }
         }
         
+        [templatesArray sortUsingSelector:@selector(compare:)];
+
         return templatesArray;
     }
 }
