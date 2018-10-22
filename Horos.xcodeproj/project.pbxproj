@@ -10840,7 +10840,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "git submodule sync --recursive\ngit submodule update --init --recursive";
+			shellScript = "git submodule sync --recursive\ngit submodule update --init --recursive\n";
 		};
 		9920CBEF202A0BA600FE0A2A /* CMake */ = {
 			isa = PBXShellScriptBuildPhase;

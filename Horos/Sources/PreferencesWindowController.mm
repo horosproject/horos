@@ -513,7 +513,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
             
             sv.hasHorizontalScroller = NO;
             sv.borderType = NSNoBorder;
-            sv.backgroundColor = [NSColor colorWithCalibratedWhite:237./255 alpha:1];
+            sv.backgroundColor = [NSColor windowBackgroundColor];
             sv.drawsBackground = YES;
             sv.horizontalScrollElasticity = NSScrollElasticityNone;
             sv.verticalScrollElasticity = NSScrollElasticityNone;

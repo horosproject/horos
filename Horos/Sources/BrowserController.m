@@ -2607,10 +2607,10 @@ static NSConditionLock *threadLock = nil;
 - (IBAction)setSearchType: (id)sender
 {
     if( searchType == 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
-        [searchField setTextColor: [NSColor whiteColor]];
+        [searchField setTextColor: [NSColor controlBackgroundColor]];
     else
-        [searchField setTextColor: [NSColor blackColor]];
-    
+        [searchField setTextColor: [NSColor controlTextColor]];
+
     for( long i = 0; i < [[sender menu] numberOfItems]; i++)
         [[[sender menu] itemAtIndex: i] setState: NSOffState];
     
@@ -6749,7 +6749,7 @@ static NSConditionLock *threadLock = nil;
                         if( previousItem != item && [uid length] > 1 && [uid compare: [previousItem valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                         {
                             [cell setDrawsBackground: YES];
-                            [cell setBackgroundColor: [NSColor lightGrayColor]];	//secondarySelectedControlColor]];
+                            [cell setBackgroundColor: [NSColor disabledControlTextColor]];	//secondarySelectedControlColor]];
                         }
                         else
                             [cell setDrawsBackground: NO];
@@ -6838,7 +6838,7 @@ static NSConditionLock *threadLock = nil;
                     if (!value || ([value isKindOfClass:[NSString class]] && [(NSString*)value length] == 0))
                         gray = YES;
                 }
-            [cell setTextColor: gray? [NSColor grayColor] : [NSColor blackColor]];
+            [cell setTextColor: gray? [NSColor disabledControlTextColor] : [NSColor controlTextColor]];
         }
     }
     @catch (NSException * e)
@@ -20324,10 +20324,10 @@ restart:
 - (void)setSearchString: (NSString *)searchString
 {
     if( searchType == 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
-        [searchField setTextColor: [NSColor whiteColor]];
+        [searchField setTextColor: [NSColor controlBackgroundColor]];
     else
-        [searchField setTextColor: [NSColor blackColor]];
-    
+        [searchField setTextColor: [NSColor controlTextColor]];
+
     if( _searchString != searchString)
     {
         [_searchString release];

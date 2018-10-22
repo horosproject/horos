@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
-        <capability name="box content view" minToolsVersion="7.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="CalciumScoringWindowController">
@@ -44,11 +44,11 @@
                     <box title="CT" translatesAutoresizingMaskIntoConstraints="NO" id="12">
                         <rect key="frame" x="11" y="363" width="350" height="78"/>
                         <view key="contentView" id="USi-i7-hrH">
-                            <rect key="frame" x="2" y="2" width="346" height="61"/>
+                            <rect key="frame" x="3" y="3" width="344" height="60"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <matrix verticalHuggingPriority="750" misplaced="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7">
-                                    <rect key="frame" x="17" y="13" width="238" height="38"/>
+                                    <rect key="frame" x="17" y="12" width="238" height="38"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     <size key="cellSize" width="233" height="18"/>
                                     <size key="intercellSpacing" width="4" height="2"/>
@@ -80,8 +80,6 @@
                             <constraint firstItem="7" firstAttribute="leading" secondItem="12" secondAttribute="leading" constant="16" id="ZbM-By-jyH"/>
                             <constraint firstAttribute="bottom" secondItem="7" secondAttribute="bottom" constant="11" id="o7r-53-KDu"/>
                         </constraints>
-                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="20">
                         <rect key="frame" x="94" y="309" width="98" height="13"/>
@@ -248,17 +246,16 @@
                                     </connections>
                                 </tableView>
                             </subviews>
-                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </clipView>
                         <constraints>
                             <constraint firstAttribute="height" constant="208" id="S5S-lL-LNf"/>
                             <constraint firstAttribute="width" constant="344" id="kI6-qY-DF9"/>
                         </constraints>
-                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="169">
+                        <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="169">
                             <rect key="frame" x="-100" y="-100" width="232" height="15"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="168">
+                        <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="168">
                             <rect key="frame" x="-100" y="-100" width="15" height="151"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
@@ -391,7 +388,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="412" height="230"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <size key="intercellSpacing" width="3" height="2"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                 <tableColumns>
                                     <tableColumn width="250" minWidth="250" maxWidth="250" id="100">
@@ -485,17 +482,16 @@
                                 </connections>
                             </tableView>
                         </subviews>
-                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </clipView>
                     <constraints>
                         <constraint firstAttribute="height" constant="253" id="Dcr-jE-mOa"/>
                         <constraint firstAttribute="width" constant="412" id="qR6-ln-SUk"/>
                     </constraints>
-                    <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="172">
+                    <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="172">
                         <rect key="frame" x="-100" y="-100" width="400" height="15"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
-                    <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="171">
+                    <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="171">
                         <rect key="frame" x="-100" y="-100" width="15" height="212"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>

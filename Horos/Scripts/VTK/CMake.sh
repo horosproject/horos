@@ -2,7 +2,9 @@
 
 path="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )/$(basename "${BASH_SOURCE[0]}")"
 cd "$TARGET_NAME"; pwd
-hash="$(find . \( -name CMakeLists.txt -o -name '*.cmake' \) -type f -exec md5 -q {} \; | md5)-$(md5 -q "$path")-$(md5 -qs "$(env | sort | grep -v 'LLBUILD_TASK_ID=')")"
+
+env=$(env|sort|grep -v 'LLBUILD_TASK_ID=\|Apple_PubSub_Socket_Render=\|DISPLAY=\|SHLVL=\|SSH_AUTH_SOCK=')
+hash="$(git describe --always --tags --dirty) $(md5 -q "$path")-$(md5 -qs "$env")"
 
 set -e; set -o xtrace
 
