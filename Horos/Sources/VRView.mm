@@ -1985,7 +1985,7 @@ public:
         
         opacityTransferFunction = nil;
         volumeProperty = nil;
-        compositeFunction = nil;
+//        compositeFunction = nil;
         red = nil;
         green = nil;
         blue = nil;
@@ -2358,8 +2358,8 @@ public:
     if( volumeProperty)
         volumeProperty->Delete();
     
-    if( compositeFunction)
-        compositeFunction->Delete();
+//    if( compositeFunction)
+//        compositeFunction->Delete();
     
     if( orientationWidget)
         orientationWidget->Delete();
@@ -6214,7 +6214,7 @@ public:
         
         blendingVolumeProperty->SetInterpolationTypeToLinear();
         
-        blendingCompositeFunction = vtkVolumeRayCastCompositeFunction::New();
+//        blendingCompositeFunction = vtkVolumeRayCastCompositeFunction::New();
         
         blendingVolume = vtkVolume::New();
         blendingVolume->SetProperty( blendingVolumeProperty);
@@ -6254,7 +6254,7 @@ public:
             blendingTextureMapper = nil;
             
             blendingOpacityTransferFunction->Delete();
-            blendingCompositeFunction->Delete();
+//            blendingCompositeFunction->Delete();
             blendingVolumeProperty->Delete();
             blendingColorTransferFunction->Delete();
             blendingReader->Delete();
@@ -6679,7 +6679,7 @@ public:
         if( [[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) volumeProperty->SetInterpolationTypeToNearest();
         else volumeProperty->SetInterpolationTypeToLinear();//SetInterpolationTypeToNearest();	//SetInterpolationTypeToLinear
         
-        compositeFunction = vtkVolumeRayCastCompositeFunction::New();
+//        compositeFunction = vtkVolumeRayCastCompositeFunction::New();
         
         LOD = 2.0;
 #if __ppc__

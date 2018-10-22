@@ -373,7 +373,7 @@
 	if( [[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) volumeProperty->SetInterpolationTypeToNearest();
     else volumeProperty->SetInterpolationTypeToLinear();//SetInterpolationTypeToNearest();	//SetInterpolationTypeToLinear
 		
-	compositeFunction = vtkVolumeRayCastCompositeFunction::New();
+//    compositeFunction = vtkVolumeRayCastCompositeFunction::New();
 //	compositeFunction->SetCompositeMethodToClassifyFirst();
 //	compositeFunction = vtkVolumeRayCastMIPFunction::New();
 	

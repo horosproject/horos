@@ -94,7 +94,7 @@
 #include "vtkPiecewiseFunction.h"
 #include "vtkColorTransferFunction.h"
 #include "vtkVolumeProperty.h"
-#include "vtkVolumeRayCastCompositeFunction.h"
+//#include "vtkVolumeRayCastCompositeFunction.h"
 #include "vtkVolumeRayCastMapper.h"
 #include "vtkVolumeRayCastMIPFunction.h"
 #include "vtkFixedPointVolumeRayCastMapper.h"
@@ -122,7 +122,7 @@
 #include "vtkImageFlip.h"
 #include "vtkAnnotatedCubeActor.h"
 #include "vtkOrientationMarkerWidget.h"
-#include "vtkVolumeTextureMapper2D.h"
+//#include "vtkVolumeTextureMapper2D.h"
 #include "vtkVolumeTextureMapper3D.h"
 #include "vtkHorosFixedPointVolumeRayCastMapper.h"
 

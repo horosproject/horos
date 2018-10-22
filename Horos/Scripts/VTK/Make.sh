@@ -23,8 +23,8 @@ find "$source_dir/ThirdParty/tiff/vtktiff/libtiff"  -name '*.h' -exec rsync {} "
 rsync "$cmake_dir/ThirdParty/tiff/vtktiff/libtiff/tiffconf.h" "$install_dir/include/vtktiff/libtiff/"
 
 # missing deprecated vtkVolumeTextureMapper headers # TODO: remove after updating to VTK 8.1
-rsync "$source_dir/Rendering/Volume/vtkVolumeTextureMapper.h" "$install_dir/include/"
-rsync "$source_dir/Rendering/Volume/vtkVolumeTextureMapper2D.h" "$install_dir/include/"
+#rsync "$source_dir/Rendering/Volume/vtkVolumeTextureMapper.h" "$install_dir/include/"
+#rsync "$source_dir/Rendering/Volume/vtkVolumeTextureMapper2D.h" "$install_dir/include/"
 
 # wrap the libs into one
 mkdir -p "$install_dir/wlib"
