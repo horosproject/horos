@@ -352,8 +352,21 @@ static NSDate *CachedHorosPluginsListDate = nil;
             else
             {
                 [self generateAvailableHorosPluginsMenu];
-                [self setURLforHorosPluginWithName:[[[self availableHorosPlugins] objectAtIndex:0] valueForKey:@"name"]];
-                [self setHorosPluginDownloadURL:[[[self availableHorosPlugins] objectAtIndex:0] valueForKey:@"download_url"]];
+                
+                if ([horosPluginListPopUp indexOfItemWithTitle:@"HorosCloud"] != -1)
+                {
+                    NSInteger idx = [horosPluginListPopUp indexOfItemWithTitle:@"HorosCloud"];
+                    
+                    [horosPluginListPopUp selectItemAtIndex:idx];
+                    
+                    [self setURLforHorosPluginWithName:[[[self availableHorosPlugins] objectAtIndex:idx] valueForKey:@"name"]];
+                    [self setHorosPluginDownloadURL:[[[self availableHorosPlugins] objectAtIndex:idx] valueForKey:@"download_url"]];
+                }
+                else
+                {
+                    [self setURLforHorosPluginWithName:[[[self availableHorosPlugins] objectAtIndex:0] valueForKey:@"name"]];
+                    [self setHorosPluginDownloadURL:[[[self availableHorosPlugins] objectAtIndex:0] valueForKey:@"download_url"]];
+                }
             }
             
             ////////////////////////////////////////////////////////////////////////////////////////
