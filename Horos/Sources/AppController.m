@@ -4393,7 +4393,7 @@ static BOOL initialized = NO;
 			{
 				if (verboseUpdateCheck && verboseAfterCrash == NO)
 				{
-					[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPTODATE" waitUntilDone: NO];
+					[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPTODATE" waitUntilDone: YES];
 				}
 			}
 			else
@@ -4401,9 +4401,9 @@ static BOOL initialized = NO;
 				if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"CheckHorosUpdates"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO) || verboseUpdateCheck == YES)
 				{
                     if( verboseAfterCrash)
-                        [self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATECRASH" waitUntilDone: NO];
+                        [self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATECRASH" waitUntilDone: YES];
                     else
-                        [self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATE" waitUntilDone: NO];
+                        [self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATE" waitUntilDone: YES];
 				}
 			}
 		}
@@ -4411,7 +4411,7 @@ static BOOL initialized = NO;
 		{
 			if (verboseUpdateCheck)
 			{
-				[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"ERROR" waitUntilDone: NO];
+				[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"ERROR" waitUntilDone: YES];
 			}
 		}
 	}
