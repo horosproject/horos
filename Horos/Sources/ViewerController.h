@@ -1153,3 +1153,9 @@ enum
 - (void) matrixPreviewPressed:(id) sender;
 
 @end
+
+@interface ViewerController (MM)
+
+- (IBAction)captureAndSetKeyImage:(id)sender;
+
+@end

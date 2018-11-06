@@ -35,7 +35,7 @@
      PURPOSE.
  ============================================================================*/
 
-#import "ViewerController+CPP.h"
+#import "ViewerController.h"
 #import "AppController.h"
 #import "DicomDatabase.h"
 #import "DicomStudy.h"
@@ -45,7 +45,7 @@
 #include "dcfilefo.h"
 #include "dcdeftag.h"
 
-@implementation ViewerController (CPP)
+@implementation ViewerController (MM)
 
 - (IBAction)captureAndSetKeyImage:(id)sender
 {
