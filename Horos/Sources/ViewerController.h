@@ -172,8 +172,7 @@ enum
 	IBOutlet NSButton		*subCtrlSharpenButton;
 	IBOutlet NSButton		*shutterOnOff;
 	IBOutlet NSView			*shutterView;
-			 NSString		*contextualDictionaryPath; //JF20070102
-			 
+    
 			 long			speedometer;
 		 
     int statusValueToApply;
@@ -639,8 +638,8 @@ enum
 - (IBAction) subSumSlider:(id) sender;
 - (IBAction) subSharpen:(id) sender;
 - (void) displayWarningIfGantryTitled;
-- (void) contextualDictionaryPath:(NSString *)newContextualDictionaryPath;
-- (NSString *) contextualDictionaryPath;
+- (void)contextualDictionaryPath:(NSString *)newContextualDictionaryPath __deprecated;
+- (NSString *)contextualDictionaryPath __deprecated;
 - (void) contextualMenuEvent:(id)sender;
 - (void) loadSelectedSeries: (id) series rightClick: (BOOL) rightClick;
 - (IBAction) setAxialOrientation:(id) sender;
