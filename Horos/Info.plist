@@ -238,7 +238,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>20181023</string>
+	<string>20181109</string>
 	<key>GitHash</key>
 	<string></string>
 	<key>GitState</key>
@@ -256,10 +256,12 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSAppleEventsUsageDescription</key>
+	<string></string>
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Your account will be used for the built-in iChat sharing service. If you don&apos;t allow access, you cannot use the iChat functions.</string>
+	<string>Your account will be used for the built-in iChat sharing service. If you don't allow access, you cannot use the iChat functions.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>© 2018 The Horos Project &amp; OsiriX Team</string>
 	<key>NSMainNibFile</key>
@@ -294,7 +296,5 @@
 			</dict>
 		</dict>
 	</array>
-	<key>NSAppleEventsUsageDescription</key>
-	<string></string>
 </dict>
 </plist>
