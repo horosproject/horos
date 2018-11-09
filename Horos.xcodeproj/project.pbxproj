@@ -2433,6 +2433,7 @@
 		BFD4BFFF06F2A96900EC9A90 /* ZoomCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF306F2A96900EC9A90 /* ZoomCursor.tif */; };
 		BFDDE5C1091717F80033317B /* DCMEncapsulatedPDF.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDE5BF091717F80033317B /* DCMEncapsulatedPDF.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFDDE5C2091717F80033317B /* DCMEncapsulatedPDF.m in Sources */ = {isa = PBXBuildFile; fileRef = BFDDE5C0091717F80033317B /* DCMEncapsulatedPDF.m */; };
+		710EF28C1FD14935000B555B /* odt2pdf in Copy Executables */ = {isa = PBXBuildFile; fileRef = 596D30AC1439B979004EE9EC /* odt2pdf */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		BFDF1D5709E06985008A4EC4 /* dcmqrcbm.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDF1D5409E06985008A4EC4 /* dcmqrcbm.mm */; };
 		BFE0652B06755B7200AC4B67 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		BFE2CDA609D1FE6400AE615D /* dcmqrdbq.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF9D57809CDCA5600B3B940 /* dcmqrdbq.h */; };
@@ -3249,6 +3250,17 @@
 			files = (
 			);
 			name = "Copy Embedded Plugins";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		710EF2861FD148E7000B555B /* Copy Executables */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				710EF28C1FD14935000B555B /* odt2pdf in Copy Executables */,
+			);
+			name = "Copy Executables";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		99BA4CCC20A4B51D00B5CD02 /* Copy HorosCloud */ = {
@@ -9983,6 +9995,7 @@
 				AB28B42C05B7921E00A9906C /* Sources */,
 				AB28B42D05B7921E00A9906C /* Frameworks */,
 				CECA66E306CD8C1500D8750E /* Copy Frameworks */,
+				710EF2861FD148E7000B555B /* Copy Executables */,
 				71BC461D1F27308D00FD6CCF /* Copy Horos Framework */,
 				ABF307FB1443330100BBC96A /* Copy scripts */,
 				99BA4CCC20A4B51D00B5CD02 /* Copy HorosCloud */,
