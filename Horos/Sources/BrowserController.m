@@ -13084,7 +13084,7 @@ constrainSplitPosition:(CGFloat)proposedPosition
                     }
                     else
                     {
-                        //Workaround for UI calls from background UI (runtime warnings) - Binding should be the definitive resolutions for this
+                        //Workaround for UI calls from background UI (runtime warnings) - Binding could be the definitive resolution for this
                         __block NSInteger supOpenButtonsSelectedTag = 0;
                         if ([NSThread isMainThread])
                         {
@@ -17276,7 +17276,7 @@ restart:
                 
                 NSString *studyPath = nil;
                 
-                //Workaround for UI calls from background UI (runtime warnings) - Binding should be the definitive resolutions for this
+                //Workaround for UI calls from background UI (runtime warnings) - Binding could be the definitive resolution for this
                 __block NSInteger folderTreeSelectedTag = 0;
                 if ([NSThread isMainThread])
                 {
@@ -17423,7 +17423,7 @@ restart:
                 
                 if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"])
                 {
-                    //Workaround for UI calls from background UI (runtime warnings) - Binding should be the definitive resolutions for this
+                    //Workaround for UI calls from background UI (runtime warnings) - Binding could be the definitive resolution for this
                     __block NSInteger compressionMatrixSelectedTag = 1;
                     if ([NSThread isMainThread])
                     {
@@ -17486,7 +17486,7 @@ restart:
             
 #ifndef OSIRIX_LIGHT
             
-            //Workaround for UI calls from background UI (runtime warnings) - Binding should be the definitive resolutions for this
+            //Workaround for UI calls from background UI (runtime warnings) - Binding could be the definitive resolution for this
             __block NSInteger compressionMatrixSelectedTag = 1;
             if ([NSThread isMainThread])
             {
@@ -17930,7 +17930,7 @@ restart:
         
         [[ThreadsManager defaultManager] addThreadAndStart: t];
         
-        //Workaround for UI calls from background UI (runtime warnings) - Binding should be the definitive resolutions for this
+        //Workaround for UI calls from background UI (runtime warnings) - Binding could be the definitive resolution for this
         __block NSInteger compressionMatrixSelectedTag = 1;
         if ([NSThread isMainThread])
         {
