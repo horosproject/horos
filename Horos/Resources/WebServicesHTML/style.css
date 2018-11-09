@@ -4,23 +4,22 @@ html {
 }
 
 body {
-	margin: 0px;
+	margin: 0pt;
 	padding: 0;
-	font-family: Helvetica;
-	font-size: 11pt;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 	background: #ffffff;
 	color: #000000;
 }
 
 body > * {
-	padding: 0 15px 0 15px;
+	padding: 0 15pt 0 15pt;
 }
 
 #header {
-	padding-top: 15px;
-	padding-bottom: 3px;
-	margin-bottom: 1px;
-	font-size: 20px;
+	padding-top: 15pt;
+	padding-bottom: 3pt;
+	margin-bottom: 1pt;
+	font-size: 20pt;
 	font-weight: bold;
 	border-bottom: thin solid #555555;
 }
@@ -31,21 +30,21 @@ body > * {
 }
 
 #subheader {
-	margin: 0px 0 0 0;
-	padding: 0 0 0 2px;
+	margin: 0pt 0 0 0;
+	padding: 0 0 0 2pt;
 	line-height: 85%;
 	font-size: 11pt;
 }
 
 #content {
-	margin: 25px 0 25px 0;
-	padding: 0 15px 0px 15px;
+	margin: 25pt 0 25pt 0;
+	padding: 0 15pt 0pt 15pt;
 }
 
 #footer {
 	border-top: thin solid #555555;
-	padding-top: 3px;
-	margin: 1px 0 10px 0;
+	padding-top: 3pt;
+	margin: 1pt 0 10pt 0;
 	text-align: center;
 	font-size: 10pt;
 }
@@ -139,7 +138,7 @@ table {
 
 .form > tbody > tr > td:first-child {
 	text-align: right;
-	padding-right: 3px;
+	padding-right: 3pt;
 	color: #555555;
 	white-space: nowrap;
 }
@@ -166,7 +165,7 @@ form {
 }
 
 .basic textarea, .basic input[type=text], .basic input[type=password], .basic select[multiple=multiple] {
-	padding: 2px 0 2px 0;
+	padding: 2pt 0 2pt 0;
 	border: 0;
 	background-color: #f7f7f7;
 	font: 10pt Courier, "Courier New", monospace;
@@ -177,28 +176,28 @@ form {
 }
 
 .separated {
-    margin-top: 10px;
+    margin-top: 10pt;
 }
 
 .fat {
-	padding: 10px;
+	padding: 10pt;
 }
 
 table.fat td {
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding-top: 10pt;
+	padding-bottom: 10pt;
 }
 
 table.fat td:first-child {
-	padding-left: 10px;
+	padding-left: 10pt;
 }
 
 table.fat td:last-child {
-	padding-right: 10px;
+	padding-right: 10pt;
 }
 
 .indent {
-	margin-left: 20px;
+	margin-left: 20pt;
 }
 
 .smaller {
@@ -220,14 +219,14 @@ table.fat td:last-child {
 a.back:before {
 	content: url(images/chevron_left.png);
 	vertical-align: -40%;
-	margin-right: 3px;
+	margin-right: 3pt;
 	padding: 0;
 }
 
 a.foreward:after {
 	content: url(images/chevron_right.png);
 	vertical-align: -40%;
-	margin-right: 3px;
+	margin-right: 3pt;
 	padding: 0;
 }
 
@@ -235,8 +234,8 @@ a.foreward:after {
 /* Content */
 
 #content > div {
-	margin: 10px 0 20px 0;
-	padding: 0 0 20px 0;
+	margin: 10pt 0 20pt 0;
+	padding: 0 0 20pt 0;
 	border-bottom: thin solid #cccccc;
 }
 
@@ -246,15 +245,15 @@ a.foreward:after {
 }
 
 #content > div > div {
-	margin: 2px 0 2px 20px;
+	margin: 2pt 0 2pt 20pt;
 }
 
 #content > div > div.noleftmargin {
-	margin: 2px 0 2px 0;
+	margin: 2pt 0 2pt 0;
 }
 
 #content > div > .title {
-	margin: 10px 0 10px 0;
+	margin: 10pt 0 10pt 0;
 	font-size: 13pt;
 	font-weight: bold;
 }
@@ -288,10 +287,10 @@ a.foreward:after {
 	margin: 0;
 	padding: 0;
 	position: relative;
-	top: -4px;
+	top: -4pt;
 	float: right;
 	font-family: "Lucida Grande", Helvetica;
-	font-size: 11px;
+	font-size: 11pt;
 }
 
 #userbox * {
@@ -299,9 +298,9 @@ a.foreward:after {
 }
 
 #userbox .text {
-	margin: 0 7px 0 0;
-	padding-right: 7px;
-	border-right: 1px solid #dddddd;
+	margin: 0 7pt 0 0;
+	padding-right: 7pt;
+	border-right: 1pt solid #dddddd;
 }
 
 #userbox a {
@@ -312,18 +311,18 @@ a.foreward:after {
 
 #top {
 	width:100%;
-	margin: 3px 0 3px 0;
+	margin: 3pt 0 3pt 0;
 }
 
 #top h1 {
-	margin: 5px 0 2px 0;
-	padding: 0 15px 0px 15px;
+	margin: 5pt 0 2pt 0;
+	padding: 0 15pt 0pt 15pt;
 }
 
 #top a.back {
 	background: url(images/chevron_left.png) no-repeat left center;
-	padding-left: 15px;
-	margin-left: 1px;
+	padding-left: 15pt;
+	margin-left: 1pt;
 }
 
 .CurrentSortKey {
@@ -334,30 +333,30 @@ a.foreward:after {
 
 .timeFrameStudyList {
 	background:url(images/clock.png) no-repeat left center;
-	padding-left:22px;
+	padding-left:22pt;
 }
 
 .peopleStudyList {
 	background:url(images/users.png) no-repeat left center;
-	padding-left:22px;
+	padding-left:22pt;
 }
 
 .Album {
 	background:url(images/album.png) no-repeat left center;
-	padding-left:22px;
+	padding-left:22pt;
 }
 
 .SmartAlbum {
 	background:url(images/smartAlbum.png) no-repeat left center;
-	padding-left:22px;
+	padding-left:22pt;
 }
 
 /* Link images */
 
 .DownloadAsZIP, .OpenInWeasis {
-	width: 36px;
-	height: 36px;
-	padding: 3px 0 0 0
+	width: 36pt;
+	height: 36pt;
+	padding: 3pt 0 0 0
 }
 
 /* overlay (key images) */
@@ -366,7 +365,7 @@ div#overlay {
 	position: fixed;
 	top: 0; bottom: 0;
 	left: 0; right: 0;
-	padding: 10px;
+	padding: 10pt;
 	background-image: url(images/w.50.png);
 }
 
@@ -393,6 +392,6 @@ div#overlay img {
 	background-image: url(images/loading.gif);
 	background-repeat: no-repeat;
 	background-position: center center;
-	min-width: 50px;
-	min-height: 50px;
+	min-width: 50pt;
+	min-height: 50pt;
 }

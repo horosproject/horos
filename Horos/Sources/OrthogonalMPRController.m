@@ -1196,115 +1196,101 @@
 // if contextualMenuPath says @"custom", don't do anything
 
 	NSMenu *contextual;
-		//if([contextualDictionaryPath isEqualToString:@"default"]) // JF20070102
-		{
-			/******************* Tools menu ***************************/
-			contextual =  [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)] autorelease];
-			NSMenuItem *item;
-			//Menu titles
-			NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil),
-														NSLocalizedString(@"Move", nil), 
-														NSLocalizedString(@"Magnify", nil), 
-														NSLocalizedString(@"Rotate", nil), 
-														NSLocalizedString(@"Scroll", nil), 
-														NSLocalizedString(@"Length", nil), 
-														NSLocalizedString(@"Oval", nil),
-														NSLocalizedString(@"Angle", nil),
-														NSLocalizedString(@"Point", nil),
-														NSLocalizedString(@"Cross", nil), nil];
-			//Image Names
-			NSArray *images = [NSArray arrayWithObjects: @"WLWW", 
-															@"Move", 
-															@"Zoom", 			 
-															@"Rotate",  
-															@"Stack", 
-															@"Length",
-															@"Oval",
-															@"Angle",
-															@"Point",
-															@"Cross",
-															 nil];	// DO NOT LOCALIZE THIS LINE ! -> filenames !
-			
-			NSArray *tagIndexes = [NSArray arrayWithObjects:[NSNumber numberWithInt:0],
-															[NSNumber numberWithInt:1],
-															[NSNumber numberWithInt:2],
-															[NSNumber numberWithInt:3],
-															[NSNumber numberWithInt:4],
-															[NSNumber numberWithInt:5],
-															[NSNumber numberWithInt:9],
-															[NSNumber numberWithInt:12],
-															[NSNumber numberWithInt:19],
-															[NSNumber numberWithInt:8],
-															nil];
-															
-			NSEnumerator *enumerator2 = [images objectEnumerator];
-			NSEnumerator *enumerator3 = [tagIndexes objectEnumerator];
-			NSString *title;
-			NSString *image;
-			NSNumber *tag;
-			int i = 0;
-			
-			for (title in titles)
-            {
-				image = [enumerator2 nextObject];
-				tag = [enumerator3 nextObject];
-				item = [[[NSMenuItem alloc] initWithTitle: title action: @selector(changeTool:) keyEquivalent:@""] autorelease];
-				[item setTag:[tag intValue]];
-				//[item setTarget:self];
-				[item setImage:[NSImage imageNamed:image]];
-                [[item image] setSize:ToolsMenuIconSize];
-				[contextual addItem:item];
-			}
-			
-			[contextual addItem:[NSMenuItem separatorItem]];
-			
-			/******************* WW/WL menu items **********************/
-			NSMenu *menu = [[[[AppController sharedAppController] wlwwMenu] copy] autorelease];
-			item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Window Width & Level", nil) action: nil keyEquivalent:@""] autorelease];
-			[item setSubmenu:menu];
-			[contextual addItem:item];
-			
-			[contextual addItem:[NSMenuItem separatorItem]];
-			
-			/************* window resize Menu ****************/
-			
-			
-			NSMenu *submenu =  [[[NSMenu alloc] initWithTitle:@"Resize window"] autorelease];
-			
-			NSArray *resizeWindowArray = [NSArray arrayWithObjects:@"25%", @"50%", @"100%", @"200%", @"300%", @"iPod Video", nil];
-			i = 0;
-			NSString	*titleMenu;
-			for (titleMenu in resizeWindowArray) {
-				int tag = i++;
-				item = [[[NSMenuItem alloc] initWithTitle:titleMenu action: @selector(resizeWindow:) keyEquivalent:@""] autorelease];
-				[item setTag:tag];
-				[submenu addItem:item];
-			}
-			
-			item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Resize window", nil) action: nil keyEquivalent:@""] autorelease];
-			[item setSubmenu:submenu];
-			[contextual addItem:item];
-			
-			[contextual addItem:[NSMenuItem separatorItem]];
-			
-			item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"No Rescale Size (100%)", nil) action: @selector(actualSize:) keyEquivalent:@""] autorelease];
-			[contextual addItem:item];
-			
-			item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Actual size", nil) action: @selector(realSize:) keyEquivalent:@""] autorelease];
-			[contextual addItem:item];
-	}
-	
-	/*
-	else //use the menuDictionary of the path JF20070102
-	{
-		   NSArray *pathComponents = [[self contextualDictionaryPath] pathComponents];
-		   NSString *plistTitle = [[pathComponents objectAtIndex:([pathComponents count]-1)] stringByDeletingPathExtension];
-		   contextual = [[NSMenu alloc] initWithTitle:plistTitle
-											   withDictionary:[NSDictionary dictionaryWithContentsOfFile:[self contextualDictionaryPath]]
-										  forWindowController:self ];
-		   
-	}
-	*/
+
+    /******************* Tools menu ***************************/
+    contextual =  [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)] autorelease];
+    NSMenuItem *item;
+    //Menu titles
+    NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil),
+                                                NSLocalizedString(@"Move", nil),
+                                                NSLocalizedString(@"Magnify", nil),
+                                                NSLocalizedString(@"Rotate", nil),
+                                                NSLocalizedString(@"Scroll", nil),
+                                                NSLocalizedString(@"Length", nil),
+                                                NSLocalizedString(@"Oval", nil),
+                                                NSLocalizedString(@"Angle", nil),
+                                                NSLocalizedString(@"Point", nil),
+                                                NSLocalizedString(@"Cross", nil), nil];
+    //Image Names
+    NSArray *images = [NSArray arrayWithObjects: @"WLWW",
+                                                    @"Move",
+                                                    @"Zoom",
+                                                    @"Rotate",
+                                                    @"Stack",
+                                                    @"Length",
+                                                    @"Oval",
+                                                    @"Angle",
+                                                    @"Point",
+                                                    @"Cross",
+                                                     nil];	// DO NOT LOCALIZE THIS LINE ! -> filenames !
+    
+    NSArray *tagIndexes = [NSArray arrayWithObjects:[NSNumber numberWithInt:0],
+                                                    [NSNumber numberWithInt:1],
+                                                    [NSNumber numberWithInt:2],
+                                                    [NSNumber numberWithInt:3],
+                                                    [NSNumber numberWithInt:4],
+                                                    [NSNumber numberWithInt:5],
+                                                    [NSNumber numberWithInt:9],
+                                                    [NSNumber numberWithInt:12],
+                                                    [NSNumber numberWithInt:19],
+                                                    [NSNumber numberWithInt:8],
+                                                    nil];
+    
+    NSEnumerator *enumerator2 = [images objectEnumerator];
+    NSEnumerator *enumerator3 = [tagIndexes objectEnumerator];
+    NSString *title;
+    NSString *image;
+    NSNumber *tag;
+    int i = 0;
+    
+    for (title in titles)
+    {
+        image = [enumerator2 nextObject];
+        tag = [enumerator3 nextObject];
+        item = [[[NSMenuItem alloc] initWithTitle: title action: @selector(changeTool:) keyEquivalent:@""] autorelease];
+        [item setTag:[tag intValue]];
+        //[item setTarget:self];
+        [item setImage:[NSImage imageNamed:image]];
+        [[item image] setSize:ToolsMenuIconSize];
+        [contextual addItem:item];
+    }
+    
+    [contextual addItem:[NSMenuItem separatorItem]];
+    
+    /******************* WW/WL menu items **********************/
+    NSMenu *menu = [[[[AppController sharedAppController] wlwwMenu] copy] autorelease];
+    item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Window Width & Level", nil) action: nil keyEquivalent:@""] autorelease];
+    [item setSubmenu:menu];
+    [contextual addItem:item];
+    
+    [contextual addItem:[NSMenuItem separatorItem]];
+    
+    /************* window resize Menu ****************/
+    
+    
+    NSMenu *submenu =  [[[NSMenu alloc] initWithTitle:@"Resize window"] autorelease];
+    
+    NSArray *resizeWindowArray = [NSArray arrayWithObjects:@"25%", @"50%", @"100%", @"200%", @"300%", @"iPod Video", nil];
+    i = 0;
+    NSString	*titleMenu;
+    for (titleMenu in resizeWindowArray) {
+        int tag = i++;
+        item = [[[NSMenuItem alloc] initWithTitle:titleMenu action: @selector(resizeWindow:) keyEquivalent:@""] autorelease];
+        [item setTag:tag];
+        [submenu addItem:item];
+    }
+    
+    item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Resize window", nil) action: nil keyEquivalent:@""] autorelease];
+    [item setSubmenu:submenu];
+    [contextual addItem:item];
+    
+    [contextual addItem:[NSMenuItem separatorItem]];
+    
+    item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"No Rescale Size (100%)", nil) action: @selector(actualSize:) keyEquivalent:@""] autorelease];
+    [contextual addItem:item];
+    
+    item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Actual size", nil) action: @selector(realSize:) keyEquivalent:@""] autorelease];
+    [contextual addItem:item];
 	
 	return contextual;
 }

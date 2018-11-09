@@ -435,8 +435,7 @@
 		71512E9E15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 71512E9C15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m */; };
 		7152C52F1D1D7BFF005526D8 /* DCM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 844719AF0FD8EF50003BFDF8 /* DCM.framework */; };
 		7154B80F14ED5402000EF7E4 /* N2Stuff.h in Headers */ = {isa = PBXBuildFile; fileRef = 7154B80E14ED5402000EF7E4 /* N2Stuff.h */; };
-		716DBDBD173920AF00BDB1E4 /* ViewerController+CPP.h in Headers */ = {isa = PBXBuildFile; fileRef = 716DBDBB173920AF00BDB1E4 /* ViewerController+CPP.h */; };
-		716DBDBF173920AF00BDB1E4 /* ViewerController+CPP.mm in Sources */ = {isa = PBXBuildFile; fileRef = 716DBDBC173920AF00BDB1E4 /* ViewerController+CPP.mm */; };
+		716DBDBF173920AF00BDB1E4 /* ViewerController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 716DBDBC173920AF00BDB1E4 /* ViewerController.mm */; };
 		718416071654022400180467 /* DownArrowGreyRev.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 718416061654022400180467 /* DownArrowGreyRev.pdf */; };
 		7188E85616301A61006105BE /* KBPopUpToolbarItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7188E85416301A61006105BE /* KBPopUpToolbarItem.h */; };
 		7188E85816301A61006105BE /* KBPopUpToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7188E85516301A61006105BE /* KBPopUpToolbarItem.m */; };
@@ -1728,8 +1727,6 @@
 		ABF09BBA0642FD220044FE6C /* Stereo.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABF09BB80642FD220044FE6C /* Stereo.icns */; };
 		ABF68A44061DD18600FEED6D /* StringTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = ABF68A40061DD18600FEED6D /* StringTexture.m */; };
 		ABF68A45061DD18600FEED6D /* StringTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = ABF68A41061DD18600FEED6D /* StringTexture.h */; };
-		B78490FB0B4BE86400BA93EF /* MenuDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = B78490F90B4BE86400BA93EF /* MenuDictionary.h */; };
-		B78490FC0B4BE86400BA93EF /* MenuDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = B78490FA0B4BE86400BA93EF /* MenuDictionary.m */; };
 		B78DA71C0ACEDA9A005C2C04 /* Shutter.tif in Resources */ = {isa = PBXBuildFile; fileRef = B78DA71A0ACEDA9A005C2C04 /* Shutter.tif */; };
 		B7CDACFB0AB3003300068D70 /* PAGES in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAC730AB3003200068D70 /* PAGES */; };
 		B7CDAD020AB30E7700068D70 /* page.tif in Resources */ = {isa = PBXBuildFile; fileRef = B7CDAD000AB30E7600068D70 /* page.tif */; };
@@ -3651,8 +3648,7 @@
 		71512E9B15234F6B00B87012 /* DiscMountedAskTheUserDialogController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiscMountedAskTheUserDialogController.h; sourceTree = "<group>"; };
 		71512E9C15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiscMountedAskTheUserDialogController.m; sourceTree = "<group>"; };
 		7154B80E14ED5402000EF7E4 /* N2Stuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = N2Stuff.h; sourceTree = "<group>"; };
-		716DBDBB173920AF00BDB1E4 /* ViewerController+CPP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ViewerController+CPP.h"; sourceTree = "<group>"; };
-		716DBDBC173920AF00BDB1E4 /* ViewerController+CPP.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "ViewerController+CPP.mm"; sourceTree = "<group>"; };
+		716DBDBC173920AF00BDB1E4 /* ViewerController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewerController.mm; sourceTree = "<group>"; };
 		7183153D1610651E0098576F /* weasis-ext-config.properties */ = {isa = PBXFileReference; lastKnownFileType = text; path = "weasis-ext-config.properties"; sourceTree = "<group>"; };
 		718416061654022400180467 /* DownArrowGreyRev.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = DownArrowGreyRev.pdf; sourceTree = "<group>"; };
 		7188E85416301A61006105BE /* KBPopUpToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KBPopUpToolbarItem.h; sourceTree = "<group>"; };
@@ -4384,8 +4380,6 @@
 		ABFA7CD2056056F300963FF8 /* DicomData.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DicomData.m; sourceTree = "<group>"; };
 		ABFA7CD3056056F300963FF8 /* DicomData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomData.h; sourceTree = "<group>"; };
 		ABFF0A95056D97800066794C /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
-		B78490F90B4BE86400BA93EF /* MenuDictionary.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MenuDictionary.h; sourceTree = "<group>"; };
-		B78490FA0B4BE86400BA93EF /* MenuDictionary.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MenuDictionary.m; sourceTree = "<group>"; };
 		B78DA71A0ACEDA9A005C2C04 /* Shutter.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Shutter.tif; sourceTree = "<group>"; };
 		B7CDAC730AB3003200068D70 /* PAGES */ = {isa = PBXFileReference; lastKnownFileType = text; name = PAGES; path = Binaries/PAGES; sourceTree = SOURCE_ROOT; };
 		B7CDAD000AB30E7600068D70 /* page.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = page.tif; sourceTree = "<group>"; };
@@ -7595,8 +7589,6 @@
 				CE2808640B6B76730093E9D3 /* CalciumScoringWindowController.m */,
 				AB59B18405697FD700B77AFC /* DCMView.h */,
 				AB59B18205697FD400B77AFC /* DCMView.m */,
-				B78490F90B4BE86400BA93EF /* MenuDictionary.h */,
-				B78490FA0B4BE86400BA93EF /* MenuDictionary.m */,
 				A910FB330D57728A0095A956 /* NavigatorView.h */,
 				A910FB340D57728A0095A956 /* NavigatorView.m */,
 				A910FB2D0D5767610095A956 /* NavigatorWindowController.h */,
@@ -7615,8 +7607,7 @@
 				CE40ED520D86D54D007C6D49 /* ThreeDPositionController.m */,
 				ABE17661056D2659009C93B5 /* ViewerController.h */,
 				ABE17662056D2659009C93B5 /* ViewerController.m */,
-				716DBDBB173920AF00BDB1E4 /* ViewerController+CPP.h */,
-				716DBDBC173920AF00BDB1E4 /* ViewerController+CPP.mm */,
+				716DBDBC173920AF00BDB1E4 /* ViewerController.mm */,
 				7147C1861644160800A9D095 /* O2ViewerThumbnailsMatrix.h */,
 				7147C1871644160800A9D095 /* O2ViewerThumbnailsMatrix.mm */,
 			);
@@ -9603,7 +9594,6 @@
 				BF09B13F0B2E681D00AA97E2 /* OSIWindowController.h in Headers */,
 				ABC3E5530B330A58006704E3 /* DNDArrayController.h in Headers */,
 				ABC3E55B0B330A69006704E3 /* sourcesTableView.h in Headers */,
-				B78490FB0B4BE86400BA93EF /* MenuDictionary.h in Headers */,
 				A9F8A4180B5F6460002CC763 /* CLUTOpacityView.h in Headers */,
 				CE28086B0B6B76730093E9D3 /* CalciumScoringWindowController.h in Headers */,
 				A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */,
@@ -9923,7 +9913,6 @@
 				71EB83CC16DCB7FF00D48646 /* O2DicomPredicateEditorView.h in Headers */,
 				71EB83D016DCB9AE00D48646 /* N2PopUpMenu.h in Headers */,
 				713A26F617003DF900878CAB /* N2Locker.h in Headers */,
-				716DBDBD173920AF00BDB1E4 /* ViewerController+CPP.h in Headers */,
 				CE373AAA173FEBBB009F60AC /* WADOXML.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -10896,7 +10885,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#XCode 10 seems to have a bug or new behavior that makes applescript to be built into scpt. This may be a temporary workaround. Otherwise, code has to be changed to run scpt\n#https://forum.latenightsw.com/t/xcode-10-and-applescript-files/1536\ncp -f \"$PROJECT_DIR/Horos/Resources/ReportsToPDF/pages2pdf.applescript\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources/\"\ncp -f \"$PROJECT_DIR/Horos/Resources/ReportsToPDF/pages092pdf.applescript\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources/\"\ncp -f \"$PROJECT_DIR/Horos/Resources/ReportsToPDF/pages2pdf.applescript\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources/\"\ncp -f \"$PROJECT_DIR/Horos/Resources/ReportsToPDF/word2pdf.applescript\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources/\"\n\ncp -f \"$PROJECT_DIR/Binaries/odt2pdf/build/odt2pdf\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/MacOS/\"\nexit 0\n\n";
+			shellScript = "#XCode 10 seems to have a bug or new behavior that makes applescript to be built into scpt. This may be a temporary workaround. Otherwise, code has to be changed to run scpt\n#https://forum.latenightsw.com/t/xcode-10-and-applescript-files/1536\ncp -f \"$PROJECT_DIR/Horos/Resources/ReportsToPDF/pages2pages09.applescript\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources/\"\ncp -f \"$PROJECT_DIR/Horos/Resources/ReportsToPDF/pages092pdf.applescript\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources/\"\ncp -f \"$PROJECT_DIR/Horos/Resources/ReportsToPDF/pages2pdf.applescript\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources/\"\ncp -f \"$PROJECT_DIR/Horos/Resources/ReportsToPDF/word2pdf.applescript\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources/\"\n\n#cp -f \"$PROJECT_DIR/Binaries/odt2pdf/build/odt2pdf\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/MacOS/\"\nexit 0\n\n";
 		};
 		BF7486A40CC6AA5C00198387 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -11330,7 +11319,6 @@
 				BF09B1400B2E681D00AA97E2 /* OSIWindowController.m in Sources */,
 				ABC3E5520B330A58006704E3 /* DNDArrayController.m in Sources */,
 				ABC3E55A0B330A69006704E3 /* sourcesTableView.m in Sources */,
-				B78490FC0B4BE86400BA93EF /* MenuDictionary.m in Sources */,
 				A9F8A4190B5F6460002CC763 /* CLUTOpacityView.mm in Sources */,
 				CE28086C0B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */,
 				A90202BF0B980CD60001A00B /* PluginManagerController.m in Sources */,
@@ -12107,7 +12095,7 @@
 				71EB83CD16DCB7FF00D48646 /* O2DicomPredicateEditorView.m in Sources */,
 				71EB83D116DCB9AE00D48646 /* N2PopUpMenu.mm in Sources */,
 				713A26F717003DF900878CAB /* N2Locker.m in Sources */,
-				716DBDBF173920AF00BDB1E4 /* ViewerController+CPP.mm in Sources */,
+				716DBDBF173920AF00BDB1E4 /* ViewerController.mm in Sources */,
 				CE373AAC173FEBBB009F60AC /* WADOXML.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

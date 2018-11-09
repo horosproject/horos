@@ -99,7 +99,6 @@
 #import "NSFont_OpenGL.h"
 #import "Reports.h"
 #import "SRAnnotation.h"
-#import "MenuDictionary.h"
 #import "CalciumScoringWindowController.h"
 #import "EndoscopySegmentationController.h"
 #import "HornRegistration.h"
@@ -2501,16 +2500,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 //	[wait autorelease];
 //}
 
-- (void) contextualDictionaryPath:(NSString *)newContextualDictionaryPath
-{
-    if (contextualDictionaryPath != newContextualDictionaryPath)
-    {
-        [contextualDictionaryPath release];
-        contextualDictionaryPath = [newContextualDictionaryPath retain];
-    }
+- (void)contextualDictionaryPath:(NSString *)newContextualDictionaryPath /* deprecated */ {
 }
 
-- (NSString *) contextualDictionaryPath {return contextualDictionaryPath;}
+- (NSString *)contextualDictionaryPath /* deprecated */ {
+    return @"default";
+}
 
 - (void) computeContextualMenu
 {
@@ -2625,173 +2620,161 @@ static volatile int numberOfThreadsForRelisce = 0;
     [contextualMenu release];
     contextualMenu = nil;
     
-    if([contextualDictionaryPath isEqualToString:@"default"])
+
+    /******************* Tools menu ***************************/
+    contextualMenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
+    
+    // ******************* series popup menu *********************
+    
+    [self buildSeriesPopup];
+    [contextualMenu addItem: seriesPopupContextualMenu];
+    [contextualMenu addItem: [NSMenuItem separatorItem]];
+    
+    
+    //  *****
+    
+    NSMenu *submenu =  [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"ROI", nil)] autorelease];
+    NSMenuItem *item;
+    NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil), NSLocalizedString(@"Move", nil), NSLocalizedString(@"Magnify", nil), NSLocalizedString(@"Rotate", nil), NSLocalizedString(@"Scroll", nil), nil];
+    NSArray *images = [NSArray arrayWithObjects: @"WLWW", @"Move", @"Zoom",  @"Rotate",  @"Stack", @"Length", nil];	// DO NOT LOCALIZE THIS LINE ! -> filenames !
+    NSEnumerator *enumerator2 = [images objectEnumerator];
+    NSEnumerator *enumerator3 = [[popupRoi itemArray] objectEnumerator];
+    NSString *title;
+    NSString *image;
+    
+    NSMenuItem *subItem;
+    int i = 0;
+    
+    [enumerator3 nextObject];	// First item is pop main menu
+    while (subItem = [enumerator3 nextObject])
     {
-        /******************* Tools menu ***************************/
-        contextualMenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"Tools", nil)];
-        
-        // ******************* series popup menu *********************
-        
-        [self buildSeriesPopup];
-        [contextualMenu addItem: seriesPopupContextualMenu];
-        [contextualMenu addItem: [NSMenuItem separatorItem]];
-        
-        
-        //  *****
-        
-        NSMenu *submenu =  [[[NSMenu alloc] initWithTitle:NSLocalizedString(@"ROI", nil)] autorelease];
-        NSMenuItem *item;
-        NSArray *titles = [NSArray arrayWithObjects:NSLocalizedString(@"Contrast", nil), NSLocalizedString(@"Move", nil), NSLocalizedString(@"Magnify", nil), NSLocalizedString(@"Rotate", nil), NSLocalizedString(@"Scroll", nil), nil];
-        NSArray *images = [NSArray arrayWithObjects: @"WLWW", @"Move", @"Zoom",  @"Rotate",  @"Stack", @"Length", nil];	// DO NOT LOCALIZE THIS LINE ! -> filenames !
-        NSEnumerator *enumerator2 = [images objectEnumerator];
-        NSEnumerator *enumerator3 = [[popupRoi itemArray] objectEnumerator];
-        NSString *title;
-        NSString *image;
-        
-        NSMenuItem *subItem;
-        int i = 0;
-        
-        [enumerator3 nextObject];	// First item is pop main menu
-        while (subItem = [enumerator3 nextObject])
+        int tag = [subItem tag];
+        if( tag)
         {
-            int tag = [subItem tag];
-            if( tag)
-            {
-                item = [[[NSMenuItem alloc] initWithTitle: [subItem title] action: @selector(setROITool:) keyEquivalent:@""] autorelease];
-                [item setTag:tag];
-                
-                [item setTarget:self];
-                [[item image] setSize:ToolsMenuIconSize];
-                [submenu addItem:item];
-            }
-            else [submenu addItem: [NSMenuItem separatorItem]];
-        }
-        
-        for (title in titles)
-        {
-            image = [enumerator2 nextObject];
-            item = [[[NSMenuItem alloc] initWithTitle: title action: @selector(setDefaultTool:) keyEquivalent:@""] autorelease];
-            [item setTag:i++];
-            [item setTarget:self];
-            [item setImage:[NSImage imageNamed:image]];
-            [[item image] setSize:ToolsMenuIconSize];
-            [contextualMenu addItem:item];
-        }
-        
-        image = [enumerator2 nextObject];
-        item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"ROI", nil) action: nil keyEquivalent:@""] autorelease];
-        [item setTag: -1];
-        [item setTarget: self];
-        
-        
-        if( [imageView currentTool] >= tMesure)
-            [item setImage: [self imageForROI: [imageView currentTool]]];
-        else
-            [item setImage: [self imageForROI: tMesure]];
-        
-        [[item image] setSize:ToolsMenuIconSize];
-        
-        [contextualMenu addItem:item];
-        [[contextualMenu itemAtIndex: contextualMenu.itemArray.count-1] setSubmenu:submenu];
-        [contextualMenu addItem:[NSMenuItem separatorItem]];
-        
-        /******************* WW/WL menu items **********************/
-        
-        NSMenu *menu = [[[[AppController sharedAppController] wlwwMenu] copy] autorelease];
-        item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Window Width & Level", nil) action: nil keyEquivalent:@""] autorelease];
-        [item setSubmenu:menu];
-        [contextualMenu addItem:item];
-        
-        [contextualMenu addItem:[NSMenuItem separatorItem]];
-        
-        /************* window resize Menu ****************/
-        
-        submenu =  [[[NSMenu alloc] initWithTitle:@"Resize window"] autorelease];
-        
-        NSArray *resizeWindowArray = [NSArray arrayWithObjects:@"25%", @"50%", @"100%", @"200%", @"300%", @"iPod Video", nil];
-        i = 0;
-        for (NSString *titleMenu in resizeWindowArray) {
-            int tag = i++;
-            item = [[[NSMenuItem alloc] initWithTitle:titleMenu action: @selector(resizeWindow:) keyEquivalent:@""] autorelease];
+            item = [[[NSMenuItem alloc] initWithTitle: [subItem title] action: @selector(setROITool:) keyEquivalent:@""] autorelease];
             [item setTag:tag];
-            [item setTarget:imageView];
-            [submenu addItem:item];
-        }
-        
-        item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Resize window", nil) action: nil keyEquivalent:@""] autorelease];
-        [item setSubmenu:submenu];
-        [contextualMenu addItem:item];
-        
-        [contextualMenu addItem:[NSMenuItem separatorItem]];
-        [contextualMenu addItemWithTitle:NSLocalizedString(@"No Rescale Size (100%)", nil) action: @selector(actualSize:) keyEquivalent:@""];
-        [contextualMenu addItemWithTitle:NSLocalizedString(@"Actual size", nil) action: @selector(realSize:) keyEquivalent:@""];
-        [contextualMenu addItemWithTitle:NSLocalizedString(@"Scale To Fit", nil) action: @selector(scaleToFit:) keyEquivalent:@""];
-        [contextualMenu addItemWithTitle:NSLocalizedString(@"Mark as Key image", nil) action: @selector(setKeyImage:) keyEquivalent:@""];
-        
-        // Tiling
-        menu = [[[[AppController sharedAppController] imageTilingMenu] copy] autorelease];
-        item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Image Tiling", nil) action: nil keyEquivalent:@""] autorelease];
-        [item setSubmenu:menu];
-        [contextualMenu addItem:item];
-        
-        menu = [[[AppController sharedAppController].windowsTilingMenuRows copy] autorelease];
-        item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Windows Tiling - Rows", nil) action: nil keyEquivalent:@""] autorelease];
-        [item setSubmenu:menu];
-        [contextualMenu addItem:item];
-        
-        menu = [[[AppController sharedAppController].windowsTilingMenuColumns copy] autorelease];
-        item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Windows Tiling - Columns", nil) action: nil keyEquivalent:@""] autorelease];
-        [item setSubmenu:menu];
-        [contextualMenu addItem:item];
-        
-        /********** Protocol submenu ************/
-        submenu =  [[[NSMenu alloc] initWithTitle: NSLocalizedString(@"Apply Window Protocol", nil)] autorelease];
-        NSString *m = self.modality;
-        for (NSDictionary *protocol in [WindowLayoutManager hangingProtocolsForModality: m])
-        {
-            NSString *t = [NSString stringWithFormat: @"%@ - %@", m, [protocol objectForKey: @"Study Description"]];
             
-            item = [[[NSMenuItem alloc] initWithTitle: t action: @selector( applyWindowProtocol:) keyEquivalent:@""] autorelease];
-            [item setTarget: self];
-            [item setRepresentedObject: protocol];
+            [item setTarget:self];
+            [[item image] setSize:ToolsMenuIconSize];
             [submenu addItem:item];
         }
-        
-        item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Apply Window Protocol", nil) action: nil keyEquivalent:@""] autorelease];
-        [item setSubmenu:submenu];
-        [contextualMenu addItem:item];
-        
-        /********** Orientation submenu ************/
-        
-        menu = [[[[AppController sharedAppController] orientationMenu] copy] autorelease];
-        item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Orientation", nil) action: nil keyEquivalent:@""] autorelease];
-        [item setSubmenu:menu];
-        [contextualMenu addItem:item];
-        
-        /*************Export submenu**************/
-        menu = [[[[AppController sharedAppController] exportMenu] copy] autorelease];
-        item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export", nil) action: nil keyEquivalent:@""] autorelease];
-        [item setSubmenu:menu];
-        [contextualMenu addItem:item];
-        
-        /*************Workspace submenu**************/
-        if( [[AppController sharedAppController] workspaceMenu]) {
-            [contextualMenu addItem: [NSMenuItem separatorItem]];
-            [contextualMenu addItemWithTitle: NSLocalizedString(@"Save Workspace State", nil) action: @selector(saveWindowsState:) keyEquivalent:@""];
-            [contextualMenu addItemWithTitle: NSLocalizedString(@"Save Workspace State as DICOM SR", nil) action: @selector(saveWindowsStateAsDICOMSR:) keyEquivalent:@""];
-            NSMenuItem *mi = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Load Workspace State DICOM SR", nil) action: nil keyEquivalent:@""] autorelease];
-            [mi setSubmenu: [[[[AppController sharedAppController] workspaceMenu] copy] autorelease]];
-            [contextualMenu addItem: mi];
-        }
+        else [submenu addItem: [NSMenuItem separatorItem]];
     }
-    else //use the menuDictionary of the path
+    
+    for (title in titles)
     {
-        NSArray *pathComponents = [[self contextualDictionaryPath] pathComponents];
-        NSString *plistTitle = [[pathComponents objectAtIndex:((long)[pathComponents count]-1)] stringByDeletingPathExtension];
-        contextualMenu = [[NSMenu alloc] initWithTitle:plistTitle
-                                        withDictionary:[NSDictionary dictionaryWithContentsOfFile:[self contextualDictionaryPath]]
-                                   forWindowController:self ];
+        image = [enumerator2 nextObject];
+        item = [[[NSMenuItem alloc] initWithTitle: title action: @selector(setDefaultTool:) keyEquivalent:@""] autorelease];
+        [item setTag:i++];
+        [item setTarget:self];
+        [item setImage:[NSImage imageNamed:image]];
+        [[item image] setSize:ToolsMenuIconSize];
+        [contextualMenu addItem:item];
+    }
+    
+    image = [enumerator2 nextObject];
+    item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"ROI", nil) action: nil keyEquivalent:@""] autorelease];
+    [item setTag: -1];
+    [item setTarget: self];
+    
+    
+    if( [imageView currentTool] >= tMesure)
+        [item setImage: [self imageForROI: [imageView currentTool]]];
+    else
+        [item setImage: [self imageForROI: tMesure]];
+    
+    [[item image] setSize:ToolsMenuIconSize];
+    
+    [contextualMenu addItem:item];
+    [[contextualMenu itemAtIndex: contextualMenu.itemArray.count-1] setSubmenu:submenu];
+    [contextualMenu addItem:[NSMenuItem separatorItem]];
+    
+    /******************* WW/WL menu items **********************/
+    
+    NSMenu *menu = [[[[AppController sharedAppController] wlwwMenu] copy] autorelease];
+    item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Window Width & Level", nil) action: nil keyEquivalent:@""] autorelease];
+    [item setSubmenu:menu];
+    [contextualMenu addItem:item];
+    
+    [contextualMenu addItem:[NSMenuItem separatorItem]];
+    
+    /************* window resize Menu ****************/
+    
+    submenu =  [[[NSMenu alloc] initWithTitle:@"Resize window"] autorelease];
+    
+    NSArray *resizeWindowArray = [NSArray arrayWithObjects:@"25%", @"50%", @"100%", @"200%", @"300%", @"iPod Video", nil];
+    i = 0;
+    for (NSString *titleMenu in resizeWindowArray) {
+        int tag = i++;
+        item = [[[NSMenuItem alloc] initWithTitle:titleMenu action: @selector(resizeWindow:) keyEquivalent:@""] autorelease];
+        [item setTag:tag];
+        [item setTarget:imageView];
+        [submenu addItem:item];
+    }
+    
+    item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Resize window", nil) action: nil keyEquivalent:@""] autorelease];
+    [item setSubmenu:submenu];
+    [contextualMenu addItem:item];
+    
+    [contextualMenu addItem:[NSMenuItem separatorItem]];
+    [contextualMenu addItemWithTitle:NSLocalizedString(@"No Rescale Size (100%)", nil) action: @selector(actualSize:) keyEquivalent:@""];
+    [contextualMenu addItemWithTitle:NSLocalizedString(@"Actual size", nil) action: @selector(realSize:) keyEquivalent:@""];
+    [contextualMenu addItemWithTitle:NSLocalizedString(@"Scale To Fit", nil) action: @selector(scaleToFit:) keyEquivalent:@""];
+    [contextualMenu addItemWithTitle:NSLocalizedString(@"Mark as Key image", nil) action: @selector(setKeyImage:) keyEquivalent:@""];
+    
+    // Tiling
+    menu = [[[[AppController sharedAppController] imageTilingMenu] copy] autorelease];
+    item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Image Tiling", nil) action: nil keyEquivalent:@""] autorelease];
+    [item setSubmenu:menu];
+    [contextualMenu addItem:item];
+    
+    menu = [[[AppController sharedAppController].windowsTilingMenuRows copy] autorelease];
+    item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Windows Tiling - Rows", nil) action: nil keyEquivalent:@""] autorelease];
+    [item setSubmenu:menu];
+    [contextualMenu addItem:item];
+    
+    menu = [[[AppController sharedAppController].windowsTilingMenuColumns copy] autorelease];
+    item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Windows Tiling - Columns", nil) action: nil keyEquivalent:@""] autorelease];
+    [item setSubmenu:menu];
+    [contextualMenu addItem:item];
+    
+    /********** Protocol submenu ************/
+    submenu =  [[[NSMenu alloc] initWithTitle: NSLocalizedString(@"Apply Window Protocol", nil)] autorelease];
+    NSString *m = self.modality;
+    for (NSDictionary *protocol in [WindowLayoutManager hangingProtocolsForModality:m]) {
+        NSString *t = [NSString stringWithFormat: @"%@ - %@", m, [protocol objectForKey: @"Study Description"]];
         
+        item = [[[NSMenuItem alloc] initWithTitle: t action: @selector( applyWindowProtocol:) keyEquivalent:@""] autorelease];
+        [item setTarget: self];
+        [item setRepresentedObject: protocol];
+        [submenu addItem:item];
+    }
+    
+    item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Apply Window Protocol", nil) action: nil keyEquivalent:@""] autorelease];
+    [item setSubmenu:submenu];
+    [contextualMenu addItem:item];
+    
+    /********** Orientation submenu ************/
+    
+    menu = [[[[AppController sharedAppController] orientationMenu] copy] autorelease];
+    item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Orientation", nil) action: nil keyEquivalent:@""] autorelease];
+    [item setSubmenu:menu];
+    [contextualMenu addItem:item];
+    
+    /*************Export submenu**************/
+    menu = [[[[AppController sharedAppController] exportMenu] copy] autorelease];
+    item = [[[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Export", nil) action: nil keyEquivalent:@""] autorelease];
+    [item setSubmenu:menu];
+    [contextualMenu addItem:item];
+    
+    /*************Workspace submenu**************/
+    if ([[AppController sharedAppController] workspaceMenu]) {
+        [contextualMenu addItem: [NSMenuItem separatorItem]];
+        [contextualMenu addItemWithTitle: NSLocalizedString(@"Save Workspace State", nil) action: @selector(saveWindowsState:) keyEquivalent:@""];
+        [contextualMenu addItemWithTitle: NSLocalizedString(@"Save Workspace State as DICOM SR", nil) action: @selector(saveWindowsStateAsDICOMSR:) keyEquivalent:@""];
+        NSMenuItem *mi = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Load Workspace State DICOM SR", nil) action: nil keyEquivalent:@""] autorelease];
+        [mi setSubmenu: [[[[AppController sharedAppController] workspaceMenu] copy] autorelease]];
+        [contextualMenu addItem: mi];
     }
     
     return contextualMenu;
@@ -2925,9 +2908,8 @@ static volatile int numberOfThreadsForRelisce = 0;
     
     [[self window] setInitialFirstResponder: imageView];
     
-    contextualDictionaryPath = [@"default" retain];
     
-    //	keyObjectPopupController = [[KeyObjectPopupController alloc]initWithViewerController:self popup:keyImagePopUpButton];
+//	keyObjectPopupController = [[KeyObjectPopupController alloc]initWithViewerController:self popup:keyImagePopUpButton];
     [keyImagePopUpButton selectItemAtIndex: displayOnlyKeyImages];
     
     seriesView = [[[studyView seriesViews] objectAtIndex:0] retain];
@@ -8019,8 +8001,8 @@ static int avoidReentryRefreshDatabase = 0;
     [roiLock release];
     roiLock = nil;
     
-    [contextualDictionaryPath release];
-    contextualDictionaryPath = nil;
+//    [contextualDictionaryPath release];
+//    contextualDictionaryPath = nil;
     
     [backCurCLUTMenu release]; backCurCLUTMenu = nil;
     [curCLUTMenu release]; curCLUTMenu = nil;

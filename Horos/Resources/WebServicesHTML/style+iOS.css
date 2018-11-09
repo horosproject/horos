@@ -16,7 +16,7 @@
 	
 	#userbox {
 		position: relative;
-		top: -8px;
+		top: -8pt;
 	}
 	
 	#userbox .text {
@@ -29,14 +29,14 @@
 	
 }
 
-@media only screen and (max-device-width: 480px) and (orientation:portrait), only screen and (-webkit-min-device-pixel-ratio: 2) and (orientation:portrait) {
+@media only screen and (max-device-width: 480pt) and (orientation:portrait), only screen and (-webkit-min-device-pixel-ratio: 2) and (orientation:portrait) {
 	
 	#content > div > div {
-		margin: 2px 0 2px 0;
+		margin: 2pt 0 2pt 0;
 	}
 	
 	#content > div > .title {
-		margin: 2px 0 2px 0;
+		margin: 2pt 0 2pt 0;
 	}
 		
 }
@@ -44,12 +44,12 @@
 
 
 /* iPad */
-@media only screen and (max-device-width: 1024px) {
+@media only screen and (max-device-width: 1024pt) {
 
 }
 
 /* iPhone and iPod Touch (320x480) */
-@media only screen and (max-device-width: 480px) {
+@media only screen and (max-device-width: 480pt) {
 
 }
 
