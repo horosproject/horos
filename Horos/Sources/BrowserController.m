@@ -13084,7 +13084,20 @@ constrainSplitPosition:(CGFloat)proposedPosition
                     }
                     else
                     {
-                        result = [supOpenButtons selectedTag];
+                        //Workaround for UI calls from background UI (runtime warnings) - Binding should be the definitive resolutions for this
+                        __block NSInteger supOpenButtonsSelectedTag = 0;
+                        if ([NSThread isMainThread])
+                        {
+                            supOpenButtonsSelectedTag = [supOpenButtons selectedTag];
+                        }
+                        else
+                        {
+                            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                                supOpenButtonsSelectedTag = [supOpenButtons selectedTag];
+                            });
+                        }
+                        
+                        result = supOpenButtonsSelectedTag;
                     }
                     
                     [NSApp endSheet: subOpenWindow];
@@ -17263,6 +17276,7 @@ restart:
                 
                 NSString *studyPath = nil;
                 
+                //Workaround for UI calls from background UI (runtime warnings) - Binding should be the definitive resolutions for this
                 __block NSInteger folderTreeSelectedTag = 0;
                 if ([NSThread isMainThread])
                 {
@@ -17275,7 +17289,7 @@ restart:
                     });
                 }
                 
-                if( [folderTree selectedTag] == 0)
+                if(folderTreeSelectedTag == 0)
                 {
                     NSString *name = [curImage valueForKeyPath: @"series.study.studyName"];
                     NSString *idstring = [curImage valueForKeyPath: @"series.study.id"];
@@ -17409,7 +17423,20 @@ restart:
                 
                 if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"])
                 {
-                    switch( [compressionMatrix selectedTag])
+                    //Workaround for UI calls from background UI (runtime warnings) - Binding should be the definitive resolutions for this
+                    __block NSInteger compressionMatrixSelectedTag = 1;
+                    if ([NSThread isMainThread])
+                    {
+                        compressionMatrixSelectedTag = [compressionMatrix selectedTag];
+                    }
+                    else
+                    {
+                        dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                            compressionMatrixSelectedTag = [compressionMatrix selectedTag];
+                        });
+                    }
+                    
+                    switch(compressionMatrixSelectedTag)
                     {
                         case 1: // compress
                             [files2Compress addObject: dest];
@@ -17458,7 +17485,21 @@ restart:
             //		[[waitCompressionWindow progress] setMaxValue: [files2Compress count]];
             
 #ifndef OSIRIX_LIGHT
-            switch( [compressionMatrix selectedTag])
+            
+            //Workaround for UI calls from background UI (runtime warnings) - Binding should be the definitive resolutions for this
+            __block NSInteger compressionMatrixSelectedTag = 1;
+            if ([NSThread isMainThread])
+            {
+                compressionMatrixSelectedTag = [compressionMatrix selectedTag];
+            }
+            else
+            {
+                dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                    compressionMatrixSelectedTag = [compressionMatrix selectedTag];
+                });
+            }
+            
+            switch(compressionMatrixSelectedTag)
             {
                 case 1:
                     [self decompressArrayOfFiles: files2Compress work: [NSNumber numberWithChar: 'C']];
@@ -17888,6 +17929,19 @@ restart:
         t.status = N2LocalizedSingularPluralCount( [filesToExport count], NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
         
         [[ThreadsManager defaultManager] addThreadAndStart: t];
+        
+        //Workaround for UI calls from background UI (runtime warnings) - Binding should be the definitive resolutions for this
+        __block NSInteger compressionMatrixSelectedTag = 1;
+        if ([NSThread isMainThread])
+        {
+            compressionMatrixSelectedTag = [compressionMatrix selectedTag];
+        }
+        else
+        {
+            dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                compressionMatrixSelectedTag = [compressionMatrix selectedTag];
+            });
+        }
         
         [[NSUserDefaults standardUserDefaults] setInteger:[compressionMatrix selectedTag] forKey:@"Compression Mode for Export"];
     }
