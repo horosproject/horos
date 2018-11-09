@@ -9984,7 +9984,7 @@
 				AB28B42D05B7921E00A9906C /* Frameworks */,
 				CECA66E306CD8C1500D8750E /* Copy Frameworks */,
 				71BC461D1F27308D00FD6CCF /* Copy Horos Framework */,
-				ABF307FB1443330100BBC96A /* Copy odt2pdf script */,
+				ABF307FB1443330100BBC96A /* Copy scripts */,
 				99BA4CCC20A4B51D00B5CD02 /* Copy HorosCloud */,
 				99BA4CC920A4AFFA00B5CD02 /* Copy Embedded Plugins */,
 				59F69A4E1056328D008585F5 /* API */,
@@ -10873,19 +10873,19 @@
 			shellPath = /bin/sh;
 			shellScript = "./Horos/Scripts/Horos/API-Headers.pl";
 		};
-		ABF307FB1443330100BBC96A /* Copy odt2pdf script */ = {
+		ABF307FB1443330100BBC96A /* Copy scripts */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy odt2pdf script";
+			name = "Copy scripts";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp -f \"$PROJECT_DIR/Binaries/odt2pdf/build/odt2pdf\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/MacOS/\"\nexit 0";
+			shellScript = "#XCode 10 seems to have a bug or new behavior that makes applescript to be built into scpt. This may be a temporary workaround. Otherwise, code has to be changed to run scpt\n#https://forum.latenightsw.com/t/xcode-10-and-applescript-files/1536\ncp -f \"$PROJECT_DIR/Horos/Resources/ReportsToPDF/pages2pdf.applescript\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources/\"\ncp -f \"$PROJECT_DIR/Horos/Resources/ReportsToPDF/pages092pdf.applescript\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources/\"\ncp -f \"$PROJECT_DIR/Horos/Resources/ReportsToPDF/pages2pdf.applescript\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources/\"\ncp -f \"$PROJECT_DIR/Horos/Resources/ReportsToPDF/word2pdf.applescript\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/Resources/\"\n\ncp -f \"$PROJECT_DIR/Binaries/odt2pdf/build/odt2pdf\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/MacOS/\"\nexit 0\n\n";
 		};
 		BF7486A40CC6AA5C00198387 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;

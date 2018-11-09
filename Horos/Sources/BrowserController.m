@@ -17263,6 +17263,18 @@ restart:
                 
                 NSString *studyPath = nil;
                 
+                __block NSInteger folderTreeSelectedTag = 0;
+                if ([NSThread isMainThread])
+                {
+                    folderTreeSelectedTag = [folderTree selectedTag];
+                }
+                else
+                {
+                    dispatch_sync(dispatch_get_main_queue(), ^(void) {
+                        folderTreeSelectedTag = [folderTree selectedTag];
+                    });
+                }
+                
                 if( [folderTree selectedTag] == 0)
                 {
                     NSString *name = [curImage valueForKeyPath: @"series.study.studyName"];
