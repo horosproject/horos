@@ -275,8 +275,6 @@
 		5969033E12DDE30800379E41 /* WebPortalConnection+Data.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5969033A12DDE30800379E41 /* WebPortalConnection+Data.mm */; };
 		5969034512DDE5EA00379E41 /* WebPortalResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 5969034312DDE5EA00379E41 /* WebPortalResponse.h */; };
 		5969034612DDE5EA00379E41 /* WebPortalResponse.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5969034412DDE5EA00379E41 /* WebPortalResponse.mm */; };
-		596D30B21439B9C8004EE9EC /* pages2pdf.applescript in Resources */ = {isa = PBXBuildFile; fileRef = 596D30AE1439B98A004EE9EC /* pages2pdf.applescript */; };
-		596D30B31439B9CD004EE9EC /* word2pdf.applescript in Resources */ = {isa = PBXBuildFile; fileRef = 596D30AF1439B98A004EE9EC /* word2pdf.applescript */; };
 		596D30B61439BA17004EE9EC /* DicomStudy+Report.h in Headers */ = {isa = PBXBuildFile; fileRef = 596D30B41439BA17004EE9EC /* DicomStudy+Report.h */; };
 		596D30B71439BA17004EE9EC /* DicomStudy+Report.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596D30B51439BA17004EE9EC /* DicomStudy+Report.mm */; };
 		596D30BA1439BABD004EE9EC /* NSAppleScript+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 596D30B81439BABD004EE9EC /* NSAppleScript+N2.h */; };
@@ -411,6 +409,7 @@
 		710EF1F31FD00E29000B555B /* Horos.h in Headers */ = {isa = PBXBuildFile; fileRef = 710EF1F11FD00E28000B555B /* Horos.h */; };
 		710EF1F41FD00E29000B555B /* Horos.m in Sources */ = {isa = PBXBuildFile; fileRef = 710EF1F21FD00E29000B555B /* Horos.m */; };
 		710EF1F61FD025BC000B555B /* Horos.m in Sources */ = {isa = PBXBuildFile; fileRef = 710EF1F21FD00E29000B555B /* Horos.m */; };
+		710EF28C1FD14935000B555B /* odt2pdf in Copy Executables */ = {isa = PBXBuildFile; fileRef = 596D30AC1439B979004EE9EC /* odt2pdf */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		71125D4B215376FC00EB0AA5 /* PathForImage.h in Headers */ = {isa = PBXBuildFile; fileRef = 71125D4A215376FC00EB0AA5 /* PathForImage.h */; };
 		711849771590A377006AB447 /* SMTPClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 711849751590A377006AB447 /* SMTPClient.h */; };
 		711849781590A377006AB447 /* SMTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 711849761590A377006AB447 /* SMTPClient.m */; };
@@ -2433,7 +2432,6 @@
 		BFD4BFFF06F2A96900EC9A90 /* ZoomCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = BFD4BFF306F2A96900EC9A90 /* ZoomCursor.tif */; };
 		BFDDE5C1091717F80033317B /* DCMEncapsulatedPDF.h in Headers */ = {isa = PBXBuildFile; fileRef = BFDDE5BF091717F80033317B /* DCMEncapsulatedPDF.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFDDE5C2091717F80033317B /* DCMEncapsulatedPDF.m in Sources */ = {isa = PBXBuildFile; fileRef = BFDDE5C0091717F80033317B /* DCMEncapsulatedPDF.m */; };
-		710EF28C1FD14935000B555B /* odt2pdf in Copy Executables */ = {isa = PBXBuildFile; fileRef = 596D30AC1439B979004EE9EC /* odt2pdf */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		BFDF1D5709E06985008A4EC4 /* dcmqrcbm.mm in Sources */ = {isa = PBXBuildFile; fileRef = BFDF1D5409E06985008A4EC4 /* dcmqrcbm.mm */; };
 		BFE0652B06755B7200AC4B67 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		BFE2CDA609D1FE6400AE615D /* dcmqrdbq.h in Headers */ = {isa = PBXBuildFile; fileRef = BFF9D57809CDCA5600B3B940 /* dcmqrdbq.h */; };
@@ -2453,7 +2451,6 @@
 		CE06475210F12DA500551AD9 /* PlayTemplate.png in Resources */ = {isa = PBXBuildFile; fileRef = CE06475110F12DA500551AD9 /* PlayTemplate.png */; };
 		CE087B0C0DE9BD6E000E5593 /* GLString.m in Sources */ = {isa = PBXBuildFile; fileRef = CE087B0A0DE9BD6E000E5593 /* GLString.m */; };
 		CE087B0D0DE9BD6E000E5593 /* GLString.h in Headers */ = {isa = PBXBuildFile; fileRef = CE087B0B0DE9BD6E000E5593 /* GLString.h */; };
-		CE0C4792183139C400D4C50E /* pages092pdf.applescript in Resources */ = {isa = PBXBuildFile; fileRef = CE0C478F1831366600D4C50E /* pages092pdf.applescript */; };
 		CE0CB171084A623C00C6385F /* DCMPix.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0CB16F084A623C00C6385F /* DCMPix.m */; };
 		CE0CB172084A623C00C6385F /* DCMPix.h in Headers */ = {isa = PBXBuildFile; fileRef = CE0CB170084A623C00C6385F /* DCMPix.h */; };
 		CE0DB327182D604900C90B43 /* ThumbnailsListNSWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0DB325182D604900C90B43 /* ThumbnailsListNSWindow.m */; };
@@ -2825,7 +2822,6 @@
 		CE8CDAF212B3C88D00268E4F /* DatabaseIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE8CDAF112B3C88D00268E4F /* DatabaseIcon.tif */; };
 		CE8D05CE0FD851F400165DDE /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CE8D062C0FD8733C00165DDE /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB5E1A300595697700C48BEB /* Accelerate.framework */; };
-		CE902EA3181C034E00CC4B88 /* pages2pages09.applescript in Resources */ = {isa = PBXBuildFile; fileRef = CE902EA1181C004C00CC4B88 /* pages2pages09.applescript */; };
 		CE9054F512F5B64300263AB6 /* CPRClusterView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054CF12F5B64200263AB6 /* CPRClusterView.h */; };
 		CE9054F612F5B64300263AB6 /* CPRClusterView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9054D012F5B64200263AB6 /* CPRClusterView.m */; };
 		CE9054F712F5B64300263AB6 /* CPRController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9054D112F5B64200263AB6 /* CPRController.h */; };
@@ -3242,16 +3238,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		99BA4CC920A4AFFA00B5CD02 /* Copy Embedded Plugins */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-			);
-			name = "Copy Embedded Plugins";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		710EF2861FD148E7000B555B /* Copy Executables */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3261,6 +3247,16 @@
 				710EF28C1FD14935000B555B /* odt2pdf in Copy Executables */,
 			);
 			name = "Copy Executables";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		99BA4CC920A4AFFA00B5CD02 /* Copy Embedded Plugins */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+			);
+			name = "Copy Embedded Plugins";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		99BA4CCC20A4B51D00B5CD02 /* Copy HorosCloud */ = {
@@ -9997,7 +9993,7 @@
 				CECA66E306CD8C1500D8750E /* Copy Frameworks */,
 				710EF2861FD148E7000B555B /* Copy Executables */,
 				71BC461D1F27308D00FD6CCF /* Copy Horos Framework */,
-				ABF307FB1443330100BBC96A /* Copy scripts */,
+				ABF307FB1443330100BBC96A /* Copy Scripts */,
 				99BA4CCC20A4B51D00B5CD02 /* Copy HorosCloud */,
 				99BA4CC920A4AFFA00B5CD02 /* Copy Embedded Plugins */,
 				59F69A4E1056328D008585F5 /* API */,
@@ -10159,11 +10155,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE902EA3181C034E00CC4B88 /* pages2pages09.applescript in Resources */,
-				596D30B31439B9CD004EE9EC /* word2pdf.applescript in Resources */,
-				CE0C4792183139C400D4C50E /* pages092pdf.applescript in Resources */,
 				71AD67621FC4248100A1E2F8 /* VR Muscles-Bones.plist in Resources */,
-				596D30B21439B9C8004EE9EC /* pages2pdf.applescript in Resources */,
 				71AD674D1FC4248100A1E2F8 /* HotGreen.plist in Resources */,
 				CE289B1D0D00AF91004F0A93 /* Mail.scpt in Resources */,
 				ABBB63A70635874E00D9531F /* dcmdump in Resources */,
@@ -10886,14 +10878,14 @@
 			shellPath = /bin/sh;
 			shellScript = "./Horos/Scripts/Horos/API-Headers.pl";
 		};
-		ABF307FB1443330100BBC96A /* Copy scripts */ = {
+		ABF307FB1443330100BBC96A /* Copy Scripts */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy scripts";
+			name = "Copy Scripts";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
