@@ -74,6 +74,18 @@
     [super dealloc];
 }
 
+//- (BOOL)wantsLayer {
+//    return YES;
+//}
+//
+//- (id)makeBackingLayer {
+//    return [CALayer layer];
+//}
+//
+//- (void)updateLayer {
+//    [super updateLayer];
+//    [_glc update];
+//}
 
 // We are going to over ride the super class here to do some last minute
 // setups. We need to do this because if we initialize in the constructor or
@@ -84,6 +96,8 @@
 // that contains our NSView subclass is actually on screen and ready to be drawn.
 - (void)drawRect:(NSRect)theRect
 {
+//    _glc = [NSOpenGLContext currentContext];
+    
     // Check for a valid vtkWindowInteractor and then initialize it. Technically we
     // do not need to do this, but what happens is that the window that contains
     // this object will not immediately render it so you end up with a big empty
@@ -108,20 +122,15 @@
     vtkRenderWindow* renWin = vtkRenderWindow::New();
     vtkRenderWindowInteractor* renWinInt = vtkRenderWindowInteractor::New();
     
+    vtkInteractorStyleTrackballCamera *interactorStyle = vtkInteractorStyleTrackballCamera::New();
+    renWinInt->SetInteractorStyle(interactorStyle);
+    interactorStyle->Delete();
     
-    vtkInteractorStyleTrackballCamera *interactorStyle =
-                                           vtkInteractorStyleTrackballCamera::New();
-    	renWinInt->SetInteractorStyle( interactorStyle );
-    		interactorStyle->Delete();
-    
-    // The cast should never fail, but we do it anyway, as
-    // it's more correct to do so.
+    // The cast should never fail, but we do it anyway, as it's more correct to do so.
     _cocoaRenderWindow = vtkCocoaRenderWindow::SafeDownCast(renWin);
     
-    if (ren && _cocoaRenderWindow && renWinInt)
-    {
-        // This is special to our usage of vtk.  To prevent vtk
-        // from creating an NSWindow and NSView automatically (its
+    if (ren && _cocoaRenderWindow && renWinInt) {
+        // This is special to our usage of vtk. To prevent vtk from creating an NSWindow and NSView automatically (its
         // default behaviour) we tell vtk that they exist already.
         // The APIs names are a bit misleading, due to the cross
         // platform nature of vtk, but this usage is correct.
