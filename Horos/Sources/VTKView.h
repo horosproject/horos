@@ -41,8 +41,8 @@
  All rights reserved.
  =========================================================================*/
 
-#ifndef _VTKVIEWOSIRIX_H_INCLUDED_
-#define _VTKVIEWOSIRIX_H_INCLUDED_
+#ifndef _VTKVIEW_H_INCLUDED_
+#define _VTKVIEW_H_INCLUDED_
 
 #import "options.h"
 

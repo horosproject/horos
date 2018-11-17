@@ -40,7 +40,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "VTKViewOSIRIX.h"
+#import "VTKView.h"
 //#define id Id
 #include <vtkCommand.h>
 #include <vtkProperty.h>
