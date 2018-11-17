@@ -3,7 +3,7 @@
 path="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )/$(basename "${BASH_SOURCE[0]}")"
 cd "$TARGET_NAME"; pwd
 
-env=$(env|sort|grep -v 'LLBUILD_TASK_ID=\|Apple_PubSub_Socket_Render=\|DISPLAY=\|SHLVL=\|SSH_AUTH_SOCK=')
+env=$(env|sort|grep -v 'LLBUILD_TASK_ID=\|Apple_PubSub_Socket_Render=\|DISPLAY=\|SHLVL=\|SSH_AUTH_SOCK=|SECURITYSESSIONID=')
 hash="$(git describe --always --tags --dirty) $(md5 -q "$path")-$(md5 -qs "$env")"
 
 set -e; set -o xtrace

@@ -48,7 +48,7 @@
 #include <vtkOpenGLRenderer.h>
 //#undef id
 
-#import "VTKViewOSIRIX.h"
+#import "VTKView.h"
 
 #import "DefaultsOsiriX.h"
 

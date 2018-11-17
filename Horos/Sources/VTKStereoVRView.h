@@ -43,7 +43,7 @@
 //#import	"VRView+StereoVision.h"
 #ifdef __cplusplus
 #import "vtkCocoaGLView.h"
-#import "VTKViewOSIRIX.h"
+#import "VTKView.h"
 
 
 //#import "vtkCocoaWindow.h"

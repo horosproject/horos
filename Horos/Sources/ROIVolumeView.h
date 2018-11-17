@@ -36,7 +36,7 @@
  ============================================================================*/
 
 #import <AppKit/AppKit.h>
-#import "VTKViewOSIRIX.h"
+#import "VTKView.h"
 #import "DCMPix.h"
 #import "Camera.h"
 

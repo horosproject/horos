@@ -42,7 +42,7 @@
 
 #ifdef __cplusplus
 #import "vtkCocoaGLView.h"
-#import "VTKViewOSIRIX.h"
+#import "VTKView.h"
 
 //#import "vtkCocoaWindow.h"
 //#define id Id

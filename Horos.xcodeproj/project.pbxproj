@@ -159,7 +159,7 @@
 		32E422150C97301600E193CA /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 32E422140C97301600E193CA /* altivecFunctions.h */; };
 		4307C62C1A2091900083877C /* url.h in Headers */ = {isa = PBXBuildFile; fileRef = 4307C62B1A2091900083877C /* url.h */; };
 		433F9A801A1B18A500E52C6C /* VTKView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 433F9A7E1A1B18A500E52C6C /* VTKView.mm */; };
-		433F9A811A1B18A500E52C6C /* VTKViewOSIRIX.h in Headers */ = {isa = PBXBuildFile; fileRef = 433F9A7F1A1B18A500E52C6C /* VTKViewOSIRIX.h */; };
+		433F9A811A1B18A500E52C6C /* VTKView.h in Headers */ = {isa = PBXBuildFile; fileRef = 433F9A7F1A1B18A500E52C6C /* VTKView.h */; };
 		433F9A891A1B7C1C00E52C6C /* vtkHorosFixedPointVolumeRayCastMapper.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 433F9A871A1B7C1C00E52C6C /* vtkHorosFixedPointVolumeRayCastMapper.cxx */; };
 		433F9A8A1A1B7C1C00E52C6C /* vtkHorosFixedPointVolumeRayCastMapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 433F9A881A1B7C1C00E52C6C /* vtkHorosFixedPointVolumeRayCastMapper.h */; };
 		434499B21A1D70840047F0F2 /* options.h in Headers */ = {isa = PBXBuildFile; fileRef = 434B46151A19F2A3008CF8CF /* options.h */; };
@@ -3384,7 +3384,7 @@
 		32E422140C97301600E193CA /* altivecFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = altivecFunctions.h; sourceTree = "<group>"; };
 		4307C62B1A2091900083877C /* url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = url.h; sourceTree = "<group>"; };
 		433F9A7E1A1B18A500E52C6C /* VTKView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VTKView.mm; sourceTree = "<group>"; };
-		433F9A7F1A1B18A500E52C6C /* VTKViewOSIRIX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTKViewOSIRIX.h; sourceTree = "<group>"; };
+		433F9A7F1A1B18A500E52C6C /* VTKView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTKView.h; sourceTree = "<group>"; };
 		433F9A871A1B7C1C00E52C6C /* vtkHorosFixedPointVolumeRayCastMapper.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vtkHorosFixedPointVolumeRayCastMapper.cxx; sourceTree = "<group>"; };
 		433F9A881A1B7C1C00E52C6C /* vtkHorosFixedPointVolumeRayCastMapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vtkHorosFixedPointVolumeRayCastMapper.h; sourceTree = "<group>"; };
 		434B46151A19F2A3008CF8CF /* options.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = options.h; sourceTree = "<group>"; };
@@ -6985,7 +6985,7 @@
 				433F9A881A1B7C1C00E52C6C /* vtkHorosFixedPointVolumeRayCastMapper.h */,
 				433F9A871A1B7C1C00E52C6C /* vtkHorosFixedPointVolumeRayCastMapper.cxx */,
 				433F9A7E1A1B18A500E52C6C /* VTKView.mm */,
-				433F9A7F1A1B18A500E52C6C /* VTKViewOSIRIX.h */,
+				433F9A7F1A1B18A500E52C6C /* VTKView.h */,
 				AB6AC6420624AC5200AFC7AF /* VRView.h */,
 				AB6AC6430624AC5200AFC7AF /* VRView.mm */,
 				AB6AC6440624AC5200AFC7AF /* VRController.h */,
@@ -9657,7 +9657,7 @@
 				841721C410D8D745001A833F /* HTTPConnection.h in Headers */,
 				841721C610D8D745001A833F /* HTTPResponse.h in Headers */,
 				841721FC10D8D8A0001A833F /* HTTPServer.h in Headers */,
-				433F9A811A1B18A500E52C6C /* VTKViewOSIRIX.h in Headers */,
+				433F9A811A1B18A500E52C6C /* VTKView.h in Headers */,
 				841722B010D90595001A833F /* DDKeychain.h in Headers */,
 				AB91224E10DA7199006E0AAB /* BonjourPublisher.h in Headers */,
 				A9FE55F410DB7DCF000D0395 /* OpenGLScreenReader.h in Headers */,
