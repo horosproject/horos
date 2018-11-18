@@ -191,7 +191,7 @@
 	<key>CFBundleExecutable</key>
 	<string>Horos</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Horos v3.3.3</string>
+	<string>Horos v3.3.4</string>
 	<key>CFBundleIconFile</key>
 	<string>Horos.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -203,7 +203,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.3.3</string>
+	<string>3.3.4</string>
 	<key>CFBundleSignature</key>
 	<string>OsiX</string>
 	<key>CFBundleSupportedPlatforms</key>
@@ -238,7 +238,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>20181111</string>
+	<string>20181118</string>
 	<key>GitHash</key>
 	<string></string>
 	<key>GitState</key>
