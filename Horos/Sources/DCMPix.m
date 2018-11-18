@@ -5565,7 +5565,17 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     if( [dcmObject attributeValueWithName:@"PixelRepresentation"]) fIsSigned = [[dcmObject attributeValueWithName:@"PixelRepresentation"] intValue];
     if( [dcmObject attributeValueWithName:@"BitsAllocated"]) bitsAllocated = [[dcmObject attributeValueWithName:@"BitsAllocated"] intValue];
     
-    bitsStored = [[dcmObject attributeValueWithName:@"BitsStored"] intValue];
+    short __bitsStored = [[dcmObject attributeValueWithName:@"BitsStored"] intValue];
+    
+    if (__bitsStored != 0 && self->numberOfFrames > 1)
+    {
+        self->bitsStored = __bitsStored;
+    }
+    else if (self->numberOfFrames <= 1)
+    {
+        self->bitsStored = __bitsStored;
+    }
+        
     if( bitsStored == 8 && bitsAllocated == 16 && [[dcmObject attributeValueWithName:@"PhotometricInterpretation"] isEqualToString:@"RGB"])
         bitsAllocated = 8;
     
@@ -6061,20 +6071,32 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 //  This sequence has only one item, comprising SliceThickness and PixelSpacing (DICOM spec 2015a)
                 if(pixelMeasureObject)
                 {
-                    if( [pixelMeasureObject attributeValueWithName:@"SliceThickness"])
-                        sliceThickness = [[pixelMeasureObject attributeValueWithName:@"SliceThickness"] doubleValue];
-                    if( [pixelMeasureObject attributeArrayWithName:@"PixelSpacing"])
+                    //It seems @brizolara didn't solve this entirely - restoring original behavior for non multi-frame datasets and adding working around for multi-frame
+                    if( numberOfFrames <= 1)
                     {
-                        NSArray *pixelSpacing = [pixelMeasureObject attributeArrayWithName:@"PixelSpacing"];
-                        if(pixelSpacing.count >= 2)
+                        [self dcmFrameworkLoad0x0018: pixelMeasureObject];
+                        [self dcmFrameworkLoad0x0028: pixelMeasureObject];
+                    }
+                    else
+                    {
+                        [self dcmFrameworkLoad0x0018: pixelMeasureObject];
+                        [self dcmFrameworkLoad0x0028: pixelMeasureObject];
+                        
+                        if( [pixelMeasureObject attributeValueWithName:@"SliceThickness"])
+                            sliceThickness = [[pixelMeasureObject attributeValueWithName:@"SliceThickness"] doubleValue];
+                        if( [pixelMeasureObject attributeArrayWithName:@"PixelSpacing"])
                         {
-                            pixelSpacingY = [[pixelSpacing objectAtIndex:0] doubleValue];
-                            pixelSpacingX = [[pixelSpacing objectAtIndex:1] doubleValue];
-                        }
-                        else if(pixelSpacing.count == 1)
-                        {
-                            pixelSpacingY = [[pixelSpacing objectAtIndex:0] doubleValue];
-                            pixelSpacingX = [[pixelSpacing objectAtIndex:0] doubleValue];
+                            NSArray *pixelSpacing = [pixelMeasureObject attributeArrayWithName:@"PixelSpacing"];
+                            if(pixelSpacing.count >= 2)
+                            {
+                                pixelSpacingY = [[pixelSpacing objectAtIndex:0] doubleValue];
+                                pixelSpacingX = [[pixelSpacing objectAtIndex:1] doubleValue];
+                            }
+                            else if(pixelSpacing.count == 1)
+                            {
+                                pixelSpacingY = [[pixelSpacing objectAtIndex:0] doubleValue];
+                                pixelSpacingX = [[pixelSpacing objectAtIndex:0] doubleValue];
+                            }
                         }
                     }
                 }
@@ -6084,22 +6106,32 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 //  This sequence has only one item, comprising RescaleIntercept/Slope/Type (DICOM spec 2015a)
                 if( pixelTransformationSequenceObject)
                 {
-                    if ([pixelTransformationSequenceObject attributeValueWithName:@"RescaleIntercept"])
-                        offset = [[pixelTransformationSequenceObject attributeValueWithName:@"RescaleIntercept"] floatValue];
-                    if ([pixelTransformationSequenceObject attributeValueWithName:@"RescaleSlope"])
+                    //It seems @brizolara didn't solve this entirely - restoring original behavior for non multi-frame datasets and adding working around for multi-frame
+                    if( numberOfFrames <= 1)
                     {
-                        slope = [[pixelTransformationSequenceObject attributeValueWithName:@"RescaleSlope"] floatValue];
-                        if( slope == 0) slope = 1.0;
+                        [self dcmFrameworkLoad0x0028: pixelTransformationSequenceObject];
                     }
-                    
-                    if( [[pixelTransformationSequenceObject attributeValueWithName:@"RescaleType"] isEqualToString: @"US"] == NO)
+                    else
                     {
-                        self.rescaleType = [pixelTransformationSequenceObject attributeValueWithName:@"RescaleType"];
-                        if (self.rescaleType == nil)
-                            self.rescaleType = @"";
+                        [self dcmFrameworkLoad0x0028: pixelTransformationSequenceObject];
                         
-                        if( [self.rescaleType.lowercaseString isEqualToString: @"houndsfield unit"])
-                            self.rescaleType = @"HU";
+                        if ([pixelTransformationSequenceObject attributeValueWithName:@"RescaleIntercept"])
+                            offset = [[pixelTransformationSequenceObject attributeValueWithName:@"RescaleIntercept"] floatValue];
+                        if ([pixelTransformationSequenceObject attributeValueWithName:@"RescaleSlope"])
+                        {
+                            slope = [[pixelTransformationSequenceObject attributeValueWithName:@"RescaleSlope"] floatValue];
+                            if( slope == 0) slope = 1.0;
+                        }
+                        
+                        if( [[pixelTransformationSequenceObject attributeValueWithName:@"RescaleType"] isEqualToString: @"US"] == NO)
+                        {
+                            self.rescaleType = [pixelTransformationSequenceObject attributeValueWithName:@"RescaleType"];
+                            if (self.rescaleType == nil)
+                                self.rescaleType = @"";
+                            
+                            if( [self.rescaleType.lowercaseString isEqualToString: @"houndsfield unit"])
+                                self.rescaleType = @"HU";
+                        };
                     }
                 }
             }
@@ -6148,14 +6180,27 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     if ((seq = (DCMSequenceAttribute*)[sequenceItem attributeWithName:@"PlanePositionSequence"]) && [seq isKindOfClass:[DCMSequenceAttribute class]])
                     {
                         //  This sequence has only one item, comprising Origin (DICOM spec 2015a)
-                        if ((object = [[seq sequence] objectAtIndex:0])) {
-                            NSArray *ipp = [dcmObject attributeArrayWithName:@"ImagePositionPatient"];
-                            if( ipp && [ipp count] >= 3)
+                        if ((object = [[seq sequence] objectAtIndex:0]))
+                        {
+                            //It seems @brizolara didn't solve this entirely - restoring original behavior for non multi-frame datasets and adding working around for multi-frame
+                            if( numberOfFrames <= 1)
                             {
-                                originX = [[ipp objectAtIndex:0] doubleValue];
-                                originY = [[ipp objectAtIndex:1] doubleValue];
-                                originZ = [[ipp objectAtIndex:2] doubleValue];
-                                isOriginDefined = YES;
+                                [self dcmFrameworkLoad0x0020:object];
+                                [self dcmFrameworkLoad0x0028:object];
+                            }
+                            else
+                            {
+                                [self dcmFrameworkLoad0x0020:object];
+                                [self dcmFrameworkLoad0x0028:object];
+                                
+                                NSArray *ipp = [dcmObject attributeArrayWithName:@"ImagePositionPatient"];
+                                if( ipp && [ipp count] >= 3)
+                                {
+                                    originX = [[ipp objectAtIndex:0] doubleValue];
+                                    originY = [[ipp objectAtIndex:1] doubleValue];
+                                    originZ = [[ipp objectAtIndex:2] doubleValue];
+                                    isOriginDefined = YES;
+                                }
                             }
                         }
                     }
