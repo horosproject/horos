@@ -493,8 +493,6 @@
 		71AD676C1FC4256E00A1E2F8 /* Tiling3x1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0AC1FB59A9100FF75B6 /* Tiling3x1.pdf */; };
 		71AD676D1FC4256E00A1E2F8 /* Tiling3x2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0A81FB59A9000FF75B6 /* Tiling3x2.pdf */; };
 		71AD676E1FC4256E00A1E2F8 /* Tiling3x3.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0A91FB59A9000FF75B6 /* Tiling3x3.pdf */; };
-		71C99EA61D1A81FE00208F3B /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71C99EA51D1A81FE00208F3B /* Growl.framework */; };
-		71C99EA71D1A871700208F3B /* Growl.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 71C99EA51D1A81FE00208F3B /* Growl.framework */; settings = {ATTRIBUTES = (); }; };
 		71CE3C19157F489C00AC0112 /* List.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71CE3C18157F489C00AC0112 /* List.pdf */; };
 		71E6C0801FB5943B00FF75B6 /* O2HMigrationAssistant.xib in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0821FB5943B00FF75B6 /* O2HMigrationAssistant.xib */; };
 		71E6C0851FB597FC00FF75B6 /* Decompress in Resources */ = {isa = PBXBuildFile; fileRef = AB724FF60ADE6ECB00A212A0 /* Decompress */; };
@@ -3283,7 +3281,6 @@
 				71E6C0AF1FB5B0BF00FF75B6 /* 3DconnexionClient.framework in Copy Frameworks */,
 				993DB4A11C0244430084218A /* FeedbackReporter.framework in Copy Frameworks */,
 				9966A1B51AE0B6EE00F2D81A /* DCM.framework in Copy Frameworks */,
-				71C99EA71D1A871700208F3B /* Growl.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3680,7 +3677,6 @@
 		71AA5A2D1611F1EB006A6A5F /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
 		71BC461B1F272CA400FD6CCF /* Scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Scripts; sourceTree = "<group>"; };
 		71C99EA41D1A7E9F00208F3B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Horos/Info.plist; sourceTree = "<group>"; };
-		71C99EA51D1A81FE00208F3B /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Growl.framework; path = Binaries/Growl.framework; sourceTree = "<group>"; };
 		71CE3C18157F489C00AC0112 /* List.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = List.pdf; sourceTree = "<group>"; };
 		71E6C0811FB5943B00FF75B6 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/O2HMigrationAssistant.xib; sourceTree = "<group>"; };
 		71E6C0881FB5995100FF75B6 /* BlackBody.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = BlackBody.plist; sourceTree = "<group>"; };
@@ -5675,7 +5671,6 @@
 				992335882009A75A000E10BA /* Horos.framework in Frameworks */,
 				AB28B48805B7998800A9906C /* AppKit.framework in Frameworks */,
 				993DB4A01C0243D50084218A /* FeedbackReporter.framework in Frameworks */,
-				71C99EA61D1A81FE00208F3B /* Growl.framework in Frameworks */,
 				AB28B48A05B7998A00A9906C /* AGL.framework in Frameworks */,
 				AB28B48B05B7998A00A9906C /* OpenGL.framework in Frameworks */,
 				AB28B48C05B7998B00A9906C /* Foundation.framework in Frameworks */,
@@ -5855,7 +5850,6 @@
 				992264F92028CE62004C4995 /* homephone.framework */,
 				993DB49F1C0243D50084218A /* FeedbackReporter.framework */,
 				439B8C131A19CCC300F396D7 /* 3DconnexionClient.framework */,
-				71C99EA51D1A81FE00208F3B /* Growl.framework */,
 				CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */,
 				CE6693C60AF551210073D923 /* libxerces-c.27.dylib */,
 				59FB64331230EE2F00EBA136 /* Ming */,
