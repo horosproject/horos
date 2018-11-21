@@ -238,7 +238,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>20181118</string>
+	<string>20181121</string>
 	<key>GitHash</key>
 	<string></string>
 	<key>GitState</key>
@@ -296,7 +296,5 @@
 			</dict>
 		</dict>
 	</array>
-	<key>NSRequiresAquaSystemAppearance</key>
-	<true/>
 </dict>
 </plist>
