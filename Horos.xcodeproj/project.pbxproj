@@ -13343,6 +13343,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.horos;
 				PRODUCT_NAME = Horos;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx10.13;
 				SKIP_INSTALL = NO;
 				SYSTEM_HEADER_SEARCH_PATHS = "$CONFIGURATION_TEMP_DIR/Grok.build/Install/include $CONFIGURATION_TEMP_DIR/GDCM.build/Install/include $CONFIGURATION_TEMP_DIR/OpenSSL.build/Install/include $CONFIGURATION_TEMP_DIR/CharLS.build/Install/include $CONFIGURATION_TEMP_DIR/ITK.build/Install/include $CONFIGURATION_TEMP_DIR/VTK.build/Install/include";
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
@@ -13617,6 +13618,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.horos;
 				PRODUCT_NAME = Horos;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx10.13;
 				SKIP_INSTALL = NO;
 				SYSTEM_HEADER_SEARCH_PATHS = "$CONFIGURATION_TEMP_DIR/Grok.build/Install/include $CONFIGURATION_TEMP_DIR/GDCM.build/Install/include $CONFIGURATION_TEMP_DIR/OpenSSL.build/Install/include $CONFIGURATION_TEMP_DIR/CharLS.build/Install/include $CONFIGURATION_TEMP_DIR/ITK.build/Install/include $CONFIGURATION_TEMP_DIR/VTK.build/Install/include";
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
