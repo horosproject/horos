@@ -1944,9 +1944,13 @@ public:
     [super flagsChanged: event];
 }
 
-- (id)initWithFrame:(NSRect)frame {
-    if (self = [super initWithFrame:frame]) {
-        [self addTrackingArea:[[[NSTrackingArea alloc] initWithRect:NSZeroRect options:(NSTrackingCursorUpdate|NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow | NSTrackingInVisibleRect) owner:self userInfo:nil] autorelease]];
+-(id)initWithFrame:(NSRect)frame
+{
+    if ( self = [super initWithFrame:frame])
+    {
+        NSTrackingArea *cursorTracking = [[[NSTrackingArea alloc] initWithRect: [self visibleRect] options: (NSTrackingCursorUpdate | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow) owner: self userInfo: nil] autorelease];
+        
+        [self addTrackingArea: cursorTracking];
         
         isRotating = NO;
         
@@ -2259,70 +2263,69 @@ public:
 
 - (void) drawRect:(NSRect)aRect
 {
-//    if( drawLock == nil) drawLock = [[NSRecursiveLock alloc] init];
-//
-//    //    BOOL iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
-//
-//    //    if(iChatRunning) [drawLock lock];
-//
-//    minimumStep = 0;
-//
-//    @try
-//    {
-//        WaitRendering    *www = 0;
-//
-//        if( firstTime)
-//        {
-//            firstTime = NO;
-//            www = [[WaitRendering alloc] init:NSLocalizedString(@"Preparing 3D data...", nil)];
-//            [www start];
-//        }
-//
-//        try
-//        {
+    if( drawLock == nil) drawLock = [[NSRecursiveLock alloc] init];
+    
+    //	BOOL iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
+    
+    //	if(iChatRunning) [drawLock lock];
+    
+    minimumStep = 0;
+    
+    @try
+    {
+        WaitRendering	*www = 0;
+        
+        if( firstTime)
+        {
+            firstTime = NO;
+            www = [[WaitRendering alloc] init:NSLocalizedString(@"Preparing 3D data...", nil)];
+            [www start];
+        }
+        
+        try
+        {
             [self computeOrientationText];
-//
-//            [[NSOpenGLContext currentContext] update];
+            
             [super drawRect:aRect];
-//        }
-//
-//        catch (...)
-//        {
-//            if( alertDisplayed == NO)
-//                [self performSelector: @selector( displayVTKError) withObject:nil afterDelay:0.1];
-//        }
-//
-//        if( www)
-//        {
-//            [www end];
-//            [www close];
-//            [www autorelease];
-//
-//            if( isRGB == NO)
-//            {
-//                if( [[controller viewer2D] maxMovieIndex] > 1)
-//                {
-//                    *(data+0+[firstObject pwidth]) = firstPixel;
-//                    *(data+1+[firstObject pwidth]) = secondPixel;
-//
-//                    //                    vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
-//                    [BrowserController multiThreadedImageConvert: @"FTo16U" :&srcf :&dst8 :-OFFSET16 :1./valueFactor];
-//                }
-//
-//                //                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
-//                //                    [self autoCroppingBox];
-//            }
-//        }
-//
-//        _hasChanged = YES;
-//
-//    }
-//    @catch (NSException * e)
-//    {
-//        NSLog( @"Exception during drawRect: %@", e);
-//    }
-//
-//    //    if(iChatRunning) [drawLock unlock];
+        }
+        
+        catch (...)
+        {
+            if( alertDisplayed == NO)
+                [self performSelector: @selector( displayVTKError) withObject:nil afterDelay:0.1];
+        }
+        
+        if( www)
+        {
+            [www end];
+            [www close];
+            [www autorelease];
+            
+            if( isRGB == NO)
+            {
+                if( [[controller viewer2D] maxMovieIndex] > 1)
+                {
+                    *(data+0+[firstObject pwidth]) = firstPixel;
+                    *(data+1+[firstObject pwidth]) = secondPixel;
+                    
+                    //					vImageConvert_FTo16U( &srcf, &dst8, -OFFSET16, 1./valueFactor, 0);
+                    [BrowserController multiThreadedImageConvert: @"FTo16U" :&srcf :&dst8 :-OFFSET16 :1./valueFactor];
+                }
+                
+                //				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAutoCropScissors"] == NO)
+                //					[self autoCroppingBox];
+            }
+        }
+        
+        _hasChanged = YES;
+        
+    }
+    @catch (NSException * e)
+    {
+        NSLog( @"Exception during drawRect: %@", e);
+    }
+    
+    //	if(iChatRunning) [drawLock unlock];
 }
 
 -(void)dealloc

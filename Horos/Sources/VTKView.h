@@ -80,7 +80,6 @@ typedef char* vtkCocoaRenderWindow;
 {
     vtkCocoaRenderWindow			*_cocoaRenderWindow;
     vtkRenderer						*_renderer;
-//    NSOpenGLContext *_glc;
 }
 
 + (unsigned long) VRAMSizeForDisplayID: (CGDirectDisplayID) displayID;
