@@ -277,6 +277,8 @@ static volatile int sendControllerObjects = 0;
 
 - (void) windowDidLoad
 {
+    [super windowDidLoad];
+    
 	if 	([_files  count])
 	{
 		[self updateDestinationPopup: nil];

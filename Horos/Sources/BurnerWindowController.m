@@ -160,6 +160,7 @@
 
 - (void)windowDidLoad
 {
+    [super windowDidLoad];
 	NSLog(@"BurnViewer did load");
 	
 	[[self window] setDelegate:self];

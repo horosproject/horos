@@ -26,7 +26,6 @@ mkdir -p "$cmake_dir"; cd "$cmake_dir"
 
 args=("$PROJECT_DIR/$TARGET_NAME") # -G Xcode
 cxxfs=( -w -fvisibility=default )
-args+=(-DVTK_USE_OFFSCREEN_EGL:BOOL=OFF)
 args+=(-DVTK_USE_X:BOOL=OFF)
 args+=(-DVTK_USE_COCOA:BOOL=ON)
 #args+=(-DVTK_USE_64BITS_IDS=ON) 
@@ -36,6 +35,10 @@ args+=(-DBUILD_SHARED_LIBS=OFF)
 args+=(-DBUILD_TESTING=OFF)
 args+=(-DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET")
 args+=(-DCMAKE_OSX_ARCHITECTURES="$ARCHS")
+
+args+=(-DVTK_USE_SYSTEM_ZLIB:BOOL=ON)
+args+=(-DVTK_USE_SYSTEM_EXPAT=ON)
+args+=(-DVTK_USE_SYSTEM_LIBXML2=ON)
 
 # args+=(-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON)
 

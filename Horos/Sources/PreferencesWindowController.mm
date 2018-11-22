@@ -419,6 +419,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
 -(void)windowDidLoad
 {
+    [super windowDidLoad];
 	[self showAllAction:NULL];
 }
 
