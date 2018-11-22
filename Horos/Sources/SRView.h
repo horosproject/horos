@@ -41,7 +41,7 @@
 #import "Camera.h"
 
 #ifdef __cplusplus
-#import "VTKViewOSIRIX.h"
+#import "VTKView.h"
 //#define id Id
 #include <vtkCommand.h>
 #include <vtkProperty.h>

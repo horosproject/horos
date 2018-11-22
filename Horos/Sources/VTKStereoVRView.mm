@@ -38,7 +38,7 @@
 #ifdef _STEREO_VISION_
 
 #import "VTKStereoVRView.h"
-#import "VTKViewOSIRIX.h"
+#import "VTKView.h"
 #import "DCMView.h"
 #import "DCMCursor.h"
 #import "Notifications.h"
