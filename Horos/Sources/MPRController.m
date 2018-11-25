@@ -351,6 +351,7 @@ static float deg2rad = M_PI/180.0;
 
 - (void) windowDidLoad
 {
+    [super windowDidLoad];
     NSLog(@"MPRController windowDidLoad");
 }
 

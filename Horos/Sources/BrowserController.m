@@ -225,7 +225,7 @@ NSString* asciiString(NSString* str)
 
 static NSString* BrowserControllerClassHelperContext = @"BrowserControllerClassHelperContext";
 
--(id)init {
+- (id)init {
     if ((self = [super init])) {
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixCanActivateDefaultDatabaseOnlyDefaultsKey options:NSKeyValueObservingOptionInitial context:BrowserControllerClassHelperContext];
     }
@@ -14491,7 +14491,6 @@ static NSArray*	openSubSeriesArray = nil;
     @catch (NSException *e) {
         N2LogException( e);
     }
-    
     
     BOOL firstTimeExecution = ([[NSUserDefaults standardUserDefaults] objectForKey:@"FIRST_TIME_EXECUTION_2_0"] == nil);
     BOOL foundNotValidatedOsiriXPlugins = NO;

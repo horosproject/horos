@@ -4939,6 +4939,8 @@ extern "C"
 
 - (void)windowDidLoad
 {
+    [super windowDidLoad];
+    
 	id searchCell = [searchFieldName cell];
 
 	[[searchCell cancelButtonCell] setTarget:self];
