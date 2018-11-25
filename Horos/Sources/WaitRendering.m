@@ -240,6 +240,8 @@
 
 -(void) windowDidLoad
 {
+    [super windowDidLoad];
+    
 	[[self window] center];
 	
 	[message setStringValue: string];

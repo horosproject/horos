@@ -108,11 +108,9 @@
     vtkRenderWindow* renWin = vtkRenderWindow::New();
     vtkRenderWindowInteractor* renWinInt = vtkRenderWindowInteractor::New();
     
-    
-    vtkInteractorStyleTrackballCamera *interactorStyle =
-                                           vtkInteractorStyleTrackballCamera::New();
-    	renWinInt->SetInteractorStyle( interactorStyle );
-    		interactorStyle->Delete();
+    vtkInteractorStyleTrackballCamera *interactorStyle = vtkInteractorStyleTrackballCamera::New();
+    renWinInt->SetInteractorStyle(interactorStyle);
+    interactorStyle->Delete();
     
     // The cast should never fail, but we do it anyway, as
     // it's more correct to do so.

@@ -320,7 +320,7 @@ enum {
     NSArray* io = [NSMutableArray arrayWithObjects: @"Remote", address, [NSNumber numberWithInteger:port], name, nil];
     
     NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(setDatabaseThread:) object:io];
-    thread.name = NSLocalizedString(@"Loading remote OsiriX database...", nil);
+    thread.name = NSLocalizedString(@"Loading remote database...", nil);
     thread.supportsCancel = YES;
     [thread startModalForWindow:self.window];
     [thread start];

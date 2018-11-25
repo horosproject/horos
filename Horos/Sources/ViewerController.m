@@ -2904,6 +2904,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)windowDidLoad
 {
+    [super windowDidLoad];
+    
     [self checkView: subCtrlView :NO];
     
     [[self window] setInitialFirstResponder: imageView];

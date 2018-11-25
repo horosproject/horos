@@ -123,6 +123,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 - (void) windowDidLoad
 {
+    [super windowDidLoad];
     settings = [NSMutableDictionary new];
     blendingSettings = [NSMutableDictionary new];
     

@@ -336,12 +336,12 @@
 
 -(NSString*)fetchDatabaseIndex {
 	NSThread* thread = [NSThread currentThread];
-	thread.status = NSLocalizedString(@"Negotiating with remote OsiriX...", nil);
+	thread.status = NSLocalizedString(@"Negotiating...", nil);
 	
 	NSString* version = [self fetchDatabaseVersion];
 	
 	if (![version isEqualToString:CurrentDatabaseVersion])
-		[NSException raise:NSDestinationInvalidException format:NSLocalizedString(@"Invalid remote database model %@. When sharing databases, make sure both ends are running the same version of OsiriX.", nil), version];
+		[NSException raise:NSDestinationInvalidException format:NSLocalizedString(@"Invalid remote database model %@. When sharing databases, make sure both ends are running the same software versions.", nil), version];
 	
 //	DLog(@"RDD version: %@", version);
 
