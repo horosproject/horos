@@ -6689,7 +6689,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                             {
                                 for( int x = 0; x < oColumns[i]; x++)
                                 {
-                                    if( oData[i][ y * oColumns[i] + x])
+                                    if( oData[i] && oData[i][ y * oColumns[i] + x])
                                     {
                                         if( (x + oOrigin[i][ 0]) >= 0 && (x + oOrigin[i][ 0]) < width &&
                                            (y + oOrigin[i][ 1]) >= 0 && (y + oOrigin[i][ 1]) < height)
