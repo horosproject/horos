@@ -305,7 +305,7 @@ enum {
     NSArray* io = [NSMutableArray arrayWithObjects: @"Local", path, name, nil];
     
     NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(setDatabaseThread:) object:io] autorelease];
-    thread.name = NSLocalizedString(@"Loading OsiriX database...", nil);
+    thread.name = NSLocalizedString(@"Loading database...", nil);
     thread.supportsCancel = YES;
     thread.status = NSLocalizedString(@"Reading data...", nil);
     

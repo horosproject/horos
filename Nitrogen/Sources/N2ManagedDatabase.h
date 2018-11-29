@@ -113,7 +113,8 @@
 
 @interface N2ManagedDatabase (Protected)
 
--(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath;
+- (Class)NSManagedObjectContextClass;
+- (NSManagedObjectContext *)contextAtPath:(NSString *)sqlFilePath;
 
 @end
 
