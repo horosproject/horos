@@ -79,12 +79,14 @@ static float deg2rad = M_PI/180.0;
 	return ((atan2( sc[1], sc[0])) / deg2rad);
 }
 
-- (DCMPix*) emptyPix: (DCMPix*) oP width: (long) w height: (long) h
+- (DCMPix *)emptyPix:(DCMPix *)oP width:(long)w height:(long)h
 {
-	long size = sizeof( float) * w * h;
-	float *imagePtr = malloc( size);
-	DCMPix *emptyPix = [[DCMPix alloc] initWithData: imagePtr :32 :w :h :[oP pixelSpacingX] :[oP pixelSpacingY] :[oP originX] :[oP originY] :[oP originZ]];
-	free( imagePtr);
+	size_t size = sizeof(float) * w * h;
+    float *imagePtr = malloc(size);
+    
+	DCMPix *emptyPix = [[DCMPix alloc] initWithData:imagePtr :32 :w :h :[oP pixelSpacingX] :[oP pixelSpacingY] :[oP originX] :[oP originY] :[oP originZ]];
+	
+    free(imagePtr);
 	
 	[emptyPix setImageObjectID: [oP imageObjectID]];
 	emptyPix.srcFile = oP.srcFile;

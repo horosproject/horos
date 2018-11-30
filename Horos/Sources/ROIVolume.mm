@@ -115,12 +115,12 @@
 		{
 			[roiList addObject:curROI];
 			// volume
-			DCMPix *curDCM = [curROI pix];
+			DCMPix *pic = [curROI pix];
 			float curArea = [curROI roiArea];
 			if( preLocation != 0)
-				volume += (([curDCM sliceLocation] - preLocation)/10.) * (curArea + prevArea)/2.;
+				volume += (([pic sliceLocation] - preLocation)/10.) * (curArea + prevArea)/2.;
 			prevArea = curArea;
-			preLocation = [curDCM sliceLocation];
+			preLocation = [pic sliceLocation];
 		}
 	}
 	

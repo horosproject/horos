@@ -4970,7 +4970,7 @@ static NSConditionLock *threadLock = nil;
     }
 }
 
-- (void)outlineViewSelectionDidChange: (NSNotification *)aNotification
+- (void)outlineViewSelectionDidChange:(NSNotification *)aNotification
 {
     if( [NSThread isMainThread] == NO)
         N2LogStackTrace( @"***** We must be on MAIN thread");

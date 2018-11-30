@@ -186,6 +186,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 }
 @end
 
+@interface DicomImage ()
+
+@property (strong) NSString *completePathCache;
+
+@end
+
 @implementation DicomImage
 
 @dynamic comment, comment2, comment3, comment4;
@@ -219,16 +225,19 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 @dynamic zoom;
 @dynamic series;
 
-- (BOOL) isDistant
+@synthesize completePathCache = _completePathCache;
+
+- (BOOL)isDistant
 {
     return NO;
 }
 
--(id)copy
+- (id)copy
 {
-    id copy = [super copy];
+    DicomImage *copy = [super copy];
     
     [copy setThumbnail: [[_thumbnail copy] autorelease]];
+    copy.completePathCache = _completePathCache;
     
     return copy;
 }
@@ -1008,16 +1017,16 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	[extension release];  extension = nil;
 	[modality release];  modality = nil;
 	[fileType release];  fileType = nil;
-	[completePathCache release]; completePathCache = nil;
+	self.completePathCache = nil;
     [_thumbnail release]; _thumbnail = nil;
 }
 
--(NSString*) completePathWithDownload:(BOOL) download supportNonLocalDatabase: (BOOL) supportNonLocalDatabase
+- (NSString *)completePathWithDownload:(BOOL)download supportNonLocalDatabase:(BOOL)supportNonLocalDatabase
 {
     @try
     {
-        if( completePathCache && download == NO)
-            return completePathCache;
+        if(self.completePathCache && download == NO)
+            return self.completePathCache;
         
         DicomDatabase* db = [DicomDatabase databaseForContext: self.managedObjectContext];
         
@@ -1025,11 +1034,11 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
         if (supportNonLocalDatabase)
             isLocal = [db isLocal];
         
-        if (completePathCache) {
+        if (self.completePathCache) {
             if (download == NO)
-                return completePathCache;
+                return self.completePathCache;
             else if (isLocal)
-                return completePathCache;
+                return self.completePathCache;
         }
         
         #ifdef OSIRIX_VIEWER
@@ -1043,22 +1052,18 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
                 if ([[NSFileManager defaultManager] fileExistsAtPath:temp])
                     return temp;
                 
-                [completePathCache release];
-                
                 if (download)
-                    completePathCache = [[(RemoteDicomDatabase*)db cacheDataForImage:self maxFiles:1] retain];
+                    self.completePathCache = [[(RemoteDicomDatabase*)db cacheDataForImage:self maxFiles:1] retain];
                 else
-                    completePathCache = [[(RemoteDicomDatabase*)db localPathForImage:self] retain];
+                    self.completePathCache = [[(RemoteDicomDatabase*)db localPathForImage:self] retain];
                 
-                return completePathCache;
+                return self.completePathCache;
             }
             else
             {
                 if( [path characterAtIndex: 0] != '/')
                 {
-                    [completePathCache release];
-                    completePathCache = [[DicomImage completePathForLocalPath: path directory: db.dataBaseDirPath] retain];
-                    return completePathCache;
+                    return (self.completePathCache = [[DicomImage completePathForLocalPath:path directory:db.dataBaseDirPath] retain]);
                 }
             }
         }

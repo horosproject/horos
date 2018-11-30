@@ -181,6 +181,10 @@
 	return NO;
 }
 
+- (BOOL)saveDatabaseModel {
+    return NO;
+}
+
 -(void)_updateTimerCallback {
 	[self initiateUpdate];
 }
@@ -344,7 +348,7 @@
 
 @synthesize password;
 
--(NSString*)fetchDatabaseIndex {
+- (NSString *)fetchDatabaseIndex {
 	NSThread* thread = [NSThread currentThread];
 	thread.status = NSLocalizedString(@"Negotiating...", nil);
 	
@@ -443,12 +447,6 @@
     [_updateLock lock];
 
     NSManagedObjectContext *context = [self contextAtPath:path];
-    
-    NSFetchRequest *f = [NSFetchRequest fetchRequestWithEntityName:@"Study"];
-    f.predicate = [NSPredicate predicateWithValue:YES];
-    
-    NSError *err = nil;
-    NSArray *studies = [context executeFetchRequest:f error:&err];
     
     NSPersistentStoreCoordinator *cc = context.persistentStoreCoordinator;
     NSPersistentStoreCoordinator *c = self.managedObjectContext.persistentStoreCoordinator;
@@ -696,7 +694,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 
 }
 
--(NSString*)cacheDataForImage:(DicomImage*)image maxFiles:(NSInteger) maxFiles
+- (NSString*)cacheDataForImage:(DicomImage *)image maxFiles:(NSInteger)maxFiles
 {
     if( image == nil)
     {
@@ -939,17 +937,16 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 @implementation RemoteDicomDatabaseManagedObjectContext
 
 - (void)dealloc {
-//    [NSFileManager.defaultManager removeItemAtPath:oldSqlFilePath error:NULL]
+    if (self.cleanOnDealloc)
+        if (NSURL *url = self.persistentStoreCoordinator.persistentStores.firstObject.URL)
+            [self.class performSelector:@selector(postDealloc:) withObject:url afterDelay:0];
+
     
-#warning TODO: clean up old indexes, but be careful not to do this before other threads are done
-//    if (self.cleanOnDealloc)
-//        if (NSURL *url = self.persistentStoreCoordinator.persistentStores.firstObject.URL) {
-//            NSURL *dir = [url URLByDeletingLastPathComponent];
-//            [[NSFileManager defaultManager] removeItemAtURL:url error:NULL];
-//            [[NSFileManager defaultManager] removeItemAtURL:[dir URLByAppendingPathComponent:[url.lastPathComponent stringByAppendingString:@"-shm"]] error:NULL];
-//        }
-//    
     [super dealloc];
+}
+
++ (void)postDealloc:(NSURL *)url {
+    [[NSFileManager defaultManager] removeItemAtURL:url error:NULL];
 }
 
 @end

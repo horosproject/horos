@@ -54,9 +54,16 @@ static int gTotalN2ManagedObjectContext = 0;
 
 #define N2PersistentStoreCoordinator NSPersistentStoreCoordinator // for debug purposes, disable this #define and enable the commented N2PersistentStoreCoordinator implementation
 
+@interface N2ManagedObjectContext ()
+
+@property (strong) N2ManagedObjectContext *confinementParentContext;
+
+@end
+
 @implementation N2ManagedObjectContext
 
 @synthesize database = _database;
+@synthesize confinementParentContext = _confinementParentContext;
 
 - (id)initWithDatabase:(N2ManagedDatabase *)db concurrencyType:(NSManagedObjectContextConcurrencyType)ct
 {
@@ -89,9 +96,13 @@ static int gTotalN2ManagedObjectContext = 0;
     
     gTotalN2ManagedObjectContext--;
 #endif
+    
     [NSNotificationCenter.defaultCenter removeObserver:self];
-	_database = nil;
-	[super dealloc]; //test if db is deallocated
+
+    self.confinementParentContext = nil;
+    _database = nil;
+	
+    [super dealloc]; //test if db is deallocated
 }
 
 -(BOOL)save:(NSError**)error {
@@ -303,8 +314,10 @@ static int gTotalN2ManagedObjectContext = 0;
     //        if (self.managedObjectContext.hasChanges)
     //            [self save];
             
-            if ([sqlFilePath isEqualToString:self.sqlFilePath] && [NSFileManager.defaultManager fileExistsAtPath:sqlFilePath])
+            if ([sqlFilePath isEqualToString:self.sqlFilePath] && [NSFileManager.defaultManager fileExistsAtPath:sqlFilePath]) {
+                moc.confinementParentContext = self.managedObjectContext; // just for retain purpose
                 moc.persistentStoreCoordinator = self.managedObjectContext.persistentStoreCoordinator;
+            }
             
             if (!moc.persistentStoreCoordinator) {
                 //			moc.persistentStoreCoordinator = [persistentStoreCoordinatorsDictionary objectForKey:sqlFilePath];
@@ -373,11 +386,11 @@ static int gTotalN2ManagedObjectContext = 0;
                     } while (!pStore && i < 2);
                     
                     // Save the models for forward compatibility with old OsiriX versions that don't know the current model
-//                    if (self.saveDatabaseModel){
-                    NSString *modelsPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: [[self class] modelName]];
-                    [[NSFileManager defaultManager] removeItemAtPath: localModelsPath error: nil];
-                    [[NSFileManager defaultManager] copyItemAtPath:modelsPath toPath:localModelsPath error:nil];
-//                    }
+                    if (self.saveDatabaseModel){
+                        NSString *modelsPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: [[self class] modelName]];
+                        [[NSFileManager defaultManager] removeItemAtPath: localModelsPath error: nil];
+                        [[NSFileManager defaultManager] copyItemAtPath:modelsPath toPath:localModelsPath error:nil];
+                    }
 
                 }
                 
@@ -402,6 +415,10 @@ static int gTotalN2ManagedObjectContext = 0;
     }
     
     return moc;
+}
+
+- (BOOL)saveDatabaseModel {
+    return YES;
 }
 
 -(void)mergeChangesFromContextDidSaveNotification:(NSNotification*)n {
@@ -506,30 +523,25 @@ static int gTotalN2ManagedObjectContext = 0;
 	[super dealloc];
 }
 
--(NSManagedObjectContext*)independentContext:(BOOL)independent
-{
-    if( independent)
-    {
-#ifndef NDEBUG
-        if( [NSThread isMainThread])
-            N2LogStackTrace( @"independentContext not required on main thread.");
-#endif
-    }
+- (NSManagedObjectContext *)independentContext:(BOOL)independent {
+    if (!independent)
+        return self.managedObjectContext;
     
-	return independent? [self contextAtPath:self.sqlFilePath] : self.managedObjectContext;
+#ifndef NDEBUG
+    if ([NSThread isMainThread])
+        N2LogStackTrace(@"info: independent context not required on main thread");
+#endif
+    
+	NSManagedObjectContext *ic = [self contextAtPath:self.sqlFilePath];
+    
+    return ic;
 }
 
--(NSManagedObjectContext*)independentContext {
+- (NSManagedObjectContext *)independentContext {
 	return [self independentContext:YES];
 }
 
--(id)independentDatabase {
-    
-#ifndef NDEBUG
-    if( [NSThread isMainThread])
-        N2LogStackTrace( @"independentDatabase not required on main thread.");
-#endif
-    
+- (id)independentDatabase {
 	return [[[[self class] alloc] initWithPath:self.sqlFilePath context:[self independentContext] mainDatabase:self] autorelease];
 }
 

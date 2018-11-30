@@ -116,10 +116,12 @@
 - (Class)NSManagedObjectContextClass;
 - (NSManagedObjectContext *)contextAtPath:(NSString *)sqlFilePath;
 
+- (BOOL)saveDatabaseModel;
+
 @end
 
 @interface N2ManagedObjectContext : NSManagedObjectContext {
-    
+    N2ManagedObjectContext *_confinementParentContext;
 	N2ManagedDatabase* _database;
 }
 

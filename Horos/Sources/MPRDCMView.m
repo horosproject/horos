@@ -567,7 +567,7 @@ unsigned int minimumStep;
             [vrView renderBlendedVolume];
             
             float *blendedImagePtr = nil;
-            DCMPix *bPix = [blendingView curDCM];
+            DCMPix *bPix = blendingView.curDCM;
             
             if( moveCenter)
             {
@@ -919,10 +919,10 @@ unsigned int minimumStep;
 			
 			glPointSize( 10 * self.window.backingScaleFactor);
 			glBegin( GL_POINTS);
-			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
-			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
-			sc[0] -= curDCM.pwidth * 0.5f;
-			sc[1] -= curDCM.pheight * 0.5f;
+			sc[0] = sc[ 0] / self.curDCM.pixelSpacingX;
+			sc[1] = sc[ 1] / self.curDCM.pixelSpacingY;
+			sc[0] -= self.curDCM.pwidth * 0.5f;
+			sc[1] -= self.curDCM.pheight * 0.5f;
 			glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
 			glEnd();
 
@@ -938,10 +938,10 @@ unsigned int minimumStep;
 			
 			glPointSize( 10 * self.window.backingScaleFactor);
 			glBegin( GL_POINTS);
-			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
-			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
-			sc[0] -= curDCM.pwidth * 0.5f;
-			sc[1] -= curDCM.pheight * 0.5f;
+			sc[0] = sc[ 0] / self.curDCM.pixelSpacingX;
+			sc[1] = sc[ 1] / self.curDCM.pixelSpacingY;
+			sc[0] -= self.curDCM.pwidth * 0.5f;
+			sc[1] -= self.curDCM.pheight * 0.5f;
 			glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
 			glEnd();
 
@@ -957,10 +957,10 @@ unsigned int minimumStep;
 			
 			glPointSize( 10 * self.window.backingScaleFactor);
 			glBegin( GL_POINTS);
-			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
-			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
-			sc[0] -= curDCM.pwidth * 0.5f;
-			sc[1] -= curDCM.pheight * 0.5f;
+			sc[0] = sc[ 0] / self.curDCM.pixelSpacingX;
+			sc[1] = sc[ 1] / self.curDCM.pixelSpacingY;
+			sc[0] -= self.curDCM.pwidth * 0.5f;
+			sc[1] -= self.curDCM.pheight * 0.5f;
 			glVertex2f( scaleValue*sc[ 0], scaleValue*sc[ 1]);
 			glEnd();
 		}
@@ -1356,7 +1356,7 @@ unsigned int minimumStep;
 	if( LOD == 0)
 		return 0;
 	
-	if( curDCM.pixelSpacingX == 0)
+	if( self.curDCM.pixelSpacingX == 0)
 		return 0;
 	
 	// Intersection of the lines
@@ -1366,10 +1366,10 @@ unsigned int minimumStep;
 	{
 		mouseLocation = [self ConvertFromNSView2GL: mouseLocation];
 		
-		mouseLocation.x *= curDCM.pixelSpacingX;
-		mouseLocation.y *= curDCM.pixelSpacingY;
+		mouseLocation.x *= self.curDCM.pixelSpacingX;
+		mouseLocation.y *= self.curDCM.pixelSpacingY;
 		
-		float f = curDCM.pixelSpacingX / LOD * self.window.backingScaleFactor;
+		float f = self.curDCM.pixelSpacingX / LOD * self.window.backingScaleFactor;
 		
 		if( mouseLocation.x > r.x - BS * f && mouseLocation.x < r.x + BS* f && mouseLocation.y > r.y - BS* f && mouseLocation.y < r.y + BS* f)
 		{
@@ -1384,7 +1384,7 @@ unsigned int minimumStep;
                 NSPoint a1 = NSMakePoint( crossLinesA[ 0][ 0], crossLinesA[ 0][ 1]);
                 NSPoint a2 = NSMakePoint( crossLinesA[ 1][ 0], crossLinesA[ 1][ 1]);
                 [DCMView DistancePointLine:mouseLocation :a1 :a2 :&distance1];
-                distance1 /= curDCM.pixelSpacingX;
+                distance1 /= self.curDCM.pixelSpacingX;
             }
             
             if( crossLinesB[ 0][ 0] != HUGE_VALF)
@@ -1393,7 +1393,7 @@ unsigned int minimumStep;
                 NSPoint b2 = NSMakePoint( crossLinesB[ 1][ 0], crossLinesB[ 1][ 1]);
                 
                 [DCMView DistancePointLine:mouseLocation :b1 :b2 :&distance2];
-                distance2 /= curDCM.pixelSpacingX;
+                distance2 /= self.curDCM.pixelSpacingX;
 			}
             
 			if( distance1 * scaleValue < 10*self.window.backingScaleFactor || distance2 * scaleValue < 10*self.window.backingScaleFactor)
@@ -1606,7 +1606,7 @@ unsigned int minimumStep;
 			rotateLines = YES;
 			
 			NSPoint mouseLocation = [self ConvertFromNSView2GL: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
-			mouseLocation.x *= curDCM.pixelSpacingX;	mouseLocation.y *= curDCM.pixelSpacingY;
+			mouseLocation.x *= self.curDCM.pixelSpacingX;	mouseLocation.y *= self.curDCM.pixelSpacingY;
 			rotateLinesStartAngle = [self angleBetween: mouseLocation center: [self centerLines]] - angleMPR;
 			
 			[self mouseDragged: theEvent];
@@ -1810,7 +1810,7 @@ unsigned int minimumStep;
 		windowController.lowLOD = YES;
 		
 		NSPoint mouseLocation = [self ConvertFromNSView2GL: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
-		mouseLocation.x *= curDCM.pixelSpacingX;	mouseLocation.y *= curDCM.pixelSpacingY;
+		mouseLocation.x *= self.curDCM.pixelSpacingX;	mouseLocation.y *= self.curDCM.pixelSpacingY;
 		angleMPR = [self angleBetween: mouseLocation center: [self centerLines]];
 		
 		angleMPR -= rotateLinesStartAngle;
@@ -1986,7 +1986,7 @@ unsigned int minimumStep;
     
     pixToDicomTransform = [self pixToDicomTransform];
     
-    plane.point = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, (CGFloat)curDCM.pheight/2.0, 0.0), pixToDicomTransform);
+    plane.point = N3VectorApplyTransform(N3VectorMake((CGFloat)self.curDCM.pwidth/2.0, (CGFloat)self.curDCM.pheight/2.0, 0.0), pixToDicomTransform);
     plane.normal = N3VectorNormalize(N3VectorApplyTransformToDirectionalVector(N3VectorMake(0.0, 0.0, 1.0), pixToDicomTransform));
     
 	if (N3PlaneIsValid(plane)) {
