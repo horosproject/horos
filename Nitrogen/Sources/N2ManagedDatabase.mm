@@ -315,7 +315,7 @@ static int gTotalN2ManagedObjectContext = 0;
     //            [self save];
             
             if ([sqlFilePath isEqualToString:self.sqlFilePath] && [NSFileManager.defaultManager fileExistsAtPath:sqlFilePath]) {
-                moc.confinementParentContext = self.managedObjectContext; // just for retain purpose
+                moc.confinementParentContext = (id)self.managedObjectContext; // just for retain purpose
                 moc.persistentStoreCoordinator = self.managedObjectContext.persistentStoreCoordinator;
             }
             
