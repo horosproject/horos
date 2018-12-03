@@ -180,7 +180,9 @@ BOOL useQuartz() {
 }
 
 - (void)windowDidLoad
-{ 
+{
+    [super windowDidLoad];
+    
 	[[self window] center];
 	versionType  = 0;
 	[self switchVersion: self];

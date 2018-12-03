@@ -62,6 +62,11 @@ static BOOL protectedReentryWindowDidResize = NO;
 
 @implementation OSIWindowController
 
+- (void)windowDidLoad {
+    [super windowDidLoad];
+    
+}
+
 @synthesize database = _database;
 
 -(void)setDatabase:(DicomDatabase*)database {

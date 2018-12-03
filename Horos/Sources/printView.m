@@ -122,9 +122,9 @@
 				NSString *tempString = [[NSUserDefaults dateFormatter] stringFromDate: date];
 				string2draw = [string2draw stringByAppendingFormat:@"%@", tempString];
 			
-				DCMPix *curDCM = [[viewer pixList] objectAtIndex: 0];
+				DCMPix *pic = [[viewer pixList] objectAtIndex: 0];
 				
-				if( [curDCM acquisitionTime]) date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[curDCM acquisitionTime] timeIntervalSinceReferenceDate]];
+				if( [pic acquisitionTime]) date = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[pic acquisitionTime] timeIntervalSinceReferenceDate]];
 				if( date && [date yearOfCommonEra] != 3000)
 				{
 					tempString = [BrowserController TimeFormat: date];

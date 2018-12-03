@@ -313,11 +313,11 @@
 
 - (void) convertPixX: (float) x pixY: (float) y toDICOMCoords: (float*) location 
 {
-    if( curDCM.stack > 1) {
+    if( self.curDCM.stack > 1) {
         long stackImageIndex;
         
-        if(flippedData) stackImageIndex = curImage-(curDCM.stack-1)/2;
-        else stackImageIndex = curImage+(curDCM.stack-1)/2;
+        if(flippedData) stackImageIndex = curImage-(self.curDCM.stack-1)/2;
+        else stackImageIndex = curImage+(self.curDCM.stack-1)/2;
         
         if( stackImageIndex < 0) stackImageIndex = 0;
         if( stackImageIndex >= [dcmPixList count]) stackImageIndex = (long)[dcmPixList count]-1;
@@ -325,7 +325,7 @@
         [[dcmPixList objectAtIndex: stackImageIndex] convertPixX: x pixY: y toDICOMCoords: location pixelCenter: YES];
     }
     else {
-        [curDCM convertPixX: x pixY: y toDICOMCoords: location pixelCenter: YES];
+        [self.curDCM convertPixX: x pixY: y toDICOMCoords: location pixelCenter: YES];
     }
 }
 
@@ -357,7 +357,7 @@
 	if(crossPositionX == x)
 		return ;
 	x = (x<0)? 0 : x;
-	x = (x>=[[self curDCM] pwidth])? [[self curDCM] pwidth]-1 : x;
+	x = (x>=[self.curDCM pwidth])? [self.curDCM pwidth]-1 : x;
 	crossPositionX = x;
 }
 
@@ -366,7 +366,7 @@
 	if(crossPositionY == y)
 		return;
 	y = (y<0)? 0 : y;
-	y = (y>=[[self curDCM] pheight])? [[self curDCM] pheight]-1 : y;
+	y = (y>=[self.curDCM pheight])? [self.curDCM pheight]-1 : y;
 	crossPositionY = y;
 }
 
@@ -383,10 +383,10 @@
 
 - (void) adjustWLWW:(float) wl :(float) ww
 {
-	[curDCM changeWLWW :wl : ww];
+	[self.curDCM changeWLWW :wl : ww];
     
-    curWW = [curDCM ww];
-    curWL = [curDCM wl];
+    curWW = [self.curDCM ww];
+    curWL = [self.curDCM wl];
 	
 	[self loadTextures];
     [self setNeedsDisplay:YES];
@@ -394,11 +394,11 @@
 
 - (void) getWLWW:(float*) wl :(float*) ww
 {
-	if( curDCM == nil) NSLog(@"OrthogonalMPRView getWLWW : curDCM nil");
+	if( self.curDCM == nil) NSLog(@"OrthogonalMPRView getWLWW : curDCM nil");
 	else
 	{
-		if(wl) *wl = [curDCM wl];
-		if(ww) *ww = [curDCM ww];
+		if(wl) *wl = [self.curDCM wl];
+		if(ww) *ww = [self.curDCM ww];
 	}
 }
 
@@ -454,16 +454,16 @@
 		glEnable(GL_POLYGON_SMOOTH);
 	
 		float xCrossCenter,yCrossCenter;
-		xCrossCenter = (crossPositionX  - [[self curDCM] pwidth]/2) * scaleValue;
-		yCrossCenter = (crossPositionY  - [[self curDCM] pheight]/2) * scaleValue;
+		xCrossCenter = (crossPositionX  - [self.curDCM pwidth]/2) * scaleValue;
+		yCrossCenter = (crossPositionY  - [self.curDCM pheight]/2) * scaleValue;
 		
-		//NSLog(@"subdraw thickslab:%f pixelSpacingY:%f", [controller thickSlabDistance], [[self curDCM] pixelSpacingY]);
+		//NSLog(@"subdraw thickslab:%f pixelSpacingY:%f", [controller thickSlabDistance], [self.curDCM pixelSpacingY]);
 		//yCrossCenter = yCrossCenter - ([controller thickSlabDistance]*(float)[controller thickSlab]   / 2.0);
 		
 	//	NSRect size = [self frame];
 	//	float viewportSizeX, viewportSizeY;
 	//	viewportSizeX = size.size.width;
-	//	viewportSizeY = size.size.height / [curDCM pixelRatio];
+	//	viewportSizeY = size.size.height / [self.curDCM pixelRatio];
 
 	//	float xAxeLength, yAxeLength;
 	//	xAxeLength = viewportSizeX;
@@ -474,16 +474,16 @@
 		glBegin(GL_LINES);
 		// vertical axis
 		glVertex2f(xCrossCenter,-4000);
-		glVertex2f(xCrossCenter,yCrossCenter -50.0/curDCM.pixelRatio);
+		glVertex2f(xCrossCenter,yCrossCenter -50.0/self.curDCM.pixelRatio);
 	
 		if (displayResliceAxes == 2)
 		{
-			glVertex2f(xCrossCenter,yCrossCenter -10.0/curDCM.pixelRatio);
-			glVertex2f(xCrossCenter,yCrossCenter +10.0/curDCM.pixelRatio);
+			glVertex2f(xCrossCenter,yCrossCenter -10.0/self.curDCM.pixelRatio);
+			glVertex2f(xCrossCenter,yCrossCenter +10.0/self.curDCM.pixelRatio);
 		}
 		
 		glColor3f (0.0f, 1.0f, 0.0f);
-		glVertex2f(xCrossCenter,yCrossCenter +50.0/curDCM.pixelRatio);
+		glVertex2f(xCrossCenter,yCrossCenter +50.0/self.curDCM.pixelRatio);
 		glVertex2f(xCrossCenter,4000);
 		
 		// horizontal axis
@@ -506,15 +506,15 @@
 			shift =  (float)thickSlabX / 2.0 * scaleValue;
 			glColor3f (0.0f, 0.0f, 1.0f);
 			glVertex2f(xCrossCenter-shift,-4000);
-			glVertex2f(xCrossCenter-shift,yCrossCenter -50.0/curDCM.pixelRatio);
+			glVertex2f(xCrossCenter-shift,yCrossCenter -50.0/self.curDCM.pixelRatio);
 			
-			glVertex2f(xCrossCenter-shift,yCrossCenter +50.0/curDCM.pixelRatio);
+			glVertex2f(xCrossCenter-shift,yCrossCenter +50.0/self.curDCM.pixelRatio);
 			glVertex2f(xCrossCenter-shift,4000);
 			
 			glVertex2f(xCrossCenter+shift,-4000);
-			glVertex2f(xCrossCenter+shift,yCrossCenter -50.0/curDCM.pixelRatio);
+			glVertex2f(xCrossCenter+shift,yCrossCenter -50.0/self.curDCM.pixelRatio);
 			
-			glVertex2f(xCrossCenter+shift,yCrossCenter +50.0/curDCM.pixelRatio);
+			glVertex2f(xCrossCenter+shift,yCrossCenter +50.0/self.curDCM.pixelRatio);
 			glVertex2f(xCrossCenter+shift,4000);
 		}
 		
@@ -1088,7 +1088,7 @@
 - (void)mouseDraggedBlending:(NSEvent *)event{
 	[super mouseDraggedBlending:event];
 	[self setWLWW: curWL :curWW];
-	[blendingView setWLWW:[[blendingView curDCM] wl] :[[blendingView curDCM] ww]];
+	[blendingView setWLWW:[blendingView.curDCM wl] :[blendingView.curDCM ww]];
 }
 
 
@@ -1147,26 +1147,26 @@
 				break;
 			}
 			
-			[curDCM changeWLWW :eWL  :eWW];
+			[self.curDCM changeWLWW :eWL  :eWW];
 		}
 		else
 		{
-			[curDCM changeWLWW : startWL + (current.y -  start.y)*WWAdapter :startWW + (current.x -  start.x)*WWAdapter];
+			[self.curDCM changeWLWW : startWL + (current.y -  start.y)*WWAdapter :startWW + (current.x -  start.x)*WWAdapter];
 		}
 		
-		curWW = [curDCM ww];
-		curWL = [curDCM wl];
+		curWW = [self.curDCM ww];
+		curWL = [self.curDCM wl];
 		
 		if( [self is2DViewer] == YES)
-			[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :curDCM]];
+			[[self windowController] setCurWLWWMenu: [DCMView findWLWWPreset: curWL :curWW :self.curDCM]];
 		
 		// change Window level
 		[self setWLWW: curWL :curWW];
 
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixChangeWLWWNotification object: curDCM userInfo:nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixChangeWLWWNotification object: self.curDCM userInfo:nil];
 		
-		if( [curDCM SUVConverted] == NO)
+		if( [self.curDCM SUVConverted] == NO)
 		{
 			//set value for Series Object Presentation State
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];

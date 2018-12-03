@@ -77,8 +77,8 @@
 	[super subDrawRect:aRect];
 	
 	float xCrossCenter,yCrossCenter;
-	xCrossCenter = (crossPositionX-[[self curDCM] pwidth]/2) * scaleValue;
-	yCrossCenter = (crossPositionY-[[self curDCM] pheight]/2) * scaleValue;
+	xCrossCenter = (crossPositionX-[self.curDCM pwidth]/2) * scaleValue;
+	yCrossCenter = (crossPositionY-[self.curDCM pheight]/2) * scaleValue;
 		
 	// normalization of FOCAL VECTOR
 	float vectNorm = sqrt(pow(focalShiftX,2)+pow(focalShiftY/[self pixelSpacingX]*[self pixelSpacingY],2));
@@ -99,7 +99,7 @@
 	glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f); // scale to port per pixel scale
 	glRotatef (rotation, 0.0f, 0.0f, 1.0f); // rotate matrix for image rotation
 	glTranslatef( origin.x, -origin.y, 0.0f);
-	glScalef( 1.f, curDCM.pixelRatio, 1.f);
+	glScalef( 1.f, self.curDCM.pixelRatio, 1.f);
 	
 	// antialiasing
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
@@ -165,8 +165,8 @@
 		for(i=0;i<[flyThroughPath count];i++)
 		{
 			Point3D* pt = [flyThroughPath objectAtIndex:i];
-			float x = (pt.x-[[self curDCM] pwidth]/2) * scaleValue;
-			float y = (pt.y-[[self curDCM] pheight]/2) * scaleValue ; //* [self pixelSpacingY]/[self pixelSpacingX];
+			float x = (pt.x-[self.curDCM pwidth]/2) * scaleValue;
+			float y = (pt.y-[self.curDCM pheight]/2) * scaleValue ; //* [self pixelSpacingY]/[self pixelSpacingX];
 			glVertex2f(x,y);
 		}
 	
@@ -368,7 +368,7 @@
 //	[[self controller] reslice: (long)x+0.5:  (long)y+0.5: self];
 //	[self setCrossPositionX: (float)x];
 //	[self setCrossPositionY: (float)y];
-//	[self setCrossPosition:x+[[self curDCM] pwidth]/2 :y+[[self curDCM] pwidth]/2];
+//	[self setCrossPosition:x+[self.curDCM pwidth]/2 :y+[self.curDCM pwidth]/2];
 }
 
 - (NSPoint) cameraPosition
@@ -545,7 +545,7 @@
 {
 	if ([sender isEqual:[[self window] windowController]])
 	{
-		DCMPix *curPix = [self curDCM];
+		DCMPix *curPix = self.curDCM;
 
 		long	annotCopy		= [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"],
 				clutBarsCopy	= [[NSUserDefaults standardUserDefaults] integerForKey: @"CLUTBARS"];

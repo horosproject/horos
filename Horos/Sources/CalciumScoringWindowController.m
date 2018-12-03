@@ -113,8 +113,9 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 
 - (void)windowDidLoad
 {
-	[self updateTotals];
-	
+	[super windowDidLoad];
+    
+    [self updateTotals];
 	
 	[[self window] setDelegate: self];
 	

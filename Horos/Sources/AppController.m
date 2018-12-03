@@ -3878,17 +3878,17 @@ static BOOL initialized = NO;
     
     NSError *error = nil;
     [NSWindow jr_swizzleMethod:@selector(showsFullScreenButton) withMethod:@selector(HOROS_showsFullScreenButton) error:&error];
-    
     if (error) {
         NSLog(@"Unable to swizzle showsFullScreenButton: %@", error);
     }
-    
     
     if( [NSDate timeIntervalSinceReferenceDate] - [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastDate32bitPipelineCheck"] > 60L*60L*24L) // 1 days
 	{
 		[[NSUserDefaults standardUserDefaults] setDouble: [NSDate timeIntervalSinceReferenceDate] forKey: @"lastDate32bitPipelineCheck"];
 		[self verifyHardwareInterpolation];
 	}
+    
+//    NSWindow.allowsAutomaticWindowTabbing = NO;
     
 	BOOL dialog = NO;
     

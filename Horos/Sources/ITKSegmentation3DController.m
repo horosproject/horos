@@ -248,6 +248,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 
 - (void) windowDidLoad
 {
+    [super windowDidLoad];
 	[self fillAlgorithmPopup];
 	[self changeAlgorithm:self];
 }
