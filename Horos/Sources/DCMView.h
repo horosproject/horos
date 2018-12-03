@@ -172,7 +172,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
     NSMutableArray  *dcmPixList;
     NSArray			*dcmFilesList;
 	NSMutableArray  *dcmRoiList, *curRoiList;
-    DCMPix			*curDCM;
+    DCMPix			*_curDCM;
 	DCMExportPlugin	*dcmExportPlugin;
 	
     char            listType;
@@ -370,7 +370,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @property(nonatomic) float scaleValue, rotation;
 @property(nonatomic) NSPoint origin;
 @property(readonly) double pixelSpacing, pixelSpacingX, pixelSpacingY;
-@property(readonly) DCMPix *curDCM;
+@property(readonly, strong) DCMPix *curDCM;
 @property(retain) DCMExportPlugin *dcmExportPlugin;
 @property(readonly) float mouseXPos, mouseYPos;
 @property(readonly) float contextualMenuInWindowPosX, contextualMenuInWindowPosY;

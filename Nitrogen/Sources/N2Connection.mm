@@ -242,11 +242,11 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	[_outputBuffer setLength:0];
     _outputBufferIndex = 0;
 	
-    NSHost* host = [_address isKindOfClass:[NSHost class]]? _address : [NSHost hostWithAddressOrName:_address];
+    NSString *hostname = [_address isKindOfClass:[NSHost class]]? [_address address] : _address;
     
 	[self setStatus:N2ConnectionStatusConnecting];
     
-	[NSStream getStreamsToHost:host port:_port inputStream:&_inputStream outputStream:&_outputStream];
+	[NSStream getStreamsToHostWithName:hostname port:_port inputStream:&_inputStream outputStream:&_outputStream];
 	[_inputStream retain]; [_outputStream retain];
 	
 	[self open];

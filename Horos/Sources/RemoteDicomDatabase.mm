@@ -65,7 +65,17 @@
 
 @end
 
+@interface RemoteDicomDatabaseManagedObjectContext : N2ManagedObjectContext
+
+@property BOOL cleanOnDealloc;
+
+@end
+
 @implementation RemoteDicomDatabase
+
+- (Class)NSManagedObjectContextClass {
+    return RemoteDicomDatabaseManagedObjectContext.class;
+}
 
 +(RemoteDicomDatabase*)databaseForLocation:(NSString*)location port:(NSUInteger)port name:(NSString*)name update:(BOOL)flagUpdate {
 	NSHost* host;
@@ -169,6 +179,10 @@
 
 -(BOOL)isLocal {
 	return NO;
+}
+
+- (BOOL)saveDatabaseModel {
+    return NO;
 }
 
 -(void)_updateTimerCallback {
@@ -334,7 +348,7 @@
 
 @synthesize password;
 
--(NSString*)fetchDatabaseIndex {
+- (NSString *)fetchDatabaseIndex {
 	NSThread* thread = [NSThread currentThread];
 	thread.status = NSLocalizedString(@"Negotiating...", nil);
 	
@@ -367,15 +381,15 @@
 	[thread enterOperation];
 	thread.status = NSLocalizedString(@"Transferring database index...", nil);
 	
-	NSString* path = [NSFileManager.defaultManager tmpFilePathInDir:self.baseDirPath];
-	NSOutputStream* fileStream = [NSOutputStream outputStreamToFileAtPath:path append:NO];
+	NSString *path = [NSFileManager.defaultManager tmpFilePathInDir:self.baseDirPath];
+	NSOutputStream *fileStream = [NSOutputStream outputStreamToFileAtPath:path append:NO];
 	[fileStream open];
 	
 	NSData* request = [NSMutableData dataWithBytes:"DATAB" length:6];
 	NSArray* context = [NSArray arrayWithObjects: thread, [NSNumber numberWithUnsignedInteger:databaseIndexSize], fileStream, [N2MutableUInteger mutableUIntegerWithUInteger:0], nil];
 	[self synchronousRequest:request urgent:YES dataHandlerTarget:self selector:@selector(_connection:handleData_fetchDatabaseIndex:context:) context:context];
 	
-	[fileStream close];
+    [fileStream close];
 	[thread exitOperation];
 	
 	if (thread.isCancelled)
@@ -428,11 +442,11 @@
 	return [RemoteDicomDatabase fetchDicomDestinationInfoForAddress:self.address port:self.port];
 }
 
--(void)updateOnMainThread: (NSString*) path
+- (void)updateOnMainThread:(NSString *)path
 {
     [_updateLock lock];
 
-    NSManagedObjectContext* context = [self contextAtPath:path];
+    NSManagedObjectContext *context = [self contextAtPath:path];
     
     NSPersistentStoreCoordinator *cc = context.persistentStoreCoordinator;
     NSPersistentStoreCoordinator *c = self.managedObjectContext.persistentStoreCoordinator;
@@ -447,10 +461,10 @@
         
         [_sqlFileName release];
         _sqlFileName = [[path lastPathComponent] retain];
-        NSString* oldSqlFilePath = [_sqlFilePath autorelease];
+        /*NSString* oldSqlFilePath =*/ [_sqlFilePath autorelease];
         _sqlFilePath = [path retain];
         
-        NSManagedObjectContext *previousContext = self.managedObjectContext;
+        RemoteDicomDatabaseManagedObjectContext *previousContext = (id)self.managedObjectContext;
         [[previousContext retain] autorelease];
         
         [[BrowserController currentBrowser] willChangeContext];
@@ -461,8 +475,8 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:_O2AddToDBAnywayNotification object:self];
         [[NSNotificationCenter defaultCenter] postNotificationName:OsirixDicomDatabaseDidChangeContextNotification object:self];
         
-        // delete old index file
-        [NSFileManager.defaultManager removeItemAtPath:oldSqlFilePath error:NULL];
+        // delete old index file(s)
+        previousContext.cleanOnDealloc = YES;
         
         if (!_updateTimer) {
             _updateTimer = [NSTimer timerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"DatabaseRefreshInterval"] target:[RemoteDicomDatabase class] selector:@selector(_updateTimerCallbackClass:) userInfo:[NSValue valueWithPointer:self] repeats:YES];
@@ -494,7 +508,7 @@
 		
 		_timestamp = [self fetchDatabaseTimestamp];
 		
-		[self performSelectorOnMainThread: @selector( updateOnMainThread:) withObject: path waitUntilDone: NO];
+        [self performSelectorOnMainThread:@selector(updateOnMainThread:) withObject:path waitUntilDone:NO];
 		
 	} @catch (NSException* e) {
 		@throw;
@@ -680,7 +694,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 
 }
 
--(NSString*)cacheDataForImage:(DicomImage*)image maxFiles:(NSInteger) maxFiles
+- (NSString*)cacheDataForImage:(DicomImage *)image maxFiles:(NSInteger)maxFiles
 {
     if( image == nil)
     {
@@ -915,6 +929,24 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 }
 
 -(void)addDefaultAlbums { // do nothing
+}
+
+@end
+
+
+@implementation RemoteDicomDatabaseManagedObjectContext
+
+- (void)dealloc {
+    if (self.cleanOnDealloc)
+        if (NSURL *url = self.persistentStoreCoordinator.persistentStores.firstObject.URL)
+            [self.class performSelector:@selector(postDealloc:) withObject:url afterDelay:0];
+
+    
+    [super dealloc];
+}
+
++ (void)postDealloc:(NSURL *)url {
+    [[NSFileManager defaultManager] removeItemAtURL:url error:NULL];
 }
 
 @end

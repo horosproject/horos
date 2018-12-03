@@ -1336,7 +1336,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 @interface DCMPix ()
 
-@property(readwrite,retain) DCMWaveform* waveform;
+@property(strong) DCMWaveform *waveform;
 
 @end
 
@@ -1358,7 +1358,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize serieNo, pixArray, pixPos, transferFunctionPtr;
 @synthesize stackMode, generated, generatedName, imageObjectID;
 
-@synthesize srcFile;
+@synthesize srcFile = _srcFile;
 
 @synthesize annotationsDictionary, annotationsDBFields, yearOld, yearOldAcquisition;
 
@@ -3422,7 +3422,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
     orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
     orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
-    srcFile = nil;
+    self.srcFile = nil;
     generated = YES;
     self.rescaleType = @"";
     
@@ -3642,7 +3642,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     if( self = [super init])
     {
         //-------------------------received parameters
-        srcFile = [s retain];
+        self.srcFile = s;
         
         [iO.managedObjectContext lock];
         @try
@@ -3705,13 +3705,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     return [self initWithPath: s :pos :tot :ptr :f :ss isBonjour:NO imageObj: nil];
 }
 
-- (id) copyWithZone:(NSZone *)zone
+- (id)copyWithZone:(NSZone *)zone
 {
-    DCMPix *copy = [[DCMPix allocWithZone: zone] init];
-    if( copy == nil)
+    DCMPix *copy = [[DCMPix allocWithZone:zone] init];
+    if (!copy)
         return nil;
     
-    copy->srcFile = [self->srcFile retain];
+    copy->_srcFile = [self->_srcFile retain];
     copy->imageObjectID = [self->imageObjectID retain];
     copy->URIRepresentationAbsoluteString = [self->URIRepresentationAbsoluteString retain];
     copy->fileTypeHasPrefixDICOM = self->fileTypeHasPrefixDICOM;
@@ -3799,7 +3799,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 -(void) LoadBioradPic
 {
-    FILE		*fp = fopen( [srcFile UTF8String], "r");
+    FILE		*fp = fopen(self.srcFile.UTF8String, "r");
     long		i;
     
     //NSLog(@"Handling Biorad PIC File in CheckLoad");
@@ -4032,7 +4032,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     
     isRGB = NO;
     
-    TIFF* tif = TIFFOpen([srcFile UTF8String], "r");
+    TIFF* tif = TIFFOpen(self.srcFile.UTF8String, "r");
     if( tif)
     {
         count = 0;
@@ -4380,7 +4380,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     short head_size = 0;
     char* head_data = 0;
     int NoOfFrames = 1, NoOfSeries = 1;
-    TIFF* tif = TIFFOpen([srcFile UTF8String], "r");
+    TIFF* tif = TIFFOpen(self.srcFile.UTF8String, "r");
     if(tif)
         success = TIFFGetField(tif, TIFFTAG_FV_MMHEADER, &head_size, &head_data);
     if (success)
@@ -4440,7 +4440,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     // This function has been modified twice by Greg Jefferis on 9 June 2004
     // early am and late pm respectively.  After the second iteration it has been
     // tested on new and old style 16 and 8 bit LSM tiff files.  Comments?
-    FILE *fp = fopen( [srcFile UTF8String], "r");
+    FILE *fp = fopen(self.srcFile.UTF8String, "r");
     int	i,it = 0;
     int	nextoff = 0;
     int counter = 0;
@@ -5817,7 +5817,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 - (BOOL)loadDICOMDCMFramework
 {
     // Memory test: DCMFramework requires a lot of memory...
-    unsigned long long fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath: srcFile error: nil] fileSize];
+    unsigned long long fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath:self.srcFile error:NULL] fileSize];
     fileSize *= 1.5;
     
     void *memoryTest = malloc( fileSize);
@@ -5844,21 +5844,21 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     
     @try
     {
-        if( [cachedDCMFrameworkFiles objectForKey: srcFile])
+        if( [cachedDCMFrameworkFiles objectForKey:self.srcFile])
         {
-            NSMutableDictionary *dic = [cachedDCMFrameworkFiles objectForKey: srcFile];
+            NSMutableDictionary *dic = [cachedDCMFrameworkFiles objectForKey:self.srcFile];
             
             dcmObject = [dic objectForKey: @"dcmObject"];
             
             if( retainedCacheGroup != nil)
-                NSLog( @"******** DCMPix : retainedCacheGroup 3 != nil ! %@", srcFile);
+                NSLog( @"******** DCMPix : retainedCacheGroup 3 != nil ! %@", self.srcFile);
             
             [dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
             retainedCacheGroup = dic;
         }
         else
         {
-            dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+            dcmObject = [DCMObject objectWithContentsOfFile:self.srcFile decodingPixelData:NO];
             
             if( dcmObject)
             {
@@ -5866,12 +5866,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 
                 [dic setValue: dcmObject forKey: @"dcmObject"];
                 if( retainedCacheGroup != nil)
-                    NSLog( @"******** DCMPix : retainedCacheGroup 4 != nil ! %@", srcFile);
+                    NSLog( @"******** DCMPix : retainedCacheGroup 4 != nil ! %@", self.srcFile);
                 
                 [dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
                 retainedCacheGroup = dic;
                 
-                [cachedDCMFrameworkFiles setObject: dic forKey: srcFile];
+                [cachedDCMFrameworkFiles setObject:dic forKey:self.srcFile];
             }
         }
     }
@@ -5943,14 +5943,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         {
             [[NSFileManager defaultManager] confirmDirectoryAtPath:@"/tmp/dicomsr_osirix/"];
             
-            NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [srcFile lastPathComponent]] stringByAppendingPathExtension: @"xml"];
+            NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent:self.srcFile.lastPathComponent] stringByAppendingPathExtension: @"xml"];
             
             if( [[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
             {
                 NSTask *aTask = [[[NSTask alloc] init] autorelease];
                 [aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
                 [aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
-                [aTask setArguments: [NSArray arrayWithObjects: @"+X1", @"--unknown-relationship", @"--ignore-constraints", @"--ignore-item-errors", @"--skip-invalid-items",srcFile, htmlpath, nil]];
+                [aTask setArguments: [NSArray arrayWithObjects: @"+X1", @"--unknown-relationship", @"--ignore-constraints", @"--ignore-item-errors", @"--skip-invalid-items",self.srcFile, htmlpath, nil]];
                 [aTask launch];
                 while( [aTask isRunning])
                     [NSThread sleepForTimeInterval: 0.1];
@@ -6928,7 +6928,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     {
         if( fImage)
         {
-            NSMutableDictionary *cachedGroupsForThisFile = [cachedDCMFrameworkFiles valueForKey: srcFile];
+            NSMutableDictionary *cachedGroupsForThisFile = [cachedDCMFrameworkFiles valueForKey:self.srcFile];
             
             if( cachedGroupsForThisFile && retainedCacheGroup == cachedGroupsForThisFile)
             {
@@ -6937,7 +6937,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 
                 if( [[cachedGroupsForThisFile objectForKey: @"count"] intValue] <= 0)
                 {
-                    [cachedDCMFrameworkFiles removeObjectForKey: srcFile];
+                    [cachedDCMFrameworkFiles removeObjectForKey:self.srcFile];
                 }
             }
         }
@@ -6956,7 +6956,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     
     @try
     {
-        NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: srcFile];
+        NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey:self.srcFile];
         if( cachedGroupsForThisFile && retainedCacheGroup == cachedGroupsForThisFile)
         {
             [cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile objectForKey: @"count"] intValue]-1] forKey: @"count"];
@@ -7179,32 +7179,30 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         
         if( runOsiriXInProtectedMode) return;
         
-        if( srcFile == nil) return;
+        if (!self.srcFile) return;
         
         if( isBonjour)
         {
 #ifdef OSIRIX_VIEWER
             // LOAD THE FILE FROM BONJOUR SHARED DATABASE
             
-            [srcFile release];
-            srcFile = nil;
+            self.srcFile = nil;
             
             if( [NSThread isMainThread])
             {
-                srcFile = [[BrowserController currentBrowser] getLocalDCMPath: [[[BrowserController currentBrowser] database] objectWithID: imageObjectID] :0];
+                self.srcFile = [[BrowserController currentBrowser] getLocalDCMPath: [[[BrowserController currentBrowser] database] objectWithID: imageObjectID] :0];
             }
             else
             {
-                srcFile = [[BrowserController currentBrowser] getLocalDCMPath: [[[[BrowserController currentBrowser] database] independentContext] existingObjectWithID: imageObjectID error: nil] :0];
-                [srcFile retain];
+                self.srcFile = [[BrowserController currentBrowser] getLocalDCMPath: [[[[BrowserController currentBrowser] database] independentContext] existingObjectWithID: imageObjectID error: nil] :0];
             }
             
-            if( srcFile == nil)
+            if(self.srcFile == nil)
                 return;
 #endif
         }
         
-        if( [self isDICOMFile: srcFile])
+        if( [self isDICOMFile:self.srcFile])
         {
             // PLEASE, KEEP BOTH FUNCTIONS FOR TESTING PURPOSE. THANKS
             NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -7231,7 +7229,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                             [URIRepresentationAbsoluteString writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
                             
                             //only try again if it's strict DICOM
-                            if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile: srcFile]])
+                            if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile:self.srcFile]])
                             {
                                 success = [self loadDICOMDCMFramework];
                             }
@@ -7252,7 +7250,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     success = [self loadDICOMDCMFramework];
                     
                     if (success == NO &&
-                        [DCMObject isDICOM:[NSData dataWithContentsOfFile:srcFile]]) {
+                        [DCMObject isDICOM:[NSData dataWithContentsOfFile:self.srcFile]]) {
                         success = [self loadDICOMPapyrus];
                     }
                 }
@@ -7266,7 +7264,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
             {
                 NSLog( @"CheckLoadIn Exception");
                 NSLog( @"%@", [e description]);
-                NSLog( @"Exception for this file: %@", srcFile);
+                NSLog( @"Exception for this file: %@", self.srcFile);
                 success = NO;
             }
             
@@ -7278,17 +7276,17 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         if( success == NO)	// Is it a NON-DICOM IMAGE ??
         {
             NSImage		*otherImage = nil;
-            NSString	*extension = [[srcFile pathExtension] lowercaseString];
+            NSString	*extension = [[self.srcFile pathExtension] lowercaseString];
             
 #ifdef OSIRIX_VIEWER
             id fileFormatBundle;
-            if ((fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:[srcFile pathExtension]]))
+            if ((fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:[self.srcFile pathExtension]]))
             {
                 PluginFileFormatDecoder *decoder = [[[fileFormatBundle principalClass] alloc] init];
                 
                 [PluginManager startProtectForCrashWithFilter: decoder];
                 
-                fImage = [decoder checkLoadAtPath:srcFile];
+                fImage = [decoder checkLoadAtPath:self.srcFile];
                 //NSLog(@"decoder width %d", [decoder width]);
                 width = [[decoder width] intValue];
                 //width = 832;
@@ -7306,7 +7304,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 if( [extension isEqualToString:@"zip"])
                 {
                     // the ZIP icon
-                    NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFile:srcFile];
+                    NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFile:self.srcFile];
                     // make it big
                     [icon setSize:NSMakeSize(128,128)];
                     
@@ -7361,13 +7359,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 {
                     [self LoadBioradPic];
                 }
-                else if( [DicomFile isFVTiffFile:srcFile])
+                else if( [DicomFile isFVTiffFile:self.srcFile])
                 {
                     [self LoadFVTiff];
                 }
 #ifndef DECOMPRESS_APP
                 else if( (( [extension isEqualToString:@"hdr"]) &&
-                          ([[NSFileManager defaultManager] fileExistsAtPath:[[srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]] == YES)) ||
+                          ([[NSFileManager defaultManager] fileExistsAtPath:[[self.srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]] == YES)) ||
                         ( [extension isEqualToString:@"nii"]))
                 {
                     // NIfTI support developed by Zack Mahdavi at the Center for Neurological Imaging, a division of Harvard Medical School
@@ -7379,7 +7377,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     NSData			*fileData;
                     BOOL			swapByteOrder = NO;
                     
-                    NIfTI = (nifti_1_header *) nifti_read_header([srcFile UTF8String], nil, 0);
+                    NIfTI = (nifti_1_header *) nifti_read_header([self.srcFile UTF8String], nil, 0);
                     
                     // Verify that this file should be treated as a NIfTI file.  If magic is not set to anything, we must assume it is analyze.
                     if( (NIfTI->magic[0] == 'n')                           &&
@@ -7403,7 +7401,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         short sform_code = NIfTI->sform_code;
                         
                         // Read img file or read nii file after vox_offset
-                        nifti_imagedata = nifti_image_read([srcFile UTF8String], 1);
+                        nifti_imagedata = nifti_image_read([self.srcFile UTF8String], 1);
                         
                         if( (NIfTI->magic[0] == 'n')    &&
                            (NIfTI->magic[1] == 'i')	&&
@@ -7411,7 +7409,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                            (NIfTI->magic[3] == '\0'))
                         {
                             // This is a "two file" nifti file.  Image file is separated from header.
-                            fileData = [[NSData alloc] initWithContentsOfFile: [[srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]];
+                            fileData = [[NSData alloc] initWithContentsOfFile: [[self.srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]];
                         }
                         else
                         {
@@ -7795,9 +7793,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                     }
                     else if( [extension isEqualToString:@"hdr"]) // 'old' ANALYZE
                     {
-                        if ([[NSFileManager defaultManager] fileExistsAtPath:[[srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]] == YES)
+                        if ([[NSFileManager defaultManager] fileExistsAtPath:[[self.srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]] == YES)
                         {
-                            NSData		*file = [NSData dataWithContentsOfFile: srcFile];
+                            NSData		*file = [NSData dataWithContentsOfFile: self.srcFile];
                             
                             if( [file length] == 348)
                             {
@@ -7837,7 +7835,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                                 totSize = height * width * 2;
                                 oImage = malloc( totSize);
                                 
-                                fileData = [[NSData alloc] initWithContentsOfFile: [[srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]];
+                                fileData = [[NSData alloc] initWithContentsOfFile: [[self.srcFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]];
                                 
                                 short datatype = Analyze->dime.datatype;
                                 if( swapByteOrder) datatype = Endian16_Swap( datatype);
@@ -7977,7 +7975,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                         [extension isEqualToString:@"png"] ||
                         [extension isEqualToString:@"gif"])
                 {
-                    otherImage = [[NSImage alloc] initWithContentsOfFile: srcFile];
+                    otherImage = [[NSImage alloc] initWithContentsOfFile: self.srcFile];
                 }
             
                 else if( [extension isEqualToString:@"tiff"] ||
@@ -7986,7 +7984,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 {
 #ifndef STATIC_DICOM_LIB
                     
-                    TIFF* tif = TIFFOpen([srcFile UTF8String], "r");
+                    TIFF* tif = TIFFOpen([self.srcFile UTF8String], "r");
                     if( tif)
                     {
                         short   bpp, count, tifspp;
@@ -8011,7 +8009,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 #endif
                     if( USECUSTOMTIFF == NO)
                     {
-                        otherImage = [[NSImage alloc] initWithContentsOfFile: srcFile];
+                        otherImage = [[NSImage alloc] initWithContentsOfFile: self.srcFile];
                     }
                 }
             
@@ -8050,7 +8048,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                    [extension isEqualToString:@"avi"])
                 {
                     NSError *error = nil;
-                    AVAsset *asset = [AVAsset assetWithURL: [NSURL fileURLWithPath: srcFile]];
+                    AVAsset *asset = [AVAsset assetWithURL: [NSURL fileURLWithPath: self.srcFile]];
                     AVAssetReader *asset_reader = [[[AVAssetReader alloc] initWithAsset: asset error: &error] autorelease];
                     
                     NSArray* video_tracks = [asset tracksWithMediaType: AVMediaTypeVideo];
@@ -8131,7 +8129,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         
         if( fImage == nil)
         {
-            NSLog(@"not able to load the image : %@", srcFile);
+            NSLog(@"not able to load the image : %@", self.srcFile);
             
             if( fExternalOwnedImage)
                 fImage = fExternalOwnedImage;
@@ -8185,7 +8183,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         {
             NSLog( @"CheckLoad Exception");
             NSLog( @"Exception : %@", [ne description]);
-            NSLog( @"Exception for this file: %@", srcFile);
+            NSLog( @"Exception for this file: %@", self.srcFile);
         }
         @finally {
             [checking unlock];
@@ -8211,7 +8209,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         {
             NSLog( @"CheckLoad Exception");
             NSLog( @"Exception : %@", [ne description]);
-            NSLog( @"Exception for this file: %@", srcFile);
+            NSLog( @"Exception for this file: %@", self.srcFile);
         }
         @finally {
             [checking unlock];
@@ -9042,15 +9040,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     needToCompute8bitRepresentation = YES;
 }
 
-- (void)setSourceFile:(NSString*)s
-{
-    [srcFile release];
-    srcFile = [s retain];
+- (void)setSourceFile:(NSString *)s {
+    self.srcFile = s;
 }
 
--(NSString*) sourceFile
-{
-    return srcFile;
+- (NSString *)sourceFile {
+    return self.srcFile;
 }
 
 - (void) ConvertToBW:(long) mode
@@ -10433,12 +10428,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     {
         if( self.dcmtkDcmFileFormat)
         {
-            NSMutableDictionary *dic = [cachedDCMTKFileFormat objectForKey: srcFile];
+            NSMutableDictionary *dic = [cachedDCMTKFileFormat objectForKey: self.srcFile];
             
             [dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]-1] forKey: @"count"];
             
             if( [[dic objectForKey: @"count"] intValue] == 0)
-                [cachedDCMTKFileFormat removeObjectForKey: srcFile];
+                [cachedDCMTKFileFormat removeObjectForKey: self.srcFile];
             
             self.dcmtkDcmFileFormat = nil;
         }
@@ -10520,7 +10515,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     [self clearCachedPapyGroups];
     [self clearCachedDCMFrameworkFiles];
     
-    [srcFile release];
+    [_srcFile release];
+    _srcFile = nil;
+    
     [checking unlock];
     [checking release];
     checking = nil;
@@ -10610,7 +10607,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     NSMutableString *description = [NSMutableString string];
     [description appendString:NSStringFromClass([self class])];
     [description appendString:[NSString stringWithFormat:@" <%lx>", (unsigned long) self]];
-    [description appendString:[NSString stringWithFormat: @" source File: %@\n", srcFile]];
+    [description appendString:[NSString stringWithFormat: @" source File: %@\n", self.srcFile]];
     [description appendString:[NSString stringWithFormat: @"core Data Image ID: %@\n", imageObjectID]];
     [description appendString:[NSString stringWithFormat: @"width: %d\n", (int) width]];
     [description appendString:[NSString stringWithFormat: @"height: %d\n", (int) height]];

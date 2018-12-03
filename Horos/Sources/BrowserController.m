@@ -2945,7 +2945,7 @@ static NSConditionLock *threadLock = nil;
         DataNodeIdentifier* bs = [self sourceIdentifierAtRow: [_sourcesTableView selectedRow]];
         
         if( bs)
-            description = [description stringByAppendingFormat:NSLocalizedString(@"%@: %@ / ", nil), [_database isLocal] ? NSLocalizedString( @"Local Database: ", nil) : NSLocalizedString( @"Distant Database: ", nil), [bs description]];
+            description = [description stringByAppendingFormat:NSLocalizedString(@"%@: %@ / ", nil), [_database isLocal] ? NSLocalizedString( @"Local Database", nil) : NSLocalizedString( @"Remote Database", nil), [bs description]];
     }
     
     // ********************
@@ -4970,7 +4970,7 @@ static NSConditionLock *threadLock = nil;
     }
 }
 
-- (void)outlineViewSelectionDidChange: (NSNotification *)aNotification
+- (void)outlineViewSelectionDidChange:(NSNotification *)aNotification
 {
     if( [NSThread isMainThread] == NO)
         N2LogStackTrace( @"***** We must be on MAIN thread");
@@ -14410,7 +14410,7 @@ static NSArray*	openSubSeriesArray = nil;
             N2LogExceptionWithStackTrace(ne);
             [@"" writeToFile:_database.loadingFilePath atomically:NO encoding:NSUTF8StringEncoding error:NULL];
             
-            NSString *message = [NSString stringWithFormat: NSLocalizedString(@"A problem occured during start-up of OsiriX:\r\r%@\r\r%@",nil), [ne description], [AppController printStackTrace: ne]];
+            NSString *message = [NSString stringWithFormat: NSLocalizedString(@"A problem occured during start-up of Horos:\r\r%@\r\r%@",nil), [ne description], [AppController printStackTrace: ne]];
             
             NSRunCriticalAlertPanel(NSLocalizedString(@"Error",nil), @"%@", NSLocalizedString( @"OK",nil), nil, nil, message);
             

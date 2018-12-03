@@ -298,7 +298,7 @@ enum {
                 [self reset];
                 
                 self.connectionStatus = ConnectionStatusConnecting;
-                [NSStream getStreamsToHost:[NSHost hostWithName:self.client.address] port:port.integerValue inputStream:&_istream outputStream:&_ostream];
+                [NSStream getStreamsToHostWithName:self.client.address port:port.integerValue inputStream:&_istream outputStream:&_ostream];
                 [_istream retain];
                 [_ostream retain];
                 [_istream setDelegate:self];

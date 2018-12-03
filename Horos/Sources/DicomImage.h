@@ -53,7 +53,7 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 
 @interface DicomImage : NSManagedObject
 {
-	NSString	*completePathCache;
+	NSString *_completePathCache;
 	
 	NSString	*sopInstanceUID;
 	NSNumber	*inDatabaseFolder;
