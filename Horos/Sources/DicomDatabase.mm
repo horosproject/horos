@@ -643,7 +643,7 @@ static DicomDatabase* activeLocalDatabase = nil;
     return _name? _name : [NSString stringWithFormat:NSLocalizedString(@"Local Database (%@)", nil), self.baseDirPath];
 }
 
--(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath {
+- (NSManagedObjectContext *)contextAtPath:(NSString *)sqlFilePath {
     // custom migration
     
     NSManagedObjectContext* context = nil;
@@ -651,7 +651,7 @@ static DicomDatabase* activeLocalDatabase = nil;
     BOOL rebuildPatientUIDs = NO;
     BOOL independentContext = YES;
     
-    if (!self.managedObjectContext)
+    if (!self.managedObjectContext || ![sqlFilePath isEqualToString:self.managedObjectContext.persistentStoreCoordinator.persistentStores.firstObject.URL.path])
         independentContext = NO;
     
     if( independentContext == NO) // avoid doing this for independent contexts: we know it's already ok, and this leads to very bad crashes

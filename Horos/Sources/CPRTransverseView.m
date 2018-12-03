@@ -261,7 +261,7 @@ extern int splitPosition[ 3];
 
 - (float) pixelsPerMm
 {
-    return (CGFloat)curDCM.pwidth/(_sectionWidth / _renderingScale);
+    return (CGFloat)self.curDCM.pwidth/(_sectionWidth / _renderingScale);
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent
@@ -278,17 +278,17 @@ extern int splitPosition[ 3];
 	{
 		viewPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 		
-		if (NSPointInRect(viewPoint, self.bounds) && curDCM.pwidth > 0)
+		if (NSPointInRect(viewPoint, self.bounds) && self.curDCM.pwidth > 0)
 		{
 			pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
 			pixelsPerMm = self.pixelsPerMm;
 		
-			line = N3LineMake(N3VectorMake((CGFloat)curDCM.pwidth / 2.0, 0, 0), N3VectorMake(0, 1, 0));
+			line = N3LineMake(N3VectorMake((CGFloat)self.curDCM.pwidth / 2.0, 0, 0), N3VectorMake(0, 1, 0));
 			line = N3LineApplyTransform(line, N3AffineTransformInvert([self viewToPixTransform]));
 			
 			if (N3VectorDistanceToLine(N3VectorMakeFromNSPoint(viewPoint), line) < 20.0) {
 				newMouseTransverseSectionType = _sectionType;
-				newMouseTransverseSectionDistance = (pixVector.y - (CGFloat)curDCM.pheight/2.0) / pixelsPerMm;
+				newMouseTransverseSectionDistance = (pixVector.y - (CGFloat)self.curDCM.pheight/2.0) / pixelsPerMm;
 			} else {
 				newMouseTransverseSectionType = CPRTransverseViewNoneSectionType;
 				newMouseTransverseSectionDistance = 0;
@@ -472,7 +472,7 @@ extern int splitPosition[ 3];
 		ROI *r = [rArray objectAtIndex:i];
 		
 		r.displayCMOrPixels = YES; // We don't want the value in pixels
-		r.imageOrigin = NSMakePoint( curDCM.originX, curDCM.originY);
+		r.imageOrigin = NSMakePoint( self.curDCM.originX, self.curDCM.originY);
 		
 		if( r.type == t3Dpoint || r.type == t2DPoint)
 		{
@@ -506,8 +506,8 @@ extern int splitPosition[ 3];
 //	if( displayCrossLines && _reformationDisplayStyle == CPRTransverseViewStraightenedReformationDisplayStyle)
 //	{
 //		glColor4d(1.0, 1.0, 0.0, 1.0);
-//		lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, 0, 0), pixToSubDrawRectTransform);
-//		lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
+//		lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)self.curDCM.pwidth/2.0, 0, 0), pixToSubDrawRectTransform);
+//		lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)self.curDCM.pwidth/2.0, self.curDCM.pheight, 0), pixToSubDrawRectTransform);
 //		glLineWidth(1.0 * self.window.backingScaleFactor);
 //		glBegin(GL_LINE_STRIP);
 //		glVertex2f(lineStart.x, lineStart.y);
@@ -518,12 +518,12 @@ extern int splitPosition[ 3];
 //		{
 //			glLineWidth(1.0 * self.window.backingScaleFactor);
 //			glBegin(GL_LINES);
-//			lineStart = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
-//			lineEnd = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
+//			lineStart = N3VectorApplyTransform(N3VectorMake(((CGFloat)self.curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
+//			lineEnd = N3VectorApplyTransform(N3VectorMake(((CGFloat)self.curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, self.curDCM.pheight, 0), pixToSubDrawRectTransform);
 //			glVertex2f(lineStart.x, lineStart.y);
 //			glVertex2f(lineEnd.x, lineEnd.y);
-//			lineStart = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
-//			lineEnd = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
+//			lineStart = N3VectorApplyTransform(N3VectorMake(((CGFloat)self.curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
+//			lineEnd = N3VectorApplyTransform(N3VectorMake(((CGFloat)self.curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, self.curDCM.pheight, 0), pixToSubDrawRectTransform);
 //			glVertex2f(lineStart.x, lineStart.y);
 //			glVertex2f(lineEnd.x, lineEnd.y);
 //			glEnd();
@@ -531,7 +531,7 @@ extern int splitPosition[ 3];
 //	}
     
     if( [[self windowController] displayMousePosition] == YES && _displayInfo.mouseTransverseSection == _sectionType) {
-        cursorVector = N3VectorMake(((CGFloat)curDCM.pwidth)/2.0, ((CGFloat)curDCM.pheight/2.0)+(_displayInfo.mouseTransverseSectionDistance*pixelsPerMm), 0);
+        cursorVector = N3VectorMake(((CGFloat)self.curDCM.pwidth)/2.0, ((CGFloat)self.curDCM.pheight/2.0)+(_displayInfo.mouseTransverseSectionDistance*pixelsPerMm), 0);
         cursorVector = N3VectorApplyTransform(cursorVector, pixToSubDrawRectTransform);
         
         glColor4d(1.0, 1.0, 0.0, 1.0);
@@ -665,8 +665,8 @@ extern int splitPosition[ 3];
 		NSArray *roiArray = [NSUnarchiver unarchiveObjectWithData: previousROIs];
 		for( ROI *r in roiArray)
 		{
-			r.pix = curDCM;
-			[r setOriginAndSpacing :curDCM.pixelSpacingX : curDCM.pixelSpacingY :NSMakePoint( curDCM.originX, curDCM.originY) :NO :NO];
+			r.pix = self.curDCM;
+			[r setOriginAndSpacing :self.curDCM.pixelSpacingX : self.curDCM.pixelSpacingY :NSMakePoint( self.curDCM.originX, self.curDCM.originY) :NO :NO];
 			[r setCurView:self];
 		}
 		

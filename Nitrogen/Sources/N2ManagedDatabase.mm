@@ -54,9 +54,16 @@ static int gTotalN2ManagedObjectContext = 0;
 
 #define N2PersistentStoreCoordinator NSPersistentStoreCoordinator // for debug purposes, disable this #define and enable the commented N2PersistentStoreCoordinator implementation
 
+@interface N2ManagedObjectContext ()
+
+@property (strong) N2ManagedObjectContext *confinementParentContext;
+
+@end
+
 @implementation N2ManagedObjectContext
 
 @synthesize database = _database;
+@synthesize confinementParentContext = _confinementParentContext;
 
 - (id)initWithDatabase:(N2ManagedDatabase *)db concurrencyType:(NSManagedObjectContextConcurrencyType)ct
 {
@@ -64,7 +71,7 @@ static int gTotalN2ManagedObjectContext = 0;
         return nil;
     
     _database = db;
-    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector( N2ManagedDatabaseDealloced:) name: @"N2ManagedDatabaseDealloced" object: db];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(N2ManagedDatabaseDealloced:) name:@"N2ManagedDatabaseDealloced" object:db];
     
 #ifndef NDEBUG
     gTotalN2ManagedObjectContext++;
@@ -89,9 +96,13 @@ static int gTotalN2ManagedObjectContext = 0;
     
     gTotalN2ManagedObjectContext--;
 #endif
+    
     [NSNotificationCenter.defaultCenter removeObserver:self];
-	_database = nil;
-	[super dealloc]; //test if db is deallocated
+
+    self.confinementParentContext = nil;
+    _database = nil;
+	
+    [super dealloc]; //test if db is deallocated
 }
 
 -(BOOL)save:(NSError**)error {
@@ -282,13 +293,17 @@ static int gTotalN2ManagedObjectContext = 0;
     self.managedObjectContext = self.isMainDatabase? [self contextAtPath: self.sqlFilePath] : [self.mainDatabase contextAtPath: self.sqlFilePath];
 }
 
--(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath {
+- (Class)NSManagedObjectContextClass {
+    return N2ManagedObjectContext.class;
+}
+
+- (NSManagedObjectContext *)contextAtPath:(NSString *)sqlFilePath {
 	sqlFilePath = sqlFilePath.stringByExpandingTildeInPath;
 	
     if( sqlFilePath.length == 0)
         return nil;
     
-    N2ManagedObjectContext* moc = [[[N2ManagedObjectContext alloc] initWithDatabase:self concurrencyType:NSConfinementConcurrencyType] autorelease];
+    N2ManagedObjectContext *moc = [[[self.NSManagedObjectContextClass alloc] initWithDatabase:self concurrencyType:NSConfinementConcurrencyType] autorelease];
     //	NSLog(@"---------- NEW %@ at %@", moc, sqlFilePath);
 	moc.undoManager = nil;
 	
@@ -299,8 +314,10 @@ static int gTotalN2ManagedObjectContext = 0;
     //        if (self.managedObjectContext.hasChanges)
     //            [self save];
             
-            if ([sqlFilePath isEqualToString:self.sqlFilePath] && [NSFileManager.defaultManager fileExistsAtPath:sqlFilePath])
+            if ([sqlFilePath isEqualToString:self.sqlFilePath] && [NSFileManager.defaultManager fileExistsAtPath:sqlFilePath]) {
+                moc.confinementParentContext = (id)self.managedObjectContext; // just for retain purpose
                 moc.persistentStoreCoordinator = self.managedObjectContext.persistentStoreCoordinator;
+            }
             
             if (!moc.persistentStoreCoordinator) {
                 //			moc.persistentStoreCoordinator = [persistentStoreCoordinatorsDictionary objectForKey:sqlFilePath];
@@ -317,13 +334,10 @@ static int gTotalN2ManagedObjectContext = 0;
                     NSString *localModelsPath = [[sqlFilePath stringByDeletingPathExtension] stringByAppendingPathExtension: @"momd"];
                     NSManagedObjectModel *models = self.managedObjectModel;
                     
-                    @try
-                    {
+                    if ([[NSFileManager defaultManager] fileExistsAtPath:localModelsPath]) @try {
                         NSManagedObjectModel *localModels = [[[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: localModelsPath]] autorelease]; //Forward compatibility !
                         models = [NSManagedObjectModel modelByMergingModels: [NSArray arrayWithObjects: self.managedObjectModel, localModels, nil]]; //warning localModels can be nil: put it at last position
-                    }
-                    @catch (NSException *exception)
-                    {
+                    } @catch (NSException *exception) {
                         models = self.managedObjectModel;
                     }
                     
@@ -337,10 +351,13 @@ static int gTotalN2ManagedObjectContext = 0;
                         ++i;
                         
                         NSError* err = nil;
-                        NSDictionary* options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:[self migratePersistentStoresAutomatically]], NSMigratePersistentStoresAutomaticallyOption, [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+                        NSDictionary* options = @{ NSInferMappingModelAutomaticallyOption: @YES,
+                                                   NSMigratePersistentStoresAutomaticallyOption: @([self migratePersistentStoresAutomatically]),
+                                                   NSSQLitePragmasOption: @{ @"journal_mode": @"delete" } };
                         NSURL* url = [NSURL fileURLWithPath:sqlFilePath];
                         @try {
                             pStore = [persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:url options:options error:&err];
+                            
                         } @catch (...) {
                         }
                         
@@ -362,22 +379,24 @@ static int gTotalN2ManagedObjectContext = 0;
                             
                             // error = [NSError osirixErrorWithCode:0 underlyingError:error localizedDescriptionFormat:NSLocalizedString(@"Store Configuration Failure: %@", nil), error.localizedDescription? error.localizedDescription : NSLocalizedString(@"Unknown Error", nil)];
                             
-                            // delete the old file... for the Database.sql model ONLY(Dont do this for the WebUser db)
-                            if( self.deleteSQLFileIfOpeningFailed)
+                            // delete the old file... for the Database.sql model ONLY (Dont do this for the WebUser db)
+                            if (self.deleteSQLFileIfOpeningFailed)
                                 [NSFileManager.defaultManager removeItemAtPath:sqlFilePath error:nil];
                         }
                     } while (!pStore && i < 2);
                     
                     // Save the models for forward compatibility with old OsiriX versions that don't know the current model
-                    NSString *modelsPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: [[self class] modelName]];
-                    [[NSFileManager defaultManager] removeItemAtPath: localModelsPath error: nil];
-                    [[NSFileManager defaultManager] copyItemAtPath:modelsPath toPath:localModelsPath error:nil];
+                    if (self.saveDatabaseModel){
+                        NSString *modelsPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: [[self class] modelName]];
+                        [[NSFileManager defaultManager] removeItemAtPath: localModelsPath error: nil];
+                        [[NSFileManager defaultManager] copyItemAtPath:modelsPath toPath:localModelsPath error:nil];
+                    }
 
                 }
                 
                 if (isNewFile) {
                     [moc save:NULL];
-                    NSLog(@"New database file created at %@", sqlFilePath);
+//                    NSLog(@"New database file created at %@", sqlFilePath);
                 }
                 
             } else {
@@ -396,6 +415,10 @@ static int gTotalN2ManagedObjectContext = 0;
     }
     
     return moc;
+}
+
+- (BOOL)saveDatabaseModel {
+    return YES;
 }
 
 -(void)mergeChangesFromContextDidSaveNotification:(NSNotification*)n {
@@ -500,30 +523,25 @@ static int gTotalN2ManagedObjectContext = 0;
 	[super dealloc];
 }
 
--(NSManagedObjectContext*)independentContext:(BOOL)independent
-{
-    if( independent)
-    {
-#ifndef NDEBUG
-        if( [NSThread isMainThread])
-            N2LogStackTrace( @"independentContext not required on main thread.");
-#endif
-    }
+- (NSManagedObjectContext *)independentContext:(BOOL)independent {
+    if (!independent)
+        return self.managedObjectContext;
     
-	return independent? [self contextAtPath:self.sqlFilePath] : self.managedObjectContext;
+#ifndef NDEBUG
+    if ([NSThread isMainThread])
+        N2LogStackTrace(@"info: independent context not required on main thread");
+#endif
+    
+	NSManagedObjectContext *ic = [self contextAtPath:self.sqlFilePath];
+    
+    return ic;
 }
 
--(NSManagedObjectContext*)independentContext {
+- (NSManagedObjectContext *)independentContext {
 	return [self independentContext:YES];
 }
 
--(id)independentDatabase {
-    
-#ifndef NDEBUG
-    if( [NSThread isMainThread])
-        N2LogStackTrace( @"independentDatabase not required on main thread.");
-#endif
-    
+- (id)independentDatabase {
 	return [[[[self class] alloc] initWithPath:self.sqlFilePath context:[self independentContext] mainDatabase:self] autorelease];
 }
 

@@ -75,7 +75,7 @@ extern "C"
 
 @interface DCMPix: NSObject <NSCopying>
 {
-    NSString            *srcFile;  /**< source File */
+    NSString            *_srcFile;  /**< source File */
     NSString            *URIRepresentationAbsoluteString;
     BOOL				isBonjour;
     BOOL                fileTypeHasPrefixDICOM;
@@ -315,7 +315,7 @@ extern "C"
 @property(readonly) BOOL generated;
 @property(retain) NSString *generatedName;
 
-@property(retain) NSString *srcFile;
+@property(strong) NSString *srcFile;
 - (NSString *)sourceFile __deprecated;
 - (void)setSourceFile:(NSString *)sf __deprecated;
 
@@ -344,7 +344,7 @@ extern "C"
 @property BOOL isLUT12Bit;
 
 // Waveform
-@property(readonly,retain) DCMWaveform* waveform;
+@property(readonly,strong) DCMWaveform* waveform;
 
 // US Regions
 @property(readonly) NSMutableArray *usRegions;

@@ -8325,7 +8325,7 @@ static int avoidReentryRefreshDatabase = 0;
                         NSLog(@"Exception change image data: %@", e);
                     }
                     
-                    DCMPix *curDCM = [imageView curDCM];
+                    DCMPix *pic = [imageView curDCM];
                     
                     [self setWindowTitle:self];
                     
@@ -8340,8 +8340,8 @@ static int avoidReentryRefreshDatabase = 0;
                     }
                     else
                     {
-                        if( [curDCM cineRate])
-                            [speedSlider setFloatValue: [curDCM cineRate]];
+                        if( [pic cineRate])
+                            [speedSlider setFloatValue: [pic cineRate]];
                         else if( [[NSUserDefaults standardUserDefaults] floatForKey: @"defaultFrameRate"])
                             [speedSlider setFloatValue: [[NSUserDefaults standardUserDefaults] floatForKey: @"defaultFrameRate"]];
                         
@@ -13939,7 +13939,7 @@ static float oldsetww, oldsetwl;
             
             for( int x = 0; x < [pixList[y] count]; x++)
             {
-                DCMPix *curDCM = [pixList[ y] objectAtIndex: x];
+                DCMPix *pic = [pixList[ y] objectAtIndex: x];
                 
                 if( [roisSeries count] > x)
                 {
@@ -13948,9 +13948,9 @@ static float oldsetww, oldsetwl;
                     for( ROI *r in roisImages)
                     {
                         //Correct the origin only if the orientation is the same
-                        r.pix = curDCM;
+                        r.pix = pic;
                         
-                        [r setOriginAndSpacing: curDCM.pixelSpacingX :curDCM.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: curDCM]];
+                        [r setOriginAndSpacing: pic.pixelSpacingX :pic.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: pic]];
                         
                         [[roiList[ y] objectAtIndex: x] addObject: r];
                         [imageView roiSet: r];
@@ -16612,35 +16612,35 @@ static float oldsetww, oldsetwl;
             {
                 for( x = 0; x < [pixList[ i] count]; x++)
                 {
-                    DCMPix		*curDCM = [pixList[ i] objectAtIndex:x];
+                    DCMPix		*pic = [pixList[ i] objectAtIndex:x];
                     float		vectorP[ 9], tempOrigin[ 3], tempOriginBlending[ 3];
                     NSPoint		offset;
                     
                     // Compute blended view offset
-                    [curDCM orientation: vectorP];
+                    [pic orientation: vectorP];
                     
-                    tempOrigin[ 0] = [curDCM originX] * vectorP[ 0] + [curDCM originY] * vectorP[ 1] + [curDCM originZ] * vectorP[ 2];
-                    tempOrigin[ 1] = [curDCM originX] * vectorP[ 3] + [curDCM originY] * vectorP[ 4] + [curDCM originZ] * vectorP[ 5];
-                    tempOrigin[ 2] = [curDCM originX] * vectorP[ 6] + [curDCM originY] * vectorP[ 7] + [curDCM originZ] * vectorP[ 8];
+                    tempOrigin[ 0] = [pic originX] * vectorP[ 0] + [pic originY] * vectorP[ 1] + [pic originZ] * vectorP[ 2];
+                    tempOrigin[ 1] = [pic originX] * vectorP[ 3] + [pic originY] * vectorP[ 4] + [pic originZ] * vectorP[ 5];
+                    tempOrigin[ 2] = [pic originX] * vectorP[ 6] + [pic originY] * vectorP[ 7] + [pic originZ] * vectorP[ 8];
                     
                     tempOriginBlending[ 0] = [[[blendingController imageView] curDCM] originX] * vectorP[ 0] + [[[blendingController imageView] curDCM] originY] * vectorP[ 1] + [[[blendingController imageView] curDCM] originZ] * vectorP[ 2];
                     tempOriginBlending[ 1] = [[[blendingController imageView] curDCM] originX] * vectorP[ 3] + [[[blendingController imageView] curDCM] originY] * vectorP[ 4] + [[[blendingController imageView] curDCM] originZ] * vectorP[ 5];
                     tempOriginBlending[ 2] = [[[blendingController imageView] curDCM] originX] * vectorP[ 6] + [[[blendingController imageView] curDCM] originY] * vectorP[ 7] + [[[blendingController imageView] curDCM] originZ] * vectorP[ 8];
                     
-                    [curDCM setPixelSpacingX: [[imageView curDCM] pixelSpacingX] * ([[blendingController imageView] pixelSpacingX] / [[blendingController imageView] scaleValue]) /  ([[imageView curDCM] pixelSpacingX]/[imageView scaleValue])];
-                    [curDCM setPixelSpacingY: [[imageView curDCM] pixelSpacingY] * ([[blendingController imageView] pixelSpacingY] / [[blendingController imageView] scaleValue]) / ([[imageView curDCM] pixelSpacingY]/[imageView scaleValue])];
+                    [pic setPixelSpacingX: [[imageView curDCM] pixelSpacingX] * ([[blendingController imageView] pixelSpacingX] / [[blendingController imageView] scaleValue]) /  ([[imageView curDCM] pixelSpacingX]/[imageView scaleValue])];
+                    [pic setPixelSpacingY: [[imageView curDCM] pixelSpacingY] * ([[blendingController imageView] pixelSpacingY] / [[blendingController imageView] scaleValue]) / ([[imageView curDCM] pixelSpacingY]/[imageView scaleValue])];
                     
-                    offset.x = (tempOrigin[0] + [curDCM pwidth]*[curDCM pixelSpacingX]/2. - (tempOriginBlending[ 0] + [[[blendingController imageView] curDCM] pwidth]*[[[blendingController imageView] curDCM] pixelSpacingX]/2.));
-                    offset.y = (tempOrigin[1] + [curDCM pheight]*[curDCM pixelSpacingY]/2. - (tempOriginBlending[ 1] + [[[blendingController imageView] curDCM] pheight]*[[[blendingController imageView] curDCM] pixelSpacingY]/2.));
+                    offset.x = (tempOrigin[0] + [pic pwidth]*[pic pixelSpacingX]/2. - (tempOriginBlending[ 0] + [[[blendingController imageView] curDCM] pwidth]*[[[blendingController imageView] curDCM] pixelSpacingX]/2.));
+                    offset.y = (tempOrigin[1] + [pic pheight]*[pic pixelSpacingY]/2. - (tempOriginBlending[ 1] + [[[blendingController imageView] curDCM] pheight]*[[[blendingController imageView] curDCM] pixelSpacingY]/2.));
                     
-                    o[ 0] = [curDCM originX];		o[ 1] = [curDCM originY];		o[ 2] = [curDCM originZ];
+                    o[ 0] = [pic originX];		o[ 1] = [pic originY];		o[ 2] = [pic originZ];
                     
-                    o[ 0] -= ([[blendingController imageView] origin].x*[[[blendingController imageView] curDCM] pixelSpacingX]/[[blendingController imageView] scaleValue] - [imageView origin].x*[curDCM pixelSpacingX]/[imageView scaleValue]) + offset.x;
-                    o[ 1] += ([[blendingController imageView] origin].y*[[[blendingController imageView] curDCM] pixelSpacingY]/[[blendingController imageView] scaleValue] - [imageView origin].y*[curDCM pixelSpacingY]/[imageView scaleValue]) - offset.y;
+                    o[ 0] -= ([[blendingController imageView] origin].x*[[[blendingController imageView] curDCM] pixelSpacingX]/[[blendingController imageView] scaleValue] - [imageView origin].x*[pic pixelSpacingX]/[imageView scaleValue]) + offset.x;
+                    o[ 1] += ([[blendingController imageView] origin].y*[[[blendingController imageView] curDCM] pixelSpacingY]/[[blendingController imageView] scaleValue] - [imageView origin].y*[pic pixelSpacingY]/[imageView scaleValue]) - offset.y;
                     o[ 2] += zDiff;
                     
-                    [curDCM setOrigin: o];
-                    [curDCM computeSliceLocation];
+                    [pic setOrigin: o];
+                    [pic computeSliceLocation];
                 }
             }
             
@@ -20375,7 +20375,7 @@ static float oldsetww, oldsetwl;
     
     for( int x = 0; x < [pixList[curMovieIndex] count]; x++)
     {
-        DCMPix	*curDCM = [pixList[curMovieIndex] objectAtIndex: x];
+        DCMPix	*pic = [pixList[curMovieIndex] objectAtIndex: x];
         imageCount = 0;
         
         location = x * sliceInterval;
@@ -20438,7 +20438,7 @@ static float oldsetww, oldsetwl;
                         {
                             float location[ 3];
                             
-                            [curDCM convertPixX: [[points objectAtIndex: y] x] pixY: [[points objectAtIndex: y] y] toDICOMCoords: location pixelCenter: YES];
+                            [pic convertPixX: [[points objectAtIndex: y] x] pixY: [[points objectAtIndex: y] y] toDICOMCoords: location pixelCenter: YES];
                             
                             NSArray	*pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]], [NSNumber numberWithFloat:location[1]], [NSNumber numberWithFloat:location[2]], nil];
                             
@@ -20535,14 +20535,14 @@ static float oldsetww, oldsetwl;
             float location[ 3];
             NSArray	*pt3D;
             NSPoint centroid;
-            DCMPix	*curDCM;
+            DCMPix	*pic;
             
             if( fROIIndex > 0) fROIIndex--;
             if( lROIIndex < (long)[pixList[curMovieIndex] count]-1) lROIIndex++;
             
-            curDCM = [pixList[curMovieIndex] objectAtIndex: fROIIndex];
+            pic = [pixList[curMovieIndex] objectAtIndex: fROIIndex];
             centroid = [fROI centroid];
-            [curDCM  convertPixX: centroid.x pixY: centroid.y toDICOMCoords: location pixelCenter: YES];
+            [pic  convertPixX: centroid.x pixY: centroid.y toDICOMCoords: location pixelCenter: YES];
             pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]-1], [NSNumber numberWithFloat:location[1]-1], [NSNumber numberWithFloat:location[2]], nil];
             [*pts addObject: pt3D];
             pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]-1], [NSNumber numberWithFloat:location[1]+1], [NSNumber numberWithFloat:location[2]], nil];
@@ -20550,9 +20550,9 @@ static float oldsetww, oldsetwl;
             pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]], [NSNumber numberWithFloat:location[1]], [NSNumber numberWithFloat:location[2]], nil];
             [*pts addObject: pt3D];
             
-            curDCM = [pixList[curMovieIndex] objectAtIndex: lROIIndex];
+            pic = [pixList[curMovieIndex] objectAtIndex: lROIIndex];
             centroid = [lROI centroid];
-            [curDCM  convertPixX: centroid.x pixY: centroid.y toDICOMCoords: location pixelCenter: YES];
+            [pic  convertPixX: centroid.x pixY: centroid.y toDICOMCoords: location pixelCenter: YES];
             pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]-1], [NSNumber numberWithFloat:location[1]-1], [NSNumber numberWithFloat:location[2]], nil];
             [*pts addObject: pt3D];
             pt3D = [NSArray arrayWithObjects: [NSNumber numberWithFloat: location[0]-1], [NSNumber numberWithFloat:location[1]+1], [NSNumber numberWithFloat:location[2]], nil];
