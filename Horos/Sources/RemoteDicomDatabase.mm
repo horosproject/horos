@@ -940,7 +940,6 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
     if (self.cleanupOnDealloc)
         if (NSURL *url = self.persistentStoreCoordinator.persistentStores.firstObject.URL)
             [self.class performSelector:@selector(postDeallocCleanup:) withObject:url afterDelay:0];
-
     
     [super dealloc];
 }
