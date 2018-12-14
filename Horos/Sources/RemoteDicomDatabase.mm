@@ -67,7 +67,7 @@
 
 @interface RemoteDicomDatabaseManagedObjectContext : N2ManagedObjectContext
 
-@property BOOL cleanOnDealloc;
+@property BOOL cleanupOnDealloc;
 
 @end
 
@@ -476,7 +476,7 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:OsirixDicomDatabaseDidChangeContextNotification object:self];
         
         // delete old index file(s)
-        previousContext.cleanOnDealloc = YES;
+        previousContext.cleanupOnDealloc = YES;
         
         if (!_updateTimer) {
             _updateTimer = [NSTimer timerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"DatabaseRefreshInterval"] target:[RemoteDicomDatabase class] selector:@selector(_updateTimerCallbackClass:) userInfo:[NSValue valueWithPointer:self] repeats:YES];
@@ -937,16 +937,17 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 @implementation RemoteDicomDatabaseManagedObjectContext
 
 - (void)dealloc {
-    if (self.cleanOnDealloc)
+    if (self.cleanupOnDealloc)
         if (NSURL *url = self.persistentStoreCoordinator.persistentStores.firstObject.URL)
-            [self.class performSelector:@selector(postDealloc:) withObject:url afterDelay:0];
-
+            [self.class performSelector:@selector(postDeallocCleanup:) withObject:url afterDelay:0];
     
     [super dealloc];
 }
 
-+ (void)postDealloc:(NSURL *)url {
++ (void)postDeallocCleanup:(NSURL *)url {
+    NSURL *dir = [url URLByDeletingLastPathComponent];
     [[NSFileManager defaultManager] removeItemAtURL:url error:NULL];
+    [[NSFileManager defaultManager] removeItemAtURL:[dir URLByAppendingPathComponent:[url.lastPathComponent stringByAppendingString:@"-shm"]] error:NULL];
 }
 
 @end

@@ -7803,7 +7803,9 @@ static NSConditionLock *threadLock = nil;
                             float rotation = [[dict valueForKey:@"rotation"] floatValue];
                             float scale = [[dict valueForKey:@"scale"] floatValue] * scaleRatio*scaleRatio;
                             
-                            [v setWindowFrame: r showWindow: NO];
+                            if (validWindowsPosition)
+                                [v setWindowFrame:r showWindow:NO];
+
                             [v setImageRows: rows columns: columns];
                             
                             [v setImageIndex: index];
@@ -14772,11 +14774,11 @@ static NSArray*	openSubSeriesArray = nil;
     
     if(/* newFilesInIncoming ||*/ [[ThreadsManager defaultManager] threadsCount] > 0)
     {
-        NSAlert* w = [NSAlert alertWithMessageText: NSLocalizedString( @"Background Threads", NULL)
+        NSAlert* w = [NSAlert alertWithMessageText: NSLocalizedString( @"Background Operations", NULL)
                                      defaultButton: NSLocalizedString( @"Cancel", NULL)
                                    alternateButton: NSLocalizedString( @"Quit", NULL)
                                        otherButton: NULL
-                         informativeTextWithFormat: NSLocalizedString( @"Background threads are currently running. Are you sure you want to quit now? These threads will be cancelled.", NULL)];
+                         informativeTextWithFormat: NSLocalizedString( @"Background operations are currently running. Are you sure you want to quit now? These operations will be cancelled.", NULL)];
         
         NSTimer *t = [NSTimer timerWithTimeInterval: 0.3 target:self selector:@selector(shouldTerminateCallback:) userInfo: w repeats:YES];
         

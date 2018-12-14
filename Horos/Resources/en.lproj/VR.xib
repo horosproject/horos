@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -3389,6 +3389,10 @@ Gw
                 <subviews>
                     <customView hidden="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1468" customClass="SelectionView">
                         <rect key="frame" x="364" y="515" width="22" height="21"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" placeholder="YES" id="Fpx-av-xP1"/>
+                            <constraint firstAttribute="width" constant="22" placeholder="YES" id="iZV-i2-0qK"/>
+                        </constraints>
                     </customView>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="985" translatesAutoresizingMaskIntoConstraints="NO" id="1410">
                         <rect key="frame" x="7" y="513" width="46" height="17"/>
@@ -3636,9 +3640,9 @@ Gw
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" preferredMaxLayoutWidth="99" translatesAutoresizingMaskIntoConstraints="NO" id="1555">
-                        <rect key="frame" x="179" y="17" width="61" height="34"/>
-                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Selected Preset:" id="2168">
+                    <textField horizontalHuggingPriority="125" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" preferredMaxLayoutWidth="99" translatesAutoresizingMaskIntoConstraints="NO" id="1555">
+                        <rect key="frame" x="18" y="17" width="224" height="17"/>
+                        <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="right" title="Selected Preset:" id="2168">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -3691,8 +3695,7 @@ Gw
                     <constraint firstItem="1451" firstAttribute="top" secondItem="1479" secondAttribute="bottom" constant="8" symbolic="YES" id="11u-G0-Pho"/>
                     <constraint firstItem="1479" firstAttribute="top" secondItem="1434" secondAttribute="bottom" constant="8" symbolic="YES" id="1SL-9C-7Qo"/>
                     <constraint firstItem="1455" firstAttribute="top" secondItem="1409" secondAttribute="top" constant="361" id="29S-q1-MQQ"/>
-                    <constraint firstItem="1468" firstAttribute="top" secondItem="1409" secondAttribute="top" constant="9" id="2lD-RI-xYb"/>
-                    <constraint firstItem="1521" firstAttribute="top" secondItem="1468" secondAttribute="bottom" constant="8" symbolic="YES" id="3Dy-vc-xJO"/>
+                    <constraint firstItem="1468" firstAttribute="top" secondItem="1409" secondAttribute="top" constant="9" placeholder="YES" id="2lD-RI-xYb"/>
                     <constraint firstItem="1479" firstAttribute="trailing" secondItem="1482" secondAttribute="trailing" id="78h-i5-REy"/>
                     <constraint firstItem="1440" firstAttribute="top" secondItem="1553" secondAttribute="bottom" constant="8" symbolic="YES" id="7AW-CS-jHB"/>
                     <constraint firstItem="1482" firstAttribute="baseline" secondItem="1483" secondAttribute="baseline" id="7XQ-yO-c6S"/>
@@ -3715,10 +3718,9 @@ Gw
                     <constraint firstItem="1453" firstAttribute="leading" secondItem="1457" secondAttribute="leading" id="KDW-cK-1zd"/>
                     <constraint firstItem="1486" firstAttribute="top" secondItem="1456" secondAttribute="bottom" constant="8" symbolic="YES" id="Kxw-Kc-oyK"/>
                     <constraint firstItem="I5O-Sa-TCS" firstAttribute="width" secondItem="R8h-DL-7dj" secondAttribute="width" id="NQ8-xG-e19"/>
-                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="1468" secondAttribute="trailing" constant="10" id="Oel-tv-SUr"/>
+                    <constraint firstAttribute="trailing" secondItem="1468" secondAttribute="trailing" constant="10" placeholder="YES" id="Oel-tv-SUr"/>
                     <constraint firstItem="1453" firstAttribute="leading" secondItem="1452" secondAttribute="trailing" constant="8" symbolic="YES" id="Orm-V2-W5T"/>
                     <constraint firstAttribute="trailing" secondItem="1450" secondAttribute="trailing" constant="10" id="Q6L-cI-qK6"/>
-                    <constraint firstItem="1468" firstAttribute="leading" secondItem="1409" secondAttribute="leading" constant="364" id="QEn-z6-85P"/>
                     <constraint firstItem="1452" firstAttribute="top" secondItem="1480" secondAttribute="bottom" constant="8" symbolic="YES" id="QVK-xP-CiF"/>
                     <constraint firstItem="1485" firstAttribute="baseline" secondItem="1486" secondAttribute="baseline" id="QWQ-uh-ybH"/>
                     <constraint firstItem="1479" firstAttribute="centerX" secondItem="1434" secondAttribute="centerX" id="RLa-xk-dVC"/>
@@ -3732,7 +3734,7 @@ Gw
                     <constraint firstItem="1483" firstAttribute="trailing" secondItem="1480" secondAttribute="trailing" id="WYB-CB-buV"/>
                     <constraint firstItem="1480" firstAttribute="leading" secondItem="1479" secondAttribute="trailing" constant="12" id="XJO-mh-gKR"/>
                     <constraint firstItem="1450" firstAttribute="leading" secondItem="1440" secondAttribute="trailing" constant="8" symbolic="YES" id="XOY-nc-4qm"/>
-                    <constraint firstItem="R8h-DL-7dj" firstAttribute="leading" secondItem="I5O-Sa-TCS" secondAttribute="trailing" constant="12" symbolic="YES" id="XuQ-Ya-8JF"/>
+                    <constraint firstItem="R8h-DL-7dj" firstAttribute="leading" secondItem="I5O-Sa-TCS" secondAttribute="trailing" constant="8" symbolic="YES" id="XuQ-Ya-8JF"/>
                     <constraint firstItem="1485" firstAttribute="leading" secondItem="1482" secondAttribute="leading" id="YJL-WK-JAm"/>
                     <constraint firstItem="1456" firstAttribute="leading" secondItem="1455" secondAttribute="trailing" constant="8" symbolic="YES" id="YqM-AO-GEl"/>
                     <constraint firstItem="1479" firstAttribute="leading" secondItem="1409" secondAttribute="leading" constant="12" id="ZW9-EU-keo"/>
@@ -3745,17 +3747,17 @@ Gw
                     <constraint firstItem="1440" firstAttribute="leading" secondItem="1452" secondAttribute="leading" id="chf-qh-6LS"/>
                     <constraint firstItem="1521" firstAttribute="leading" secondItem="1553" secondAttribute="trailing" constant="8" symbolic="YES" id="f8z-Ni-IZ2"/>
                     <constraint firstItem="1484" firstAttribute="trailing" secondItem="1481" secondAttribute="trailing" id="fEq-Yd-a0m"/>
-                    <constraint firstItem="I5O-Sa-TCS" firstAttribute="leading" secondItem="1555" secondAttribute="trailing" constant="10" id="fNU-Ct-PsG"/>
+                    <constraint firstItem="I5O-Sa-TCS" firstAttribute="leading" secondItem="1555" secondAttribute="trailing" constant="8" symbolic="YES" id="fNU-Ct-PsG"/>
                     <constraint firstItem="1455" firstAttribute="top" secondItem="1482" secondAttribute="bottom" constant="8" symbolic="YES" id="fid-ng-Ihp"/>
                     <constraint firstItem="I5O-Sa-TCS" firstAttribute="top" secondItem="1487" secondAttribute="bottom" constant="8" id="j90-Bs-rOU"/>
                     <constraint firstItem="1487" firstAttribute="leading" secondItem="1484" secondAttribute="leading" id="kb0-Vd-fHr"/>
                     <constraint firstItem="1480" firstAttribute="leading" secondItem="1483" secondAttribute="leading" id="khA-SC-OUG"/>
                     <constraint firstItem="1456" firstAttribute="top" secondItem="1483" secondAttribute="bottom" constant="8" symbolic="YES" id="kkx-mt-ksT"/>
-                    <constraint firstItem="1468" firstAttribute="trailing" secondItem="1450" secondAttribute="trailing" id="l4F-X4-5r1"/>
                     <constraint firstItem="1480" firstAttribute="centerX" secondItem="1440" secondAttribute="centerX" id="pPo-Er-9UP"/>
                     <constraint firstItem="1434" firstAttribute="leading" secondItem="1409" secondAttribute="leading" constant="10" id="qrC-kP-3du"/>
                     <constraint firstItem="1487" firstAttribute="top" secondItem="1457" secondAttribute="bottom" constant="8" symbolic="YES" id="rdD-cQ-sEW"/>
                     <constraint firstItem="1553" firstAttribute="leading" secondItem="1520" secondAttribute="trailing" constant="8" symbolic="YES" id="rjg-bQ-f49"/>
+                    <constraint firstItem="1555" firstAttribute="leading" secondItem="1409" secondAttribute="leading" constant="20" symbolic="YES" id="tVh-RX-s1r"/>
                     <constraint firstItem="1434" firstAttribute="top" secondItem="1520" secondAttribute="bottom" constant="3" id="tjn-cf-EFi"/>
                     <constraint firstItem="1553" firstAttribute="top" secondItem="go4-ew-SJC" secondAttribute="bottom" constant="8" symbolic="YES" id="tpl-im-6lQ"/>
                     <constraint firstItem="1410" firstAttribute="leading" secondItem="1409" secondAttribute="leading" constant="9" id="tsD-oC-A5q"/>
@@ -3773,6 +3775,7 @@ Gw
             <connections>
                 <outlet property="initialFirstResponder" destination="1434" id="1439"/>
             </connections>
+            <point key="canvasLocation" x="140" y="557.5"/>
         </window>
         <window title="Preset Info" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="3DPresetsInfoPanel" animationBehavior="default" id="1532" userLabel="3D settings info" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" HUD="YES"/>
