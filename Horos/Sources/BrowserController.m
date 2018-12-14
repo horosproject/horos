@@ -7803,7 +7803,9 @@ static NSConditionLock *threadLock = nil;
                             float rotation = [[dict valueForKey:@"rotation"] floatValue];
                             float scale = [[dict valueForKey:@"scale"] floatValue] * scaleRatio*scaleRatio;
                             
-                            [v setWindowFrame: r showWindow: NO];
+                            if (validWindowsPosition)
+                                [v setWindowFrame:r showWindow:NO];
+
                             [v setImageRows: rows columns: columns];
                             
                             [v setImageIndex: index];
