@@ -5584,6 +5584,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     short   previmage;
     BOOL	movie4Dmove = NO;
     NSPoint current = [self currentPointInView:event];
+    
     if( scrollMode == 0)
     {
         if( fabs( start.x - current.x) < fabs( start.y - current.y))
@@ -5600,13 +5601,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     {
         previmage = curImage;
         
+        int invert = 1; // set to -1 to invert the direction
+        if (self.flippedData)
+            invert = -1;
+        
         if( scrollMode == 2)
         {
-            curImage = startImage + ((current.x - start.x) * [dcmPixList count] )/ ([self frame].size.width/2);
+            curImage = startImage + invert * ((current.x - start.x) * [dcmPixList count] )/ ([self frame].size.width/2);
         }
         else if( scrollMode == 1)
         {
-            curImage = startImage + ((start.y - current.y) * [dcmPixList count] )/ ([self frame].size.height/2);
+            curImage = startImage + invert * ((start.y - current.y) * [dcmPixList count] )/ ([self frame].size.height/2);
         }
         
         if( curImage < 0) curImage = 0;
