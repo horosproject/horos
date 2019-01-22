@@ -459,14 +459,22 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 			
 			DCMAttributeTag *tag = [DCMAttributeTag tagWithName:@"PhotometricInterpretation"];
 			DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
-			NSString *photometricInterpretation = [attr value];
-			
-			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"UseJPEGColorSpace"])
-			{
-				
-			}
-			else
-			{
+            NSString *photometricInterpretation = [attr value];
+            
+            BOOL usePhotometricInterpretation = YES;
+            
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"UseJPEGColorSpace"])
+            {
+                usePhotometricInterpretation = NO;
+                if (photometricInterpretation) {
+                    // however, if the jpeg color space was assumed, still read the photometricInterpretation from DICOM
+                    if (theCInfo.num_components == 3 && !theCInfo.saw_JFIF_marker && !theCInfo.saw_Adobe_marker)
+                        usePhotometricInterpretation = YES; // in this case, libjpeg just assumes the jpeg color space, and it makes sense to still follow the DICOM PhotometricInterpretation
+                }
+            }
+            
+            if (usePhotometricInterpretation)
+            {
 				if([photometricInterpretation isEqualToString:@"RGB"]) theCInfo.jpeg_color_space = JCS_RGB;
 				else if([photometricInterpretation isEqualToString:@"YBR_FULL_422"]) theCInfo.jpeg_color_space = JCS_YCbCr;
 				else if([photometricInterpretation isEqualToString:@"YBR_PARTIAL_422"]) theCInfo.jpeg_color_space = JCS_YCbCr;
