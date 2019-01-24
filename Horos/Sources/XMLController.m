@@ -912,34 +912,32 @@ extern int delayedTileWindows;
 	return found;
 }
 
-- (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
-{
-	BOOL found = NO;
-	
-	if( [[search stringValue] isEqualToString:@""] == NO)
-	{
-		found = [self item: item containsString: [search stringValue]];
-		
-		if( found)
-		{
-			[cell setTextColor: [NSColor blackColor]];
-			[cell setFont:[NSFont boldSystemFontOfSize:12]];
-		}
-		else
-		{
-			[cell setTextColor: [NSColor grayColor]];
-			[cell setFont:[NSFont systemFontOfSize:12]];
-		}
-	}
-	else
-	{
-		[cell setTextColor: [NSColor blackColor]];
-		[cell setFont:[NSFont systemFontOfSize:12]];
-	}
-	[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
+- (void)outlineView:(NSOutlineView *)outlineView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+    [cell setLineBreakMode:NSLineBreakByTruncatingMiddle];
     
-     if( [modifiedFields containsObject: [self getPath: item]])
-         [cell setTextColor: [NSColor redColor]];
+    if ([[search stringValue] length]) {
+        if ([self item:item containsString:[search stringValue]]) {
+            [cell setTextColor:[NSColor controlTextColor]];
+            [cell setFont:[NSFont boldSystemFontOfSize:12]];
+        }
+        else {
+            [cell setTextColor:[NSColor disabledControlTextColor]];
+            [cell setFont:[NSFont systemFontOfSize:12]];
+        }
+    }
+    else {
+        [cell setTextColor:[NSColor controlTextColor]];
+        [cell setFont:[NSFont systemFontOfSize:12]];
+    }
+    
+    if ([cell isHighlighted])
+        [cell setTextColor:[NSColor selectedControlTextColor]];
+    
+    if ([modifiedFields containsObject:[self getPath:item]]) {
+        NSColor *color = [[cell textColor] colorUsingColorSpace:[NSColorSpace genericRGBColorSpace]];
+        NSColor *red = [[NSColor redColor] colorUsingColorSpace:[NSColorSpace genericRGBColorSpace]];
+        [cell setTextColor:[NSColor colorWithColorSpace:[NSColorSpace genericRGBColorSpace] hue:red.hueComponent saturation:red.saturationComponent brightness:(color.brightnessComponent+red.brightnessComponent)/2 alpha:color.alphaComponent]];
+    }
 }
 
 - (void) traverse: (NSXMLNode*) node string:(NSMutableString*) string
