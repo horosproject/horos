@@ -22,7 +22,7 @@ if [ -e ".cmakeenv"]; then
     mv ".cmakeenv" ".cmakeenvold"
     echo "$env" > ".cmakeenv"
     echo "env differences:"
-    git diff --no-index --word-diff=color --word-diff-regex=. ".cmakeenv" ".cmakeenvold"
+    git diff --no-index --word-diff=porcelain --word-diff-regex=. ".cmakeenv" ".cmakeenvold"
 fi
 
 command -v pkg-config >/dev/null 2>&1 || { echo >&2 "error: building $TARGET_NAME requires pkg-config. Please install pkg-config. Aborting."; exit 1; }
