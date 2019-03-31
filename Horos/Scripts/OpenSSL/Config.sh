@@ -13,7 +13,17 @@ cmake_dir="$TARGET_TEMP_DIR/Config"
 install_dir="$TARGET_TEMP_DIR/Install"
 
 mkdir -p "$cmake_dir"; cd "$cmake_dir"
-[ -e "Makefile" -a -f .cmakehash ] && [ "$(cat '.cmakehash')" = "$hash" ] && exit 0
+if [ -e Makefile -a -f .cmakehash ] && [ "$(cat '.cmakehash')" = "$hash" ]; then
+    exit 0
+fi
+
+if [ -e ".cmakeenv"]; then
+    echo "Rebuilding.."
+    mv ".cmakeenv" ".cmakeenvold"
+    echo "$env" > ".cmakeenv"
+    echo "env differences:"
+    git diff --no-index --word-diff=color --word-diff-regex=. ".cmakeenv" ".cmakeenvold"
+fi
 
 command -v pkg-config >/dev/null 2>&1 || { echo >&2 "error: building $TARGET_NAME requires pkg-config. Please install pkg-config. Aborting."; exit 1; }
 
@@ -73,5 +83,6 @@ else
 fi
 
 echo "$hash" > "$cmake_dir/.cmakehash"
+echo "$env" > "$cmake_dir/.cmakeenv"
 
 exit 0

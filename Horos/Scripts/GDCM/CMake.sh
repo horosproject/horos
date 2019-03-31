@@ -12,16 +12,19 @@ source_dir="$PROJECT_DIR/$TARGET_NAME"
 cmake_dir="$TARGET_TEMP_DIR/CMake"
 install_dir="$TARGET_TEMP_DIR/Install"
 
-mkdir -p "$cmake_dir"; cd "$cmake_dir"
-if [ -e Makefile -a -f .cmakehash ] && [ "$(cat '.cmakehash')" = "$hash" ]; then
-    exit 0
-fi
-
 export CC=clang
 export CXX=clang
 
 if [ -e "$cmake_dir/Makefile" -a -f "$cmake_dir/.buildhash" ] && [ "$(cat "$cmake_dir/.buildhash")" == "$hash" ]; then
     exit 0
+fi
+
+if [ -e ".cmakeenv"]; then
+    echo "Rebuilding.."
+    mv ".cmakeenv" ".cmakeenvold"
+    echo "$env" > ".cmakeenv"
+    echo "env differences:"
+    git diff --no-index --word-diff=color --word-diff-regex=. ".cmakeenv" ".cmakeenvold"
 fi
 
 command -v cmake >/dev/null 2>&1 || { echo >&2 "error: building $TARGET_NAME requires CMake. Please install CMake. Aborting."; exit 1; }
@@ -81,5 +84,6 @@ cd "$cmake_dir"
 cmake "${args[@]}"
 
 echo "$hash" > "$cmake_dir/.buildhash"
+echo "$env" > "$cmake_dir/.cmakeenv"
 
 exit 0

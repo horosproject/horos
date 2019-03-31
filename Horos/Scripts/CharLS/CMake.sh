@@ -15,6 +15,14 @@ if [ -e Makefile -a -f .cmakehash ] && [ "$(cat '.cmakehash')" = "$hash" ]; then
     exit 0
 fi
 
+if [ -e ".cmakeenv"]; then
+    echo "Rebuilding.."
+    mv ".cmakeenv" ".cmakeenvold"
+    echo "$env" > ".cmakeenv"
+    echo "env differences:"
+    git diff --no-index --word-diff=color --word-diff-regex=. ".cmakeenv" ".cmakeenvold"
+fi
+
 command -v cmake >/dev/null 2>&1 || { echo >&2 "error: building $TARGET_NAME requires CMake. Please install CMake. Aborting."; exit 1; }
 
 mv "$cmake_dir" "$cmake_dir.tmp"
@@ -54,5 +62,6 @@ cd "$cmake_dir"
 cmake "${args[@]}"
 
 echo "$hash" > "$cmake_dir/.cmakehash"
+echo "$env" > "$cmake_dir/.cmakeenv"
 
 exit 0
