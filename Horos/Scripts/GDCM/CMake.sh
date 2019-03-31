@@ -24,7 +24,7 @@ if [ -e ".cmakeenv" ]; then
     mv ".cmakeenv" ".cmakeenvold"
     echo "$env" > ".cmakeenv"
     echo "env differences:"
-    git diff --no-index --word-diff=porcelain --word-diff-regex=. ".cmakeenv" ".cmakeenvold"
+    diff -y <(cat .cmakeenv | sed -e 's/ /\'$'\n/g') <(cat .cmakeenvold | sed -e 's/ /\'$'\n/g')
 fi
 
 command -v cmake >/dev/null 2>&1 || { echo >&2 "error: building $TARGET_NAME requires CMake. Please install CMake. Aborting."; exit 1; }
