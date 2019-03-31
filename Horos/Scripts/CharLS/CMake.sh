@@ -15,7 +15,7 @@ if [ -e Makefile -a -f .cmakehash ] && [ "$(cat '.cmakehash')" = "$hash" ]; then
     exit 0
 fi
 
-if [ -e ".cmakeenv"]; then
+if [ -e ".cmakeenv" ]; then
     echo "Rebuilding.."
     mv ".cmakeenv" ".cmakeenvold"
     echo "$env" > ".cmakeenv"

@@ -19,7 +19,7 @@ if [ -e "$cmake_dir/Makefile" -a -f "$cmake_dir/.buildhash" ] && [ "$(cat "$cmak
     exit 0
 fi
 
-if [ -e ".cmakeenv"]; then
+if [ -e ".cmakeenv" ]; then
     echo "Rebuilding.."
     mv ".cmakeenv" ".cmakeenvold"
     echo "$env" > ".cmakeenv"
