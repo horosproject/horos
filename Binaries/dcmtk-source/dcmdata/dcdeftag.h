@@ -261,6 +261,7 @@
 #define DCM_PatientsPrimaryLanguageCodeSequence  DcmTagKey(0x0010, 0x0101)
 #define DCM_PatientsPrimaryLanguageCodeModifierSequence DcmTagKey(0x0010, 0x0102)
 #define DCM_OtherPatientIDs                      DcmTagKey(0x0010, 0x1000)
+#define DCM_OtherPatientIDsSequence              DcmTagKey(0x0010, 0x1002)
 #define DCM_OtherPatientNames                    DcmTagKey(0x0010, 0x1001)
 #define DCM_PatientsBirthName                    DcmTagKey(0x0010, 0x1005)
 #define DCM_PatientsAge                          DcmTagKey(0x0010, 0x1010)

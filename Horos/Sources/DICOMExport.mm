@@ -933,6 +933,32 @@ static float deg2rad = M_PI / 180.0f;
 						
 						dataset->putAndInsertUint8Array(DCM_PixelData, OFstatic_cast(Uint8 *, OFconst_cast(void *, (void*) data)), height*width*spp);
 					}
+                    
+                    
+                    /*
+                    OFString otherPatientIDs_str;
+                    if ((dataset->findAndGetOFString(DCM_OtherPatientIDs,otherPatientIDs_str)).good())
+                        dataset->putAndInsertString(DCM_OtherPatientIDs,otherPatientIDs_str.c_str());
+                    else
+                        delete dataset->remove( DCM_OtherPatientIDs);
+                    
+                    
+                    DcmSequenceOfItems* otherPatientIDs_seq;
+                    if ((dataset->findAndGetSequence(DCM_OtherPatientIDsSequence,otherPatientIDs_seq)).good())
+                    {
+                        delete dataset->remove( DCM_OtherPatientIDsSequence);
+                     
+                        for (int i = 0; i < otherPatientIDs_seq->getLength(); i++)
+                        {
+                            DcmItem* item = otherPatientIDs_seq->getItem(i);
+                            dataset->findOrCreateSequenceItem(item->getTag(), item);
+                        }
+                    }
+                    else
+                        delete dataset->remove( DCM_OtherPatientIDsSequence); // Potential DCMTK bug
+                    */
+                    delete dataset->remove( DCM_OtherPatientIDsSequence); // Potential DCMTK bug. It can't handle DCM_OtherPatientIDsSequence properly
+                    
 					
 					delete dataset->remove( DCM_SmallestImagePixelValue);
 					delete dataset->remove( DCM_LargestImagePixelValue);
