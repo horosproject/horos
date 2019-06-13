@@ -22456,8 +22456,7 @@ static float oldsetww, oldsetwl;
     {
         [ViewerController closeAllWindows];
     }
-    else
-        [[BrowserController currentBrowser] showDatabase:self];
+    [[BrowserController currentBrowser] showDatabase:self];
 }
 
 - (void)setStandardRect:(NSRect)rect
