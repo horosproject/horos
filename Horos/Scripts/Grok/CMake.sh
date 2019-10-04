@@ -18,11 +18,10 @@ if [ -e Makefile -a -f .cmakehash ] && [ "$(cat '.cmakehash')" = "$hash" ]; then
 fi
 
 if [ -e ".cmakeenv" ]; then
-echo "Rebuilding.."
-cat '.cmakeenv'
-echo "$env"
+    echo "Rebuilding.."
+    cat '.cmakeenv'
+    echo "$env"
 fi
-
 
 command -v cmake >/dev/null 2>&1 || { echo >&2 "error: building $TARGET_NAME requires CMake. Please install CMake. Aborting."; exit 1; }
 command -v pkg-config >/dev/null 2>&1 || { echo >&2 "error: building $TARGET_NAME requires pkg-config. Please install pkg-config. Aborting."; exit 1; }

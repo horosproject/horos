@@ -55,12 +55,12 @@ NSString* N2DisclosureBoxDidCollapseNotification = @"N2DisclosureBoxDidCollapseN
 	[self setBoxType:NSBoxPrimary];
 	[self setAutoresizesSubviews:YES];
 	
-	if (_titleCell) [_titleCell release]; // [NSBox dealloc] will later release the object we will now create
-	_titleCell = [[N2DisclosureButtonCell alloc] init];
-	[_titleCell setTitle:title];
-	[_titleCell setState:NSOffState];
-	[_titleCell setTarget:self];
-	[_titleCell setAction:@selector(toggle:)];
+	if (self.titleCell) [self.titleCell release]; // [NSBox dealloc] will later release the object we will now create
+	self.titleCell = [[N2DisclosureButtonCell alloc] init];
+	[self.titleCell setTitle:title];
+	[self.titleCell setState:NSOffState];
+	[self.titleCell setTarget:self];
+	[self.titleCell setAction:@selector(toggle:)];
 	
 	_content = [content retain];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contentViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:content];
@@ -77,24 +77,24 @@ NSString* N2DisclosureBoxDidCollapseNotification = @"N2DisclosureBoxDidCollapseN
 
 -(void)mouseDown:(NSEvent*)event {
 	if (NSPointInRect([event locationInWindow], [self convertRect:[self titleRect] toView:NULL]))
-		[_titleCell trackMouse:event inRect:[self titleRect] ofView:self untilMouseUp:YES];
+		[self.titleCell trackMouse:event inRect:[self titleRect] ofView:self untilMouseUp:YES];
 	else [super mouseDown:event];
 }
 
 -(BOOL)enabled {
-	return [_titleCell isEnabled];
+	return [self.titleCell isEnabled];
 }
 
 -(void)setEnabled:(BOOL)flag {
-	[_titleCell setEnabled:flag];
+	[self.titleCell setEnabled:flag];
 }
 
 -(BOOL)isExpanded {
-	return [_titleCell state] == NSOnState;
+	return [self.titleCell state] == NSOnState;
 }
 
 -(N2DisclosureButtonCell*)titleCell {
-	return _titleCell;
+	return self.titleCell;
 }
 
 -(void)toggle:(id)sender {
@@ -112,7 +112,7 @@ NSString* N2DisclosureBoxDidCollapseNotification = @"N2DisclosureBoxDidCollapseN
 	[self setFrameFromContentFrame:[_content frame]];
 	[self addSubview:_content];
 	
-	[_titleCell setState:NSOnState];
+	[self.titleCell setState:NSOnState];
 	[[NSNotificationCenter defaultCenter] postNotificationName:N2DisclosureBoxDidExpandNotification object:self];
 }
 
@@ -123,7 +123,7 @@ NSString* N2DisclosureBoxDidCollapseNotification = @"N2DisclosureBoxDidCollapseN
 	[_content removeFromSuperview];
 	[self setFrameFromContentFrame:NSZeroRect];
 	
-	[_titleCell setState:NSOffState];
+	[self.titleCell setState:NSOffState];
 	[[NSNotificationCenter defaultCenter] postNotificationName:N2DisclosureBoxDidCollapseNotification object:self];
 }
 
@@ -133,23 +133,23 @@ NSString* N2DisclosureBoxDidCollapseNotification = @"N2DisclosureBoxDidCollapseN
 
 -(void)setFrameFromContentFrame:(NSRect)contentFrame {
 	NSSize margins = [self contentViewMargins];
-	NSRect frame = contentFrame + NSMakeSize(margins.width*2, [_titleCell textSize].height+margins.height*2);
+	NSRect frame = contentFrame + NSMakeSize(margins.width*2, [self.titleCell textSize].height+margins.height*2);
 	if (frame.size != [self frame].size) [self setFrameSize:frame.size];
 }
 
 -(void)resizeSubviewsWithOldSize:(NSSize)oldBoundsSize {
 	[super resizeSubviewsWithOldSize:oldBoundsSize];
 //	if ([self isExpanded]) [_content setFrameSize:[]];
-	[_titleCell calcDrawInfo:[self frame]];
+	[self.titleCell calcDrawInfo:[self frame]];
 }
 
 -(void)setTitle:(NSString*)title {
-	[_titleCell setTitle:title];
-	[_titleCell setAlternateTitle:title];
+	[self.titleCell setTitle:title];
+	[self.titleCell setAlternateTitle:title];
 }
 
 -(NSString*)title {
-	return [_titleCell title];
+	return [self.titleCell title];
 }
 
 -(NSSize)optimalSizeForWidth:(CGFloat)width {
