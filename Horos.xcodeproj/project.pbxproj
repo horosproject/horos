@@ -3866,6 +3866,7 @@
 		84D7BBE2154A941A007B5A86 /* NSNotificationCenter+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSNotificationCenter+N2.mm"; sourceTree = "<group>"; };
 		84E191F91369966A008DCFC8 /* WADODownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WADODownload.h; sourceTree = "<group>"; };
 		84E191FA1369966A008DCFC8 /* WADODownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WADODownload.m; sourceTree = "<group>"; };
+		8B15E1602347CA600010A147 /* Horos.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Horos.entitlements; sourceTree = "<group>"; };
 		953DA3D517A1D194000C4BAC /* WebPortalDB 8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 8.xcdatamodel"; sourceTree = "<group>"; };
 		991B8B5B1BB8B279006AF439 /* O2HMigrationAssistant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = O2HMigrationAssistant.png; sourceTree = "<group>"; };
 		992264F92028CE62004C4995 /* homephone.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = homephone.framework; path = Binaries/homephone.framework; sourceTree = "<group>"; };
@@ -6162,6 +6163,7 @@
 		710EF1F51FD014E8000B555B /* Horos */ = {
 			isa = PBXGroup;
 			children = (
+				8B15E1602347CA600010A147 /* Horos.entitlements */,
 				71BC461B1F272CA400FD6CCF /* Scripts */,
 				719D3F1A1FB461CA004CFB27 /* Sources */,
 				719D3F261FB46892004CFB27 /* Resources */,
@@ -13301,10 +13303,12 @@
 		43E98D1A1A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Horos/Horos.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 20191004;
 				DEVELOPMENT_TEAM = WGC24S6NKV;
+				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries,
@@ -13579,10 +13583,12 @@
 		7E76BEC7085757B70073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Horos/Horos.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 20191004;
 				DEVELOPMENT_TEAM = WGC24S6NKV;
+				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries,
