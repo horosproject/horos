@@ -10090,7 +10090,7 @@
 						CreatedOnToolsVersion = 9.0;
 					};
 					AB28B42E05B7921E00A9906C = {
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -10945,7 +10945,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#test with codesign -vvv\n#\n#chmod -R 777 \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\n#\n#if [[ ${CONFIGURATION} == \"Release\" ]]; then\n# -f means force to re-sign even if already signed\n#codesign -f -s \"Developer ID Application\" \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/HorosAPI.framework\"\n#codesign --resource-rules Rules.plist -f -s \"Developer ID Application\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\n#echo \"code signed\"\n#fi";
+			shellScript = "#test with codesign -vvv\n#\n#chmod -R 777 \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\n#\n#if [[ ${CONFIGURATION} == \"Release\" ]]; then\n# -f means force to re-sign even if already signed\n#codesign -f -s \"Developer ID Application\" \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/HorosAPI.framework\"\n#codesign --resource-rules Rules.plist -f -s \"Developer ID Application\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\n#echo \"code signed\"\n#fi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -13301,8 +13301,10 @@
 		43E98D1A1A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 20191004;
+				DEVELOPMENT_TEAM = WGC24S6NKV;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries,
@@ -13577,8 +13579,10 @@
 		7E76BEC7085757B70073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 20191004;
+				DEVELOPMENT_TEAM = WGC24S6NKV;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries,
