@@ -191,7 +191,7 @@
 	<key>CFBundleExecutable</key>
 	<string>Horos</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Horos v4.0.0 RC1</string>
+	<string>Horos v4.0.0 RC2</string>
 	<key>CFBundleIconFile</key>
 	<string>Horos.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -238,7 +238,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>20181214</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>GitHash</key>
 	<string></string>
 	<key>GitState</key>
