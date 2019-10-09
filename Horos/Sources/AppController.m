@@ -3268,33 +3268,23 @@ static BOOL initialized = NO;
 }
 
 #pragma mark-
-#pragma mark growl
+#pragma mark User Notifications
 
-- (void) growlTitle:(NSString*) title description:(NSString*) description name:(NSString*) name
+/**
+ @brief Display a user notifcation in NotificationCenter.
+ */
+- (void) displayUserNotification:(NSString*) title description:(NSString*) description name:(NSString*) name
 {
-#ifndef OSIRIX_LIGHT
-#ifndef MACAPPSTORE
+    //keep the legacy defaults key...
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displayGrowlNotification"])
 	{
-        [GrowlApplicationBridge notifyWithTitle: title
-							description: description 
-							notificationName: name
-							iconData: nil
-							priority: 0
-							isSticky: NO
-							clickContext: nil];
+        NSUserNotification *notification = [[NSUserNotification alloc] init];
+        notification.title = title;
+        notification.informativeText = description;
+        notification.soundName = NSUserNotificationDefaultSoundName;
+        
+        [[NSUserNotificationCenter defaultUserNotificationCenter] scheduleNotification:notification];
     }
-    
-//    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displayMacOSUserNotification"] && [AppController hasMacOSXMountainLion]) Growl SDK 1.3 will automatically use MacOS User Notification, if Growl is not installed
-//    {
-//        NSUserNotification *notification = [[NSUserNotification alloc] init];
-//        [notification setTitle: title];
-//        [notification setInformativeText: description];
-//        [notification setSoundName: NSUserNotificationDefaultSoundName];
-//        [[NSUserNotificationCenter defaultUserNotificationCenter] scheduleNotification: notification];
-//    }
-#endif
-#endif
 }
 
 #pragma mark-
@@ -3381,8 +3371,17 @@ static BOOL initialized = NO;
 	return NO;
 }
 
+- (BOOL)userNotificationCenter:(NSUserNotificationCenter *)center
+     shouldPresentNotification:(NSUserNotification *)notification
+{
+    return YES;
+}
+
 - (void) applicationDidFinishLaunching:(NSNotification*) aNotification
 {
+    //register for user notification display
+    [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:self];
+    
 	unlink( "/tmp/kill_all_storescu");
 	
     [[[NSWorkspace sharedWorkspace] notificationCenter]
@@ -4003,31 +4002,7 @@ static BOOL initialized = NO;
 		if(XMLRPCServer == nil) XMLRPCServer = [[XMLRPCInterface alloc] init];
 	}
 	#endif
-	
-//	#ifndef OSIRIX_LIGHT
-//	#ifndef MACAPPSTORE
-//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displayGrowlNotification"])
-//	{
-//        // If Growl crashed before...
-//        NSString *GrowlCrashed = @"/tmp/OsiriXGrowlCrashed";
-//        
-//        if( [[NSFileManager defaultManager] fileExistsAtPath: GrowlCrashed])
-//        {
-//            [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"displayGrowlNotification"];
-//            [[NSFileManager defaultManager] removeItemAtPath: GrowlCrashed error: nil];
-//        }
-//        else 
-//        {
-//            [GrowlCrashed writeToFile: GrowlCrashed atomically: YES encoding: NSUTF8StringEncoding error: nil];
-//            
-//            [GrowlApplicationBridge setGrowlDelegate: self];
-//            
-//            [[NSFileManager defaultManager] removeItemAtPath: GrowlCrashed error: nil];
-//        }
-//	}
-//	#endif
-//	#endif
-	
+		
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver: self
            selector: @selector(UpdateWLWWMenu:)

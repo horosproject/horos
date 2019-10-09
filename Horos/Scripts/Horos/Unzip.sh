@@ -6,7 +6,6 @@ unzip -uo DB_Previous_Models.zip
 unzip -uo PAGES.zip
 unzip -uo OsiriXReport.template.zip
 unzip -uo FeedbackReporter.framework.zip
-unzip -uo Growl.framework.zip
 unzip -uo 3DconnexionClient.framework.zip
 unzip -uo dciodvfy.zip
 unzip -uo Ming.zip

@@ -49,14 +49,6 @@
 *  The OsiriX team.
 */
 
-#ifdef OSIRIX_VIEWER
-#ifndef OSIRIX_LIGHT
-#ifndef MACAPPSTORE
-#import <Growl/Growl.h>
-#endif
-#endif
-#endif
-
 #import <AppKit/AppKit.h>
 #import "XMLRPCMethods.h"
 
@@ -112,17 +104,11 @@ extern "C"
 *
 */
 
-//#if defined(OSIRIX_VIEWER) && !defined(OSIRIX_LIGHT) && !defined(MACAPPSTORE)
-//#else
-//@protocol GrowlApplicationBridgeDelegate
-//@end
-//#endif
-
 @class AppController, ToolbarPanelController, ThumbnailsListPanel, BonjourPublisher;
 
 extern AppController* OsiriX;
 
-@interface AppController : NSObject	<NSNetServiceBrowserDelegate, NSNetServiceDelegate, NSSoundDelegate, NSMenuDelegate > //, FRFeedbackReporterDelegate> // GrowlApplicationBridgeDelegate
+@interface AppController : NSObject	<NSNetServiceBrowserDelegate, NSNetServiceDelegate, NSSoundDelegate, NSMenuDelegate, NSUserNotificationCenterDelegate> //, FRFeedbackReporterDelegate>
 {
 	IBOutlet BrowserController		*browserController;
 
@@ -282,9 +268,8 @@ extern AppController* OsiriX;
 - (NSMenu*) workspaceMenu;
 
 #pragma mark-
-#pragma mark growl
-- (void) growlTitle:(NSString*) title description:(NSString*) description name:(NSString*) name;
-//- (NSDictionary *) registrationDictionaryForGrowl;
+#pragma mark User Notifications
+- (void) displayUserNotification:(NSString*) title description:(NSString*) description name:(NSString*) name;
 
 //#pragma mark-
 //#pragma mark display setters and getters
