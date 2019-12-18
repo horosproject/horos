@@ -4462,6 +4462,7 @@ Gw
                                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                                     </textFieldCell>
                                                                     <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="date"/>
+                                                                    <tableColumnResizingMask key="resizingMask" userResizable="YES"/>
                                                                 </tableColumn>
                                                                 <tableColumn identifier="noFiles" editable="NO" width="50" minWidth="50" maxWidth="50" id="967">
                                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="# im">
@@ -4501,6 +4502,7 @@ Gw
                                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
                                                                     <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="dateAdded"/>
+                                                                    <tableColumnResizingMask key="resizingMask" userResizable="YES"/>
                                                                 </tableColumn>
                                                                 <tableColumn identifier="dateOpened" editable="NO" width="130" minWidth="130" maxWidth="180" id="1592">
                                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Date Opened">
@@ -4514,6 +4516,7 @@ Gw
                                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
                                                                     <sortDescriptor key="sortDescriptorPrototype" selector="compare:" sortKey="dateOpened"/>
+                                                                    <tableColumnResizingMask key="resizingMask" userResizable="YES"/>
                                                                 </tableColumn>
                                                                 <tableColumn identifier="referringPhysician" editable="NO" width="120" minWidth="40" maxWidth="400" id="11708">
                                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Referring Physician">
