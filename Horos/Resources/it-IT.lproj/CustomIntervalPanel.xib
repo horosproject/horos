@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="CustomIntervalPanel">
+            <connections>
+                <outlet property="fromPicker" destination="230" id="1150"/>
+                <outlet property="matrix" destination="873" id="PfP-Nd-T2F"/>
+                <outlet property="textualFromPicker" destination="239" id="1152"/>
+                <outlet property="textualToPicker" destination="240" id="1153"/>
+                <outlet property="toPicker" destination="231" id="1151"/>
+                <outlet property="window" destination="228" id="519"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="CustomIntervalWindow" animationBehavior="default" id="228" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" utility="YES"/>
+            <rect key="contentRect" x="1041" y="633" width="296" height="497"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <view key="contentView" id="229">
+                <rect key="frame" x="0.0" y="0.0" width="296" height="497"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <datePicker verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="230">
+                        <rect key="frame" x="6" y="253" width="277" height="148"/>
+                        <datePickerCell key="cell" borderStyle="bezel" alignment="left" datePickerStyle="clockAndCalendar" id="258">
+                            <font key="font" metaFont="system"/>
+                            <calendarDate key="date" timeIntervalSinceReferenceDate="155260800" calendarFormat="%Y-%m-%d %H:%M:%S %z">
+                                <!--2005-12-03 01:00:00 +0100-->
+                                <timeZone key="timeZone" name="Europe/Zurich"/>
+                            </calendarDate>
+                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <datePickerElements key="datePickerElements" year="YES" month="YES" day="YES" hour="YES" minute="YES"/>
+                        </datePickerCell>
+                        <connections>
+                            <binding destination="-2" name="value" keyPath="self.fromDate" id="948"/>
+                        </connections>
+                    </datePicker>
+                    <datePicker verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="231">
+                        <rect key="frame" x="6" y="42" width="277" height="148"/>
+                        <datePickerCell key="cell" borderStyle="bezel" alignment="left" datePickerStyle="clockAndCalendar" id="257">
+                            <font key="font" metaFont="system"/>
+                            <calendarDate key="date" timeIntervalSinceReferenceDate="155260800" calendarFormat="%Y-%m-%d %H:%M:%S %z">
+                                <!--2005-12-03 01:00:00 +0100-->
+                                <timeZone key="timeZone" name="Europe/Zurich"/>
+                            </calendarDate>
+                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <datePickerElements key="datePickerElements" year="YES" month="YES" day="YES" hour="YES" minute="YES"/>
+                        </datePickerCell>
+                        <connections>
+                            <binding destination="-2" name="value" keyPath="self.toDate" id="943"/>
+                            <binding destination="944" name="enabled" keyPath="values.betweenDatesMode" id="1250"/>
+                            <binding destination="944" name="hidden" keyPath="values.betweenDatesMode" previousBinding="1250" id="o9z-2c-OaU">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                        </connections>
+                    </datePicker>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" preferredMaxLayoutWidth="20" translatesAutoresizingMaskIntoConstraints="NO" id="233">
+                        <rect key="frame" x="4" y="199" width="24" height="17"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="To:" id="254">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <binding destination="944" name="hidden" keyPath="values.betweenDatesMode" id="cmI-jb-6Ec">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                        </connections>
+                    </textField>
+                    <button verticalHuggingPriority="750" misplaced="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="237">
+                        <rect key="frame" x="29" y="191" width="50" height="28"/>
+                        <buttonCell key="cell" type="push" title="Now" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" tag="1" inset="2" id="248">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="nowTo:" target="-2" id="1155"/>
+                            <binding destination="944" name="enabled" keyPath="values.betweenDatesMode" id="1252"/>
+                            <binding destination="944" name="hidden" keyPath="values.betweenDatesMode" previousBinding="1252" id="XRC-Ua-aPp">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="238">
+                        <rect key="frame" x="1" y="403" width="50" height="28"/>
+                        <buttonCell key="cell" type="push" title="Now" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="246">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="nowFrom:" target="-2" id="1154"/>
+                        </connections>
+                    </button>
+                    <datePicker verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="239">
+                        <rect key="frame" x="6" y="223" width="140" height="27"/>
+                        <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="244">
+                            <font key="font" metaFont="system"/>
+                            <calendarDate key="date" timeIntervalSinceReferenceDate="155260800" calendarFormat="%Y-%m-%d %H:%M:%S %z">
+                                <!--2005-12-03 01:00:00 +0100-->
+                                <timeZone key="timeZone" name="Europe/Zurich"/>
+                            </calendarDate>
+                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <datePickerElements key="datePickerElements" year="YES" month="YES" day="YES" hour="YES" minute="YES"/>
+                        </datePickerCell>
+                        <connections>
+                            <binding destination="-2" name="value" keyPath="self.fromDate" id="949"/>
+                        </connections>
+                    </datePicker>
+                    <datePicker verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="240">
+                        <rect key="frame" x="6" y="12" width="140" height="27"/>
+                        <datePickerCell key="cell" borderStyle="bezel" alignment="left" id="242">
+                            <font key="font" metaFont="system"/>
+                            <calendarDate key="date" timeIntervalSinceReferenceDate="155260800" calendarFormat="%Y-%m-%d %H:%M:%S %z">
+                                <!--2005-12-03 01:00:00 +0100-->
+                                <timeZone key="timeZone" name="Europe/Zurich"/>
+                            </calendarDate>
+                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <datePickerElements key="datePickerElements" year="YES" month="YES" day="YES" hour="YES" minute="YES"/>
+                        </datePickerCell>
+                        <connections>
+                            <binding destination="-2" name="value" keyPath="self.toDate" id="947"/>
+                            <binding destination="944" name="enabled" keyPath="values.betweenDatesMode" id="1247"/>
+                            <binding destination="944" name="hidden" keyPath="values.betweenDatesMode" previousBinding="1247" id="qw7-59-gp2">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                        </connections>
+                    </datePicker>
+                    <matrix horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="998" verticalCompressionResistancePriority="1000" misplaced="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="873">
+                        <rect key="frame" x="6" y="455" width="121" height="38"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        <size key="cellSize" width="122" height="18"/>
+                        <size key="intercellSpacing" width="4" height="2"/>
+                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="small" inset="2" id="874">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                        </buttonCell>
+                        <cells>
+                            <column>
+                                <buttonCell type="radio" title="On a specific date" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="875">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="smallSystem"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Between two dates" imagePosition="left" alignment="left" controlSize="small" tag="1" inset="2" id="876">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="smallSystem"/>
+                                </buttonCell>
+                            </column>
+                        </cells>
+                        <connections>
+                            <binding destination="944" name="selectedTag" keyPath="values.betweenDatesMode" id="1245"/>
+                        </connections>
+                    </matrix>
+                    <button translatesAutoresizingMaskIntoConstraints="NO" id="914">
+                        <rect key="frame" x="3" y="432" width="110" height="18"/>
+                        <buttonCell key="cell" type="check" title="Hours &amp; Minutes" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="915">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                        </buttonCell>
+                        <connections>
+                            <binding destination="944" name="enabled" keyPath="values.betweenDatesMode" id="1246"/>
+                            <binding destination="944" name="value" keyPath="values.customIntervalWithHoursAndMinutes" id="950"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="237" firstAttribute="leading" secondItem="233" secondAttribute="trailing" constant="8" symbolic="YES" id="5uc-w2-tcc"/>
+                    <constraint firstItem="238" firstAttribute="leading" secondItem="230" secondAttribute="leading" id="BnS-pj-Thc"/>
+                    <constraint firstItem="233" firstAttribute="top" secondItem="239" secondAttribute="bottom" constant="7" id="Fzn-vR-6J2"/>
+                    <constraint firstItem="237" firstAttribute="top" secondItem="239" secondAttribute="bottom" constant="8" symbolic="YES" id="Htw-zg-ZrJ"/>
+                    <constraint firstItem="233" firstAttribute="leading" secondItem="231" secondAttribute="leading" id="K1d-nB-BrJ"/>
+                    <constraint firstItem="238" firstAttribute="leading" secondItem="914" secondAttribute="leading" id="PGC-Bm-D4S"/>
+                    <constraint firstItem="240" firstAttribute="top" secondItem="231" secondAttribute="bottom" constant="8" symbolic="YES" id="Tfi-7u-hWO"/>
+                    <constraint firstItem="240" firstAttribute="leading" secondItem="231" secondAttribute="leading" id="Uwd-RN-oYV"/>
+                    <constraint firstItem="231" firstAttribute="top" secondItem="237" secondAttribute="bottom" constant="7" id="YxP-12-vBf"/>
+                    <constraint firstItem="873" firstAttribute="leading" secondItem="914" secondAttribute="leading" id="aNX-47-dz7"/>
+                    <constraint firstItem="233" firstAttribute="baseline" secondItem="237" secondAttribute="baseline" id="aub-h9-P6z"/>
+                    <constraint firstItem="239" firstAttribute="leading" secondItem="230" secondAttribute="leading" id="etr-OF-ZiF"/>
+                    <constraint firstItem="238" firstAttribute="top" secondItem="914" secondAttribute="bottom" constant="8" symbolic="YES" id="gnA-4g-G1u"/>
+                    <constraint firstItem="239" firstAttribute="leading" secondItem="233" secondAttribute="leading" id="kwV-VY-OFk"/>
+                    <constraint firstItem="873" firstAttribute="leading" secondItem="229" secondAttribute="leading" constant="6" id="kxZ-Hh-agJ"/>
+                    <constraint firstItem="873" firstAttribute="top" secondItem="229" secondAttribute="top" constant="4" id="kz9-jr-Gng"/>
+                    <constraint firstItem="230" firstAttribute="top" secondItem="238" secondAttribute="bottom" constant="8" symbolic="YES" id="mN6-fg-Lz0"/>
+                    <constraint firstItem="239" firstAttribute="top" secondItem="230" secondAttribute="bottom" constant="8" symbolic="YES" id="mnm-yf-Jkz"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="914" secondAttribute="trailing" constant="16" id="wCJ-0l-kt8"/>
+                    <constraint firstItem="914" firstAttribute="top" secondItem="873" secondAttribute="bottom" constant="8" symbolic="YES" id="xRE-eW-TqQ"/>
+                </constraints>
+            </view>
+            <connections>
+                <outlet property="delegate" destination="-2" id="518"/>
+            </connections>
+        </window>
+        <userDefaultsController representsSharedInstance="YES" id="944"/>
+    </objects>
+</document>
