@@ -3414,10 +3414,13 @@ static BOOL protectionAgainstReentry = NO;
         {
             NSString *newBadge = (importCount? [[NSNumber numberWithInteger:importCount] stringValue] : nil);
             
-            if( [newBadge isEqualToString: [[NSApp dockTile] badgeLabel]] == NO)
-                [AppController.sharedAppController performSelectorOnMainThread:@selector(setBadgeLabel:) withObject: newBadge waitUntilDone:NO];
+            dispatch_async(dispatch_get_main_queue(), ^(void)
+            {
+                if( [newBadge isEqualToString: [[NSApp dockTile] badgeLabel]] == NO)
+                    [AppController.sharedAppController setBadgeLabel:newBadge];
+                   
+            });
         }
-        
     }
     @catch (NSException* e)
     {
