@@ -19,9 +19,6 @@ find "$SRCROOT/Binaries/weasis" -name __MACOSX | xargs rm -Rf
 cd "$SRCROOT/Binaries/EmbeddedPlugins"
 #unzip -uo HorosCloud.horosplugin.zip
 
-cd "$SRCROOT/Binaries/odt2pdf/build"
-unzip -uo odt2pdf.zip
-
 cd "$SRCROOT/Binaries/PAGES"
 rm ._*
 

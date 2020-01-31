@@ -409,7 +409,6 @@
 		710EF1F31FD00E29000B555B /* Horos.h in Headers */ = {isa = PBXBuildFile; fileRef = 710EF1F11FD00E28000B555B /* Horos.h */; };
 		710EF1F41FD00E29000B555B /* Horos.m in Sources */ = {isa = PBXBuildFile; fileRef = 710EF1F21FD00E29000B555B /* Horos.m */; };
 		710EF1F61FD025BC000B555B /* Horos.m in Sources */ = {isa = PBXBuildFile; fileRef = 710EF1F21FD00E29000B555B /* Horos.m */; };
-		710EF28C1FD14935000B555B /* odt2pdf in Copy Executables */ = {isa = PBXBuildFile; fileRef = 596D30AC1439B979004EE9EC /* odt2pdf */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		71125D4B215376FC00EB0AA5 /* PathForImage.h in Headers */ = {isa = PBXBuildFile; fileRef = 71125D4A215376FC00EB0AA5 /* PathForImage.h */; };
 		711849771590A377006AB447 /* SMTPClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 711849751590A377006AB447 /* SMTPClient.h */; };
 		711849781590A377006AB447 /* SMTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 711849761590A377006AB447 /* SMTPClient.m */; };
@@ -3244,7 +3243,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
-				710EF28C1FD14935000B555B /* odt2pdf in Copy Executables */,
 			);
 			name = "Copy Executables";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3498,7 +3496,6 @@
 		5969033A12DDE30800379E41 /* WebPortalConnection+Data.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "WebPortalConnection+Data.mm"; sourceTree = "<group>"; };
 		5969034312DDE5EA00379E41 /* WebPortalResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPortalResponse.h; sourceTree = "<group>"; };
 		5969034412DDE5EA00379E41 /* WebPortalResponse.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebPortalResponse.mm; sourceTree = "<group>"; };
-		596D30AC1439B979004EE9EC /* odt2pdf */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = odt2pdf; path = ../../Binaries/odt2pdf/build/odt2pdf; sourceTree = "<group>"; };
 		596D30AE1439B98A004EE9EC /* pages2pdf.applescript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.applescript; name = pages2pdf.applescript; path = ReportsToPDF/pages2pdf.applescript; sourceTree = "<group>"; };
 		596D30AF1439B98A004EE9EC /* word2pdf.applescript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.applescript; name = word2pdf.applescript; path = ReportsToPDF/word2pdf.applescript; sourceTree = "<group>"; };
 		596D30B41439BA17004EE9EC /* DicomStudy+Report.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DicomStudy+Report.h"; sourceTree = "<group>"; };
@@ -6231,7 +6228,6 @@
 				CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */,
 				CE897DD30C21D951005C669E /* texture.tif */,
 				844003990E8CF99500A00EBD /* dciodvfy */,
-				596D30AC1439B979004EE9EC /* odt2pdf */,
 				596D30AE1439B98A004EE9EC /* pages2pdf.applescript */,
 				CE0C478F1831366600D4C50E /* pages092pdf.applescript */,
 				CE902EA1181C004C00CC4B88 /* pages2pages09.applescript */,
