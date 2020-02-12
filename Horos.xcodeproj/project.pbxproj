@@ -406,6 +406,8 @@
 		59FB643C1230EE4100EBA136 /* libpng12OsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64371230EE4100EBA136 /* libpng12OsiriX.a */; };
 		59FB64DD1231295400EBA136 /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */; };
 		59FB654F12312D8900EBA136 /* weasis in Resources */ = {isa = PBXBuildFile; fileRef = 59FB652912312D8900EBA136 /* weasis */; };
+		5F92186023F45593000B8754 /* dcmprscu in Resources */ = {isa = PBXBuildFile; fileRef = 5F92185F23F45592000B8754 /* dcmprscu */; };
+		5F92186223F455A8000B8754 /* dcmpsprt in Resources */ = {isa = PBXBuildFile; fileRef = 5F92186123F455A8000B8754 /* dcmpsprt */; };
 		710EF1F31FD00E29000B555B /* Horos.h in Headers */ = {isa = PBXBuildFile; fileRef = 710EF1F11FD00E28000B555B /* Horos.h */; };
 		710EF1F41FD00E29000B555B /* Horos.m in Sources */ = {isa = PBXBuildFile; fileRef = 710EF1F21FD00E29000B555B /* Horos.m */; };
 		710EF1F61FD025BC000B555B /* Horos.m in Sources */ = {isa = PBXBuildFile; fileRef = 710EF1F21FD00E29000B555B /* Horos.m */; };
@@ -3631,6 +3633,8 @@
 		59FB64771231101B00EBA136 /* mingpp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mingpp.h; path = Binaries/Ming/mingpp.h; sourceTree = "<group>"; };
 		59FB647D1231106000EBA136 /* ming.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ming.h; path = Binaries/Ming/ming.h; sourceTree = "<group>"; };
 		59FB652912312D8900EBA136 /* weasis */ = {isa = PBXFileReference; lastKnownFileType = folder; name = weasis; path = Binaries/weasis; sourceTree = SOURCE_ROOT; };
+		5F92185F23F45592000B8754 /* dcmprscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmprscu; sourceTree = "<group>"; };
+		5F92186123F455A8000B8754 /* dcmpsprt */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmpsprt; sourceTree = "<group>"; };
 		710EF1F11FD00E28000B555B /* Horos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Horos.h; sourceTree = "<group>"; };
 		710EF1F21FD00E29000B555B /* Horos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Horos.m; sourceTree = "<group>"; };
 		71125D4A215376FC00EB0AA5 /* PathForImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathForImage.h; sourceTree = "<group>"; };
@@ -7239,10 +7243,12 @@
 		ABBB639A0635874D00D9531F /* DCMTK */ = {
 			isa = PBXGroup;
 			children = (
+				ABBB639D0635874D00D9531F /* dcmdump */,
+				5F92186123F455A8000B8754 /* dcmpsprt */,
+				5F92185F23F45592000B8754 /* dcmprscu */,
+				ABBB639E0635874D00D9531F /* dicom.dic */,
 				84B5EA4211A2BC0900193FDB /* dsr2html */,
 				CE9C73490B34946B0062FCCC /* echoscu */,
-				ABBB639D0635874D00D9531F /* dcmdump */,
-				ABBB639E0635874D00D9531F /* dicom.dic */,
 			);
 			name = DCMTK;
 			path = ../../Binaries/DCMTK;
@@ -10401,6 +10407,7 @@
 				AB9693C00E823E3A00F09EEA /* ROIsAndKeys.tif in Resources */,
 				71AD675D1FC4248100A1E2F8 /* Ratio.plist in Resources */,
 				8440039A0E8CF99500A00EBD /* dciodvfy in Resources */,
+				5F92186023F45593000B8754 /* dcmprscu in Resources */,
 				71AD675F1FC4248100A1E2F8 /* Stern.plist in Resources */,
 				CE03A3CC0EA2AE0300951EF4 /* iPhone.tif in Resources */,
 				AB932A960EA38DEF0006DF1B /* CobbAngle.tif in Resources */,
@@ -10533,6 +10540,7 @@
 				A9B23D0715CFDF76000E47C3 /* Stack.pdf in Resources */,
 				99BA8A2821512F3500AF87B7 /* DICOMPrint in Resources */,
 				A9B23D0A15CFDF81000E47C3 /* Zoom.pdf in Resources */,
+				5F92186223F455A8000B8754 /* dcmpsprt in Resources */,
 				A9B23D0D15CFDF8E000E47C3 /* Rotate.pdf in Resources */,
 				A9B23D1015CFE3EB000E47C3 /* Rectangle.pdf in Resources */,
 				A9B23D1315CFE8B3000E47C3 /* Oval.pdf in Resources */,
