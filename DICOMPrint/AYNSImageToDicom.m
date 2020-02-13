@@ -36,6 +36,7 @@
  ============================================================================*/
 
 #import "AYNSImageToDicom.h"
+#import "DICOMExport.h"
 #import "OSIWindow.h"
 #import "NSFont_OpenGL.h"
 #import "Notifications.h"
@@ -60,6 +61,7 @@ extern BOOL FULL32BITPIPELINE;
 	if(self = [super init])
 	{
 		m_ImageDataBytes = nil;
+        self.prepareForDCMTK = NO;
 	}
 
 	return self;
@@ -337,12 +339,40 @@ extern BOOL FULL32BITPIPELINE;
 //********************************************************************************************
 - (NSString *) _createDicomImageWithViewer: (ViewerController *) viewer toDestinationPath: (NSString *) destPath asColorPrint: (BOOL) colorPrint withAnnotations: (BOOL) annotations
 {
-	NSImage *currentImage = [[viewer imageView] nsimage];
-	
-	NSDictionary *patientInfoDict = [self _getAnnotationDictionary: viewer];
-	
-	NSString *imagePath = [self _writeDICOMHeaderAndData: patientInfoDict destinationPath: destPath imageData: currentImage colorPrint: colorPrint];
-	
+    DCMView* imageView = [viewer imageView];
+    NSImage *currentImage = [[viewer imageView] nsimage];
+    NSString *imagePath = nil;
+    
+    if (self.prepareForDCMTK)
+    {
+        // HOROS-352: using DCMTK commands to create print objects and sent to printer to replace legacy 32-bit aycan binaries.
+        // Need to export screen captures as secondary capture objects, not embedded in print objects.
+        //
+        DICOMExport* exportDCM = [[[DICOMExport alloc] init] autorelease];
+        [exportDCM setSourceFile: [imageView.imageObj valueForKey: @"completePath"]];
+        struct rawData rawImage;
+        if (colorPrint)
+        {
+            rawImage = [self _convertImageToBitmap: currentImage];
+        }
+        else
+        {
+            rawImage = [self _convertRGBToGrayscale: currentImage];
+        }
+        [exportDCM setPixelData: (unsigned char*)[m_ImageDataBytes bytes]
+                samplesPerPixel: (colorPrint) ? 3 : 1
+                  bitsPerSample: 8
+                          width: rawImage.width
+                         height: rawImage.height];
+        imagePath = [exportDCM writeDCMFile: [self generateUniqueFileName: destPath]];
+    }
+    else
+    {
+        NSDictionary *patientInfoDict = [self _getAnnotationDictionary: viewer];
+        
+        imagePath = [self _writeDICOMHeaderAndData: patientInfoDict destinationPath: destPath imageData: currentImage colorPrint: colorPrint];
+    }
+    
 	if( imagePath == nil)
 	{
 		NSLog( @"WARNING imagePath == nil");
@@ -380,9 +410,9 @@ extern BOOL FULL32BITPIPELINE;
 	NSBitmapImageRep *imageRepresentation = [NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]];
 	
 	struct rawData rawImage;
-	
-	rawImage.imageData = nil;
 	rawImage.bytesWritten = 0;
+    rawImage.height = 0;
+    rawImage.width = 0;
 	
 	if( [imageRepresentation samplesPerPixel] != 3) return rawImage;
 	
@@ -404,6 +434,8 @@ extern BOOL FULL32BITPIPELINE;
 		}
 		
 		rawImage.bytesWritten = bytesWritten;
+        rawImage.height = [imageRepresentation size].height;
+        rawImage.width = [imageRepresentation size].width;
 		
 		return rawImage;
 	}
@@ -417,8 +449,9 @@ extern BOOL FULL32BITPIPELINE;
 	NSBitmapImageRep *imageRepresentation = [NSBitmapImageRep imageRepWithData: [image TIFFRepresentation]];
 	
 	struct rawData rawImage;
-	rawImage.imageData = nil;
-	rawImage.bytesWritten = 0;
+    rawImage.bytesWritten = 0;
+    rawImage.height = 0;
+    rawImage.width = 0;
 	
 	if( [imageRepresentation samplesPerPixel] != 3)
 		return rawImage;
@@ -461,8 +494,9 @@ extern BOOL FULL32BITPIPELINE;
 		bytesWritten++;
 	}
 	
-	rawImage.imageData = nil;
 	rawImage.bytesWritten = bytesWritten;
+    rawImage.height = [imageRepresentation size].height;
+    rawImage.width = [imageRepresentation size].width;
 	return rawImage;
 }
 
