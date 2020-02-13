@@ -3564,12 +3564,6 @@ static BOOL initialized = NO;
 
 	[self testMenus];
     
-    #ifndef OSIRIX_LIGHT
-    if( [[NSBundle bundleForClass:[self class]] pathForAuxiliaryExecutable:@"odt2pdf"] == nil)
-        N2LogStackTrace( @"\r****** path2odt2pdf == nil\r*****************************");
-    #endif
-    
-    
     [ROI loadDefaultSettings];
     
 #ifndef OSIRIX_LIGHT
