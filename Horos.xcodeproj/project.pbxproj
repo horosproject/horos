@@ -406,6 +406,7 @@
 		59FB643C1230EE4100EBA136 /* libpng12OsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64371230EE4100EBA136 /* libpng12OsiriX.a */; };
 		59FB64DD1231295400EBA136 /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */; };
 		59FB654F12312D8900EBA136 /* weasis in Resources */ = {isa = PBXBuildFile; fileRef = 59FB652912312D8900EBA136 /* weasis */; };
+		5F2DDC12240458F900E9BA60 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F2DDC11240458F900E9BA60 /* UserNotifications.framework */; };
 		5F92186023F45593000B8754 /* dcmprscu in Resources */ = {isa = PBXBuildFile; fileRef = 5F92185F23F45592000B8754 /* dcmprscu */; };
 		5F92186223F455A8000B8754 /* dcmpsprt in Resources */ = {isa = PBXBuildFile; fileRef = 5F92186123F455A8000B8754 /* dcmpsprt */; };
 		710EF1F31FD00E29000B555B /* Horos.h in Headers */ = {isa = PBXBuildFile; fileRef = 710EF1F11FD00E28000B555B /* Horos.h */; };
@@ -494,8 +495,6 @@
 		71AD676C1FC4256E00A1E2F8 /* Tiling3x1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0AC1FB59A9100FF75B6 /* Tiling3x1.pdf */; };
 		71AD676D1FC4256E00A1E2F8 /* Tiling3x2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0A81FB59A9000FF75B6 /* Tiling3x2.pdf */; };
 		71AD676E1FC4256E00A1E2F8 /* Tiling3x3.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0A91FB59A9000FF75B6 /* Tiling3x3.pdf */; };
-		71C99EA61D1A81FE00208F3B /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71C99EA51D1A81FE00208F3B /* Growl.framework */; };
-		71C99EA71D1A871700208F3B /* Growl.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 71C99EA51D1A81FE00208F3B /* Growl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		71CE3C19157F489C00AC0112 /* List.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71CE3C18157F489C00AC0112 /* List.pdf */; };
 		71E6C0801FB5943B00FF75B6 /* O2HMigrationAssistant.xib in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0821FB5943B00FF75B6 /* O2HMigrationAssistant.xib */; };
 		71E6C0851FB597FC00FF75B6 /* Decompress in Resources */ = {isa = PBXBuildFile; fileRef = AB724FF60ADE6ECB00A212A0 /* Decompress */; };
@@ -2881,7 +2880,6 @@
 		CEA4F07715AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA4F07315AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m */; };
 		CEA4F07915AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA4F07415AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h */; };
 		CEA4F07D15AEA606009584C7 /* OSIPACSOnDemand.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEA4F07B15AEA606009584C7 /* OSIPACSOnDemand.xib */; };
-		CEA6CC7318068CE900F5A748 /* Growl Registration Ticket.growlRegDict in Resources */ = {isa = PBXBuildFile; fileRef = CEA6CC7218068CE900F5A748 /* Growl Registration Ticket.growlRegDict */; };
 		CEAA6F420E50C084008802D2 /* OsiriXSCPDataHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.mm */; };
 		CEAA6F430E50C085008802D2 /* OsiriXSCPDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */; };
 		CEAE02E00DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */; };
@@ -3283,7 +3281,6 @@
 				71E6C0AF1FB5B0BF00FF75B6 /* 3DconnexionClient.framework in Copy Frameworks */,
 				993DB4A11C0244430084218A /* FeedbackReporter.framework in Copy Frameworks */,
 				9966A1B51AE0B6EE00F2D81A /* DCM.framework in Copy Frameworks */,
-				71C99EA71D1A871700208F3B /* Growl.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3630,6 +3627,7 @@
 		59FB64771231101B00EBA136 /* mingpp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mingpp.h; path = Binaries/Ming/mingpp.h; sourceTree = "<group>"; };
 		59FB647D1231106000EBA136 /* ming.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ming.h; path = Binaries/Ming/ming.h; sourceTree = "<group>"; };
 		59FB652912312D8900EBA136 /* weasis */ = {isa = PBXFileReference; lastKnownFileType = folder; name = weasis; path = Binaries/weasis; sourceTree = SOURCE_ROOT; };
+		5F2DDC11240458F900E9BA60 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		5F92185F23F45592000B8754 /* dcmprscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmprscu; sourceTree = "<group>"; };
 		5F92186123F455A8000B8754 /* dcmpsprt */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmpsprt; sourceTree = "<group>"; };
 		710EF1F11FD00E28000B555B /* Horos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Horos.h; sourceTree = "<group>"; };
@@ -3681,7 +3679,6 @@
 		71AA5A2D1611F1EB006A6A5F /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
 		71BC461B1F272CA400FD6CCF /* Scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Scripts; sourceTree = "<group>"; };
 		71C99EA41D1A7E9F00208F3B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Horos/Info.plist; sourceTree = "<group>"; };
-		71C99EA51D1A81FE00208F3B /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Growl.framework; path = Binaries/Growl.framework; sourceTree = "<group>"; };
 		71CE3C18157F489C00AC0112 /* List.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = List.pdf; sourceTree = "<group>"; };
 		71E6C0811FB5943B00FF75B6 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/O2HMigrationAssistant.xib; sourceTree = "<group>"; };
 		71E6C0881FB5995100FF75B6 /* BlackBody.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = BlackBody.plist; sourceTree = "<group>"; };
@@ -5510,7 +5507,6 @@
 		CEA4F07315AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIPACSOnDemandPreferencePane.m; sourceTree = "<group>"; };
 		CEA4F07415AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIPACSOnDemandPreferencePane.h; sourceTree = "<group>"; };
 		CEA4F07C15AEA606009584C7 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/OSIPACSOnDemand.xib; sourceTree = "<group>"; };
-		CEA6CC7218068CE900F5A748 /* Growl Registration Ticket.growlRegDict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Growl Registration Ticket.growlRegDict"; sourceTree = "<group>"; };
 		CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = DICOMDestination.tif; sourceTree = "<group>"; };
 		CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = OsiriXTables.pdf; sourceTree = "<group>"; };
 		CEB1DA6608A3B1040058C303 /* smalltrash.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = smalltrash.tif; sourceTree = "<group>"; };
@@ -5677,7 +5673,6 @@
 				992335882009A75A000E10BA /* Horos.framework in Frameworks */,
 				AB28B48805B7998800A9906C /* AppKit.framework in Frameworks */,
 				993DB4A01C0243D50084218A /* FeedbackReporter.framework in Frameworks */,
-				71C99EA61D1A81FE00208F3B /* Growl.framework in Frameworks */,
 				AB28B48A05B7998A00A9906C /* AGL.framework in Frameworks */,
 				AB28B48B05B7998A00A9906C /* OpenGL.framework in Frameworks */,
 				AB28B48C05B7998B00A9906C /* Foundation.framework in Frameworks */,
@@ -5685,6 +5680,7 @@
 				AB28B93405B79D5C00A9906C /* ApplicationServices.framework in Frameworks */,
 				AB28B93505B79D5D00A9906C /* IOKit.framework in Frameworks */,
 				AB28B93705B79D5E00A9906C /* Accelerate.framework in Frameworks */,
+				5F2DDC12240458F900E9BA60 /* UserNotifications.framework in Frameworks */,
 				CEF0E6DC06AEF5CB001FF9E5 /* Carbon.framework in Frameworks */,
 				992264FA2028CE63004C4995 /* homephone.framework in Frameworks */,
 				7E3E38660715FFDC0049E72E /* PreferencePanes.framework in Frameworks */,
@@ -5854,10 +5850,10 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5F2DDC11240458F900E9BA60 /* UserNotifications.framework */,
 				992264F92028CE62004C4995 /* homephone.framework */,
 				993DB49F1C0243D50084218A /* FeedbackReporter.framework */,
 				439B8C131A19CCC300F396D7 /* 3DconnexionClient.framework */,
-				71C99EA51D1A81FE00208F3B /* Growl.framework */,
 				CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */,
 				CE6693C60AF551210073D923 /* libxerces-c.27.dylib */,
 				59FB64331230EE2F00EBA136 /* Ming */,
@@ -6228,7 +6224,6 @@
 				ABE0D6920CDB1A4400F0494B /* iChatHelper.xib */,
 				59FB652912312D8900EBA136 /* weasis */,
 				7183153D1610651E0098576F /* weasis-ext-config.properties */,
-				CEA6CC7218068CE900F5A748 /* Growl Registration Ticket.growlRegDict */,
 				CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */,
 				CE897DD30C21D951005C669E /* texture.tif */,
 				844003990E8CF99500A00EBD /* dciodvfy */,
@@ -10530,7 +10525,6 @@
 				A9701A9E15C9587C0019EE55 /* burn_anim09.tif in Resources */,
 				A9701AA015C9587C0019EE55 /* burn_anim10.tif in Resources */,
 				A9701AA215C9587C0019EE55 /* burn_anim11.tif in Resources */,
-				CEA6CC7318068CE900F5A748 /* Growl Registration Ticket.growlRegDict in Resources */,
 				A934924215CFC45D0029326E /* WLWW.pdf in Resources */,
 				A9B23D0315CFDF62000E47C3 /* Move.pdf in Resources */,
 				A9B23D0715CFDF76000E47C3 /* Stack.pdf in Resources */,

@@ -36,7 +36,6 @@
  ============================================================================*/
 
 //diskutil erasevolume HFS+ "ramdisk" `hdiutil attach -nomount ram://1165430`
-
 #import "SystemConfiguration/SCDynamicStoreCopySpecific.h"
 #include <CoreFoundation/CoreFoundation.h>
 #include <ApplicationServices/ApplicationServices.h>
@@ -3268,31 +3267,43 @@ static BOOL initialized = NO;
 }
 
 #pragma mark-
-#pragma mark growl
+#pragma mark notification
 
-- (void) growlTitle:(NSString*) title description:(NSString*) description name:(NSString*) name
+// For use with pre-macOS 10.14 notifications (reference NSUserNotificationCenterDelegate).
+//
+- (BOOL)userNotificationCenter:(NSUserNotificationCenter *)center shouldPresentNotification:(NSUserNotification *)notification{
+    return YES;
+}
+
+- (void) notificationTitle:(NSString*) title description:(NSString*) description name:(NSString*) name
 {
 #ifndef OSIRIX_LIGHT
 #ifndef MACAPPSTORE
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displayGrowlNotification"])
-	{
-        [GrowlApplicationBridge notifyWithTitle: title
-							description: description 
-							notificationName: name
-							iconData: nil
-							priority: 0
-							isSticky: NO
-							clickContext: nil];
+    if (@available(macOS 10.14, *))
+    {
+        UNMutableNotificationContent *notification = [[UNMutableNotificationContent alloc] init];
+        notification.title = title;
+        notification.body = description;
+        notification.categoryIdentifier = name;
+        notification.sound = [UNNotificationSound defaultSound];
+        
+        UNNotificationTrigger* trigger = nil; // deliver immediately
+        UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier: [[NSUUID UUID] UUIDString] content: notification trigger: trigger];
+        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+        [center addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+            if (error) {
+                NSLog(@"User Notification failed for title=[%@] description=[%@] error=[%@]", title, [description stringByReplacingOccurrencesOfString: @"\r" withString: @"\n"], error.localizedDescription);
+            }
+        }];
+        [notification release];
+    } else {
+        NSUserNotification *notification = [[NSUserNotification alloc] init];
+        [notification setTitle: title];
+        [notification setInformativeText: description];
+        [notification setSoundName: NSUserNotificationDefaultSoundName];
+        [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification: notification];
+        [notification release];
     }
-    
-//    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displayMacOSUserNotification"] && [AppController hasMacOSXMountainLion]) Growl SDK 1.3 will automatically use MacOS User Notification, if Growl is not installed
-//    {
-//        NSUserNotification *notification = [[NSUserNotification alloc] init];
-//        [notification setTitle: title];
-//        [notification setInformativeText: description];
-//        [notification setSoundName: NSUserNotificationDefaultSoundName];
-//        [[NSUserNotificationCenter defaultUserNotificationCenter] scheduleNotification: notification];
-//    }
 #endif
 #endif
 }
@@ -3396,17 +3407,28 @@ static BOOL initialized = NO;
             selector:@selector(switchHandler:)
             name:NSWorkspaceSessionDidResignActiveNotification
             object:nil];
-	
+    
+    // Will request authorization for notifications now even if not enabled in preferences as user may update
+    // preferences while running. NOTE: requirements for application to be able to get authorization are more
+    // stringent for later releases (e.g., properly signed, notarized).
+    //
+    if (@available(macOS 10.14, *)) {
+        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+        [center requestAuthorizationWithOptions:(UNAuthorizationOptionSound | UNAuthorizationOptionAlert)
+                              completionHandler:^(BOOL granted, NSError * _Nullable error) {
+            if (!error) {
+                NSLog(@"User Notification authorization request succeeded");
+            }
+            else {
+                NSLog(@"User Notification authorization request failed, error=[%@]", error.localizedDescription);
+            }
+        }];
+    } else {
+        [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:self];
+    }
+    
 //	if ([[NSUserDefaultsController sharedUserDefaultsController] boolForKey: @"ActivityWindowVisibleFlag"])
-//		[[[ActivityWindowController defaultController] window] makeKeyAndOrderFront:self];	
-	
-//	#if !__LP64__
-//	[[[NSApplication sharedApplication] dockTile] setBadgeLabel: @"32-bit"];
-//	[[[NSApplication sharedApplication] dockTile] display];
-//	#else
-//	[[[NSApplication sharedApplication] dockTile] setBadgeLabel: @"64-bit"];
-//	[[[NSApplication sharedApplication] dockTile] display];
-//	#endif
+//		[[[ActivityWindowController defaultController] window] makeKeyAndOrderFront:self];
 
 //#ifdef WITH_IMPORTANT_NOTICE
 //	[AppController displayImportantNotice: self];
@@ -3414,7 +3436,7 @@ static BOOL initialized = NO;
     
 //	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"TOOLKITPARSER4"] == 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX4"] == NO)
 //	{
-//		[self growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"DCM Framework is selected as the DICOM reader/parser. The performances of this toolkit are slower.", nil)  name:@"result"];
+//		[self notificationTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"DCM Framework is selected as the DICOM reader/parser. The performances of this toolkit are slower.", nil)  name:@"result"];
 //        
 //        NSLog( @"********");
 //        NSLog( @"********");
@@ -3997,30 +4019,6 @@ static BOOL initialized = NO;
 		if(XMLRPCServer == nil) XMLRPCServer = [[XMLRPCInterface alloc] init];
 	}
 	#endif
-	
-//	#ifndef OSIRIX_LIGHT
-//	#ifndef MACAPPSTORE
-//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displayGrowlNotification"])
-//	{
-//        // If Growl crashed before...
-//        NSString *GrowlCrashed = @"/tmp/OsiriXGrowlCrashed";
-//        
-//        if( [[NSFileManager defaultManager] fileExistsAtPath: GrowlCrashed])
-//        {
-//            [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"displayGrowlNotification"];
-//            [[NSFileManager defaultManager] removeItemAtPath: GrowlCrashed error: nil];
-//        }
-//        else 
-//        {
-//            [GrowlCrashed writeToFile: GrowlCrashed atomically: YES encoding: NSUTF8StringEncoding error: nil];
-//            
-//            [GrowlApplicationBridge setGrowlDelegate: self];
-//            
-//            [[NSFileManager defaultManager] removeItemAtPath: GrowlCrashed error: nil];
-//        }
-//	}
-//	#endif
-//	#endif
 	
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver: self
