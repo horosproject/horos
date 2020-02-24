@@ -21,10 +21,4 @@ cd "$SRCROOT/Binaries/EmbeddedPlugins"
 cd "$SRCROOT/Binaries/PAGES"
 rm ._*
 
-cd "$SRCROOT/DICOMPrint"
-unzip -uo DICOMPrint.zip
-unzip -uo libdcmprintscu.dylib.zip
-unzip -uo libxerces-c.27.dylib.zip
-unzip -uo xercesc.zip
-
 exit 0

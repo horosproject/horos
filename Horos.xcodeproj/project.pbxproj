@@ -693,9 +693,6 @@
 		999B0B671BB711ED00AF018A /* CurvedArrowGrayLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = 999B0B661BB711ED00AF018A /* CurvedArrowGrayLeft.png */; };
 		999B0B681BB7309200AF018A /* Osirix.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9966A1AF1AE09FFE00F2D81A /* Osirix.icns */; };
 		99BA4CD820A4BE0B00B5CD02 /* HorosCloud.horosplugin.zip in Copy HorosCloud */ = {isa = PBXBuildFile; fileRef = 99BA4CD620A4BDDA00B5CD02 /* HorosCloud.horosplugin.zip */; };
-		99BA8A252151289000AF87B7 /* libdcmprintscu.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		99BA8A262151289000AF87B7 /* libxerces-c.27.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		99BA8A2821512F3500AF87B7 /* DICOMPrint in Resources */ = {isa = PBXBuildFile; fileRef = 99BA8A2721512F3500AF87B7 /* DICOMPrint */; };
 		99C32EEF1CFF78E7001E71F3 /* PluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = AB2C24E10677861300A08910 /* PluginFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A0344496143DE4AA003E1AFA /* DCMUSRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = A085E104141E53210072BF0D /* DCMUSRegion.m */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
@@ -791,7 +788,6 @@
 		A9897D9C0D4A142200BAC447 /* displayTotoku.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9897D980D4A142200BAC447 /* displayTotoku.tif */; };
 		A98FFBE60CA92B58000291C8 /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
 		A98FFBEA0CA92B58000291C8 /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
-		A98FFBEB0CA92B58000291C8 /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
 		A997B15710E0C412004C5BB1 /* SecurityInterface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A997B15610E0C412004C5BB1 /* SecurityInterface.framework */; };
 		A99B7ECB0885A61F004328C0 /* BonjourPublisher.m in Sources */ = {isa = PBXBuildFile; fileRef = A99B7E5108858D31004328C0 /* BonjourPublisher.m */; };
 		A99B7ECD0885A621004328C0 /* BonjourBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = A99B7E5508858D4F004328C0 /* BonjourBrowser.m */; };
@@ -2782,7 +2778,6 @@
 		CE54877A0989363200CF4C60 /* Brush.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5487790989363200CF4C60 /* Brush.tif */; };
 		CE569B740E29612100F4A234 /* ThumbnailCell.h in Headers */ = {isa = PBXBuildFile; fileRef = CE569B720E29612100F4A234 /* ThumbnailCell.h */; };
 		CE569B750E29612100F4A234 /* ThumbnailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE569B730E29612100F4A234 /* ThumbnailCell.m */; };
-		CE586CCA0C74B7DB00DB7D5A /* libdcmprintscu.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */; };
 		CE594409155E3838007BDF5B /* NSApplication-Dock.h in Headers */ = {isa = PBXBuildFile; fileRef = CE594403155E3838007BDF5B /* NSApplication-Dock.h */; };
 		CE59440A155E3838007BDF5B /* NSApplication-Dock.m in Sources */ = {isa = PBXBuildFile; fileRef = CE594404155E3838007BDF5B /* NSApplication-Dock.m */; };
 		CE59440B155E3838007BDF5B /* NSString+SymlinksAndAliases.h in Headers */ = {isa = PBXBuildFile; fileRef = CE594405155E3838007BDF5B /* NSString+SymlinksAndAliases.h */; };
@@ -2980,12 +2975,6 @@
 		CEDEF7D60D020E9100CADB15 /* TIFFSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDEF7D30D020E9100CADB15 /* TIFFSmall.tif */; };
 		CEDEF7D70D020E9100CADB15 /* MailSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDEF7D40D020E9100CADB15 /* MailSmall.tif */; };
 		CEDEF7D80D020E9100CADB15 /* JPEGSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDEF7D50D020E9100CADB15 /* JPEGSmall.tif */; };
-		CEDF6DC60B46FE99008B45B8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
-		CEDF6DC90B46FE99008B45B8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		CEDF6DCB0B46FE99008B45B8 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6D320C05B3159D0002F793 /* IOKit.framework */; };
-		CEDF6DCC0B46FE99008B45B8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3AA009B681F500545F5E /* libz.dylib */; };
-		CEDF6E010B46FED2008B45B8 /* libxerces-c.27.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
-		CEDF6E1D0B46FF40008B45B8 /* DICOMPrint.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEDF6E1C0B46FF40008B45B8 /* DICOMPrint.mm */; };
 		CEE1922E08636FA100DED1F0 /* DicomImage.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE1922C08636FA100DED1F0 /* DicomImage.m */; };
 		CEE1922F08636FA100DED1F0 /* DicomImage.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE1922D08636FA100DED1F0 /* DicomImage.h */; };
 		CEE619EF0912C73000C31D78 /* OrientationWidget.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEE619EE0912C73000C31D78 /* OrientationWidget.tif */; };
@@ -3185,13 +3174,6 @@
 			remoteGlobalIDString = AB724F300ADE6ECB00A212A0;
 			remoteInfo = Decompress;
 		};
-		71E6A23D1FC5ED720099B327 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 4A2F5931078D148300C514A2;
-			remoteInfo = "Unzip Binaries";
-		};
 		9920CBEE202A0BA600FE0A2A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -3274,8 +3256,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				99BA8A252151289000AF87B7 /* libdcmprintscu.dylib in Copy Frameworks */,
-				99BA8A262151289000AF87B7 /* libxerces-c.27.dylib in Copy Frameworks */,
 				992264FB2028CE79004C4995 /* homephone.framework in Copy Frameworks */,
 				992335892009A75A000E10BA /* Horos.framework in Copy Frameworks */,
 				71E6C0AF1FB5B0BF00FF75B6 /* 3DconnexionClient.framework in Copy Frameworks */,
@@ -3900,7 +3880,6 @@
 		999B0B611BB70F0800AF018A /* O2HMigrationAssistant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = O2HMigrationAssistant.m; path = Horos.xcodeproj/../O2HMigrationAssistant.m; sourceTree = "<group>"; };
 		999B0B661BB711ED00AF018A /* CurvedArrowGrayLeft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CurvedArrowGrayLeft.png; sourceTree = "<group>"; };
 		99BA4CD620A4BDDA00B5CD02 /* HorosCloud.horosplugin.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = HorosCloud.horosplugin.zip; path = Binaries/EmbeddedPlugins/HorosCloud.horosplugin.zip; sourceTree = SOURCE_ROOT; };
-		99BA8A2721512F3500AF87B7 /* DICOMPrint */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = DICOMPrint; sourceTree = "<group>"; };
 		99C0EE22202A70CB00D88E8D /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		A085E103141E53210072BF0D /* DCMUSRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMUSRegion.h; sourceTree = "<group>"; };
 		A085E104141E53210072BF0D /* DCMUSRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMUSRegion.m; sourceTree = "<group>"; };
@@ -4269,12 +4248,10 @@
 		AB7CB7B30A6E3922008DFCC9 /* smile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = smile.png; sourceTree = "<group>"; };
 		AB7D0BB30615F94D00890872 /* ROI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ROI.h; sourceTree = "<group>"; };
 		AB7D0BB40615F94D00890872 /* ROI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ROI.m; sourceTree = "<group>"; };
-		AB80EBA40AF1F5B600E7E934 /* AYDcmPrintSCU.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AYDcmPrintSCU.h; sourceTree = "<group>"; };
 		AB80EBA50AF1F5B600E7E934 /* AYDicomPrintWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AYDicomPrintWindowController.h; sourceTree = "<group>"; };
 		AB80EBA60AF1F5B600E7E934 /* AYDicomPrintWindowController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = AYDicomPrintWindowController.mm; sourceTree = "<group>"; };
 		AB80EBA70AF1F5B600E7E934 /* AYNSImageToDicom.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AYNSImageToDicom.h; sourceTree = "<group>"; };
 		AB80EBA80AF1F5B600E7E934 /* AYNSImageToDicom.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AYNSImageToDicom.m; sourceTree = "<group>"; };
-		AB80EBA90AF1F5B600E7E934 /* AYPrintManager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AYPrintManager.h; sourceTree = "<group>"; };
 		AB85C65B0BFADA9500C4B52E /* FileIcon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FileIcon.tif; sourceTree = "<group>"; };
 		AB866037066E40970015E1C4 /* ToolbarPanel.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ToolbarPanel.m; sourceTree = "<group>"; };
 		AB866038066E40970015E1C4 /* ToolbarPanel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ToolbarPanel.h; sourceTree = "<group>"; };
@@ -5407,7 +5384,6 @@
 		CE5487790989363200CF4C60 /* Brush.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Brush.tif; sourceTree = "<group>"; };
 		CE569B720E29612100F4A234 /* ThumbnailCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbnailCell.h; sourceTree = "<group>"; };
 		CE569B730E29612100F4A234 /* ThumbnailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThumbnailCell.m; sourceTree = "<group>"; };
-		CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libdcmprintscu.dylib; path = DICOMPrint/libdcmprintscu.dylib; sourceTree = "<group>"; };
 		CE58A260146ECCE800F50080 /* WebPortalDB 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 5.xcdatamodel"; sourceTree = "<group>"; };
 		CE594403155E3838007BDF5B /* NSApplication-Dock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSApplication-Dock.h"; sourceTree = "<group>"; };
 		CE594404155E3838007BDF5B /* NSApplication-Dock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSApplication-Dock.m"; sourceTree = "<group>"; };
@@ -5421,7 +5397,6 @@
 		CE5EEFC8182D249B009D2045 /* ThumbnailsListPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbnailsListPanel.h; sourceTree = "<group>"; };
 		CE6692D80AF545F90073D923 /* printView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = printView.h; sourceTree = "<group>"; };
 		CE6692D90AF545F90073D923 /* printView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = printView.m; sourceTree = "<group>"; };
-		CE6693C60AF551210073D923 /* libxerces-c.27.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libxerces-c.27.dylib"; path = "DICOMPrint/libxerces-c.27.dylib"; sourceTree = "<group>"; };
 		CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Rotate3DCursor.tif; path = Cursors/Rotate3DCursor.tif; sourceTree = "<group>"; };
 		CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Rotate3DCameraCursor.tif; path = Cursors/Rotate3DCameraCursor.tif; sourceTree = "<group>"; };
 		CE6CD06B0CFB0462001DF429 /* OsiriXToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OsiriXToolbar.h; sourceTree = "<group>"; };
@@ -5606,8 +5581,6 @@
 		CEDEF7D30D020E9100CADB15 /* TIFFSmall.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = TIFFSmall.tif; sourceTree = "<group>"; };
 		CEDEF7D40D020E9100CADB15 /* MailSmall.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MailSmall.tif; sourceTree = "<group>"; };
 		CEDEF7D50D020E9100CADB15 /* JPEGSmall.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = JPEGSmall.tif; sourceTree = "<group>"; };
-		CEDF6DD00B46FE99008B45B8 /* DICOMPrint */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DICOMPrint; sourceTree = BUILT_PRODUCTS_DIR; };
-		CEDF6E1C0B46FF40008B45B8 /* DICOMPrint.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = DICOMPrint.mm; sourceTree = "<group>"; };
 		CEE1922C08636FA100DED1F0 /* DicomImage.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DicomImage.m; sourceTree = "<group>"; };
 		CEE1922D08636FA100DED1F0 /* DicomImage.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomImage.h; sourceTree = "<group>"; };
 		CEE619EE0912C73000C31D78 /* OrientationWidget.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = OrientationWidget.tif; sourceTree = "<group>"; };
@@ -5721,19 +5694,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CEDF6DC40B46FE99008B45B8 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CEDF6DC60B46FE99008B45B8 /* Foundation.framework in Frameworks */,
-				CEDF6DC90B46FE99008B45B8 /* Cocoa.framework in Frameworks */,
-				CEDF6DCB0B46FE99008B45B8 /* IOKit.framework in Frameworks */,
-				CEDF6DCC0B46FE99008B45B8 /* libz.dylib in Frameworks */,
-				CEDF6E010B46FED2008B45B8 /* libxerces-c.27.dylib in Frameworks */,
-				CE586CCA0C74B7DB00DB7D5A /* libdcmprintscu.dylib in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -5808,7 +5768,6 @@
 			children = (
 				ABA71D3F06726B1800335A62 /* Horos.app */,
 				AB724FF60ADE6ECB00A212A0 /* Decompress */,
-				CEDF6DD00B46FE99008B45B8 /* DICOMPrint */,
 				844719AF0FD8EF50003BFDF8 /* DCM.framework */,
 				AB0F3A2C1046BD2B004129DD /* Horos.framework */,
 			);
@@ -5824,7 +5783,6 @@
 				710EF1F51FD014E8000B555B /* Horos */,
 				AB10FA9611293361009EB238 /* Nitrogen */,
 				AB724F1C0ADE6CFC00A212A0 /* Decompress */,
-				CEDF6E1E0B46FF46008B45B8 /* DICOMPrint */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				7E0B3A08067525FD00908593 /* DCM */,
@@ -5854,8 +5812,6 @@
 				992264F92028CE62004C4995 /* homephone.framework */,
 				993DB49F1C0243D50084218A /* FeedbackReporter.framework */,
 				439B8C131A19CCC300F396D7 /* 3DconnexionClient.framework */,
-				CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */,
-				CE6693C60AF551210073D923 /* libxerces-c.27.dylib */,
 				59FB64331230EE2F00EBA136 /* Ming */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 			);
@@ -9006,17 +8962,6 @@
 			path = BurnAnimation;
 			sourceTree = "<group>";
 		};
-		CEDF6E1E0B46FF46008B45B8 /* DICOMPrint */ = {
-			isa = PBXGroup;
-			children = (
-				99BA8A2721512F3500AF87B7 /* DICOMPrint */,
-				CEDF6E1C0B46FF40008B45B8 /* DICOMPrint.mm */,
-				AB80EBA40AF1F5B600E7E934 /* AYDcmPrintSCU.h */,
-				AB80EBA90AF1F5B600E7E934 /* AYPrintManager.h */,
-			);
-			path = DICOMPrint;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -10039,23 +9984,6 @@
 			productReference = AB724FF60ADE6ECB00A212A0 /* Decompress */;
 			productType = "com.apple.product-type.tool";
 		};
-		CEDF6C600B46FE99008B45B8 /* DICOMPrint */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = CEDF6DCD0B46FE99008B45B8 /* Build configuration list for PBXNativeTarget "DICOMPrint" */;
-			buildPhases = (
-				CEDF6C610B46FE99008B45B8 /* Sources */,
-				CEDF6DC40B46FE99008B45B8 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				71E6A23E1FC5ED720099B327 /* PBXTargetDependency */,
-			);
-			name = DICOMPrint;
-			productName = SafeDBRebuild;
-			productReference = CEDF6DD00B46FE99008B45B8 /* DICOMPrint */;
-			productType = "com.apple.product-type.tool";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -10124,7 +10052,6 @@
 				7E0B3A3E067526CD00908593 /* DCM */,
 				AB0F3A2B1046BD2B004129DD /* API */,
 				AB724F300ADE6ECB00A212A0 /* Decompress */,
-				CEDF6C600B46FE99008B45B8 /* DICOMPrint */,
 				4A2F5931078D148300C514A2 /* Unzip Binaries */,
 				BF7486A50CC6AA5C00198387 /* Documentation */,
 				71A5234420220F780065793A /* VTK */,
@@ -10528,7 +10455,6 @@
 				A934924215CFC45D0029326E /* WLWW.pdf in Resources */,
 				A9B23D0315CFDF62000E47C3 /* Move.pdf in Resources */,
 				A9B23D0715CFDF76000E47C3 /* Stack.pdf in Resources */,
-				99BA8A2821512F3500AF87B7 /* DICOMPrint in Resources */,
 				A9B23D0A15CFDF81000E47C3 /* Zoom.pdf in Resources */,
 				5F92186223F455A8000B8754 /* dcmpsprt in Resources */,
 				A9B23D0D15CFDF8E000E47C3 /* Rotate.pdf in Resources */,
@@ -12491,15 +12417,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CEDF6C610B46FE99008B45B8 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CEDF6E1D0B46FF40008B45B8 /* DICOMPrint.mm in Sources */,
-				A98FFBEB0CA92B58000291C8 /* altivecFunctions.c in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -12617,11 +12534,6 @@
 			isa = PBXTargetDependency;
 			target = AB724F300ADE6ECB00A212A0 /* Decompress */;
 			targetProxy = 71C99EA01D19A80A00208F3B /* PBXContainerItemProxy */;
-		};
-		71E6A23E1FC5ED720099B327 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 4A2F5931078D148300C514A2 /* Unzip Binaries */;
-			targetProxy = 71E6A23D1FC5ED720099B327 /* PBXContainerItemProxy */;
 		};
 		9920CBED202A0BA600FE0A2A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -13423,19 +13335,6 @@
 			};
 			name = Release;
 		};
-		43E98D221A32BF6A001B9E51 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				DEVELOPMENT_TEAM = WGC24S6NKV;
-				LIBRARY_SEARCH_PATHS = DICOMPrint;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_NAME = DICOMPrint;
-				USER_HEADER_SEARCH_PATHS = DICOMPrint;
-				VALID_ARCHS = x86_64;
-			};
-			name = Release;
-		};
 		43E98D231A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -13749,20 +13648,6 @@
 			};
 			name = Debug;
 		};
-		CEDF6DCE0B46FE99008B45B8 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				DEVELOPMENT_TEAM = WGC24S6NKV;
-				LIBRARY_SEARCH_PATHS = DICOMPrint;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_NAME = DICOMPrint;
-				USER_HEADER_SEARCH_PATHS = DICOMPrint;
-				VALID_ARCHS = x86_64;
-			};
-			name = Debug;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -13897,15 +13782,6 @@
 			buildConfigurations = (
 				BF7486A60CC6AA5D00198387 /* Debug */,
 				43E98D201A32BF6A001B9E51 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		CEDF6DCD0B46FE99008B45B8 /* Build configuration list for PBXNativeTarget "DICOMPrint" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				CEDF6DCE0B46FE99008B45B8 /* Debug */,
-				43E98D221A32BF6A001B9E51 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
