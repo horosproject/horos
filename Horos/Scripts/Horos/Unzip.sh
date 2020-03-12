@@ -1,7 +1,6 @@
 #!/bin/sh
 
 cd "$SRCROOT/Binaries"
-unzip -uo DCMTK.zip
 unzip -uo DB_Previous_Models.zip
 unzip -uo PAGES.zip
 unzip -uo OsiriXReport.template.zip

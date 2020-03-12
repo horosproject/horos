@@ -18,6 +18,19 @@
 			name = "Unzip Binaries";
 			productName = "Unzip Binaries";
 		};
+		5F1E2A682411AE7E00365A0C /* DCMTK */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 5F1E2A6F2411AE7E00365A0C /* Build configuration list for PBXAggregateTarget "DCMTK" */;
+			buildPhases = (
+				5F1E2A6D2411AE7E00365A0C /* CMake */,
+				5F1E2A6E2411AE7E00365A0C /* Make */,
+			);
+			dependencies = (
+				5F1E2A692411AE7E00365A0C /* PBXTargetDependency */,
+			);
+			name = DCMTK;
+			productName = GDCM2;
+		};
 		71A522F72021AB220065793A /* GDCM */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 71A522F82021AB230065793A /* Build configuration list for PBXAggregateTarget "GDCM" */;
@@ -408,7 +421,7 @@
 		59FB654F12312D8900EBA136 /* weasis in Resources */ = {isa = PBXBuildFile; fileRef = 59FB652912312D8900EBA136 /* weasis */; };
 		5F2DDC12240458F900E9BA60 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F2DDC11240458F900E9BA60 /* UserNotifications.framework */; };
 		5F92186023F45593000B8754 /* dcmprscu in Resources */ = {isa = PBXBuildFile; fileRef = 5F92185F23F45592000B8754 /* dcmprscu */; };
-		5F92186223F455A8000B8754 /* dcmpsprt in Resources */ = {isa = PBXBuildFile; fileRef = 5F92186123F455A8000B8754 /* dcmpsprt */; };
+		5F92186223F455A8000B8754 /* dcmprscu in Resources */ = {isa = PBXBuildFile; fileRef = 5F92186123F455A8000B8754 /* dcmprscu */; };
 		710EF1F31FD00E29000B555B /* Horos.h in Headers */ = {isa = PBXBuildFile; fileRef = 710EF1F11FD00E28000B555B /* Horos.h */; };
 		710EF1F41FD00E29000B555B /* Horos.m in Sources */ = {isa = PBXBuildFile; fileRef = 710EF1F21FD00E29000B555B /* Horos.m */; };
 		710EF1F61FD025BC000B555B /* Horos.m in Sources */ = {isa = PBXBuildFile; fileRef = 710EF1F21FD00E29000B555B /* Horos.m */; };
@@ -3013,6 +3026,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		5F1E2A6A2411AE7E00365A0C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
+			remoteInfo = Submodules;
+		};
 		71A523022021B6810065793A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -3608,8 +3628,8 @@
 		59FB647D1231106000EBA136 /* ming.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ming.h; path = Binaries/Ming/ming.h; sourceTree = "<group>"; };
 		59FB652912312D8900EBA136 /* weasis */ = {isa = PBXFileReference; lastKnownFileType = folder; name = weasis; path = Binaries/weasis; sourceTree = SOURCE_ROOT; };
 		5F2DDC11240458F900E9BA60 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
-		5F92185F23F45592000B8754 /* dcmprscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmprscu; sourceTree = "<group>"; };
-		5F92186123F455A8000B8754 /* dcmpsprt */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmpsprt; sourceTree = "<group>"; };
+		5F92185F23F45592000B8754 /* dcmprscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dcmprscu; path = DCMTK/dcmprscu; sourceTree = BUILT_PRODUCTS_DIR; };
+		5F92186123F455A8000B8754 /* dcmprscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dcmprscu; path = DCMTK/dcmprscu; sourceTree = BUILT_PRODUCTS_DIR; };
 		710EF1F11FD00E28000B555B /* Horos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Horos.h; sourceTree = "<group>"; };
 		710EF1F21FD00E29000B555B /* Horos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Horos.m; sourceTree = "<group>"; };
 		71125D4A215376FC00EB0AA5 /* PathForImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathForImage.h; sourceTree = "<group>"; };
@@ -3835,7 +3855,7 @@
 		84ADF46F115B622D00FE18B2 /* VTKStereoVRView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VTKStereoVRView.mm; sourceTree = "<group>"; };
 		84ADF470115B622D00FE18B2 /* Window3DController+StereoVision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Window3DController+StereoVision.h"; sourceTree = "<group>"; };
 		84ADF471115B622D00FE18B2 /* Window3DController+StereoVision.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Window3DController+StereoVision.m"; sourceTree = "<group>"; };
-		84B5EA4211A2BC0900193FDB /* dsr2html */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dsr2html; sourceTree = "<group>"; };
+		84B5EA4211A2BC0900193FDB /* dsr2html */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dsr2html; path = DCMTK/dsr2html; sourceTree = BUILT_PRODUCTS_DIR; };
 		84C450F41003384000138F70 /* OSIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIWindow.h; sourceTree = "<group>"; };
 		84C450F51003384000138F70 /* OSIWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIWindow.m; sourceTree = "<group>"; };
 		84C6329416B945CD00F0EA89 /* ContextCleaner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ContextCleaner.h; path = Horos/Sources/ContextCleaner.h; sourceTree = SOURCE_ROOT; };
@@ -4288,8 +4308,8 @@
 		ABB7ADC4148CDDF2007D3C3F /* 2DMPRhorizontalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 2DMPRhorizontalPosition.tif; sourceTree = "<group>"; };
 		ABB7ADC5148CDDF2007D3C3F /* 2DMPRnormalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 2DMPRnormalPosition.tif; sourceTree = "<group>"; };
 		ABB7ADC6148CDDF2007D3C3F /* 2DMPRverticalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 2DMPRverticalPosition.tif; sourceTree = "<group>"; };
-		ABBB639D0635874D00D9531F /* dcmdump */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmdump; sourceTree = "<group>"; };
-		ABBB639E0635874D00D9531F /* dicom.dic */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = dicom.dic; sourceTree = "<group>"; };
+		ABBB639D0635874D00D9531F /* dcmdump */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dcmdump; path = DCMTK/dcmdump; sourceTree = BUILT_PRODUCTS_DIR; };
+		ABBB639E0635874D00D9531F /* dicom.dic */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = dicom.dic; path = DCMTK/dicom.dic; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABBB647B063587B200D9531F /* 2DBlending.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 2DBlending.tif; sourceTree = "<group>"; };
 		ABBB647C063587B200D9531F /* 3D.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 3D.tif; sourceTree = "<group>"; };
 		ABBB6480063587B200D9531F /* Axial.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Axial.tif; sourceTree = "<group>"; };
@@ -5471,7 +5491,7 @@
 		CE9762FF08FABDA600E6F8B0 /* PaletteController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PaletteController.m; sourceTree = "<group>"; };
 		CE995075183E05D60087E409 /* PerpendicularLines.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = PerpendicularLines.pdf; sourceTree = "<group>"; };
 		CE99E88E073AB4C500725ABC /* Photos.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Photos.icns; sourceTree = "<group>"; };
-		CE9C73490B34946B0062FCCC /* echoscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = echoscu; path = Binaries/DCMTK/echoscu; sourceTree = SOURCE_ROOT; };
+		CE9C73490B34946B0062FCCC /* echoscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = echoscu; path = DCMTK/echoscu; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE9DD280086B35050058DD2A /* DicomStudy.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DicomStudy.m; sourceTree = "<group>"; };
 		CE9DD281086B35050058DD2A /* DicomStudy.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomStudy.h; sourceTree = "<group>"; };
 		CE9DD282086B35050058DD2A /* DicomSeries.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DicomSeries.h; sourceTree = "<group>"; };
@@ -7191,7 +7211,7 @@
 			isa = PBXGroup;
 			children = (
 				ABBB639D0635874D00D9531F /* dcmdump */,
-				5F92186123F455A8000B8754 /* dcmpsprt */,
+				5F92186123F455A8000B8754 /* dcmprscu */,
 				5F92185F23F45592000B8754 /* dcmprscu */,
 				ABBB639E0635874D00D9531F /* dicom.dic */,
 				84B5EA4211A2BC0900193FDB /* dsr2html */,
@@ -10062,6 +10082,7 @@
 				71A5232A2021D3420065793A /* OpenSSL */,
 				9920CBEC202A0BA600FE0A2A /* Grok */,
 				71E6C0B01FBAD31E00FF75B6 /* Submodules */,
+				5F1E2A682411AE7E00365A0C /* DCMTK */,
 			);
 		};
 /* End PBXProject section */
@@ -10456,7 +10477,7 @@
 				A9B23D0315CFDF62000E47C3 /* Move.pdf in Resources */,
 				A9B23D0715CFDF76000E47C3 /* Stack.pdf in Resources */,
 				A9B23D0A15CFDF81000E47C3 /* Zoom.pdf in Resources */,
-				5F92186223F455A8000B8754 /* dcmpsprt in Resources */,
+				5F92186223F455A8000B8754 /* dcmprscu in Resources */,
 				A9B23D0D15CFDF8E000E47C3 /* Rotate.pdf in Resources */,
 				A9B23D1015CFE3EB000E47C3 /* Rectangle.pdf in Resources */,
 				A9B23D1315CFE8B3000E47C3 /* Oval.pdf in Resources */,
@@ -10536,6 +10557,34 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "sh \"Horos/Scripts/Horos/API.sh\"\n";
+		};
+		5F1E2A6D2411AE7E00365A0C /* CMake */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = CMake;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/CMake.sh\"\n";
+		};
+		5F1E2A6E2411AE7E00365A0C /* Make */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Make;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Make.sh\"\n";
 		};
 		710BAF711FB33751004909E4 /* Store Product Path */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -12420,6 +12469,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		5F1E2A692411AE7E00365A0C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
+			targetProxy = 5F1E2A6A2411AE7E00365A0C /* PBXContainerItemProxy */;
+		};
 		71A523032021B6810065793A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
@@ -13217,7 +13271,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 20191211;
-				DEVELOPMENT_TEAM = WGC24S6NKV;
+				DEVELOPMENT_TEAM = KJRA9298ZQ;
 				ENABLE_HARDENED_RUNTIME = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -13338,7 +13392,7 @@
 		43E98D231A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_TEAM = WGC24S6NKV;
+				DEVELOPMENT_TEAM = KJRA9298ZQ;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
 				INFOPLIST_FILE = "$(SRCROOT)/API/Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
@@ -13346,6 +13400,20 @@
 				OTHER_CFLAGS = "-fvisibility=default";
 				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.api;
 				PRODUCT_NAME = Horos;
+			};
+			name = Release;
+		};
+		5F1E2A702411AE7E00365A0C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		5F1E2A712411AE7E00365A0C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -13484,7 +13552,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 20191211;
-				DEVELOPMENT_TEAM = WGC24S6NKV;
+				DEVELOPMENT_TEAM = KJRA9298ZQ;
 				ENABLE_HARDENED_RUNTIME = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -13604,7 +13672,7 @@
 		AB0F3A2E1046BD2D004129DD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_TEAM = WGC24S6NKV;
+				DEVELOPMENT_TEAM = KJRA9298ZQ;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
 				INFOPLIST_FILE = "$(SRCROOT)/API/Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
@@ -13651,6 +13719,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		5F1E2A6F2411AE7E00365A0C /* Build configuration list for PBXAggregateTarget "DCMTK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5F1E2A702411AE7E00365A0C /* Debug */,
+				5F1E2A712411AE7E00365A0C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		71A522F82021AB230065793A /* Build configuration list for PBXAggregateTarget "GDCM" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -22,12 +22,11 @@
 	path = OpenSSL
 	url = https://github.com/openssl/openssl.git
 	ignore=dirty
-#[submodule "DCMTK"]
-#	path = DCMTK
-#	url = http://git.dcmtk.org/dcmtk
-#	ignore=dirty
 [submodule "Grok"]
 	path = Grok
 	url = https://github.com/GrokImageCompression/grok.git
 	ignore=dirty
-
+[submodule "DCMTK"]
+	path = DCMTK
+	url = https://github.com/DCMTK/dcmtk
+	branch = master/tags/DCMTK-3.6.5
