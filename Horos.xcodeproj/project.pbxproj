@@ -27,6 +27,7 @@
 			);
 			dependencies = (
 				5F1E2A692411AE7E00365A0C /* PBXTargetDependency */,
+				5F31DAC4241AD73E00573589 /* PBXTargetDependency */,
 			);
 			name = DCMTK;
 			productName = GDCM2;
@@ -3032,6 +3033,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
 			remoteInfo = Submodules;
+		};
+		5F31DAC3241AD73E00573589 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71A5231C2021D2B50065793A;
+			remoteInfo = OpenJPEG;
+		};
+		5F31DAC5241AE12300573589 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5F1E2A682411AE7E00365A0C;
+			remoteInfo = DCMTK;
 		};
 		71A523022021B6810065793A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -9973,6 +9988,7 @@
 				71A523052021B6D50065793A /* PBXTargetDependency */,
 				71A5234B20220F910065793A /* PBXTargetDependency */,
 				71A5233D2021DB6C0065793A /* PBXTargetDependency */,
+				5F31DAC6241AE12300573589 /* PBXTargetDependency */,
 				71C99E991D19A7FB00208F3B /* PBXTargetDependency */,
 				71C99E9B1D19A7FD00208F3B /* PBXTargetDependency */,
 				71C99EA11D19A80A00208F3B /* PBXTargetDependency */,
@@ -12474,6 +12490,16 @@
 			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
 			targetProxy = 5F1E2A6A2411AE7E00365A0C /* PBXContainerItemProxy */;
 		};
+		5F31DAC4241AD73E00573589 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71A5231C2021D2B50065793A /* OpenJPEG */;
+			targetProxy = 5F31DAC3241AD73E00573589 /* PBXContainerItemProxy */;
+		};
+		5F31DAC6241AE12300573589 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5F1E2A682411AE7E00365A0C /* DCMTK */;
+			targetProxy = 5F31DAC5241AE12300573589 /* PBXContainerItemProxy */;
+		};
 		71A523032021B6810065793A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
@@ -13271,7 +13297,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 20191211;
-				DEVELOPMENT_TEAM = KJRA9298ZQ;
+				DEVELOPMENT_TEAM = WGC24S6NKV;
 				ENABLE_HARDENED_RUNTIME = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -13392,7 +13418,7 @@
 		43E98D231A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_TEAM = KJRA9298ZQ;
+				DEVELOPMENT_TEAM = WGC24S6NKV;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
 				INFOPLIST_FILE = "$(SRCROOT)/API/Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
@@ -13552,7 +13578,7 @@
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 20191211;
-				DEVELOPMENT_TEAM = KJRA9298ZQ;
+				DEVELOPMENT_TEAM = WGC24S6NKV;
 				ENABLE_HARDENED_RUNTIME = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -13672,7 +13698,7 @@
 		AB0F3A2E1046BD2D004129DD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_TEAM = KJRA9298ZQ;
+				DEVELOPMENT_TEAM = WGC24S6NKV;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
 				INFOPLIST_FILE = "$(SRCROOT)/API/Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
