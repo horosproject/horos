@@ -421,8 +421,14 @@
 		59FB643C1230EE4100EBA136 /* libpng12OsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64371230EE4100EBA136 /* libpng12OsiriX.a */; };
 		59FB64DD1231295400EBA136 /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */; };
 		59FB654F12312D8900EBA136 /* weasis in Resources */ = {isa = PBXBuildFile; fileRef = 59FB652912312D8900EBA136 /* weasis */; };
-		5F92186023F45593000B8754 /* dcmpsprt in Resources */ = {isa = PBXBuildFile; fileRef = 5F92185F23F45592000B8754 /* dcmpsprt */; };
-		5F92186223F455A8000B8754 /* dcmprscu in Resources */ = {isa = PBXBuildFile; fileRef = 5F92186123F455A8000B8754 /* dcmprscu */; };
+		5FCC11ED2423CDCE0039EE8F /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FCC11EC2423CDCE0039EE8F /* UserNotifications.framework */; };
+		5FCC11EE2423CEB00039EE8F /* Decompress in Resources */ = {isa = PBXBuildFile; fileRef = AB724FF60ADE6ECB00A212A0 /* Decompress */; };
+		5FCC11EF2423D0220039EE8F /* dcmdump in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639D0635874D00D9531F /* dcmdump */; };
+		5FCC11F02423D0220039EE8F /* dcmprscu in Resources */ = {isa = PBXBuildFile; fileRef = 5F92186123F455A8000B8754 /* dcmprscu */; };
+		5FCC11F12423D0220039EE8F /* dcmpsprt in Resources */ = {isa = PBXBuildFile; fileRef = 5F92185F23F45592000B8754 /* dcmpsprt */; };
+		5FCC11F22423D0220039EE8F /* dicom.dic in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639E0635874D00D9531F /* dicom.dic */; };
+		5FCC11F32423D0220039EE8F /* dsr2html in Resources */ = {isa = PBXBuildFile; fileRef = 84B5EA4211A2BC0900193FDB /* dsr2html */; };
+		5FCC11F42423D0220039EE8F /* echoscu in Resources */ = {isa = PBXBuildFile; fileRef = CE9C73490B34946B0062FCCC /* echoscu */; };
 		710EF1F31FD00E29000B555B /* Horos.h in Headers */ = {isa = PBXBuildFile; fileRef = 710EF1F11FD00E28000B555B /* Horos.h */; };
 		710EF1F41FD00E29000B555B /* Horos.m in Sources */ = {isa = PBXBuildFile; fileRef = 710EF1F21FD00E29000B555B /* Horos.m */; };
 		710EF1F61FD025BC000B555B /* Horos.m in Sources */ = {isa = PBXBuildFile; fileRef = 710EF1F21FD00E29000B555B /* Horos.m */; };
@@ -511,7 +517,6 @@
 		71AD676E1FC4256E00A1E2F8 /* Tiling3x3.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0A91FB59A9000FF75B6 /* Tiling3x3.pdf */; };
 		71CE3C19157F489C00AC0112 /* List.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 71CE3C18157F489C00AC0112 /* List.pdf */; };
 		71E6C0801FB5943B00FF75B6 /* O2HMigrationAssistant.xib in Resources */ = {isa = PBXBuildFile; fileRef = 71E6C0821FB5943B00FF75B6 /* O2HMigrationAssistant.xib */; };
-		71E6C0851FB597FC00FF75B6 /* Decompress in Resources */ = {isa = PBXBuildFile; fileRef = AB724FF60ADE6ECB00A212A0 /* Decompress */; };
 		71E6C0AF1FB5B0BF00FF75B6 /* 3DconnexionClient.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 439B8C131A19CCC300F396D7 /* 3DconnexionClient.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		71EB83C016DCB7FF00D48646 /* O2DicomPredicateEditor.h in Headers */ = {isa = PBXBuildFile; fileRef = 71EB83B216DCB7FF00D48646 /* O2DicomPredicateEditor.h */; };
 		71EB83C116DCB7FF00D48646 /* O2DicomPredicateEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = 71EB83B316DCB7FF00D48646 /* O2DicomPredicateEditor.m */; };
@@ -623,7 +628,6 @@
 		84281FFE13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 84281FFC13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m */; };
 		84281FFF13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 84281FFD13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h */; };
 		843F847B12439E00004FBBF6 /* AYDicomPrintPref.h in Headers */ = {isa = PBXBuildFile; fileRef = 843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */; };
-		8440039A0E8CF99500A00EBD /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
 		848327AB15ED08F4003BAEEB /* CustomIntervalPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 848327A915ED08F3003BAEEB /* CustomIntervalPanel.xib */; };
 		8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = 8483ABA50E1BE33900C21B31 /* crossCursor.tif */; };
 		848CE28F145AC9AE00BEB249 /* curvedPath.icns in Resources */ = {isa = PBXBuildFile; fileRef = 848CE28E145AC9AE00BEB249 /* curvedPath.icns */; };
@@ -650,7 +654,6 @@
 		84ADF481115B622D00FE18B2 /* VTKStereoVRView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84ADF46F115B622D00FE18B2 /* VTKStereoVRView.mm */; };
 		84ADF482115B622D00FE18B2 /* Window3DController+StereoVision.h in Headers */ = {isa = PBXBuildFile; fileRef = 84ADF470115B622D00FE18B2 /* Window3DController+StereoVision.h */; };
 		84ADF483115B622D00FE18B2 /* Window3DController+StereoVision.m in Sources */ = {isa = PBXBuildFile; fileRef = 84ADF471115B622D00FE18B2 /* Window3DController+StereoVision.m */; };
-		84B5EA4311A2BC0900193FDB /* dsr2html in Resources */ = {isa = PBXBuildFile; fileRef = 84B5EA4211A2BC0900193FDB /* dsr2html */; };
 		84C4510B10033B8100138F70 /* OSIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 84C450F51003384000138F70 /* OSIWindow.m */; };
 		84C4510C10033B8200138F70 /* OSIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C450F41003384000138F70 /* OSIWindow.h */; };
 		84C6329516B945CD00F0EA89 /* ContextCleaner.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C6329416B945CD00F0EA89 /* ContextCleaner.h */; };
@@ -1472,8 +1475,6 @@
 		ABB7ADC7148CDDF2007D3C3F /* 2DMPRhorizontalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB7ADC4148CDDF2007D3C3F /* 2DMPRhorizontalPosition.tif */; };
 		ABB7ADC9148CDDF2007D3C3F /* 2DMPRnormalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB7ADC5148CDDF2007D3C3F /* 2DMPRnormalPosition.tif */; };
 		ABB7ADCB148CDDF2007D3C3F /* 2DMPRverticalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB7ADC6148CDDF2007D3C3F /* 2DMPRverticalPosition.tif */; };
-		ABBB63A70635874E00D9531F /* dcmdump in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639D0635874D00D9531F /* dcmdump */; };
-		ABBB63A80635874E00D9531F /* dicom.dic in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639E0635874D00D9531F /* dicom.dic */; };
 		ABBB64AD063587B200D9531F /* 2DBlending.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB647B063587B200D9531F /* 2DBlending.tif */; };
 		ABBB64AE063587B200D9531F /* 3D.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB647C063587B200D9531F /* 3D.tif */; };
 		ABBB64B2063587B200D9531F /* Axial.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6480063587B200D9531F /* Axial.tif */; };
@@ -2878,7 +2879,6 @@
 		CE97630308FABDA600E6F8B0 /* PaletteController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9762FF08FABDA600E6F8B0 /* PaletteController.m */; };
 		CE995076183E05D60087E409 /* PerpendicularLines.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CE995075183E05D60087E409 /* PerpendicularLines.pdf */; };
 		CE99E890073AB4C500725ABC /* Photos.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE99E88E073AB4C500725ABC /* Photos.icns */; };
-		CE9C734A0B34946B0062FCCC /* echoscu in Resources */ = {isa = PBXBuildFile; fileRef = CE9C73490B34946B0062FCCC /* echoscu */; };
 		CE9DD284086B35050058DD2A /* DicomStudy.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9DD280086B35050058DD2A /* DicomStudy.m */; };
 		CE9DD285086B35050058DD2A /* DicomStudy.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9DD281086B35050058DD2A /* DicomStudy.h */; };
 		CE9DD286086B35050058DD2A /* DicomSeries.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9DD282086B35050058DD2A /* DicomSeries.h */; };
@@ -3645,7 +3645,7 @@
 		5F026FFB242055690083A650 /* Decompress.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Decompress.entitlements; sourceTree = "<group>"; };
 		5F92185F23F45592000B8754 /* dcmpsprt */ = {isa = PBXFileReference; lastKnownFileType = text; name = dcmpsprt; path = DCMTK/dcmpsprt; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F92186123F455A8000B8754 /* dcmprscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dcmprscu; path = DCMTK/dcmprscu; sourceTree = BUILT_PRODUCTS_DIR; };
-		5FD4F9EC2422C004008EB0A1 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		5FCC11EC2423CDCE0039EE8F /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		710EF1F11FD00E28000B555B /* Horos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Horos.h; sourceTree = "<group>"; };
 		710EF1F21FD00E29000B555B /* Horos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Horos.m; sourceTree = "<group>"; };
 		71125D4A215376FC00EB0AA5 /* PathForImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathForImage.h; sourceTree = "<group>"; };
@@ -5673,6 +5673,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5FCC11ED2423CDCE0039EE8F /* UserNotifications.framework in Frameworks */,
 				9966A1AB1AE09D7C00F2D81A /* Quartz.framework in Frameworks */,
 				9966A1A91AE09D6800F2D81A /* InstantMessage.framework in Frameworks */,
 				9966A1A71AE09D5D00F2D81A /* DiskArbitration.framework in Frameworks */,
@@ -5735,7 +5736,6 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				5FD4F9EC2422C004008EB0A1 /* UserNotifications.framework */,
 				719D3F251FB46738004CFB27 /* Foundation.framework */,
 				719D3F231FB46737004CFB27 /* AppKit.framework */,
 				9966A1AA1AE09D7C00F2D81A /* Quartz.framework */,
@@ -5844,6 +5844,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5FCC11EC2423CDCE0039EE8F /* UserNotifications.framework */,
 				992264F92028CE62004C4995 /* homephone.framework */,
 				993DB49F1C0243D50084218A /* FeedbackReporter.framework */,
 				439B8C131A19CCC300F396D7 /* 3DconnexionClient.framework */,
@@ -10125,12 +10126,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5FCC11EF2423D0220039EE8F /* dcmdump in Resources */,
+				5FCC11F02423D0220039EE8F /* dcmprscu in Resources */,
+				5FCC11F12423D0220039EE8F /* dcmpsprt in Resources */,
+				5FCC11F22423D0220039EE8F /* dicom.dic in Resources */,
+				5FCC11F32423D0220039EE8F /* dsr2html in Resources */,
+				5FCC11F42423D0220039EE8F /* echoscu in Resources */,
+				5FCC11EE2423CEB00039EE8F /* Decompress in Resources */,
 				71AD67621FC4248100A1E2F8 /* VR Muscles-Bones.plist in Resources */,
 				71AD674D1FC4248100A1E2F8 /* HotGreen.plist in Resources */,
 				CE289B1D0D00AF91004F0A93 /* Mail.scpt in Resources */,
-				ABBB63A70635874E00D9531F /* dcmdump in Resources */,
 				998B52E41AE0893D00D317CF /* Horos.icns in Resources */,
-				ABBB63A80635874E00D9531F /* dicom.dic in Resources */,
 				ABBB64AD063587B200D9531F /* 2DBlending.tif in Resources */,
 				ABBB64AE063587B200D9531F /* 3D.tif in Resources */,
 				ABBB64B2063587B200D9531F /* Axial.tif in Resources */,
@@ -10200,7 +10206,6 @@
 				71AD675E1FC4248100A1E2F8 /* Spectrum.plist in Resources */,
 				7E2BE4190715E5040017898A /* CD.tif in Resources */,
 				CE99E890073AB4C500725ABC /* Photos.icns in Resources */,
-				71E6C0851FB597FC00FF75B6 /* Decompress in Resources */,
 				CE49E2CA0760B93500444203 /* Empty.tif in Resources */,
 				CE52264F077C48D900EED851 /* Sync.pdf in Resources */,
 				CEE6717D077D5ECF00E4BB10 /* SyncLock.pdf in Resources */,
@@ -10272,7 +10277,6 @@
 				ABB36D810AF2548C00DBEEA2 /* available.tif in Resources */,
 				AB3886AC0B2449CD00831F74 /* SagSmallOpposite.tif in Resources */,
 				AB9E05470B30107A00661F7E /* key.png in Resources */,
-				CE9C734A0B34946B0062FCCC /* echoscu in Resources */,
 				CE1366B50B41D0F200944876 /* mpeg2.tif in Resources */,
 				CEDCFB3C0B4C4A4B00510ABD /* SyncSmall.tif in Resources */,
 				CEDCFB460B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */,
@@ -10368,8 +10372,6 @@
 				71AD67581FC4248100A1E2F8 /* PPU Plasma.plist in Resources */,
 				AB9693C00E823E3A00F09EEA /* ROIsAndKeys.tif in Resources */,
 				71AD675D1FC4248100A1E2F8 /* Ratio.plist in Resources */,
-				8440039A0E8CF99500A00EBD /* dciodvfy in Resources */,
-				5F92186023F45593000B8754 /* dcmpsprt in Resources */,
 				71AD675F1FC4248100A1E2F8 /* Stern.plist in Resources */,
 				CE03A3CC0EA2AE0300951EF4 /* iPhone.tif in Resources */,
 				AB932A960EA38DEF0006DF1B /* CobbAngle.tif in Resources */,
@@ -10399,7 +10401,6 @@
 				A917F37E10F4F20C00344C5D /* CertSmallStd.tif in Resources */,
 				AB10FA231129302A009EB238 /* PopUpArrows.png in Resources */,
 				59BDF106117EE61E007F1F2C /* PreferencesWindow.xib in Resources */,
-				84B5EA4311A2BC0900193FDB /* dsr2html in Resources */,
 				CEBA5FE011B244EA005F3A0E /* SpectroIcon.jpg in Resources */,
 				5997896E11B7B402002DB107 /* PlusButton.png in Resources */,
 				5997897011B7B40B002DB107 /* MinusButton.png in Resources */,
@@ -10500,7 +10501,6 @@
 				A9B23D0315CFDF62000E47C3 /* Move.pdf in Resources */,
 				A9B23D0715CFDF76000E47C3 /* Stack.pdf in Resources */,
 				A9B23D0A15CFDF81000E47C3 /* Zoom.pdf in Resources */,
-				5F92186223F455A8000B8754 /* dcmprscu in Resources */,
 				A9B23D0D15CFDF8E000E47C3 /* Rotate.pdf in Resources */,
 				A9B23D1015CFE3EB000E47C3 /* Rectangle.pdf in Resources */,
 				A9B23D1315CFE8B3000E47C3 /* Oval.pdf in Resources */,
