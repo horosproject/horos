@@ -421,6 +421,7 @@
 		59FB643C1230EE4100EBA136 /* libpng12OsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64371230EE4100EBA136 /* libpng12OsiriX.a */; };
 		59FB64DD1231295400EBA136 /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */; };
 		59FB654F12312D8900EBA136 /* weasis in Resources */ = {isa = PBXBuildFile; fileRef = 59FB652912312D8900EBA136 /* weasis */; };
+		5F200F8024292385003EC23E /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
 		5FCC11ED2423CDCE0039EE8F /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FCC11EC2423CDCE0039EE8F /* UserNotifications.framework */; };
 		5FCC11EE2423CEB00039EE8F /* Decompress in Resources */ = {isa = PBXBuildFile; fileRef = AB724FF60ADE6ECB00A212A0 /* Decompress */; };
 		5FCC11EF2423D0220039EE8F /* dcmdump in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639D0635874D00D9531F /* dcmdump */; };
@@ -10126,6 +10127,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F200F8024292385003EC23E /* dciodvfy in Resources */,
 				5FCC11EF2423D0220039EE8F /* dcmdump in Resources */,
 				5FCC11F02423D0220039EE8F /* dcmprscu in Resources */,
 				5FCC11F12423D0220039EE8F /* dcmpsprt in Resources */,
