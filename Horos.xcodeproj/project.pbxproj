@@ -10808,7 +10808,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/CMake.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/CMake.sh\"\n";
 		};
 		71A5235120220FBD0065793A /* Make */ = {
 			isa = PBXShellScriptBuildPhase;

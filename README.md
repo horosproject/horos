@@ -3,7 +3,8 @@
 ### Prerequisites
 
 1. `cmake` and `pkg-config` must be in the system's `PATH`.
-2. Patience and coffee. A full build takes about 30-45 minutes.
+2. `git-lfs` must be in the installed (for VTK-m) (https://git-lfs.github.com/) 
+3. Patience and coffee. A full build takes about 30-45 minutes.
 
 ### Build
 
