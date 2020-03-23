@@ -6752,9 +6752,10 @@ public:
         textWLWW->SetTextScaleModeToNone();												//vtkviewPort
         textWLWW->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
         int *wsize = [self renderWindow]->GetSize();
-        textWLWW->GetPositionCoordinate()->SetValue( 2., wsize[ 1]-15);
+        textWLWW->GetPositionCoordinate()->SetValue(2., wsize[1] - 2.);
         textWLWW->GetTextProperty()->SetShadow(true);
         textWLWW->GetTextProperty()->SetShadowOffset(1, 1);
+        textWLWW->GetTextProperty()->SetVerticalJustificationToTop();
         
         aRenderer->AddActor2D(textWLWW);
         
