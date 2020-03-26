@@ -5634,8 +5634,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     if( shutterRect.size.height == 0) shutterRect.size.height = height;
     
     //window level & width
-    if ([dcmObject attributeValueWithName:@"WindowCenter"] && isRGB == NO) savedWL = (int)[[dcmObject attributeValueWithName:@"WindowCenter"] floatValue];
-    if ([dcmObject attributeValueWithName:@"WindowWidth"] && isRGB == NO) savedWW =  (int) [[dcmObject attributeValueWithName:@"WindowWidth"] floatValue];
+    if ([dcmObject attributeValueWithName:@"WindowCenter"] && isRGB == NO) savedWL = (float)[[dcmObject attributeValueWithName:@"WindowCenter"] floatValue];
+    if ([dcmObject attributeValueWithName:@"WindowWidth"] && isRGB == NO) savedWW =  (float) [[dcmObject attributeValueWithName:@"WindowWidth"] floatValue];
     if(  savedWW < 0) savedWW =-savedWW;
     
     if( [[dcmObject attributeValueWithName:@"RescaleType"] isEqualToString: @"US"] == NO)

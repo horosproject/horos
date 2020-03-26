@@ -710,7 +710,7 @@
 		999B0B641BB70F0800AF018A /* O2HMigrationAssistant.m in Sources */ = {isa = PBXBuildFile; fileRef = 999B0B611BB70F0800AF018A /* O2HMigrationAssistant.m */; };
 		999B0B671BB711ED00AF018A /* CurvedArrowGrayLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = 999B0B661BB711ED00AF018A /* CurvedArrowGrayLeft.png */; };
 		999B0B681BB7309200AF018A /* Osirix.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9966A1AF1AE09FFE00F2D81A /* Osirix.icns */; };
-		99BA4CD820A4BE0B00B5CD02 /* HorosCloud.horosplugin.zip in Copy HorosCloud */ = {isa = PBXBuildFile; fileRef = 99BA4CD620A4BDDA00B5CD02 /* HorosCloud.horosplugin.zip */; };
+		99BA4CD820A4BE0B00B5CD02 /* HorosCloud.horosplugin.zip in Copy HorosCloud */ = {isa = PBXBuildFile; fileRef = 99BA4CD620A4BDDA00B5CD02 /* HorosCloud.horosplugin.zip */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		99C32EEF1CFF78E7001E71F3 /* PluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = AB2C24E10677861300A08910 /* PluginFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A0344496143DE4AA003E1AFA /* DCMUSRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = A085E104141E53210072BF0D /* DCMUSRegion.m */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
