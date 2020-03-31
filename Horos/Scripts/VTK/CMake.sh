@@ -49,7 +49,7 @@ args+=(-DVTK_USE_SYSTEM_LIBXML2=ON)
 
 # args+=(-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON)
 
-[ "$CONFIGURATION" == 'Release' ] && args+=( -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS_RELEASE=-Ofast )
+[ "$CONFIGURATION" == 'Release' ] && args+=( -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS_RELEASE=-O3 )
 
 args+=(-DVTK_Group_StandAlone=OFF -DVTK_Group_Rendering=OFF) # disable the default groups
 args+=(-DModule_vtkIOImage=ON)

@@ -2961,25 +2961,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             int a = annotationType + 1;
             if( a > annotFull) a = 0;
             
-            //			switch( a)
-            //			{
-            //				case annotNone:
-            //					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Turn Off Annotations", nil) name:@"result"];
-            //				break;
-            //
-            //				case annotGraphics:
-            //					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Switch to Graphic Only", nil) name:@"result"];
-            //				break;
-            //
-            //				case annotBase:
-            //					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Switch to Full without names", nil) name:@"result"];
-            //				break;
-            //
-            //				case annotFull:
-            //					[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Annotations", nil) description: NSLocalizedString(@"Switch to Full", nil) name:@"result"];
-            //				break;
-            //			}
-            
             [[NSUserDefaults standardUserDefaults] setInteger: a forKey: @"ANNOTATIONS"];
             [DCMView setDefaults];
             annotationType = a;

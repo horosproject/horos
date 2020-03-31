@@ -643,25 +643,38 @@
 
 - (void) drawRect:(NSRect)aRect
 {
-	if(isEmpty)
+	_noNeedsDisplay = YES;
+	
+	@try
 	{
-		[[NSColor blackColor] set];
-		NSRectFill(aRect);
-		[self changeColorWith:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
+		if(isEmpty)
+		{
+			[[NSColor blackColor] set];
+			NSRectFill(aRect);
+			[self changeColorWith:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
+		}
+
+		if(volumeMapper) volumeMapper->SetMinimumImageSampleDistance(LOD);
 	}
-
-	if(volumeMapper) volumeMapper->SetMinimumImageSampleDistance(LOD);
-
-//	if(isEmpty)
-//	{
-//		// trick to "hide" content of the vr view
-//		if(![self shading])
-//			[self activateShading:YES];
-//		[self setShadingValues: 0.0 :0.0 :0.0 :0.0];
-//		[self changeColorWith:[NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:1.0]];
-//	}
+	@catch (...)
+	{
+		@throw;
+	}
+	@finally
+	{
+		_noNeedsDisplay = NO;
+	}
 	
 	[super drawRect:aRect];
+}
+
+- (void)setNeedsDisplay: (BOOL)flag
+{
+	if (_noNeedsDisplay)
+	{
+		return;
+	}
+	[super setNeedsDisplay: flag];
 }
 
 - (void)setSelected;
