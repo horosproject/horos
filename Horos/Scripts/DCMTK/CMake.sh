@@ -44,6 +44,8 @@ args+=(-DCMAKE_INSTALL_PREFIX="$install_dir")
 
 export PKG_CONFIG_PATH="$CONFIGURATION_TEMP_DIR/OpenJPEG.build/Install/lib/pkgconfig"
 
+#cxxfs+=( -I/usr/local/opt/openssl/include )
+
 if [ "$CONFIGURATION" = 'Debug' ]; then
     cxxfs+=( -g )
 else
@@ -58,6 +60,11 @@ if [ ${#cxxfs[@]} -ne 0 ]; then
     cxxfss="${cxxfs[@]}"
     args+=( -DCMAKE_CXX_FLAGS="$cxxfss" )
 fi
+
+args+=(-DDCMTK_WITH_OPENSSL=ON)
+args+=(-DOPENSSL_CRYPTO_LIBRARY="$CONFIGURATION_TEMP_DIR/OpenSSL.build/Install/lib/libcrypto.a")
+args+=(-DOPENSSL_INCLUDE_DIR="$CONFIGURATION_TEMP_DIR/OpenSSL.build/Install/include")
+args+=(-DOPENSSL_SSL_LIBRARY="$CONFIGURATION_TEMP_DIR/OpenSSL.build/Install/lib/libssl.a")
 
 cd "$cmake_dir"
 cmake "${args[@]}"

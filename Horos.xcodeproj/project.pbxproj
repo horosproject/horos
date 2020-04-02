@@ -27,6 +27,7 @@
 				5F026FFC24212E630083A650 /* Sign */,
 			);
 			dependencies = (
+				9937E81B24363D3700768B14 /* PBXTargetDependency */,
 				5F1E2A692411AE7E00365A0C /* PBXTargetDependency */,
 				5F31DAC4241AD73E00573589 /* PBXTargetDependency */,
 			);
@@ -3216,6 +3217,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
 			remoteInfo = Submodules;
+		};
+		9937E81A24363D3700768B14 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71A5232A2021D3420065793A;
+			remoteInfo = OpenSSL;
 		};
 		99C0EE1A202A101000D88E8D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -10029,7 +10037,6 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = NO;
 				LastTestingUpgradeCheck = 0730;
 				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = "The Horos Project";
@@ -12646,6 +12653,11 @@
 			isa = PBXTargetDependency;
 			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
 			targetProxy = 9920CBEE202A0BA600FE0A2A /* PBXContainerItemProxy */;
+		};
+		9937E81B24363D3700768B14 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71A5232A2021D3420065793A /* OpenSSL */;
+			targetProxy = 9937E81A24363D3700768B14 /* PBXContainerItemProxy */;
 		};
 		99C0EE1B202A101000D88E8D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
