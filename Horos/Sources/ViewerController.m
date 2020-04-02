@@ -12914,38 +12914,44 @@ static float oldsetww, oldsetwl;
         case 10:	// Copy ROIs
         {
             WaitRendering *splash = [[WaitRendering alloc] init: NSLocalizedString( @"Copy ROIs between series...", nil)];
-            [splash showWindow:self];
-            
-            int i, x, curIndex = [[bc imageView] curImage];
-            NSArray	*bcRoiList = nil;
-            
-            for( x = 0; x < [[bc pixList] count]; x++)
-            {
-                [[bc imageView] setIndex: x];
-                [[bc imageView] sendSyncMessage: 0];
-                [bc adjustSlider];
-                
-                if( bcRoiList != [[bc roiList] objectAtIndex: [[bc imageView] curImage]])
-                {
-                    bcRoiList = [[bc roiList] objectAtIndex: [[bc imageView] curImage]];
-                    
-                    for( i = 0; i < [[[bc roiList] objectAtIndex: x] count]; i++)
-                    {
-                        ROI *curROI = [[[bc roiList] objectAtIndex: x] objectAtIndex:i];
-                        
-                        curROI = [[curROI copy] autorelease];
-                        
-                        [curROI setOriginAndSpacing:[[imageView curDCM] pixelSpacingX] :[[imageView curDCM] pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: [imageView curDCM]]];	//NSMakePoint( [[imageView curDCM] originX], [[imageView curDCM] originY])];
-                        [imageView roiSet: curROI];
-                        
-                        [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] addObject: curROI];
-                    }
-                }
-            }
-            
-            [[bc imageView] setIndex: curIndex];
-            [[bc imageView] sendSyncMessage: 0];
-            [bc adjustSlider];
+			[splash showWindow:self];
+			
+			int curIndex = [imageView curImage];
+			int bcCurIndex = [[bc imageView] curImage];
+			
+			NSUInteger count = MIN([[self pixList] count], [[bc pixList] count]);
+			for( int x = 0; x < count; x++)
+			{
+				[imageView setIndex:x];
+				[imageView sendSyncMessage: 0];
+				[self adjustSlider];
+				
+				[[bc imageView] setIndex:x];
+				[[bc imageView] sendSyncMessage:0];
+				[bc adjustSlider];
+				
+				NSArray	*bcRoiList = [[bc roiList] objectAtIndex: [[bc imageView] curImage]];
+				
+				for( i = 0; i < [bcRoiList count]; i++)
+				{
+					ROI *curROI = [bcRoiList objectAtIndex:i];
+					
+					curROI = [[curROI copy] autorelease];
+					
+					[curROI setOriginAndSpacing:[[imageView curDCM] pixelSpacingX] :[[imageView curDCM] pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: [imageView curDCM]]];
+					[imageView roiSet: curROI];
+					
+					[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] addObject: curROI];
+				}
+			}
+			
+			[imageView setIndex:curIndex];
+			[imageView sendSyncMessage: 0];
+			[self adjustSlider];
+			
+			[[bc imageView] setIndex:bcCurIndex];
+			[[bc imageView] sendSyncMessage:0];
+			[bc adjustSlider];
             
             [splash close];
             [splash autorelease];
@@ -12953,7 +12959,7 @@ static float oldsetww, oldsetwl;
             break;
             
         default:
-            NSRunCriticalAlertPanel(NSLocalizedString(@"OsiriX Light",nil), NSLocalizedString(@"This function is not available in OsiriX Light. Download the complete version of OsiriX to solve this issue.",nil) , NSLocalizedString(@"OK",nil), nil, nil);
+            NSLog(@"Ignoring request for unsupported blendingType: %d", blendingType);
             break;
     }
 }
