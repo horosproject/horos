@@ -25,6 +25,7 @@ fi
 
 command -v cmake >/dev/null 2>&1 || { echo >&2 "error: building $TARGET_NAME requires CMake. Please install CMake. Aborting."; exit 1; }
 command -v pkg-config >/dev/null 2>&1 || { echo >&2 "error: building $TARGET_NAME requires pkg-config. Please install pkg-config. Aborting."; exit 1; }
+command -v git-lfs >/dev/null 2>&1 || { echo >&2 "error: building $TARGET_NAME requires git-lfs. Please install git-lfs. Aborting."; exit 1; }
 
 mv "$cmake_dir" "$cmake_dir.tmp"
 [ -d "$install_dir" ] && mv "$install_dir" "$install_dir.tmp"
