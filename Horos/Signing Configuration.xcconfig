@@ -1,0 +1,29 @@
+//
+//  Signing Configuration.xcconfig
+//  Horos
+//
+//  Created by David Davies-Payne on 20/04/20.
+//  Copyright © 2020 The Horos Project. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+// Default Horos signing credentials
+
+
+CODE_SIGN_IDENTITY = Developer ID Application
+DEVELOPMENT_TEAM = TPT6TVH8UY
+
+
+
+// To use your own signing credentials, create a file named "Signing Override.xcconfig" in the Horos/Horos folder.
+// "Signing Override.xcconfig" has been added to .gitignore to exclude your changes from the Git repository.
+
+// Include the following line, replacing "TPT6TVH8UY" with your team's identifier.
+// DEVELOPMENT_TEAM = TPT6TVH8UY
+
+// #include? is available from Xcode 8 onward to conditionally include a .xcconfig file. It will override
+// configuration settings or use those above if the file is absent.
+
+#include? "Signing Override.xcconfig"
