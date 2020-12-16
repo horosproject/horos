@@ -38,3 +38,4 @@ Binaries/EmbeddedPlugins/HorosCloud.horosplugin
 *.xcscmblueprint
 DICOMPrint/DICOMPrint
 Horos.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+Horos/Signing Override.xcconfig
