@@ -101,13 +101,14 @@
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ZoomWithHorizonScroll"] == NO) deltaX = 0;
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"])
-		reverseScrollWheel = -1.0;
-	else
-		reverseScrollWheel = 1.0;
+	if ([self shouldReverseScrollDirectionForMouseWheel]) {
+        reverseScrollWheel = 1.0;
+	} else {
+        reverseScrollWheel = -1.0;
+    }
 	
 	if( flippedData) reverseScrollWheel *= -1.0;
-	
+
     if( dcmPixList)
 	{
 		[[self controller] saveCrossPositions];
@@ -1037,49 +1038,42 @@
 	}
 }
 
-- (void)mouseDraggedImageScroll:(NSEvent *) event {
-	short   now, prev;
+- (void) mouseDraggedImageScroll: (NSEvent*) event
+{
 	BOOL	movie4Dmove = NO;
 	NSPoint current = [self currentPointInView:event];
-	if( scrollMode == 0)
+	if (scrollMode == ScrollModeReady)
 	{
-		if( fabs( start.x - current.x) < fabs( start.y - current.y))
-		{
-			prev = start.y/2;
-			now = current.y/2;
-			if( fabs( start.y - current.y) > 3) scrollMode = 1;
-		}
-		else if( fabs( start.x - current.x) >= fabs( start.y - current.y))
-		{
-			prev = start.x/2;
-			now = current.x/2;
-			if( fabs( start.x - current.x) > 3) scrollMode = 2;
-		}
-		
-	//	NSLog(@"scrollMode : %d", scrollMode);
+		[self establishScrollModeFromInitialDragWithPoint: current];
 	}
 
 
- if( movie4Dmove == NO)
+	if (movie4Dmove == NO)				// Currently always passes, for future development.
 	{
 		long from, to;
-		if( scrollMode == 2)
+		if (scrollMode == ScrollModeHorizontal)
 		{
-			from = current.x;
-			to = start.x;
+			from = start.x;
+			to = current.x;
 		}
-		else if( scrollMode == 1)
+		else if (scrollMode == ScrollModeVertical)
 		{
-			from = start.y;
-			to = current.y;
+			from = current.y;
+			to = start.y;
 		}
 		else
 		{
 			from = 0;
 			to = 0;
 		}
+
+		if ([self shouldReverseScrollDirectionForMouseDrag]) {
+			long temp = to;
+			to = from;
+			from = temp;
+		}
 		
-		if ( abs((int)(from-to)) >= 1) {
+		if (abs((int)(from-to)) >= 1) {
 			[self scrollTool: from : to];
 		}
 	}

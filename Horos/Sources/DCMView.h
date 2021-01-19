@@ -96,6 +96,12 @@ typedef NS_ENUM(short, ToolMode)
     //tOvalAngle                  //  31
 };
 
+typedef NS_ENUM(NSUInteger, ScrollMode) {
+	ScrollModeReady				=	0,
+	ScrollModeVertical,
+	ScrollModeHorizontal
+};
+
 extern NSString * const HorosPasteboardType;
 extern NSString * const HorosPasteboardTypePlugin;
 // these older pasteboard keys are deprecated, but they still work
@@ -582,6 +588,9 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void)mouseDraggedZoom:(NSEvent *)event;
 - (void)mouseDraggedTranslate:(NSEvent *)event;
 - (void)mouseDraggedRotate:(NSEvent *)event;
+- (void) establishScrollModeFromInitialDragWithPoint: (NSPoint) currentPoint;
+- (BOOL) shouldReverseScrollDirectionForMouseWheel;
+- (BOOL) shouldReverseScrollDirectionForMouseDrag;
 - (void)mouseDraggedImageScroll:(NSEvent *)event;
 - (void)mouseDraggedBlending:(NSEvent *)event;
 - (void)mouseDraggedWindowLevel:(NSEvent *)event;
