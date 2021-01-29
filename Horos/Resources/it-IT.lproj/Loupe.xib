@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="LoupeController">
+            <connections>
+                <outlet property="loupeView" destination="19" id="21"/>
+                <outlet property="window" destination="1" id="17"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hasShadow="NO" oneShot="NO" backingType="nonretained" animationBehavior="default" id="1" customClass="LoupeWindow">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="196" y="99" width="409" height="411"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <view key="contentView" id="2">
+                <rect key="frame" x="0.0" y="0.0" width="409" height="411"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                <subviews>
+                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="19" customClass="LoupeView">
+                        <rect key="frame" x="3" y="5" width="403" height="403"/>
+                    </customView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="19" firstAttribute="top" secondItem="2" secondAttribute="top" constant="3" id="2dp-Ta-p00"/>
+                    <constraint firstItem="19" firstAttribute="centerX" secondItem="2" secondAttribute="centerX" id="PY4-v8-5WQ"/>
+                    <constraint firstItem="19" firstAttribute="leading" secondItem="2" secondAttribute="leading" constant="3" id="pzo-nN-0Am"/>
+                    <constraint firstAttribute="bottom" secondItem="19" secondAttribute="bottom" constant="5" id="xvD-jC-9un"/>
+                </constraints>
+            </view>
+        </window>
+    </objects>
+</document>

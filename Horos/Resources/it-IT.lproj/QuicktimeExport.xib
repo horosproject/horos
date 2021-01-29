@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="QuicktimeExport">
+            <connections>
+                <outlet property="rateValue" destination="16" id="18"/>
+                <outlet property="type" destination="6" id="11"/>
+                <outlet property="view" destination="5" id="12"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="5" userLabel="View">
+            <rect key="frame" x="0.0" y="0.0" width="430" height="59"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="976" misplaced="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="16">
+                    <rect key="frame" x="359" y="10" width="53" height="17"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" id="26">
+                        <font key="font" metaFont="system"/>
+                        <string key="title">10 im/s
+</string>
+                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                    <connections>
+                        <binding destination="27" name="displayPatternValue1" keyPath="values.quicktimeExportRateValue" id="31">
+                            <dictionary key="options">
+                                <string key="NSDisplayPattern">%{value1}@ im/s</string>
+                            </dictionary>
+                        </binding>
+                    </connections>
+                </textField>
+                <slider verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="15">
+                    <rect key="frame" x="144" y="6" width="210" height="17"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="210" id="7mR-bN-SLg"/>
+                    </constraints>
+                    <sliderCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="1" maxValue="30" doubleValue="10" tickMarkPosition="below" numberOfTickMarks="30" allowsTickMarkValuesOnly="YES" sliderType="linear" id="25">
+                        <font key="font" size="12" name="Helvetica"/>
+                    </sliderCell>
+                    <connections>
+                        <binding destination="27" name="value" keyPath="values.quicktimeExportRateValue" id="28"/>
+                    </connections>
+                </slider>
+                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="976" misplaced="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="14">
+                    <rect key="frame" x="63" y="10" width="76" height="17"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="17" id="1Nd-DF-Pf8"/>
+                    </constraints>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Frame rate:" id="24">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="976" misplaced="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="13">
+                    <rect key="frame" x="86" y="35" width="53" height="17"/>
+                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Format:" id="23">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <popUpButton verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6">
+                    <rect key="frame" x="141" y="29" width="71" height="26"/>
+                    <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="9" id="22">
+                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="menu"/>
+                        <menu key="menu" title="OtherViews" id="7">
+                            <items>
+                                <menuItem title="Item1" state="on" id="9"/>
+                                <menuItem title="Item2" id="10"/>
+                                <menuItem title="Item3" id="8"/>
+                            </items>
+                        </menu>
+                    </popUpButtonCell>
+                    <connections>
+                        <action selector="changeExportType:" target="-2" id="20"/>
+                    </connections>
+                </popUpButton>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="15" secondAttribute="bottom" constant="6" id="7wd-tx-fcs"/>
+                <constraint firstAttribute="trailing" secondItem="16" secondAttribute="trailing" constant="20" id="EIk-Yp-qoO"/>
+                <constraint firstAttribute="bottom" secondItem="14" secondAttribute="bottom" constant="10" id="Hcv-kE-Stv"/>
+                <constraint firstItem="15" firstAttribute="leading" secondItem="14" secondAttribute="trailing" constant="7" id="Km6-Vc-UfN"/>
+                <constraint firstItem="14" firstAttribute="top" secondItem="13" secondAttribute="bottom" constant="8" symbolic="YES" id="ThC-vs-eXg"/>
+                <constraint firstItem="15" firstAttribute="top" secondItem="6" secondAttribute="bottom" constant="9" id="WRy-AL-auC"/>
+                <constraint firstItem="6" firstAttribute="leading" secondItem="13" secondAttribute="trailing" constant="6" id="aWV-fc-xvB"/>
+                <constraint firstItem="13" firstAttribute="baseline" secondItem="6" secondAttribute="baseline" id="aZl-jF-8oj"/>
+                <constraint firstItem="13" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5" secondAttribute="leading" constant="10" id="c5r-zg-SgZ"/>
+                <constraint firstItem="16" firstAttribute="bottom" secondItem="14" secondAttribute="bottom" id="dLX-dA-4Ku"/>
+                <constraint firstItem="14" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5" secondAttribute="leading" constant="10" id="kdy-rE-ePi"/>
+                <constraint firstItem="14" firstAttribute="top" secondItem="16" secondAttribute="top" id="rib-0S-lnK"/>
+                <constraint firstItem="13" firstAttribute="trailing" secondItem="14" secondAttribute="trailing" id="uVh-Hw-xaz"/>
+                <constraint firstItem="16" firstAttribute="leading" secondItem="15" secondAttribute="trailing" constant="7" id="vzr-ew-YMu"/>
+            </constraints>
+        </customView>
+        <userDefaultsController representsSharedInstance="YES" id="27"/>
+    </objects>
+</document>
