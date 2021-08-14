@@ -565,6 +565,7 @@
 		7E2BE4190715E5040017898A /* CD.tif in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE4180715E5040017898A /* CD.tif */; };
 		7E3E38660715FFDC0049E72E /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E3E38650715FFDC0049E72E /* PreferencePanes.framework */; };
 		7E47658007428C80000C9A74 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB5E1A300595697700C48BEB /* Accelerate.framework */; };
+		7E48B90126C7B2580034F122 /* HorosTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E48B90026C7B2580034F122 /* HorosTests.m */; };
 		7E54303D07A05E7100500ABB /* DiscRecording.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E54303B07A05E7100500ABB /* DiscRecording.framework */; };
 		7E54303E07A05E7100500ABB /* DiscRecordingUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E54303C07A05E7100500ABB /* DiscRecordingUI.framework */; };
 		7E54307707A05ED100500ABB /* BurnerWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */; };
@@ -3211,6 +3212,13 @@
 			remoteGlobalIDString = AB724F300ADE6ECB00A212A0;
 			remoteInfo = Decompress;
 		};
+		7E48B90326C7B2580034F122 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AB28B42E05B7921E00A9906C;
+			remoteInfo = Horos;
+		};
 		9920CBEE202A0BA600FE0A2A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -3792,6 +3800,9 @@
 		7E2BE3FD0715DC0D0017898A /* StartupDisk.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = StartupDisk.tif; sourceTree = "<group>"; };
 		7E2BE4180715E5040017898A /* CD.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = CD.tif; sourceTree = "<group>"; };
 		7E3E38650715FFDC0049E72E /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
+		7E48B8FE26C7B2580034F122 /* HorosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HorosTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E48B90026C7B2580034F122 /* HorosTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HorosTests.m; sourceTree = "<group>"; };
+		7E48B90226C7B2580034F122 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7E54303B07A05E7100500ABB /* DiscRecording.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiscRecording.framework; path = /System/Library/Frameworks/DiscRecording.framework; sourceTree = "<absolute>"; };
 		7E54303C07A05E7100500ABB /* DiscRecordingUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiscRecordingUI.framework; path = /System/Library/Frameworks/DiscRecordingUI.framework; sourceTree = "<absolute>"; };
 		7E54309007A05F7500500ABB /* burn_throb.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_throb.tif; sourceTree = "<group>"; };
@@ -5671,6 +5682,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7E48B8FB26C7B2580034F122 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AB0F3A2A1046BD2B004129DD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -5815,6 +5833,7 @@
 				AB724FF60ADE6ECB00A212A0 /* Decompress */,
 				844719AF0FD8EF50003BFDF8 /* DCM.framework */,
 				AB0F3A2C1046BD2B004129DD /* Horos.framework */,
+				7E48B8FE26C7B2580034F122 /* HorosTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -5828,6 +5847,7 @@
 				710EF1F51FD014E8000B555B /* Horos */,
 				AB10FA9611293361009EB238 /* Nitrogen */,
 				AB724F1C0ADE6CFC00A212A0 /* Decompress */,
+				7E48B8FF26C7B2580034F122 /* HorosTests */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				7E0B3A08067525FD00908593 /* DCM */,
@@ -6444,6 +6464,15 @@
 			);
 			name = DCM;
 			path = "DCM Framework";
+			sourceTree = "<group>";
+		};
+		7E48B8FF26C7B2580034F122 /* HorosTests */ = {
+			isa = PBXGroup;
+			children = (
+				7E48B90026C7B2580034F122 /* HorosTests.m */,
+				7E48B90226C7B2580034F122 /* Info.plist */,
+			);
+			path = HorosTests;
 			sourceTree = "<group>";
 		};
 		7E54308107A05F7500500ABB /* burn_iris */ = {
@@ -9950,6 +9979,24 @@
 			productReference = 844719AF0FD8EF50003BFDF8 /* DCM.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		7E48B8FD26C7B2580034F122 /* HorosTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7E48B90526C7B2580034F122 /* Build configuration list for PBXNativeTarget "HorosTests" */;
+			buildPhases = (
+				7E48B8FA26C7B2580034F122 /* Sources */,
+				7E48B8FB26C7B2580034F122 /* Frameworks */,
+				7E48B8FC26C7B2580034F122 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7E48B90426C7B2580034F122 /* PBXTargetDependency */,
+			);
+			name = HorosTests;
+			productName = HorosTests;
+			productReference = 7E48B8FE26C7B2580034F122 /* HorosTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		AB0F3A2B1046BD2B004129DD /* API */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AB0F3A321046BD2D004129DD /* Build configuration list for PBXNativeTarget "API" */;
@@ -10062,14 +10109,19 @@
 					71E6C0B01FBAD31E00FF75B6 = {
 						CreatedOnToolsVersion = 9.0;
 					};
+					7E48B8FD26C7B2580034F122 = {
+						CreatedOnToolsVersion = 12.5.1;
+						ProvisioningStyle = Automatic;
+						TestTargetID = AB28B42E05B7921E00A9906C;
+					};
 					AB0F3A2B1046BD2B004129DD = {
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					AB28B42E05B7921E00A9906C = {
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					AB724F300ADE6ECB00A212A0 = {
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -10115,6 +10167,7 @@
 				9920CBEC202A0BA600FE0A2A /* Grok */,
 				71E6C0B01FBAD31E00FF75B6 /* Submodules */,
 				5F1E2A682411AE7E00365A0C /* DCMTK */,
+				7E48B8FD26C7B2580034F122 /* HorosTests */,
 			);
 		};
 /* End PBXProject section */
@@ -10127,6 +10180,13 @@
 				7E0B3AA00675274500908593 /* version.plist in Resources */,
 				BFEB76410677FDA700F242F3 /* nameDictionary.plist in Resources */,
 				BFEB76420677FDA700F242F3 /* tagDictionary.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7E48B8FC26C7B2580034F122 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -10606,7 +10666,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Need to sign command-line executables. The identity defined must exist as\n# a certificate in the build user's keychain. If it does not, this step will\n# fail. Edit identity to a one that does (e.g., \"Developer ID Application\").\n#\n\nset -e; set -o xtrace\n\nidentity=\"Developer ID Application: Nimble CO LLC (TPT6TVH8UY)\"\nprefix=\"org.horosproject.\"\ncopy_dir=\"$BUILT_PRODUCTS_DIR/DCMTK\"\n\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/dcmdump\"\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/dcmpsprt\"\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/dcmprscu\"\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/dsr2html\"\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/echoscu\"\n";
+			shellScript = "# Need to sign command-line executables. The identity defined must exist as\n# a certificate in the build user's keychain. If it does not, this step will\n# fail. Edit identity to a one that does (e.g., \"Developer ID Application\").\n#\n\nset -e; set -o xtrace\n\nidentity=\"Apple Development: Victor Saase (E5867KXWG2)\"\nprefix=\"org.horosproject.\"\ncopy_dir=\"$BUILT_PRODUCTS_DIR/DCMTK\"\n\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/dcmdump\"\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/dcmpsprt\"\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/dcmprscu\"\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/dsr2html\"\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/echoscu\"\n";
 		};
 		5F1E2A6D2411AE7E00365A0C /* CMake */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10705,7 +10765,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/CMake.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/CMake.sh\"\n";
 		};
 		71A523152021D2250065793A /* Make */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -10719,7 +10779,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Make.sh\"";
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Make.sh\"\n";
 		};
 		71A523222021D2C30065793A /* CMake */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -11196,6 +11256,14 @@
 				CE4441011165D1B70034BF18 /* jquant1.c in Sources */,
 				CE4441021165D1B70034BF18 /* jquant2.c in Sources */,
 				CE4441031165D1B70034BF18 /* jutils.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7E48B8FA26C7B2580034F122 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7E48B90126C7B2580034F122 /* HorosTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12649,6 +12717,11 @@
 			target = AB724F300ADE6ECB00A212A0 /* Decompress */;
 			targetProxy = 71C99EA01D19A80A00208F3B /* PBXContainerItemProxy */;
 		};
+		7E48B90426C7B2580034F122 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AB28B42E05B7921E00A9906C /* Horos */;
+			targetProxy = 7E48B90326C7B2580034F122 /* PBXContainerItemProxy */;
+		};
 		9920CBED202A0BA600FE0A2A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
@@ -13337,9 +13410,9 @@
 				ARCHS = x86_64;
 				CODE_SIGN_ENTITLEMENTS = Horos/Horos.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 20201201;
-				DEVELOPMENT_TEAM = TPT6TVH8UY;
+				DEVELOPMENT_TEAM = UP7UW3QRTU;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -13391,7 +13464,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
-				DEVELOPMENT_TEAM = TPT6TVH8UY;
+				DEVELOPMENT_TEAM = UP7UW3QRTU;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCM Framework/prefix.pch";
@@ -13438,8 +13511,8 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Decompress/Decompress.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = TPT6TVH8UY;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = UP7UW3QRTU;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = Binaries;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -13470,8 +13543,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = TPT6TVH8UY;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = UP7UW3QRTU;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
 				INFOPLIST_FILE = "$(SRCROOT)/API/Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
@@ -13595,11 +13668,102 @@
 			};
 			name = Release;
 		};
+		7E48B90626C7B2580034F122 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = UP7UW3QRTU;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = HorosTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 11.3;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.saase.HorosTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Horos.app/Contents/MacOS/Horos";
+			};
+			name = Debug;
+		};
+		7E48B90726C7B2580034F122 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = UP7UW3QRTU;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = HorosTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 11.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.saase.HorosTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Horos.app/Contents/MacOS/Horos";
+			};
+			name = Release;
+		};
 		7E76BEC1085757B60073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
-				DEVELOPMENT_TEAM = TPT6TVH8UY;
+				DEVELOPMENT_TEAM = UP7UW3QRTU;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCM Framework/prefix.pch";
@@ -13633,9 +13797,9 @@
 				ARCHS = x86_64;
 				CODE_SIGN_ENTITLEMENTS = Horos/Horos.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 20201201;
-				DEVELOPMENT_TEAM = TPT6TVH8UY;
+				DEVELOPMENT_TEAM = UP7UW3QRTU;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -13758,8 +13922,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = TPT6TVH8UY;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = UP7UW3QRTU;
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
 				INFOPLIST_FILE = "$(SRCROOT)/API/Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
@@ -13776,8 +13940,8 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Decompress/Decompress.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = TPT6TVH8UY;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = UP7UW3QRTU;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = Binaries;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -13882,6 +14046,15 @@
 			buildConfigurations = (
 				71E6C0B11FBAD31E00FF75B6 /* Debug */,
 				71E6C0B21FBAD31E00FF75B6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7E48B90526C7B2580034F122 /* Build configuration list for PBXNativeTarget "HorosTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7E48B90626C7B2580034F122 /* Debug */,
+				7E48B90726C7B2580034F122 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
