@@ -2886,6 +2886,9 @@ static float deg2rad = M_PI/180.0;
     [toolbar setDelegate: self];
     
     [[self window] setToolbar: toolbar];
+    if (@available(macOS 11.0, *)) {
+        [self.window setToolbarStyle: NSWindowToolbarStyleExpanded];
+    }
 	[[self window] setShowsToolbarButton: NO];
 	[[[self window] toolbar] setVisible: YES];
 	

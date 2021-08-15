@@ -686,49 +686,49 @@ void exceptionHandler(NSException *exception)
 + (BOOL)hasMacOSXSierra
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 12);
+    return (v.majorVersion == 10 && v.minorVersion >= 12) || (v.majorVersion > 10);
 }
 
 +(BOOL) hasMacOSXElCapitan
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 11);
+    return (v.majorVersion == 10 && v.minorVersion >= 11) || (v.majorVersion > 10);
 }
 
 +(BOOL) hasMacOSXYosemite
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 10);
+    return (v.majorVersion == 10 && v.minorVersion >= 10) || (v.majorVersion > 10);
 }
 
 +(BOOL) hasMacOSXMaverick
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 9);
+    return (v.majorVersion == 10 && v.minorVersion >= 9) || (v.majorVersion > 10);
 }
 
 +(BOOL) hasMacOSXMountainLion
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 8);
+    return (v.majorVersion == 10 && v.minorVersion >= 8) || (v.majorVersion > 10);
 }
 
 +(BOOL) hasMacOSXLion
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 7);
+    return (v.majorVersion == 10 && v.minorVersion >= 7) || (v.majorVersion > 10);
 }
 
 +(BOOL) hasMacOSXSnowLeopard
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 6);
+    return (v.majorVersion == 10 && v.minorVersion >= 6) || (v.majorVersion > 10);
 }
 
 +(BOOL) hasMacOSXLeopard
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 5);
+    return (v.majorVersion == 10 && v.minorVersion >= 5) || (v.majorVersion > 10);
 }
 
 + (void) createNoIndexDirectoryIfNecessary:(NSString*) path { // __deprecated

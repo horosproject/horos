@@ -48,6 +48,7 @@ extern BOOL USETOOLBARPANEL;
 //static int MacOSVersion109orHigher = -1;
 
 static int fixedHeight = 92;
+static int fixedHeightBigSur = 92 - 15;
 
 @implementation ToolbarPanelController
 
@@ -55,19 +56,35 @@ static int fixedHeight = 92;
 
 - (long) fixedHeight
 {
-    return fixedHeight;
+    if (@available(macOS 11.0, *)) {
+        return fixedHeightBigSur;
+    } else {
+        return fixedHeight;
+    }
 }
 
 + (long) hiddenHeight {
-	return 15;
+    if (@available(macOS 11.0, *)) {
+        return 0;
+    } else {
+        return 15;
+    }
 }
 
 - (long) exposedHeight {
-	return fixedHeight - [ToolbarPanelController hiddenHeight];
+    if (@available(macOS 11.0, *)) {
+        return fixedHeightBigSur - [ToolbarPanelController hiddenHeight];
+    } else {
+        return fixedHeight - [ToolbarPanelController hiddenHeight];
+    }
 }
 
 + (long) exposedHeight {
-	return fixedHeight - [ToolbarPanelController hiddenHeight];
+    if (@available(macOS 11.0, *)) {
+        return fixedHeightBigSur - [ToolbarPanelController hiddenHeight];
+    } else {
+        return fixedHeight - [ToolbarPanelController hiddenHeight];
+    }
 }
 
 + (void) checkForValidToolbar
@@ -92,7 +109,7 @@ static int fixedHeight = 92;
 	dstframe.size.height = [self fixedHeight];
 	dstframe.size.width = screenRect.size.width;
 	dstframe.origin.x = screenRect.origin.x;
-	dstframe.origin.y = screenRect.origin.y + screenRect.size.height - dstframe.size.height + [ToolbarPanelController hiddenHeight];
+    dstframe.origin.y = screenRect.origin.y + screenRect.size.height - dstframe.size.height + [ToolbarPanelController hiddenHeight];
 	
     if( NSEqualRects( dstframe, self.window.frame) == NO)
         [[self window] setFrame:dstframe display:YES];
@@ -109,6 +126,9 @@ static int fixedHeight = 92;
         [[self window] setToolbar: toolbar];
         [[self window] setLevel: NSNormalWindowLevel];
         [[self window] makeMainWindow];
+        if (@available(macOS 11.0, *)) {
+            [[self window] setToolbarStyle: NSWindowToolbarStyleExpanded];
+        }
         
         [toolbar setShowsBaselineSeparator: NO];
         [toolbar setVisible: YES];
