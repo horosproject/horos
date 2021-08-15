@@ -19110,6 +19110,9 @@ restart:
     
     // Attach the toolbar to the document window 
     [self.window setToolbar: toolbar];
+    if (@available(macOS 11.0, *)) {
+        [self.window setToolbarStyle: NSWindowToolbarStyleExpanded];
+    }
     [self.window setShowsToolbarButton:NO];
     [[self.window toolbar] setVisible: YES];
     
