@@ -47,45 +47,23 @@ extern BOOL USETOOLBARPANEL;
 
 //static int MacOSVersion109orHigher = -1;
 
-static int fixedHeight = 92;
-static int fixedHeightBigSur = 92 - 15;
 
 @implementation ToolbarPanelController
 
 @synthesize viewer;
 
-- (long) fixedHeight
-{
-    if (@available(macOS 11.0, *)) {
-        return fixedHeightBigSur;
-    } else {
-        return fixedHeight;
-    }
-}
-
 + (long) hiddenHeight {
     if (@available(macOS 11.0, *)) {
-        return 0;
+        return -5;
     } else {
         return 15;
     }
 }
 
-- (long) exposedHeight {
-    if (@available(macOS 11.0, *)) {
-        return fixedHeightBigSur - [ToolbarPanelController hiddenHeight];
-    } else {
-        return fixedHeight - [ToolbarPanelController hiddenHeight];
-    }
++ (long) exposedHeight {
+    return 107;
 }
 
-+ (long) exposedHeight {
-    if (@available(macOS 11.0, *)) {
-        return fixedHeightBigSur - [ToolbarPanelController hiddenHeight];
-    } else {
-        return fixedHeight - [ToolbarPanelController hiddenHeight];
-    }
-}
 
 + (void) checkForValidToolbar
 {
@@ -106,10 +84,10 @@ static int fixedHeightBigSur = 92 - 15;
 	NSRect screenRect = [viewer.window.screen visibleFrame];
 	
 	NSRect dstframe;
-	dstframe.size.height = [self fixedHeight];
+	dstframe.size.height = [ToolbarPanelController exposedHeight] + [ToolbarPanelController hiddenHeight];
 	dstframe.size.width = screenRect.size.width;
 	dstframe.origin.x = screenRect.origin.x;
-    dstframe.origin.y = screenRect.origin.y + screenRect.size.height - dstframe.size.height + [ToolbarPanelController hiddenHeight];
+    dstframe.origin.y = screenRect.origin.y + screenRect.size.height - [ToolbarPanelController exposedHeight];
 	
     if( NSEqualRects( dstframe, self.window.frame) == NO)
         [[self window] setFrame:dstframe display:YES];

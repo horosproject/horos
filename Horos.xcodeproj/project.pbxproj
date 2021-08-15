@@ -10666,7 +10666,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Need to sign command-line executables. The identity defined must exist as\n# a certificate in the build user's keychain. If it does not, this step will\n# fail. Edit identity to a one that does (e.g., \"Developer ID Application\").\n#\n\nset -e; set -o xtrace\n\nidentity=\"Apple Development: Victor Saase (E5867KXWG2)\"\nprefix=\"org.horosproject.\"\ncopy_dir=\"$BUILT_PRODUCTS_DIR/DCMTK\"\n\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/dcmdump\"\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/dcmpsprt\"\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/dcmprscu\"\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/dsr2html\"\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/echoscu\"\n";
+			shellScript = "# Need to sign command-line executables. The identity defined must exist as\n# a certificate in the build user's keychain. If it does not, this step will\n# fail. Edit identity to a one that does (e.g., \"Developer ID Application\").\n#\n\nset -e; set -o xtrace\n\nidentity=\"-\"\nprefix=\"org.horosproject.\"\ncopy_dir=\"$BUILT_PRODUCTS_DIR/DCMTK\"\n\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/dcmdump\"\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/dcmpsprt\"\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/dcmprscu\"\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/dsr2html\"\ncodesign --verbose=4 -f --prefix \"${prefix}\" --options runtime -s \"${identity}\" \"${copy_dir}/echoscu\"\n";
 		};
 		5F1E2A6D2411AE7E00365A0C /* CMake */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -13707,7 +13707,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.saase.HorosTests;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horos.HorosTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Horos.app/Contents/MacOS/Horos";
 			};
@@ -13753,7 +13753,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.saase.HorosTests;
+				PRODUCT_BUNDLE_IDENTIFIER = org.horos.HorosTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Horos.app/Contents/MacOS/Horos";
 			};

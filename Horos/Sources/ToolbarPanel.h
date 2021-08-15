@@ -48,9 +48,7 @@
 
 @property (readonly) ViewerController *viewer;
 
-- (long) fixedHeight;
 + (long) hiddenHeight;
-- (long) exposedHeight;
 + (long) exposedHeight;
 - (id)initForViewer: (ViewerController*) v withToolbar: (NSToolbar*) t;
 - (NSToolbar*) toolbar;

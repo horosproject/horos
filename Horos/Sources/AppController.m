@@ -4839,8 +4839,9 @@ static BOOL initialized = NO;
     
     if( showFloatingWindows)
     {
-        if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
-            screenFrame.size.height -= 78;  //[[AppController toolbarForScreen: screen] exposedHeight];
+        if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES) {
+            screenFrame.size.height -= [ToolbarPanelController exposedHeight];
+        }
         
         if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFloatingThumbnailsList"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"SeriesListVisible"])
         {
