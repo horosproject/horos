@@ -54,14 +54,14 @@ extern BOOL USETOOLBARPANEL;
 
 + (long) hiddenHeight {
     if (@available(macOS 11.0, *)) {
-        return -5;
+        return 0;
     } else {
         return 15;
     }
 }
 
 + (long) exposedHeight {
-    return 107;
+    return 102;
 }
 
 
