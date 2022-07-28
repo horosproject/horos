@@ -6171,8 +6171,10 @@
 				324AD88708B23B0500101139 /* Models */,
 				A98795CA16DB9FD100926023 /* Unit Tests */,
 			);
+			indentWidth = 4;
 			path = Horos;
 			sourceTree = "<group>";
+			tabWidth = 4;
 		};
 		719D3F1A1FB461CA004CFB27 /* Sources */ = {
 			isa = PBXGroup;
