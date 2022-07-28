@@ -117,17 +117,21 @@ static const DcmCipherSuiteList cipherSuiteList[] =
     {"TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA",   SSL3_TXT_ADH_DES_40_CBC_SHA},
     {"TLS_DH_anon_WITH_DES_CBC_SHA",            SSL3_TXT_ADH_DES_64_CBC_SHA},
     {"TLS_DH_anon_WITH_3DES_EDE_CBC_SHA",       SSL3_TXT_ADH_DES_192_CBC_SHA},
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
     {"TLS_RSA_EXPORT1024_WITH_DES_CBC_SHA",     TLS1_TXT_RSA_EXPORT1024_WITH_DES_CBC_SHA},
     {"TLS_RSA_EXPORT1024_WITH_RC4_56_SHA",      TLS1_TXT_RSA_EXPORT1024_WITH_RC4_56_SHA},
     {"TLS_DHE_DSS_EXPORT1024_WITH_DES_CBC_SHA", TLS1_TXT_DHE_DSS_EXPORT1024_WITH_DES_CBC_SHA},
     {"TLS_DHE_DSS_EXPORT1024_WITH_RC4_56_SHA",  TLS1_TXT_DHE_DSS_EXPORT1024_WITH_RC4_56_SHA},
+#endif
     {"TLS_DHE_DSS_WITH_RC4_128_SHA",            TLS1_TXT_DHE_DSS_WITH_RC4_128_SHA}
 
 #if OPENSSL_VERSION_NUMBER >= 0x0090700fL
     // cipersuites added in OpenSSL 0.9.7
     ,
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
     {"TLS_RSA_EXPORT_WITH_RC4_56_MD5",          TLS1_TXT_RSA_EXPORT1024_WITH_RC4_56_MD5},
     {"TLS_RSA_EXPORT_WITH_RC2_CBC_56_MD5",      TLS1_TXT_RSA_EXPORT1024_WITH_RC2_CBC_56_MD5},
+#endif
 
     /* AES ciphersuites from RFC3268 */
     {"TLS_RSA_WITH_AES_128_CBC_SHA",            TLS1_TXT_RSA_WITH_AES_128_SHA},
@@ -185,7 +189,9 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(int networkRole, const char *randFile
    // but the API has been available at least since 0.9.5.
    SSL_library_init();
    SSL_load_error_strings();
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
    SSLeay_add_all_algorithms();
+#endif
    seedPRNG(randFile);
 
    SSL_METHOD *method = NULL;
@@ -331,7 +337,7 @@ DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedCertificateFile(const ch
   /* fileType should be SSL_FILETYPE_ASN1 or SSL_FILETYPE_PEM */
   if (transportLayerContext)
   {
-    X509_LOOKUP *x509_lookup = X509_STORE_add_lookup(transportLayerContext->cert_store, X509_LOOKUP_file());
+    X509_LOOKUP *x509_lookup = X509_STORE_add_lookup(SSL_CTX_get_cert_store(transportLayerContext), X509_LOOKUP_file());
     if (x509_lookup == NULL) return TCS_tlsError;
     if (! X509_LOOKUP_load_file(x509_lookup, fileName, fileType)) return TCS_tlsError;
   } else return TCS_illegalCall;
@@ -343,7 +349,7 @@ DcmTransportLayerStatus DcmTLSTransportLayer::addTrustedCertificateDir(const cha
   /* fileType should be SSL_FILETYPE_ASN1 or SSL_FILETYPE_PEM */
   if (transportLayerContext)
   {
-    X509_LOOKUP *x509_lookup = X509_STORE_add_lookup(transportLayerContext->cert_store, X509_LOOKUP_hash_dir());
+    X509_LOOKUP *x509_lookup = X509_STORE_add_lookup(SSL_CTX_get_cert_store(transportLayerContext), X509_LOOKUP_hash_dir());
     if (x509_lookup == NULL) return TCS_tlsError;
     if (! X509_LOOKUP_add_dir(x509_lookup, pathName, fileType)) return TCS_tlsError;
   } else return TCS_illegalCall;
@@ -375,7 +381,9 @@ void DcmTLSTransportLayer::seedPRNG(const char *randFile)
 #endif
   if (randFile)
   {
+#ifdef HAVE_OPENSSL_PROTOTYPE_RAND_EGD
     if (RAND_egd(randFile) <= 0)
+#endif
     {
       RAND_load_file(randFile ,-1);
     }
@@ -444,7 +452,7 @@ void DcmTLSTransportLayer::printX509Certificate(ostream &out, X509 *peerCertific
     EVP_PKEY *pubkey = X509_get_pubkey(peerCertificate); // creates copy of public key
     if (pubkey)
     {
-      switch (EVP_PKEY_type(pubkey->type))
+      switch (EVP_PKEY_type(EVP_PKEY_id(pubkey)))
       {
         case EVP_PKEY_RSA:
           certPubKeyType = "RSA";
