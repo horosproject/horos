@@ -78,9 +78,9 @@ cd "$cmake_dir"
 ./config "${config_args[@]}"
 
 if [ "$CONFIGURATION" = 'Debug' ]; then
-    ./Configure "${configure_args[@]}" debug-darwin64-arm64-cc #no-asm
+    ./Configure "${configure_args[@]}" debug-darwin64-arm64-cc no-shared
 else
-    ./Configure "${configure_args[@]}" darwin64-arm64-cc #no-asm
+    ./Configure "${configure_args[@]}" darwin64-arm64-cc no-shared
 fi
 
 echo "$hash" > "$cmake_dir/.cmakehash"
