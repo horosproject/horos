@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export PATH="$PATH:/opt/local/bin:/opt/local/sbin"
+
 path="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )/$(basename "${BASH_SOURCE[0]}")"
 cd "$TARGET_NAME"; pwd
 
@@ -49,6 +51,8 @@ args+=(-DBUILD_DOC=OFF)
 args+=(-DBUILD_SHARED_LIBS=OFF)
 args+=(-DBUILD_STATIC_LIBS=ON)
 args+=(-DBUILD_TESTING=OFF)
+
+args+=(-DCMAKE_IGNORE_PATH="/opt/local/include;/opt/local/lib")
 
 if [ "$CONFIGURATION" = 'Debug' ]; then
     cxxfs+=( -g )

@@ -40,7 +40,9 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <ApplicationServices/ApplicationServices.h>
 
+#if defined(USFEEDBACKREPORTER)
 #import <FeedbackReporter/FRFeedbackReporter.h>
+#endif
 
 #import "ToolbarPanel.h"
 #import "ThumbnailsListPanel.h"
@@ -2836,11 +2838,13 @@ static BOOL initialized = NO;
 				//		exit(0);
 				//	}
 				
-				if ([AppController hasMacOSXElCapitan] == NO)
+#if !__arm64__
+                if ([AppController hasMacOSXElCapitan] == NO)
 				{
 					NSRunCriticalAlertPanel(NSLocalizedString(@"macOS", nil), NSLocalizedString(@"This application requires macOS 10.11 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"Quit", nil), nil, nil);
 					exit(0);
 				}
+#endif
                 
                 int processors;
                 int mib[2] = {CTL_HW, HW_NCPU};
@@ -3587,11 +3591,13 @@ static BOOL initialized = NO;
 #endif // NDEBUG
 #endif // OSIRIX_LIGHT
     
+#if !__arm64__
     if( [AppController hasMacOSXElCapitan] == NO)
     {
         NSRunCriticalAlertPanel( NSLocalizedString( @"macOS Version", nil), NSLocalizedString( @"Horos requires macOS 10.11 or higher. Please update your OS: Apple Menu - Software Update...", nil), NSLocalizedString( @"Quit", nil) , nil, nil);
         exit( 0);
     }
+#endif
     
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SyncPreferencesFromURL"])
         [NSThread detachNewThreadSelector: @selector( addPreferencesFromURL:) toTarget: [OSIGeneralPreferencePanePref class] withObject: [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] stringForKey: @"SyncPreferencesURL"]]];
@@ -3613,11 +3619,13 @@ static BOOL initialized = NO;
     }
 #endif
     
+#if defined(USFEEDBACKREPORTER)
     //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [FRFeedbackReporter sharedReporter];
         });
     //});
+#endif
 }
 
 - (void) checkForOsirixMimeType
@@ -5727,6 +5735,7 @@ static NSMutableDictionary* _receivingDict = nil;
 {
     NSLog(@"Unicode test: مرحبا - 你好 - שלום");
     
+#if defined(USFEEDBACKREPORTER)
     [[FRFeedbackReporter sharedReporter] setDelegate:(id<FRFeedbackReporterDelegate>) self];
 
     if ([[FRFeedbackReporter sharedReporter] reportIfCrash] == YES)
@@ -5734,6 +5743,7 @@ static NSMutableDictionary* _receivingDict = nil;
         NSLog(@"Crash found.");
         return YES;
     }
+#endif
     
     return NO;
 }

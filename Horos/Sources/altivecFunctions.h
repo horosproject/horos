@@ -52,11 +52,14 @@ extern "C"
 	extern void vmax(vector float *a, vector float *b, vector float *r, long size);
 	extern void vmin(vector float *a, vector float *b, vector float *r, long size);
 	extern void vmin8(vector unsigned char *a, vector unsigned char *b, vector unsigned char *r, long size);
-	#else
+	#elif __i386__ || __x86_64__
 	extern void vmaxIntel( vFloat *a, vFloat *b, vFloat *r, long size);
 	extern void vminIntel( vFloat *a, vFloat *b, vFloat *r, long size);
 	extern void vmax8Intel( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size);
 	extern void vmin8Intel( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size);
+	#elif __arm64__
+	extern void vmax8ARM( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size);
+	extern void vmin8ARM( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size);
 	#endif
 	
 	extern void vmultiplyNoAltivec( float *a,  float *b,  float *r, long size);

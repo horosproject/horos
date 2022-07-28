@@ -72,8 +72,8 @@
 
 #import "url.h"
 
-#define uint64 tiff_uint64
-#import <vtk_tiff.h>
+//#define uint64 tiff_uint64
+//#import <vtk_tiff.h>
 
 #ifndef OSIRIX_LIGHT
 #include "FVTiff.h"
@@ -9745,8 +9745,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                 fNext = [[pixArray objectAtIndex: next] fImage];
                 if( fNext)
                 {
+#if __arm64__
+                    if( stackMode == 2) vmax8ARM( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width);
+                    else vmin8ARM( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width);
+#else
                     if( stackMode == 2) vmax8Intel( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width);
                     else vmin8Intel( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width);
+#endif
                 }
                 
                 for( long i = 2; i < stack; i++)
@@ -9766,8 +9771,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
                             fNext = [[pixArray objectAtIndex: res] fImage];
                             if( fNext)
                             {
+#if __arm64__
+                                if( stackMode == 2) vmax8ARM( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width);
+                                else vmin8ARM( (vUInt8*) fNext, (vUInt8*) fImage, (vUInt8*) fResult, height * width);
+#else
                                 if( stackMode == 2) vmax8Intel( (vUInt8*) fResult, (vUInt8*) fNext, (vUInt8*) fResult, height * width);
                                 else vmin8Intel( (vUInt8*) fResult, (vUInt8*) fNext, (vUInt8*) fResult, height * width);
+#endif
                             }
                         }
                     }

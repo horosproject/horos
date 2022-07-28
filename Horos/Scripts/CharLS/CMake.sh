@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export PATH="$PATH:/opt/local/bin:/opt/local/sbin"
+
 path="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )/$(basename "${BASH_SOURCE[0]}")"
 cd "$TARGET_NAME"; pwd
 
@@ -34,6 +36,7 @@ export CXX=clang
 
 args=("$PROJECT_DIR/$TARGET_NAME")
 cxxfs=($OTHER_CPLUSPLUSFLAGS)
+ldfs=($OTHER_LDFLAGS)
 
 args+=(-DBUILD_SHARED_LIBS=OFF)
 args+=(-DBUILD_TESTING=OFF)
@@ -42,9 +45,12 @@ args+=(-DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET")
 args+=(-DCMAKE_OSX_ARCHITECTURES="$ARCHS")
 args+=(-DCMAKE_INSTALL_PREFIX="$install_dir")
 
+args+=(-DCMAKE_IGNORE_PATH="/opt/local/include;/opt/local/lib")
+
 if [ ! -z "$CLANG_CXX_LIBRARY" ] && [ "$CLANG_CXX_LIBRARY" != 'compiler-default' ]; then
 #  args+=(-DCMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY="$CLANG_CXX_LIBRARY")
     cxxfs+=(-stdlib="$CLANG_CXX_LIBRARY")
+    ldfs+=(-lc++)
 fi
 
 if [ ! -z "$CLANG_CXX_LANGUAGE_STANDARD" ]; then
@@ -55,6 +61,12 @@ fi
 if [ ${#cxxfs[@]} -ne 0 ]; then
     cxxfss="${cxxfs[@]}"
     args+=(-DCMAKE_CXX_FLAGS="$cxxfss")
+fi
+
+if [ ${#ldfs[@]} -ne 0 ]; then
+    ldfs="${ldfs[@]}"
+    args+=(-DCMAKE_SHARED_LINKER_FLAGS="$ldfs")
+    args+=(-DCMAKE_EXE_LINKER_FLAGS="$ldfs")
 fi
 
 cd "$cmake_dir"

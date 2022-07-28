@@ -46,7 +46,9 @@
 //#import "QTKit/QTMovie.h"
 #import "DCMPix.h"
 #import <WebKit/WebKit.h>
-#include <mingpp.h>
+#if defined(HOROS_SUPPORT_SWF)
+# include <mingpp.h>
+#endif
 #import "N2Debug.h"
 #import <Quartz/Quartz.h>
 
@@ -149,7 +151,9 @@ int compressionForModality( NSArray *array, NSArray *arrayLow, int limit, NSStri
 	return [[[s objectAtIndex: 0] valueForKey: @"compression"] intValue];
 }
 
+#if defined(HOROS_SUPPORT_SWF)
 void createSwfMovie(NSArray* inputFiles, NSString* path, float frameRate);
+#endif
 
 int main(int argc, const char *argv[])
 {
@@ -772,6 +776,9 @@ int main(int argc, const char *argv[])
 # pragma mark writeMovie
 		if( [what isEqualToString: @"writeMovie"])
 		{
+#if !defined(HOROS_SUPPORT_SWF)
+            NSLog( @"******** writeMovie Decompress - not available");
+#else
 			if( ![path hasSuffix:@".swf"])
 			{
                 NSLog( @"******** writeMovie Decompress - not available");
@@ -790,6 +797,7 @@ int main(int argc, const char *argv[])
                 
                 [[NSFileManager defaultManager] removeItemAtPath: inputDir error: nil];
 			}
+#endif
 		}
 				
 # pragma mark pdfFromURL
@@ -903,6 +911,7 @@ int main(int argc, const char *argv[])
 	return 0;
 }
 
+#if defined(HOROS_SUPPORT_SWF)
 void createSwfMovie(NSArray* inputFiles, NSString* path, float frameRate) {
 	if (path)
 		[[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
@@ -1064,3 +1073,4 @@ void createSwfMovie(NSArray* inputFiles, NSString* path, float frameRate) {
 	delete swf;
 	Ming_cleanup();	
 }
+#endif

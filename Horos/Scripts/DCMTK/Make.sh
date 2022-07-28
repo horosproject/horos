@@ -26,7 +26,8 @@ cp "${install_dir}/bin/dcmpsprt" "${copy_dir}"
 cp "${install_dir}/bin/dcmprscu" "${copy_dir}"
 cp "${install_dir}/bin/dsr2html" "${copy_dir}"
 cp "${install_dir}/bin/echoscu" "${copy_dir}"
-cp "${install_dir}/share/dcmtk/dicom.dic" "${copy_dir}"
+#cp "${install_dir}/share/dcmtk/dicom.dic" "${copy_dir}"
+cp "${install_dir}/share/dcmtk-3.6.7-DEV/dicom.dic" "${copy_dir}"
 
 rm -f "$copy_dir/.incomplete"
 

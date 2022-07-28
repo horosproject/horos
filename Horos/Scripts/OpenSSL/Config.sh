@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export PATH="$PATH:/opt/local/bin:/opt/local/sbin"
+
 path="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )/$(basename "${BASH_SOURCE[0]}")"
 cd "$TARGET_NAME"; pwd
 
@@ -76,9 +78,9 @@ cd "$cmake_dir"
 ./config "${config_args[@]}"
 
 if [ "$CONFIGURATION" = 'Debug' ]; then
-    ./Configure "${configure_args[@]}" darwin64-x86_64-cc
+    ./Configure "${configure_args[@]}" debug-darwin64-arm64-cc #no-asm
 else
-    ./Configure "${configure_args[@]}" debug-darwin64-x86_64-cc
+    ./Configure "${configure_args[@]}" darwin64-arm64-cc #no-asm
 fi
 
 echo "$hash" > "$cmake_dir/.cmakehash"
