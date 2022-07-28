@@ -688,49 +688,49 @@ void exceptionHandler(NSException *exception)
 + (BOOL)hasMacOSXSierra
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 12);
+    return (v.majorVersion > 10 || v.minorVersion >= 12);
 }
 
 +(BOOL) hasMacOSXElCapitan
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 11);
+    return (v.majorVersion > 10 || v.minorVersion >= 11);
 }
 
 +(BOOL) hasMacOSXYosemite
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 10);
+    return (v.majorVersion > 10 || v.minorVersion >= 10);
 }
 
 +(BOOL) hasMacOSXMaverick
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 9);
+    return (v.majorVersion > 10 || v.minorVersion >= 9);
 }
 
 +(BOOL) hasMacOSXMountainLion
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 8);
+    return (v.majorVersion > 10 || v.minorVersion >= 8);
 }
 
 +(BOOL) hasMacOSXLion
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 7);
+    return (v.majorVersion > 10 || v.minorVersion >= 7);
 }
 
 +(BOOL) hasMacOSXSnowLeopard
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 6);
+    return (v.majorVersion > 10 || v.minorVersion >= 6);
 }
 
 +(BOOL) hasMacOSXLeopard
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 5);
+    return (v.majorVersion > 10 || v.minorVersion >= 5);
 }
 
 + (void) createNoIndexDirectoryIfNecessary:(NSString*) path { // __deprecated
@@ -2838,14 +2838,12 @@ static BOOL initialized = NO;
 				//		exit(0);
 				//	}
 				
-#if !__arm64__
                 if ([AppController hasMacOSXElCapitan] == NO)
 				{
 					NSRunCriticalAlertPanel(NSLocalizedString(@"macOS", nil), NSLocalizedString(@"This application requires macOS 10.11 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"Quit", nil), nil, nil);
 					exit(0);
 				}
-#endif
-                
+
                 int processors;
                 int mib[2] = {CTL_HW, HW_NCPU};
                 size_t dataLen = sizeof(int); // 'num' is an 'int'
@@ -3591,13 +3589,11 @@ static BOOL initialized = NO;
 #endif // NDEBUG
 #endif // OSIRIX_LIGHT
     
-#if !__arm64__
     if( [AppController hasMacOSXElCapitan] == NO)
     {
         NSRunCriticalAlertPanel( NSLocalizedString( @"macOS Version", nil), NSLocalizedString( @"Horos requires macOS 10.11 or higher. Please update your OS: Apple Menu - Software Update...", nil), NSLocalizedString( @"Quit", nil) , nil, nil);
         exit( 0);
     }
-#endif
     
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SyncPreferencesFromURL"])
         [NSThread detachNewThreadSelector: @selector( addPreferencesFromURL:) toTarget: [OSIGeneralPreferencePanePref class] withObject: [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] stringForKey: @"SyncPreferencesURL"]]];
