@@ -39,8 +39,8 @@ rsync -a --delete "$source_dir/" .
 export CC=clang
 export CXX=clang
 
-config_args=( --prefix="$TARGET_TEMP_DIR/Install" --openssldir="$TARGET_TEMP_DIR/Install" -w )
-configure_args=( --prefix="$TARGET_TEMP_DIR/Install" --openssldir="$TARGET_TEMP_DIR/Install" -w )
+config_args=( --prefix="$TARGET_TEMP_DIR/Install" --openssldir="$TARGET_TEMP_DIR/Install" -w -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET )
+configure_args=( --prefix="$TARGET_TEMP_DIR/Install" --openssldir="$TARGET_TEMP_DIR/Install" -w -mmacosx-version-min=$MACOSX_DEPLOYMENT_TARGET )
 #cfs=($OTHER_CFLAGS)
 #cxxfs=($OTHER_CPLUSPLUSFLAGS)
 
@@ -78,9 +78,9 @@ cd "$cmake_dir"
 ./config "${config_args[@]}"
 
 if [ "$CONFIGURATION" = 'Debug' ]; then
-    ./Configure "${configure_args[@]}" debug-darwin64-arm64-cc no-shared
+    ./Configure "${configure_args[@]}" debug-darwin64-$ARCHS-cc no-shared no-engine no-tests
 else
-    ./Configure "${configure_args[@]}" darwin64-arm64-cc no-shared
+    ./Configure "${configure_args[@]}" darwin64-$ARCHS-cc no-shared no-engine no-tests
 fi
 
 echo "$hash" > "$cmake_dir/.cmakehash"
