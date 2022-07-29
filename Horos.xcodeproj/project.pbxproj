@@ -3026,6 +3026,7 @@
 		DB5961390CAB447B00809190 /* OSIVoxel.m in Sources */ = {isa = PBXBuildFile; fileRef = DB5961370CAB447B00809190 /* OSIVoxel.m */; };
 		EC9BD81C11EDF349007421B2 /* FlyAssistant.h in Headers */ = {isa = PBXBuildFile; fileRef = EC9BD81A11EDF349007421B2 /* FlyAssistant.h */; };
 		EC9BD81D11EDF349007421B2 /* FlyAssistant.mm in Sources */ = {isa = PBXBuildFile; fileRef = EC9BD81B11EDF349007421B2 /* FlyAssistant.mm */; };
+		F3C3F0712893A429004B2F61 /* Horos.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F3C3F0702893A429004B2F61 /* Horos.xcconfig */; };
 		F3D78C9E2892994600148FE5 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F3D78C9D2892994600148FE5 /* Config.xcconfig */; };
 /* End PBXBuildFile section */
 
@@ -5659,6 +5660,7 @@
 		DB5961370CAB447B00809190 /* OSIVoxel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIVoxel.m; sourceTree = "<group>"; };
 		EC9BD81A11EDF349007421B2 /* FlyAssistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlyAssistant.h; sourceTree = "<group>"; };
 		EC9BD81B11EDF349007421B2 /* FlyAssistant.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FlyAssistant.mm; sourceTree = "<group>"; };
+		F3C3F0702893A429004B2F61 /* Horos.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Horos.xcconfig; path = Horos/Horos.xcconfig; sourceTree = "<group>"; };
 		F3D78C9D2892994600148FE5 /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -5827,6 +5829,7 @@
 				99C0EE22202A70CB00D88E8D /* LICENSE */,
 				9980BA341FF545BC001D7779 /* COPYING.LESSER */,
 				F3D78C9D2892994600148FE5 /* Config.xcconfig */,
+				F3C3F0702893A429004B2F61 /* Horos.xcconfig */,
 				71C99EA41D1A7E9F00208F3B /* Info.plist */,
 				710EF1F51FD014E8000B555B /* Horos */,
 				AB10FA9611293361009EB238 /* Nitrogen */,
@@ -10493,6 +10496,7 @@
 				A9701A7015C958020019EE55 /* burn_iris10.tif in Resources */,
 				A9701A7215C958020019EE55 /* burn_iris11.tif in Resources */,
 				A9701A7415C958020019EE55 /* burn_iris12.tif in Resources */,
+				F3C3F0712893A429004B2F61 /* Horos.xcconfig in Resources */,
 				A9701A7615C958020019EE55 /* burn_iris13.tif in Resources */,
 				A9701A7815C958020019EE55 /* burn_iris14.tif in Resources */,
 				CE2AC2681830BEFB00C2B67B /* ThickSlab.xib in Resources */,
@@ -13296,7 +13300,6 @@
 			baseConfigurationReference = F3D78C9D2892994600148FE5 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = arm64;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -13328,7 +13331,6 @@
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				IBC_FLATTEN_NIBS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				SDKROOT = macosx;
@@ -13340,11 +13342,11 @@
 		};
 		43E98D1A1A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F3C3F0702893A429004B2F61 /* Horos.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Horos/Horos.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20201201;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -13623,11 +13625,11 @@
 		};
 		7E76BEC7085757B70073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F3C3F0702893A429004B2F61 /* Horos.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Horos/Horos.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20201201;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -13683,7 +13685,6 @@
 			baseConfigurationReference = F3D78C9D2892994600148FE5 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = arm64;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -13719,7 +13720,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IBC_FLATTEN_NIBS = NO;
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-fvisibility=default";
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
