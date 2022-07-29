@@ -40,7 +40,7 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <ApplicationServices/ApplicationServices.h>
 
-#if defined(USFEEDBACKREPORTER)
+#if defined(USEFEEDBACKREPORTER)
 #import <FeedbackReporter/FRFeedbackReporter.h>
 #endif
 
@@ -3615,7 +3615,7 @@ static BOOL initialized = NO;
     }
 #endif
     
-#if defined(USFEEDBACKREPORTER)
+#if defined(USEFEEDBACKREPORTER)
     //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [FRFeedbackReporter sharedReporter];
@@ -5731,7 +5731,7 @@ static NSMutableDictionary* _receivingDict = nil;
 {
     NSLog(@"Unicode test: مرحبا - 你好 - שלום");
     
-#if defined(USFEEDBACKREPORTER)
+#if defined(USEFEEDBACKREPORTER)
     [[FRFeedbackReporter sharedReporter] setDelegate:(id<FRFeedbackReporterDelegate>) self];
 
     if ([[FRFeedbackReporter sharedReporter] reportIfCrash] == YES)
