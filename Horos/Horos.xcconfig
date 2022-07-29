@@ -7,7 +7,7 @@
 //
 
 /// String that uniquely identifies the bundle
-PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.horos
+PRODUCT_BUNDLE_IDENTIFIER_PREFIX = org.horosproject
 
 /// Current version of the project
 CURRENT_PROJECT_VERSION = 20220801

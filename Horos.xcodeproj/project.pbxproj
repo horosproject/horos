@@ -13384,7 +13384,7 @@
 					"-lopenjp2",
 					"-lCharLS",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.horos;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER_PREFIX).horos";
 				PRODUCT_NAME = Horos;
 				SKIP_INSTALL = NO;
 				SYSTEM_HEADER_SEARCH_PATHS = "$CONFIGURATION_TEMP_DIR/Grok.build/Install/include $CONFIGURATION_TEMP_DIR/GDCM.build/Install/include $CONFIGURATION_TEMP_DIR/OpenSSL.build/Install/include $CONFIGURATION_TEMP_DIR/CharLS.build/Install/include $CONFIGURATION_TEMP_DIR/ITK.build/Install/include $CONFIGURATION_TEMP_DIR/VTK.build/Install/include";
@@ -13394,6 +13394,7 @@
 		};
 		43E98D1C1A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F3C3F0702893A429004B2F61 /* Horos.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
@@ -13417,7 +13418,7 @@
 					"-lopenjp2",
 					"-lCharLS",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.dcm;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER_PREFIX).dcm";
 				PRODUCT_NAME = DCM;
 			};
 			name = Release;
@@ -13438,6 +13439,7 @@
 		};
 		43E98D211A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F3C3F0702893A429004B2F61 /* Horos.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Decompress/Decompress.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -13460,7 +13462,7 @@
 					"-lopenjp2",
 					"-lCharLS",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.horosproject.decompress;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER_PREFIX).decompress";
 				PRODUCT_NAME = Decompress;
 				SYSTEM_HEADER_SEARCH_PATHS = "$CONFIGURATION_TEMP_DIR/Grok.build/Install/include $CONFIGURATION_TEMP_DIR/CharLS.build/Install/include $CONFIGURATION_TEMP_DIR/GDCM.build/Install/include $CONFIGURATION_TEMP_DIR/VTK.build/Install/include Binaries/Ming";
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
@@ -13469,6 +13471,7 @@
 		};
 		43E98D231A32BF6A001B9E51 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F3C3F0702893A429004B2F61 /* Horos.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -13476,7 +13479,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/API/Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_CFLAGS = "-fvisibility=default";
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.api;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER_PREFIX).api";
 				PRODUCT_NAME = Horos;
 			};
 			name = Release;
@@ -13595,6 +13598,7 @@
 		};
 		7E76BEC1085757B60073649A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F3C3F0702893A429004B2F61 /* Horos.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
 				DYLIB_COMPATIBILITY_VERSION = 1.0.0;
@@ -13618,7 +13622,7 @@
 					"-lopenjp2",
 					"-lCharLS",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.dcm;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER_PREFIX).dcm";
 				PRODUCT_NAME = DCM;
 			};
 			name = Debug;
@@ -13665,7 +13669,7 @@
 					"-lopenjp2",
 					"-lCharLS",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.horos;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER_PREFIX).horos";
 				PRODUCT_NAME = Horos;
 				SKIP_INSTALL = NO;
 				SYSTEM_HEADER_SEARCH_PATHS = "$CONFIGURATION_TEMP_DIR/Grok.build/Install/include $CONFIGURATION_TEMP_DIR/GDCM.build/Install/include $CONFIGURATION_TEMP_DIR/OpenSSL.build/Install/include $CONFIGURATION_TEMP_DIR/CharLS.build/Install/include $CONFIGURATION_TEMP_DIR/ITK.build/Install/include $CONFIGURATION_TEMP_DIR/VTK.build/Install/include";
@@ -13747,6 +13751,7 @@
 		};
 		AB0F3A2E1046BD2D004129DD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F3C3F0702893A429004B2F61 /* Horos.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -13754,13 +13759,14 @@
 				INFOPLIST_FILE = "$(SRCROOT)/API/Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_CFLAGS = "-fvisibility=default";
-				PRODUCT_BUNDLE_IDENTIFIER = org.horosproject.api;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER_PREFIX).api";
 				PRODUCT_NAME = Horos;
 			};
 			name = Debug;
 		};
 		AB724FF40ADE6ECB00A212A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F3C3F0702893A429004B2F61 /* Horos.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Decompress/Decompress.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -13783,7 +13789,7 @@
 					"-lopenjp2",
 					"-lCharLS",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.horosproject.decompress;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER_PREFIX).decompress";
 				PRODUCT_NAME = Decompress;
 				SYSTEM_HEADER_SEARCH_PATHS = "$CONFIGURATION_TEMP_DIR/Grok.build/Install/include $CONFIGURATION_TEMP_DIR/CharLS.build/Install/include $CONFIGURATION_TEMP_DIR/GDCM.build/Install/include $CONFIGURATION_TEMP_DIR/VTK.build/Install/include Binaries/Ming";
 				USER_HEADER_SEARCH_PATHS = "$(inherited) Binaries/dcmtk-source";
