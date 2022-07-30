@@ -150,6 +150,18 @@
 			name = Documentation;
 			productName = Documentation;
 		};
+		F35B0D7C289535B6008ABE3E /* FeedbackReporter */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = F35B0D85289535B6008ABE3E /* Build configuration list for PBXAggregateTarget "FeedbackReporter" */;
+			buildPhases = (
+				F35B0D84289535B6008ABE3E /* Make */,
+			);
+			dependencies = (
+				F35B0D7D289535B6008ABE3E /* PBXTargetDependency */,
+			);
+			name = FeedbackReporter;
+			productName = FeedbackReporter;
+		};
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
@@ -3022,10 +3034,10 @@
 		DB5961390CAB447B00809190 /* OSIVoxel.m in Sources */ = {isa = PBXBuildFile; fileRef = DB5961370CAB447B00809190 /* OSIVoxel.m */; };
 		EC9BD81C11EDF349007421B2 /* FlyAssistant.h in Headers */ = {isa = PBXBuildFile; fileRef = EC9BD81A11EDF349007421B2 /* FlyAssistant.h */; };
 		EC9BD81D11EDF349007421B2 /* FlyAssistant.mm in Sources */ = {isa = PBXBuildFile; fileRef = EC9BD81B11EDF349007421B2 /* FlyAssistant.mm */; };
+		F35B0D8F28954862008ABE3E /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F35B0D8E28954830008ABE3E /* FeedbackReporter.framework */; };
+		F35B0D9028954862008ABE3E /* FeedbackReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F35B0D8E28954830008ABE3E /* FeedbackReporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F3C3F0712893A429004B2F61 /* Horos.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F3C3F0702893A429004B2F61 /* Horos.xcconfig */; };
 		F3D78C9E2892994600148FE5 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F3D78C9D2892994600148FE5 /* Config.xcconfig */; };
-		F3E3E6C428951C460037A247 /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3E3E6BD28951BBE0037A247 /* FeedbackReporter.framework */; };
-		F3E3E6C528951C460037A247 /* FeedbackReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F3E3E6BD28951BBE0037A247 /* FeedbackReporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F3E3E6CD289527220037A247 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3E3E6CA289527220037A247 /* UserNotifications.framework */; };
 /* End PBXBuildFile section */
 
@@ -3261,32 +3273,18 @@
 			remoteGlobalIDString = 4A2F5931078D148300C514A2;
 			remoteInfo = "Unzip Binaries";
 		};
-		F3E3E6BC28951BBE0037A247 /* PBXContainerItemProxy */ = {
+		F35B0D7E289535B6008ABE3E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = F3E3E6B628951BBE0037A247 /* FeedbackReporter.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
-			remoteInfo = FeedbackReporter;
-		};
-		F3E3E6BE28951BBE0037A247 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F3E3E6B628951BBE0037A247 /* FeedbackReporter.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 9DA7D6B10DEB8A3500C3B586;
-			remoteInfo = Tests;
-		};
-		F3E3E6C028951BBE0037A247 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F3E3E6B628951BBE0037A247 /* FeedbackReporter.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 9DB634E30E4DD64C00C72888;
-			remoteInfo = App;
-		};
-		F3E3E6C228951C210037A247 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F3E3E6B628951BBE0037A247 /* FeedbackReporter.xcodeproj */;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
+			remoteGlobalIDString = 71E6C0B01FBAD31E00FF75B6;
+			remoteInfo = Submodules;
+		};
+		F35B0D8828953DE9008ABE3E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F35B0D7C289535B6008ABE3E;
 			remoteInfo = FeedbackReporter;
 		};
 /* End PBXContainerItemProxy section */
@@ -3329,7 +3327,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				F3E3E6C528951C460037A247 /* FeedbackReporter.framework in Copy Frameworks */,
+				F35B0D9028954862008ABE3E /* FeedbackReporter.framework in Copy Frameworks */,
 				992264FB2028CE79004C4995 /* homephone.framework in Copy Frameworks */,
 				992335892009A75A000E10BA /* Horos.framework in Copy Frameworks */,
 				71E6C0AF1FB5B0BF00FF75B6 /* 3DconnexionClient.framework in Copy Frameworks */,
@@ -5685,9 +5683,9 @@
 		DB5961370CAB447B00809190 /* OSIVoxel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIVoxel.m; sourceTree = "<group>"; };
 		EC9BD81A11EDF349007421B2 /* FlyAssistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlyAssistant.h; sourceTree = "<group>"; };
 		EC9BD81B11EDF349007421B2 /* FlyAssistant.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FlyAssistant.mm; sourceTree = "<group>"; };
+		F35B0D8E28954830008ABE3E /* FeedbackReporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FeedbackReporter.framework; path = FeedbackReporter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3C3F0702893A429004B2F61 /* Horos.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Horos.xcconfig; path = Horos/Horos.xcconfig; sourceTree = "<group>"; };
 		F3D78C9D2892994600148FE5 /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
-		F3E3E6B628951BBE0037A247 /* FeedbackReporter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = FeedbackReporter.xcodeproj; path = FeedbackReporter/FeedbackReporter.xcodeproj; sourceTree = SOURCE_ROOT; };
 		F3E3E6CA289527220037A247 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -5726,8 +5724,8 @@
 				AB28B48C05B7998B00A9906C /* Foundation.framework in Frameworks */,
 				AB28B93305B79D5B00A9906C /* Cocoa.framework in Frameworks */,
 				AB28B93405B79D5C00A9906C /* ApplicationServices.framework in Frameworks */,
-				F3E3E6C428951C460037A247 /* FeedbackReporter.framework in Frameworks */,
 				AB28B93505B79D5D00A9906C /* IOKit.framework in Frameworks */,
+				F35B0D8F28954862008ABE3E /* FeedbackReporter.framework in Frameworks */,
 				AB28B93705B79D5E00A9906C /* Accelerate.framework in Frameworks */,
 				F3E3E6CD289527220037A247 /* UserNotifications.framework in Frameworks */,
 				CEF0E6DC06AEF5CB001FF9E5 /* Carbon.framework in Frameworks */,
@@ -5885,6 +5883,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F35B0D8E28954830008ABE3E /* FeedbackReporter.framework */,
 				F3E3E6CA289527220037A247 /* UserNotifications.framework */,
 				992264F92028CE62004C4995 /* homephone.framework */,
 				439B8C131A19CCC300F396D7 /* 3DconnexionClient.framework */,
@@ -6193,7 +6192,6 @@
 			isa = PBXGroup;
 			children = (
 				8B15E1602347CA600010A147 /* Horos.entitlements */,
-				F3E3E6B628951BBE0037A247 /* FeedbackReporter.xcodeproj */,
 				71BC461B1F272CA400FD6CCF /* Scripts */,
 				719D3F1A1FB461CA004CFB27 /* Sources */,
 				719D3F261FB46892004CFB27 /* Resources */,
@@ -9042,16 +9040,6 @@
 			path = BurnAnimation;
 			sourceTree = "<group>";
 		};
-		F3E3E6B728951BBE0037A247 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				F3E3E6BD28951BBE0037A247 /* FeedbackReporter.framework */,
-				F3E3E6BF28951BBE0037A247 /* Tests.xctest */,
-				F3E3E6C128951BBE0037A247 /* App.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -10044,7 +10032,7 @@
 				71A5234B20220F910065793A /* PBXTargetDependency */,
 				71A5233D2021DB6C0065793A /* PBXTargetDependency */,
 				5F31DAC6241AE12300573589 /* PBXTargetDependency */,
-				F3E3E6C328951C210037A247 /* PBXTargetDependency */,
+				F35B0D8928953DE9008ABE3E /* PBXTargetDependency */,
 				71C99E991D19A7FB00208F3B /* PBXTargetDependency */,
 				71C99E9B1D19A7FD00208F3B /* PBXTargetDependency */,
 				71C99EA11D19A80A00208F3B /* PBXTargetDependency */,
@@ -10143,12 +10131,6 @@
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* OsiriX */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = F3E3E6B728951BBE0037A247 /* Products */;
-					ProjectRef = F3E3E6B628951BBE0037A247 /* FeedbackReporter.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				AB28B42E05B7921E00A9906C /* Horos */,
@@ -10166,33 +10148,10 @@
 				9920CBEC202A0BA600FE0A2A /* Grok */,
 				71E6C0B01FBAD31E00FF75B6 /* Submodules */,
 				5F1E2A682411AE7E00365A0C /* DCMTK */,
+				F35B0D7C289535B6008ABE3E /* FeedbackReporter */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		F3E3E6BD28951BBE0037A247 /* FeedbackReporter.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = FeedbackReporter.framework;
-			remoteRef = F3E3E6BC28951BBE0037A247 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		F3E3E6BF28951BBE0037A247 /* Tests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = Tests.xctest;
-			remoteRef = F3E3E6BE28951BBE0037A247 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		F3E3E6C128951BBE0037A247 /* App.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = App.app;
-			remoteRef = F3E3E6C028951BBE0037A247 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		7E0B3A3B067526CD00908593 /* Resources */ = {
@@ -11048,6 +11007,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "#test with codesign -vvv\n#\n#chmod -R 777 \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\n#\n#if [[ ${CONFIGURATION} == \"Release\" ]]; then\n# -f means force to re-sign even if already signed\n#codesign -f -s \"Developer ID Application\" \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/HorosAPI.framework\"\n#codesign --resource-rules Rules.plist -f -s \"Developer ID Application\" \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/\"\n#echo \"code signed\"\n#fi\n";
+		};
+		F35B0D84289535B6008ABE3E /* Make */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Make;
+			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/FeedbackReporter.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sh \"Horos/Scripts/$TARGET_NAME/Make.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -12761,10 +12735,15 @@
 			target = 4A2F5931078D148300C514A2 /* Unzip Binaries */;
 			targetProxy = 99FE27FC1CF4A442003C32AB /* PBXContainerItemProxy */;
 		};
-		F3E3E6C328951C210037A247 /* PBXTargetDependency */ = {
+		F35B0D7D289535B6008ABE3E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = FeedbackReporter;
-			targetProxy = F3E3E6C228951C210037A247 /* PBXContainerItemProxy */;
+			target = 71E6C0B01FBAD31E00FF75B6 /* Submodules */;
+			targetProxy = F35B0D7E289535B6008ABE3E /* PBXContainerItemProxy */;
+		};
+		F35B0D8928953DE9008ABE3E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F35B0D7C289535B6008ABE3E /* FeedbackReporter */;
+			targetProxy = F35B0D8828953DE9008ABE3E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -13459,6 +13438,8 @@
 					"-lVTK",
 					"-lopenjp2",
 					"-lCharLS",
+					"-framework",
+					FeedbackReporter,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER_PREFIX).horos";
 				PRODUCT_NAME = Horos;
@@ -13748,6 +13729,8 @@
 					"-lVTK",
 					"-lopenjp2",
 					"-lCharLS",
+					"-framework",
+					FeedbackReporter,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER_PREFIX).horos";
 				PRODUCT_NAME = Horos;
@@ -13882,6 +13865,20 @@
 				PRODUCT_NAME = Documentation;
 			};
 			name = Debug;
+		};
+		F35B0D86289535B6008ABE3E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		F35B0D87289535B6008ABE3E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
@@ -14026,6 +14023,15 @@
 			buildConfigurations = (
 				BF7486A60CC6AA5D00198387 /* Debug */,
 				43E98D201A32BF6A001B9E51 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F35B0D85289535B6008ABE3E /* Build configuration list for PBXAggregateTarget "FeedbackReporter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F35B0D86289535B6008ABE3E /* Debug */,
+				F35B0D87289535B6008ABE3E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
