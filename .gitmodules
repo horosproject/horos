@@ -28,8 +28,8 @@
 	ignore=dirty
 [submodule "DCMTK"]
 	path = DCMTK
-	url = https://github.com/DCMTK/dcmtk
-	branch = master/tags/DCMTK-3.6.5
+	url = https://github.com/DCMTK/dcmtk.git
+	ignore = dirty
 [submodule "FeedbackReporter"]
 	path = FeedbackReporter
 	url = https://github.com/tcurdt/feedbackreporter.git
