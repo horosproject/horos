@@ -4,20 +4,6 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
-
-### Added
-
-- 
-
-### Changed
-
-- Removed toolbar shadow
-
-### Removed
-
-- 
-
 
 ## 4.0.0 RC5 2022-08-01
 
@@ -30,8 +16,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Updated ThirdParty components (e.g. DCMTK, OpenSSL, VTK, ITK)
 - Improved rendering performance in 2D view
 - Fixed rendering issue with StudyBox in 2D view
-- Fixed toolbar height
 - Fixed rendering of tool selection popup button
+- Fixed toolbar height & shadow
 
 ### Removed
 
