@@ -3026,6 +3026,7 @@
 		F3D78C9E2892994600148FE5 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F3D78C9D2892994600148FE5 /* Config.xcconfig */; };
 		F3E3E6C428951C460037A247 /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3E3E6BD28951BBE0037A247 /* FeedbackReporter.framework */; };
 		F3E3E6C528951C460037A247 /* FeedbackReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F3E3E6BD28951BBE0037A247 /* FeedbackReporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F3E3E6CD289527220037A247 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3E3E6CA289527220037A247 /* UserNotifications.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -5687,6 +5688,7 @@
 		F3C3F0702893A429004B2F61 /* Horos.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Horos.xcconfig; path = Horos/Horos.xcconfig; sourceTree = "<group>"; };
 		F3D78C9D2892994600148FE5 /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		F3E3E6B628951BBE0037A247 /* FeedbackReporter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = FeedbackReporter.xcodeproj; path = FeedbackReporter/FeedbackReporter.xcodeproj; sourceTree = SOURCE_ROOT; };
+		F3E3E6CA289527220037A247 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -5727,6 +5729,7 @@
 				F3E3E6C428951C460037A247 /* FeedbackReporter.framework in Frameworks */,
 				AB28B93505B79D5D00A9906C /* IOKit.framework in Frameworks */,
 				AB28B93705B79D5E00A9906C /* Accelerate.framework in Frameworks */,
+				F3E3E6CD289527220037A247 /* UserNotifications.framework in Frameworks */,
 				CEF0E6DC06AEF5CB001FF9E5 /* Carbon.framework in Frameworks */,
 				992264FA2028CE63004C4995 /* homephone.framework in Frameworks */,
 				7E3E38660715FFDC0049E72E /* PreferencePanes.framework in Frameworks */,
@@ -5882,6 +5885,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F3E3E6CA289527220037A247 /* UserNotifications.framework */,
 				992264F92028CE62004C4995 /* homephone.framework */,
 				439B8C131A19CCC300F396D7 /* 3DconnexionClient.framework */,
 				59FB64331230EE2F00EBA136 /* Ming */,
