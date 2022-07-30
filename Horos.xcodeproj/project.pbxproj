@@ -5683,7 +5683,8 @@
 		DB5961370CAB447B00809190 /* OSIVoxel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIVoxel.m; sourceTree = "<group>"; };
 		EC9BD81A11EDF349007421B2 /* FlyAssistant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlyAssistant.h; sourceTree = "<group>"; };
 		EC9BD81B11EDF349007421B2 /* FlyAssistant.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FlyAssistant.mm; sourceTree = "<group>"; };
-		F35B0D8E28954830008ABE3E /* FeedbackReporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FeedbackReporter.framework; path = FeedbackReporter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F35B0D8E28954830008ABE3E /* FeedbackReporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FeedbackReporter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F3A24302289570ED00E2547B /* Changelog.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = Changelog.md; path = Horos/Changelog.md; sourceTree = "<group>"; };
 		F3C3F0702893A429004B2F61 /* Horos.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Horos.xcconfig; path = Horos/Horos.xcconfig; sourceTree = "<group>"; };
 		F3D78C9D2892994600148FE5 /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		F3E3E6CA289527220037A247 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
@@ -5852,6 +5853,7 @@
 			children = (
 				99C0EE22202A70CB00D88E8D /* LICENSE */,
 				9980BA341FF545BC001D7779 /* COPYING.LESSER */,
+				F3A24302289570ED00E2547B /* Changelog.md */,
 				F3D78C9D2892994600148FE5 /* Config.xcconfig */,
 				F3C3F0702893A429004B2F61 /* Horos.xcconfig */,
 				71C99EA41D1A7E9F00208F3B /* Info.plist */,
