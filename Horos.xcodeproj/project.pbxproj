@@ -672,8 +672,6 @@
 		992335882009A75A000E10BA /* Horos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* Horos.framework */; };
 		992335892009A75A000E10BA /* Horos.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* Horos.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		9939F7A91BCB0BF8009FEB69 /* FVTiff.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FC808F44724002A395F /* FVTiff.m */; };
-		993DB4A01C0243D50084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
-		993DB4A11C0244430084218A /* FeedbackReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		993DB4A31C024FB40084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
 		994FABF11CEBF25800980A15 /* OnOffSwitchControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 994FABED1CEBF25800980A15 /* OnOffSwitchControl.h */; };
 		994FABF21CEBF25800980A15 /* OnOffSwitchControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 994FABEE1CEBF25800980A15 /* OnOffSwitchControl.m */; };
@@ -3028,6 +3026,8 @@
 		EC9BD81D11EDF349007421B2 /* FlyAssistant.mm in Sources */ = {isa = PBXBuildFile; fileRef = EC9BD81B11EDF349007421B2 /* FlyAssistant.mm */; };
 		F3C3F0712893A429004B2F61 /* Horos.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F3C3F0702893A429004B2F61 /* Horos.xcconfig */; };
 		F3D78C9E2892994600148FE5 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F3D78C9D2892994600148FE5 /* Config.xcconfig */; };
+		F3E3E6C428951C460037A247 /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3E3E6BD28951BBE0037A247 /* FeedbackReporter.framework */; };
+		F3E3E6C528951C460037A247 /* FeedbackReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F3E3E6BD28951BBE0037A247 /* FeedbackReporter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -3262,6 +3262,34 @@
 			remoteGlobalIDString = 4A2F5931078D148300C514A2;
 			remoteInfo = "Unzip Binaries";
 		};
+		F3E3E6BC28951BBE0037A247 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F3E3E6B628951BBE0037A247 /* FeedbackReporter.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
+			remoteInfo = FeedbackReporter;
+		};
+		F3E3E6BE28951BBE0037A247 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F3E3E6B628951BBE0037A247 /* FeedbackReporter.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9DA7D6B10DEB8A3500C3B586;
+			remoteInfo = Tests;
+		};
+		F3E3E6C028951BBE0037A247 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F3E3E6B628951BBE0037A247 /* FeedbackReporter.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9DB634E30E4DD64C00C72888;
+			remoteInfo = App;
+		};
+		F3E3E6C228951C210037A247 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F3E3E6B628951BBE0037A247 /* FeedbackReporter.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
+			remoteInfo = FeedbackReporter;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -3302,10 +3330,10 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				F3E3E6C528951C460037A247 /* FeedbackReporter.framework in Copy Frameworks */,
 				992264FB2028CE79004C4995 /* homephone.framework in Copy Frameworks */,
 				992335892009A75A000E10BA /* Horos.framework in Copy Frameworks */,
 				71E6C0AF1FB5B0BF00FF75B6 /* 3DconnexionClient.framework in Copy Frameworks */,
-				993DB4A11C0244430084218A /* FeedbackReporter.framework in Copy Frameworks */,
 				9966A1B51AE0B6EE00F2D81A /* DCM.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
@@ -5662,6 +5690,7 @@
 		EC9BD81B11EDF349007421B2 /* FlyAssistant.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FlyAssistant.mm; sourceTree = "<group>"; };
 		F3C3F0702893A429004B2F61 /* Horos.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Horos.xcconfig; path = Horos/Horos.xcconfig; sourceTree = "<group>"; };
 		F3D78C9D2892994600148FE5 /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		F3E3E6B628951BBE0037A247 /* FeedbackReporter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = FeedbackReporter.xcodeproj; path = FeedbackReporter/FeedbackReporter.xcodeproj; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -5695,12 +5724,12 @@
 				9966A1A11AE09D3F00F2D81A /* AddressBook.framework in Frameworks */,
 				992335882009A75A000E10BA /* Horos.framework in Frameworks */,
 				AB28B48805B7998800A9906C /* AppKit.framework in Frameworks */,
-				993DB4A01C0243D50084218A /* FeedbackReporter.framework in Frameworks */,
 				AB28B48A05B7998A00A9906C /* AGL.framework in Frameworks */,
 				AB28B48B05B7998A00A9906C /* OpenGL.framework in Frameworks */,
 				AB28B48C05B7998B00A9906C /* Foundation.framework in Frameworks */,
 				AB28B93305B79D5B00A9906C /* Cocoa.framework in Frameworks */,
 				AB28B93405B79D5C00A9906C /* ApplicationServices.framework in Frameworks */,
+				F3E3E6C428951C460037A247 /* FeedbackReporter.framework in Frameworks */,
 				AB28B93505B79D5D00A9906C /* IOKit.framework in Frameworks */,
 				AB28B93705B79D5E00A9906C /* Accelerate.framework in Frameworks */,
 				CEF0E6DC06AEF5CB001FF9E5 /* Carbon.framework in Frameworks */,
@@ -6168,6 +6197,7 @@
 			isa = PBXGroup;
 			children = (
 				8B15E1602347CA600010A147 /* Horos.entitlements */,
+				F3E3E6B628951BBE0037A247 /* FeedbackReporter.xcodeproj */,
 				71BC461B1F272CA400FD6CCF /* Scripts */,
 				719D3F1A1FB461CA004CFB27 /* Sources */,
 				719D3F261FB46892004CFB27 /* Resources */,
@@ -9016,6 +9046,16 @@
 			path = BurnAnimation;
 			sourceTree = "<group>";
 		};
+		F3E3E6B728951BBE0037A247 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F3E3E6BD28951BBE0037A247 /* FeedbackReporter.framework */,
+				F3E3E6BF28951BBE0037A247 /* Tests.xctest */,
+				F3E3E6C128951BBE0037A247 /* App.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -10008,6 +10048,7 @@
 				71A5234B20220F910065793A /* PBXTargetDependency */,
 				71A5233D2021DB6C0065793A /* PBXTargetDependency */,
 				5F31DAC6241AE12300573589 /* PBXTargetDependency */,
+				F3E3E6C328951C210037A247 /* PBXTargetDependency */,
 				71C99E991D19A7FB00208F3B /* PBXTargetDependency */,
 				71C99E9B1D19A7FD00208F3B /* PBXTargetDependency */,
 				71C99EA11D19A80A00208F3B /* PBXTargetDependency */,
@@ -10106,6 +10147,12 @@
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* OsiriX */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = F3E3E6B728951BBE0037A247 /* Products */;
+					ProjectRef = F3E3E6B628951BBE0037A247 /* FeedbackReporter.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				AB28B42E05B7921E00A9906C /* Horos */,
@@ -10126,6 +10173,30 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		F3E3E6BD28951BBE0037A247 /* FeedbackReporter.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = FeedbackReporter.framework;
+			remoteRef = F3E3E6BC28951BBE0037A247 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F3E3E6BF28951BBE0037A247 /* Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = Tests.xctest;
+			remoteRef = F3E3E6BE28951BBE0037A247 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F3E3E6C128951BBE0037A247 /* App.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = App.app;
+			remoteRef = F3E3E6C028951BBE0037A247 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		7E0B3A3B067526CD00908593 /* Resources */ = {
@@ -12693,6 +12764,11 @@
 			isa = PBXTargetDependency;
 			target = 4A2F5931078D148300C514A2 /* Unzip Binaries */;
 			targetProxy = 99FE27FC1CF4A442003C32AB /* PBXContainerItemProxy */;
+		};
+		F3E3E6C328951C210037A247 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = FeedbackReporter;
+			targetProxy = F3E3E6C228951C210037A247 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

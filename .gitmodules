@@ -30,3 +30,7 @@
 	path = DCMTK
 	url = https://github.com/DCMTK/dcmtk
 	branch = master/tags/DCMTK-3.6.5
+[submodule "FeedbackReporter"]
+	path = FeedbackReporter
+	url = https://github.com/tcurdt/feedbackreporter.git
+	ignore = dirty
