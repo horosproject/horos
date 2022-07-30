@@ -8,6 +8,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- 
+
+### Changed
+
+- Removed toolbar shadow
+
+### Removed
+
+- 
+
+
+## 4.0.0 RC5 2022-08-01
+
+### Added
+
 - Support for Apple silicon (M1, M2) Macs
 
 ### Changed
