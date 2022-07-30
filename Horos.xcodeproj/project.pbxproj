@@ -423,7 +423,6 @@
 		59FB64DD1231295400EBA136 /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */; };
 		59FB654F12312D8900EBA136 /* weasis in Resources */ = {isa = PBXBuildFile; fileRef = 59FB652912312D8900EBA136 /* weasis */; };
 		5F200F8024292385003EC23E /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
-		5FCC11ED2423CDCE0039EE8F /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FCC11EC2423CDCE0039EE8F /* UserNotifications.framework */; };
 		5FCC11EE2423CEB00039EE8F /* Decompress in Resources */ = {isa = PBXBuildFile; fileRef = AB724FF60ADE6ECB00A212A0 /* Decompress */; };
 		5FCC11EF2423D0220039EE8F /* dcmdump in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639D0635874D00D9531F /* dcmdump */; };
 		5FCC11F02423D0220039EE8F /* dcmprscu in Resources */ = {isa = PBXBuildFile; fileRef = 5F92186123F455A8000B8754 /* dcmprscu */; };
@@ -672,7 +671,6 @@
 		992335882009A75A000E10BA /* Horos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* Horos.framework */; };
 		992335892009A75A000E10BA /* Horos.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AB0F3A2C1046BD2B004129DD /* Horos.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		9939F7A91BCB0BF8009FEB69 /* FVTiff.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FC808F44724002A395F /* FVTiff.m */; };
-		993DB4A31C024FB40084218A /* FeedbackReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993DB49F1C0243D50084218A /* FeedbackReporter.framework */; };
 		994FABF11CEBF25800980A15 /* OnOffSwitchControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 994FABED1CEBF25800980A15 /* OnOffSwitchControl.h */; };
 		994FABF21CEBF25800980A15 /* OnOffSwitchControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 994FABEE1CEBF25800980A15 /* OnOffSwitchControl.m */; };
 		994FABF31CEBF25800980A15 /* OnOffSwitchControlCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 994FABEF1CEBF25800980A15 /* OnOffSwitchControlCell.h */; };
@@ -3684,7 +3682,6 @@
 		5F026FFB242055690083A650 /* Decompress.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Decompress.entitlements; sourceTree = "<group>"; };
 		5F92185F23F45592000B8754 /* dcmpsprt */ = {isa = PBXFileReference; lastKnownFileType = text; name = dcmpsprt; path = DCMTK/dcmpsprt; sourceTree = BUILT_PRODUCTS_DIR; };
 		5F92186123F455A8000B8754 /* dcmprscu */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dcmprscu; path = DCMTK/dcmprscu; sourceTree = BUILT_PRODUCTS_DIR; };
-		5FCC11EC2423CDCE0039EE8F /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		710EF1F11FD00E28000B555B /* Horos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Horos.h; sourceTree = "<group>"; };
 		710EF1F21FD00E29000B555B /* Horos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Horos.m; sourceTree = "<group>"; };
 		71125D4A215376FC00EB0AA5 /* PathForImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathForImage.h; sourceTree = "<group>"; };
@@ -3924,7 +3921,6 @@
 		991B8B5B1BB8B279006AF439 /* O2HMigrationAssistant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = O2HMigrationAssistant.png; sourceTree = "<group>"; };
 		992264F92028CE62004C4995 /* homephone.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = homephone.framework; path = Binaries/homephone.framework; sourceTree = "<group>"; };
 		9923358B2009A7ED000E10BA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		993DB49F1C0243D50084218A /* FeedbackReporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FeedbackReporter.framework; path = Binaries/FeedbackReporter.framework; sourceTree = "<group>"; };
 		994FABED1CEBF25800980A15 /* OnOffSwitchControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnOffSwitchControl.h; sourceTree = "<group>"; };
 		994FABEE1CEBF25800980A15 /* OnOffSwitchControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnOffSwitchControl.m; sourceTree = "<group>"; };
 		994FABEF1CEBF25800980A15 /* OnOffSwitchControlCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnOffSwitchControlCell.h; sourceTree = "<group>"; };
@@ -5715,7 +5711,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5FCC11ED2423CDCE0039EE8F /* UserNotifications.framework in Frameworks */,
 				9966A1AB1AE09D7C00F2D81A /* Quartz.framework in Frameworks */,
 				9966A1A91AE09D6800F2D81A /* InstantMessage.framework in Frameworks */,
 				9966A1A71AE09D5D00F2D81A /* DiskArbitration.framework in Frameworks */,
@@ -5754,7 +5749,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				993DB4A31C024FB40084218A /* FeedbackReporter.framework in Frameworks */,
 				9966A1AE1AE09DE200F2D81A /* Quartz.framework in Frameworks */,
 				9966A1AD1AE09DD000F2D81A /* CoreMedia.framework in Frameworks */,
 				9966A1AC1AE09DB300F2D81A /* AVFoundation.framework in Frameworks */,
@@ -5888,9 +5882,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				5FCC11EC2423CDCE0039EE8F /* UserNotifications.framework */,
 				992264F92028CE62004C4995 /* homephone.framework */,
-				993DB49F1C0243D50084218A /* FeedbackReporter.framework */,
 				439B8C131A19CCC300F396D7 /* 3DconnexionClient.framework */,
 				59FB64331230EE2F00EBA136 /* Ming */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
