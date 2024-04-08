@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="BurnerWindowController">
+            <connections>
+                <outlet property="anonymizedCheckButton" destination="37" id="44"/>
+                <outlet property="burnButton" destination="14" id="19"/>
+                <outlet property="compressionMode" destination="25" id="30"/>
+                <outlet property="finalSizeField" destination="34" id="35"/>
+                <outlet property="nameField" destination="10" id="16"/>
+                <outlet property="passwordWindow" destination="95" id="111"/>
+                <outlet property="sizeField" destination="32" id="33"/>
+                <outlet property="window" destination="6" id="31"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="DICOM Burner" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" visibleAtLaunch="NO" animationBehavior="default" id="6" userLabel="Window">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
+            <rect key="contentRect" x="0.0" y="0.0" width="498" height="390"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <value key="minSize" type="size" width="213" height="107"/>
+            <view key="contentView" id="5">
+                <rect key="frame" x="0.0" y="0.0" width="498" height="390"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9">
+                        <rect key="frame" x="66" y="351" width="45" height="17"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Name:" id="58">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="10">
+                        <rect key="frame" x="116" y="348" width="362" height="22"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="362" id="CNw-EO-wCw"/>
+                        </constraints>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" state="on" borderStyle="bezel" alignment="left" title="DICOMCD" bezelStyle="round" id="59">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <action selector="setCDName:" target="-2" id="24"/>
+                            <binding destination="-2" name="enabled" keyPath="buttonsDisabled" id="131">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                        </connections>
+                    </textField>
+                    <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="25">
+                        <rect key="frame" x="114" y="213" width="228" height="58"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        <size key="cellSize" width="227" height="18"/>
+                        <size key="intercellSpacing" width="4" height="2"/>
+                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="72">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <cells>
+                            <column>
+                                <buttonCell type="radio" title="Don't modify the files" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="27">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Compress all DICOM files in JPEG" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="28">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Decompress all DICOM files" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="26">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </column>
+                        </cells>
+                        <connections>
+                            <binding destination="-2" name="enabled" keyPath="buttonsDisabled" id="133">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                        </connections>
+                    </matrix>
+                    <matrix verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="159">
+                        <rect key="frame" x="114" y="147" width="126" height="58"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        <size key="cellSize" width="125" height="18"/>
+                        <size key="intercellSpacing" width="4" height="2"/>
+                        <buttonCell key="prototype" type="radio" title="Save as DMG file" imagePosition="left" alignment="left" tag="2" inset="2" id="169">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <cells>
+                            <column>
+                                <buttonCell type="radio" title="CD/DVD Media" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="162">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Save as DMG file" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="161">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="USB Key:" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="163">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <connections>
+                                        <binding destination="-2" name="enabled" keyPath="self.volumes.@count" id="178"/>
+                                    </connections>
+                                </buttonCell>
+                            </column>
+                        </cells>
+                        <connections>
+                            <binding destination="-2" name="enabled" keyPath="buttonsDisabled" id="164">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="38" name="selectedTag" keyPath="values.burnDestination" id="165"/>
+                        </connections>
+                    </matrix>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="29">
+                        <rect key="frame" x="21" y="254" width="90" height="17"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Compression:" id="62">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="157">
+                        <rect key="frame" x="31" y="188" width="80" height="17"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Destination:" id="158">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="32">
+                        <rect key="frame" x="259" y="331" width="77" height="14"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="asdasdasdqq" id="63">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="34">
+                        <rect key="frame" x="122" y="313" width="350" height="14"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="346" id="qpO-Sa-MCX"/>
+                        </constraints>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" id="64">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="36">
+                        <rect key="frame" x="32" y="279" width="79" height="17"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Anonymize:" id="65">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <button horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="37">
+                        <rect key="frame" x="114" y="278" width="293" height="18"/>
+                        <buttonCell key="cell" type="check" title="Anonymize the DICOM files before burning" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="66">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="setAnonymizedCheck:" target="-2" id="42"/>
+                            <binding destination="-2" name="enabled" keyPath="buttonsDisabled" id="132">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="38" name="value" keyPath="values.anonymizedBeforeBurning" id="40"/>
+                        </connections>
+                    </button>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="45">
+                        <rect key="frame" x="75" y="122" width="36" height="17"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Misc:" id="67">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <button horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="46">
+                        <rect key="frame" x="114" y="121" width="349" height="18"/>
+                        <buttonCell key="cell" type="check" title="Include Weasis viewer (multi-platform, about 17MB)" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="68">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="estimateFolderSize:" target="-2" id="78"/>
+                            <binding destination="-2" name="enabled" keyPath="buttonsDisabled" id="134">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="38" name="value" keyPath="values.BurnWeasis" id="151"/>
+                        </connections>
+                    </button>
+                    <button hidden="YES" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="146">
+                        <rect key="frame" x="110" y="307" width="325" height="18"/>
+                        <buttonCell key="cell" type="check" title="Include Horos Lite viewer (mac only, about 8MB)" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" enabled="NO" inset="2" id="147">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="estimateFolderSize:" target="-2" id="150"/>
+                            <binding destination="-2" name="enabled" keyPath="buttonsDisabled" id="149">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="38" name="value" keyPath="values.BurnOsirixApplication" id="148"/>
+                        </connections>
+                    </button>
+                    <button horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="47">
+                        <rect key="frame" x="114" y="99" width="316" height="18"/>
+                        <buttonCell key="cell" type="check" title="Copy an html/Quicktime version of the images" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="69">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <binding destination="-2" name="enabled" keyPath="buttonsDisabled" id="135">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="38" name="value" keyPath="values.BurnHtml" id="80"/>
+                            <binding destination="38" name="hidden" keyPath="values.anonymizedBeforeBurning" previousBinding="135" id="136"/>
+                        </connections>
+                    </button>
+                    <button horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="90">
+                        <rect key="frame" x="114" y="59" width="296" height="18"/>
+                        <buttonCell key="cell" type="check" title="Encrypt Data in ZIP file, password protected" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="91">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <binding destination="-2" name="enabled" keyPath="buttonsDisabled" id="139">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="38" name="value" keyPath="values.EncryptCD" id="94"/>
+                            <binding destination="38" name="enabled2" keyPath="values.hasMacOSXSnowLeopard" previousBinding="139" id="145">
+                                <dictionary key="options">
+                                    <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                    <integer key="NSNoSelectionPlaceholder" value="-1"/>
+                                    <integer key="NSNotApplicablePlaceholder" value="-1"/>
+                                    <integer key="NSNullPlaceholder" value="-1"/>
+                                </dictionary>
+                            </binding>
+                        </connections>
+                    </button>
+                    <button horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="48">
+                        <rect key="frame" x="114" y="37" width="352" height="18"/>
+                        <buttonCell key="cell" type="check" title="Copy the auxiliary folder (see CD/DVD Preferences) :" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="70">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="estimateFolderSize:" target="-2" id="79"/>
+                            <binding destination="-2" name="enabled2" keyPath="buttonsDisabled" previousBinding="119" id="141">
+                                <dictionary key="options">
+                                    <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                    <integer key="NSNoSelectionPlaceholder" value="-1"/>
+                                    <integer key="NSNotApplicablePlaceholder" value="-1"/>
+                                    <integer key="NSNullPlaceholder" value="-1"/>
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="38" name="value" keyPath="values.BurnSupplementaryFolder" id="82"/>
+                            <binding destination="38" name="enabled" keyPath="values.SupplementaryBurnPath" id="119">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSIsNotNil</string>
+                                </dictionary>
+                            </binding>
+                        </connections>
+                    </button>
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="49">
+                        <rect key="frame" x="238" y="20" width="104" height="11"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Mini System Font Text" id="71">
+                            <font key="font" metaFont="miniSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <binding destination="38" name="value" keyPath="values.SupplementaryBurnPath" id="117"/>
+                        </connections>
+                    </textField>
+                    <button horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="73">
+                        <rect key="frame" x="114" y="79" width="284" height="18"/>
+                        <buttonCell key="cell" type="check" title="Copy the associated Report(s), if available" bezelStyle="regularSquare" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="74">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <binding destination="-2" name="enabled" keyPath="buttonsDisabled" id="137">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="38" name="hidden" keyPath="values.anonymizedBeforeBurning" previousBinding="137" id="138"/>
+                            <binding destination="38" name="value" keyPath="values.copyReportsToCD" id="76"/>
+                        </connections>
+                    </button>
+                    <popUpButton verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="170">
+                        <rect key="frame" x="241" y="144" width="75" height="26"/>
+                        <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="173" id="171">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="menu"/>
+                            <menu key="menu" title="OtherViews" id="172">
+                                <items>
+                                    <menuItem title="Item 1" state="on" id="173"/>
+                                    <menuItem title="Item 2" id="174"/>
+                                    <menuItem title="Item 3" id="175"/>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                        <connections>
+                            <binding destination="-2" name="enabled" keyPath="self.buttonsDisabled" id="181">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="-2" name="selectedIndex" keyPath="self.selectedUSB" previousBinding="176" id="182"/>
+                            <binding destination="-2" name="contentValues" keyPath="self.volumes" id="176"/>
+                            <binding destination="-2" name="enabled2" keyPath="self.volumes.@count" previousBinding="181" id="184">
+                                <dictionary key="options">
+                                    <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                    <integer key="NSNoSelectionPlaceholder" value="-1"/>
+                                    <integer key="NSNotApplicablePlaceholder" value="-1"/>
+                                    <integer key="NSNullPlaceholder" value="-1"/>
+                                </dictionary>
+                            </binding>
+                        </connections>
+                    </popUpButton>
+                    <button ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="14">
+                        <rect key="frame" x="433" y="226" width="31" height="32"/>
+                        <buttonCell key="cell" type="squareTextured" title="Burn" bezelStyle="texturedSquare" image="burn_iris01" imagePosition="only" alignment="center" inset="2" id="61">
+                            <behavior key="behavior" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="burn:" target="-2" id="23"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="157" firstAttribute="trailing" secondItem="29" secondAttribute="trailing" id="39V-ja-XiH"/>
+                    <constraint firstItem="10" firstAttribute="leading" secondItem="37" secondAttribute="leading" id="5Q5-j8-jJX"/>
+                    <constraint firstItem="37" firstAttribute="leading" secondItem="46" secondAttribute="leading" id="5cw-EC-aQe"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="37" secondAttribute="trailing" constant="16" id="6l1-yB-3K1"/>
+                    <constraint firstItem="46" firstAttribute="baseline" secondItem="45" secondAttribute="baseline" id="6xZ-oK-Ypv"/>
+                    <constraint firstItem="157" firstAttribute="trailing" secondItem="45" secondAttribute="trailing" id="8u0-l7-itF"/>
+                    <constraint firstItem="47" firstAttribute="top" secondItem="146" secondAttribute="bottom" constant="6" symbolic="YES" id="97u-0n-qyG"/>
+                    <constraint firstItem="10" firstAttribute="leading" secondItem="9" secondAttribute="trailing" constant="7" id="9FV-lE-qS2"/>
+                    <constraint firstItem="48" firstAttribute="centerX" secondItem="49" secondAttribute="centerX" id="9yN-aK-fuX"/>
+                    <constraint firstAttribute="bottom" secondItem="49" secondAttribute="bottom" constant="20" symbolic="YES" id="B8N-lH-CdJ"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="46" secondAttribute="trailing" constant="16" id="Czk-E1-D6y"/>
+                    <constraint firstItem="47" firstAttribute="leading" secondItem="146" secondAttribute="leading" id="EWE-xa-W2V"/>
+                    <constraint firstItem="29" firstAttribute="leading" secondItem="5" secondAttribute="leading" constant="23" id="JFs-AO-7ak"/>
+                    <constraint firstItem="29" firstAttribute="trailing" secondItem="36" secondAttribute="trailing" id="KUp-Re-sxz"/>
+                    <constraint firstItem="159" firstAttribute="top" secondItem="25" secondAttribute="bottom" constant="8" symbolic="YES" id="Kgo-x1-Jiq"/>
+                    <constraint firstItem="159" firstAttribute="top" secondItem="157" secondAttribute="top" id="Nud-Yi-FJW"/>
+                    <constraint firstItem="36" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5" secondAttribute="leading" constant="16" id="RPP-Lp-Sd4"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="73" secondAttribute="trailing" constant="16" id="SeH-Lx-Mm0"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="146" secondAttribute="trailing" constant="16" id="TBP-yv-VC3"/>
+                    <constraint firstItem="9" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5" secondAttribute="leading" constant="16" id="TGa-Q4-bWl"/>
+                    <constraint firstItem="36" firstAttribute="trailing" secondItem="9" secondAttribute="trailing" id="TH2-hy-av9"/>
+                    <constraint firstAttribute="trailing" secondItem="14" secondAttribute="trailing" constant="28" id="VID-cf-YJG"/>
+                    <constraint firstItem="34" firstAttribute="top" secondItem="32" secondAttribute="bottom" constant="4" id="Wd4-8g-IdE"/>
+                    <constraint firstItem="37" firstAttribute="baseline" secondItem="36" secondAttribute="baseline" id="YWb-gh-hSn"/>
+                    <constraint firstItem="46" firstAttribute="top" secondItem="159" secondAttribute="bottom" constant="10" id="bOn-hz-6zG"/>
+                    <constraint firstItem="90" firstAttribute="top" secondItem="73" secondAttribute="bottom" constant="6" symbolic="YES" id="bVm-71-t9U"/>
+                    <constraint firstItem="32" firstAttribute="top" secondItem="10" secondAttribute="bottom" constant="3" id="bql-Ll-CpL"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="90" secondAttribute="trailing" constant="16" id="cIA-XS-ydT"/>
+                    <constraint firstItem="25" firstAttribute="leading" secondItem="29" secondAttribute="trailing" constant="5" id="dQR-jP-WP2"/>
+                    <constraint firstItem="90" firstAttribute="leading" secondItem="73" secondAttribute="leading" id="eLJ-p5-hOD"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="48" secondAttribute="trailing" constant="16" id="eXw-nd-P4a"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="47" secondAttribute="trailing" constant="16" id="fWI-b8-OIE"/>
+                    <constraint firstItem="170" firstAttribute="leading" secondItem="159" secondAttribute="trailing" constant="3" id="gBk-hb-1P5"/>
+                    <constraint firstItem="10" firstAttribute="top" secondItem="5" secondAttribute="top" constant="20" symbolic="YES" id="gWu-Vc-sFt"/>
+                    <constraint firstItem="29" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5" secondAttribute="leading" constant="16" id="hIB-rD-bja"/>
+                    <constraint firstItem="32" firstAttribute="centerX" secondItem="34" secondAttribute="centerX" id="iX9-ot-3ms"/>
+                    <constraint firstItem="47" firstAttribute="leading" secondItem="73" secondAttribute="leading" id="iof-uV-60D"/>
+                    <constraint firstItem="10" firstAttribute="baseline" secondItem="9" secondAttribute="baseline" id="j2q-B7-nyU"/>
+                    <constraint firstItem="73" firstAttribute="top" secondItem="47" secondAttribute="bottom" constant="6" symbolic="YES" id="kXY-cs-f2a"/>
+                    <constraint firstItem="29" firstAttribute="top" secondItem="36" secondAttribute="bottom" constant="8" symbolic="YES" id="m8K-hE-dSn"/>
+                    <constraint firstItem="45" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5" secondAttribute="leading" constant="16" id="ohd-28-35c"/>
+                    <constraint firstItem="49" firstAttribute="top" secondItem="48" secondAttribute="bottom" constant="8" symbolic="YES" id="pra-rK-FHH"/>
+                    <constraint firstItem="146" firstAttribute="top" secondItem="46" secondAttribute="bottom" constant="6" symbolic="YES" id="qT4-K4-Cm7"/>
+                    <constraint firstItem="159" firstAttribute="bottom" secondItem="170" secondAttribute="bottom" id="sux-ft-66a"/>
+                    <constraint firstItem="48" firstAttribute="top" secondItem="90" secondAttribute="bottom" constant="8" id="t0p-7P-Pam"/>
+                    <constraint firstItem="159" firstAttribute="leading" secondItem="25" secondAttribute="leading" id="te5-eo-1gy"/>
+                    <constraint firstItem="29" firstAttribute="top" secondItem="25" secondAttribute="top" id="tv1-Ro-3eh"/>
+                    <constraint firstItem="157" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5" secondAttribute="leading" constant="16" id="uMv-9a-f91"/>
+                    <constraint firstItem="10" firstAttribute="centerX" secondItem="32" secondAttribute="centerX" id="ygS-en-hfg"/>
+                    <constraint firstItem="48" firstAttribute="leading" secondItem="90" secondAttribute="leading" id="zwo-uU-G7R"/>
+                    <constraint firstItem="146" firstAttribute="leading" secondItem="46" secondAttribute="leading" id="zyU-Us-dkg"/>
+                </constraints>
+            </view>
+            <point key="canvasLocation" x="135" y="153"/>
+        </window>
+        <userDefaultsController representsSharedInstance="YES" id="38" userLabel="Shared Defaults"/>
+        <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" visibleAtLaunch="NO" animationBehavior="default" id="95" userLabel="Encrypt">
+            <windowStyleMask key="styleMask" titled="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="157" y="361" width="373" height="100"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <view key="contentView" id="96">
+                <rect key="frame" x="0.0" y="0.0" width="373" height="100"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="101">
+                        <rect key="frame" x="116" y="58" width="237" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="102">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <binding destination="-2" name="value" keyPath="password" id="142"/>
+                        </connections>
+                    </textField>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="103">
+                        <rect key="frame" x="165" y="7" width="97" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="106">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="cancel:" target="-2" id="109"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="104">
+                        <rect key="frame" x="262" y="7" width="97" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="105">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                        </buttonCell>
+                        <connections>
+                            <action selector="ok:" target="-2" id="110"/>
+                        </connections>
+                    </button>
+                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="107">
+                        <rect key="frame" x="-3" y="60" width="114" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Password:" id="108">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="143">
+                        <rect key="frame" x="113" y="42" width="239" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="(8 or more characters)" id="144">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                </subviews>
+            </view>
+        </window>
+    </objects>
+    <resources>
+        <image name="burn_iris01" width="31" height="32"/>
+    </resources>
+</document>
