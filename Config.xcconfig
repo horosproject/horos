@@ -1,0 +1,16 @@
+//
+//  Config.xcconfig
+//  Horos
+//
+//  Created by Felix Ritter on 28.07.22.
+//  Copyright © 2022 The Horos Project. All rights reserved.
+//
+
+/// Team ID of a development team to use for signing certificates and provisioning profiles
+DEVELOPMENT_TEAM = TPT6TVH8UY
+
+/// Architecture for which the product will be built. Only a single architecture is supported currently (arm64 or x86_64)
+ARCHS = arm64
+
+/// Target will load on this and later versions of macOS
+MACOSX_DEPLOYMENT_TARGET = 11.0

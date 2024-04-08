@@ -68,7 +68,7 @@ E_KeyType SiCertificate::getKeyType()
     EVP_PKEY *pkey = X509_extract_key(x509);
     if (pkey)
     {
-      switch(pkey->type)
+      switch(EVP_PKEY_id(pkey))
       {
         case EVP_PKEY_RSA:
           result = EKT_RSA;
@@ -96,7 +96,7 @@ SiAlgorithm *SiCertificate::createAlgorithmForPublicKey()
     EVP_PKEY *pkey = X509_extract_key(x509);
     if (pkey)
     {
-      switch(pkey->type)
+      switch(EVP_PKEY_id(pkey))
       {
         case EVP_PKEY_RSA:
           return new SiRSA(EVP_PKEY_get1_RSA(pkey));
@@ -122,7 +122,7 @@ OFCondition SiCertificate::loadCertificate(const char *filename, int filetype)
   x509 = NULL;
   if (filename)
   {
-    BIO *in = BIO_new(BIO_s_file_internal());
+    BIO *in = BIO_new(BIO_s_file());
     if (in)
     {
       if (BIO_read_filename(in, filename) > 0)

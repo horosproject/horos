@@ -37,7 +37,11 @@
 
 #import "options.h"
 
+#if !__LP64__ && !__arm64__
 #define USE3DCONNEXION 1
+#else
+#define USE3DCONNEXION 0
+#endif
 
 #import "VRView.h"
 

@@ -5044,9 +5044,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             if( [self is2DViewer] == YES)
                 [[self windowController] propagateSettings];
             
-            [self setNeedsDisplay:YES];
+            //[self setNeedsDisplay:YES];
             
-            [self displayIfNeeded];
+            //[self displayIfNeeded];
         }
     }
 }

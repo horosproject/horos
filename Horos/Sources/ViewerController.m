@@ -126,7 +126,9 @@
 #import "ToolBarNSWindow.h"
 #import "RemoteDicomDatabase.h"
 
+#if defined(USEHOMEPHONE)
 #import "homephone/HorosHomePhone.h"
+#endif
 
 int delayedTileWindows = NO;
 
@@ -7777,7 +7779,9 @@ static ViewerController *draggedController = nil;
     
     [ViewerController clearFrontMost2DViewerCache];
     
+#if defined(USEHOMEPHONE)
     [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_2D_VIEWER_LAUNCHED detail:@"{}"];
+#endif
 }
 
 -(void)comparativeRefresh:(NSString*) patientUID
@@ -9405,8 +9409,10 @@ static int avoidReentryRefreshDatabase = 0;
     
     [PluginManager startProtectForCrashWithFilter: filter];
     
+#if defined(USEHOMEPHONE)
     [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_PLUGIN_LAUNCHED detail:[NSString stringWithFormat:@"{\"PluginName\": \"%@\"}",name]];
-    
+#endif
+
     NSLog( @"executeFilter");
     
     @try
@@ -21075,8 +21081,10 @@ static float oldsetww, oldsetwl;
 #ifndef OSIRIX_LIGHT
 - (VRController *)openVRViewerForMode:(NSString *)mode
 {
+#if defined(USEHOMEPHONE)
     [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_3DVOL_LAUNCHED detail:[NSString stringWithFormat:@"{\"Mode\": \"%@\"}",mode]];
-    
+#endif
+
     long i;
     
     [self checkEverythingLoaded];
@@ -21250,8 +21258,10 @@ static float oldsetww, oldsetwl;
 
 - (SRController *)openSRViewer
 {
+#if defined(USEHOMEPHONE)
     [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_3DSUR_LAUNCHED detail:@"{}"];
-    
+#endif
+
     SRController *viewer;
     [self checkEverythingLoaded];
     [self clear8bitRepresentations];
@@ -21309,8 +21319,10 @@ static float oldsetww, oldsetwl;
 
 - (OrthogonalMPRViewer *)openOrthogonalMPRViewer
 {
+#if defined(USEHOMEPHONE)
     [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_2DMPR_LAUNCHED detail:@"{}"];
-    
+#endif
+
     OrthogonalMPRViewer *viewer;
     [self checkEverythingLoaded];
     [self clear8bitRepresentations];
@@ -21359,8 +21371,10 @@ static float oldsetww, oldsetwl;
 #ifndef OSIRIX_LIGHT
 - (OrthogonalMPRPETCTViewer *)openOrthogonalMPRPETCTViewer
 {
+#if defined(USEHOMEPHONE)
     [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_2DMPR_LAUNCHED detail:@"{}"];
-    
+#endif
+
     OrthogonalMPRPETCTViewer  *viewer;
     [self checkEverythingLoaded];
     [self clear8bitRepresentations];
@@ -21497,8 +21511,10 @@ static float oldsetww, oldsetwl;
 #ifndef OSIRIX_LIGHT
 - (EndoscopyViewer *)openEndoscopyViewer
 {
+#if defined(USEHOMEPHONE)
     [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_3DEND_LAUNCHED detail:@"{}"];
-    
+#endif
+
     [self checkEverythingLoaded];
     [self clear8bitRepresentations];
     EndoscopyViewer *viewer;
@@ -21600,8 +21616,10 @@ static float oldsetww, oldsetwl;
 #ifndef OSIRIX_LIGHT
 - (MPRController *)openMPRViewer
 {
+#if defined(USEHOMEPHONE)
     [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_3DMPR_LAUNCHED detail:@"{}"];
-    
+#endif
+
     [self checkEverythingLoaded];
     [self clear8bitRepresentations];
     
@@ -21675,8 +21693,10 @@ static float oldsetww, oldsetwl;
 /** Action to open the CPRViewer */
 - (CPRController *)openCPRViewer
 {
+#if defined(USEHOMEPHONE)
     [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_3DCPR_LAUNCHED detail:@"{}"];
-    
+#endif
+
     [self checkEverythingLoaded];
     [self clear8bitRepresentations];
     

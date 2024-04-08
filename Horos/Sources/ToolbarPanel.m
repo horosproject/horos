@@ -47,7 +47,7 @@ extern BOOL USETOOLBARPANEL;
 
 //static int MacOSVersion109orHigher = -1;
 
-static int fixedHeight = 92;
+static int fixedHeight = 100;
 
 @implementation ToolbarPanelController
 
@@ -59,7 +59,7 @@ static int fixedHeight = 92;
 }
 
 + (long) hiddenHeight {
-	return 15;
+	return (long)NSStatusBar.systemStatusBar.thickness;
 }
 
 - (long) exposedHeight {
@@ -104,6 +104,8 @@ static int fixedHeight = 92;
 	{
 		toolbar = [t retain];
         viewer = [v retain];
+
+        self.window.toolbarStyle = NSWindowToolbarStyleExpanded;
 		
         [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
         [[self window] setToolbar: toolbar];

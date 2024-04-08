@@ -573,7 +573,7 @@
 		// Use symmetric decryption...
 		
         unsigned char evp_key[EVP_MAX_KEY_LENGTH] = {"\0"};
-        EVP_CIPHER_CTX cCtx;
+        EVP_CIPHER_CTX *cCtx;
         const EVP_CIPHER *cipher;
 
         if(cipherName)
@@ -614,43 +614,43 @@
         EVP_BytesToKey(cipher, EVP_md5(), [salt bytes],
 					   [symmetricKey bytes], [symmetricKey length], 1, evp_key, iv);
 		
-        EVP_CIPHER_CTX_init(&cCtx);
+        cCtx = EVP_CIPHER_CTX_new();
 
-        if (!EVP_DecryptInit(&cCtx, cipher, evp_key, iv))
+        if (!EVP_DecryptInit(cCtx, cipher, evp_key, iv))
 		{
             NSLog(@"EVP_DecryptInit() failed!");
-            EVP_CIPHER_CTX_cleanup(&cCtx);
+            EVP_CIPHER_CTX_free(cCtx);
             return nil;
         }
-        EVP_CIPHER_CTX_set_key_length(&cCtx, EVP_MAX_KEY_LENGTH);
+        EVP_CIPHER_CTX_set_key_length(cCtx, EVP_MAX_KEY_LENGTH);
 		
         // The data buffer passed to EVP_DecryptUpdate() should have sufficient room for
 		// (input_length + cipher_block_size) bytes unless the cipher block size is 1 in which
 		// case input_length bytes is sufficient.
 		
-		if(EVP_CIPHER_CTX_block_size(&cCtx) > 1)
-			outbuf = (unsigned char *)calloc(inlen + EVP_CIPHER_CTX_block_size(&cCtx), sizeof(unsigned char));
+		if(EVP_CIPHER_CTX_block_size(cCtx) > 1)
+			outbuf = (unsigned char *)calloc(inlen + EVP_CIPHER_CTX_block_size(cCtx), sizeof(unsigned char));
 		else
 			outbuf = (unsigned char *)calloc(inlen, sizeof(unsigned char));
 			
         NSAssert(outbuf, @"Cannot allocate memory for buffer!");
         
-        if (!EVP_DecryptUpdate(&cCtx, outbuf, &outlen, input, inlen))
+        if (!EVP_DecryptUpdate(cCtx, outbuf, &outlen, input, inlen))
 		{
 			NSLog(@"EVP_DecryptUpdate() failed!");
-			EVP_CIPHER_CTX_cleanup(&cCtx);
+			EVP_CIPHER_CTX_free(cCtx);
 			return nil;
         }
         
-        if (!EVP_DecryptFinal(&cCtx, outbuf + outlen, &templen))
+        if (!EVP_DecryptFinal(cCtx, outbuf + outlen, &templen))
 		{
 			NSLog(@"EVP_DecryptFinal() failed!");
-			EVP_CIPHER_CTX_cleanup(&cCtx);
+			EVP_CIPHER_CTX_free(cCtx);
 			return nil;
         }
         
         outlen += templen;
-        EVP_CIPHER_CTX_cleanup(&cCtx);
+        EVP_CIPHER_CTX_free(cCtx);
     }
 	else
 	{
@@ -847,7 +847,7 @@
 		// Perform symmetric encryption...
 		
         unsigned char evp_key[EVP_MAX_KEY_LENGTH] = {"\0"};
-        EVP_CIPHER_CTX cCtx;
+        EVP_CIPHER_CTX *cCtx;
         const EVP_CIPHER *cipher;
         
         if (cipherName){
@@ -866,35 +866,35 @@
 
         EVP_BytesToKey(cipher, EVP_md5(), NULL,
                        [[self symmetricKey] bytes], [[self symmetricKey] length], 1, evp_key, iv);
-        EVP_CIPHER_CTX_init(&cCtx);
+        cCtx = EVP_CIPHER_CTX_new();
 
-        if (!EVP_EncryptInit(&cCtx, cipher, evp_key, iv)) {
+        if (!EVP_EncryptInit(cCtx, cipher, evp_key, iv)) {
             NSLog(@"EVP_EncryptInit() failed!");
-            EVP_CIPHER_CTX_cleanup(&cCtx);
+            EVP_CIPHER_CTX_free(cCtx);
             return nil;
         }
-        EVP_CIPHER_CTX_set_key_length(&cCtx, EVP_MAX_KEY_LENGTH);
+        EVP_CIPHER_CTX_set_key_length(cCtx, EVP_MAX_KEY_LENGTH);
 		
 		// The data buffer passed to EVP_EncryptUpdate() should have sufficient room for
 		// (input_length + cipher_block_size - 1)
 		
-        outbuf = (unsigned char *)calloc(inlen + EVP_CIPHER_CTX_block_size(&cCtx) - 1, sizeof(unsigned char));
+        outbuf = (unsigned char *)calloc(inlen + EVP_CIPHER_CTX_block_size(cCtx) - 1, sizeof(unsigned char));
         NSAssert(outbuf, @"Cannot allocate memory for buffer!");
         
-        if (!EVP_EncryptUpdate(&cCtx, outbuf, &outlen, input, inlen))
+        if (!EVP_EncryptUpdate(cCtx, outbuf, &outlen, input, inlen))
 		{
 			NSLog(@"EVP_EncryptUpdate() failed!");
-			EVP_CIPHER_CTX_cleanup(&cCtx);
+			EVP_CIPHER_CTX_free(cCtx);
 			return nil;
         }
-        if (!EVP_EncryptFinal(&cCtx, outbuf + outlen, &templen))
+        if (!EVP_EncryptFinal(cCtx, outbuf + outlen, &templen))
 		{
 			NSLog(@"EVP_EncryptFinal() failed!");
-			EVP_CIPHER_CTX_cleanup(&cCtx);
+			EVP_CIPHER_CTX_free(cCtx);
 			return nil;
         }
         outlen += templen;
-        EVP_CIPHER_CTX_cleanup(&cCtx);
+        EVP_CIPHER_CTX_free(cCtx);
         
     }
 	else
@@ -1055,7 +1055,7 @@
     unsigned char outbuf[EVP_MAX_MD_SIZE];
     unsigned int templen, inlen;
     unsigned char *input=(unsigned char*)[clearText bytes];
-    EVP_MD_CTX ctx;
+    EVP_MD_CTX *ctx;
     const EVP_MD *digest = NULL;
     
     inlen = [clearText length];
@@ -1076,19 +1076,19 @@
         }
     }
 
-    EVP_MD_CTX_init(&ctx);
-    EVP_DigestInit(&ctx,digest);
-    if(!EVP_DigestUpdate(&ctx,input,inlen)) {
+    ctx = EVP_MD_CTX_new();
+    EVP_DigestInit(ctx,digest);
+    if(!EVP_DigestUpdate(ctx,input,inlen)) {
         NSLog(@"EVP_DigestUpdate() failed!");
-        EVP_MD_CTX_cleanup(&ctx);
+        EVP_MD_CTX_free(ctx);
         return nil;			
     }
-    if (!EVP_DigestFinal(&ctx, outbuf, &templen)) {
+    if (!EVP_DigestFinal(ctx, outbuf, &templen)) {
         NSLog(@"EVP_DigesttFinal() failed!");
-        EVP_MD_CTX_cleanup(&ctx);
+        EVP_MD_CTX_free(ctx);
         return nil;
     }
-    EVP_MD_CTX_cleanup(&ctx);
+    EVP_MD_CTX_free(ctx);
     
     return [NSData dataWithBytes:outbuf length:templen];
 }

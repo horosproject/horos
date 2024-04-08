@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export PATH="$PATH:/opt/local/bin:/opt/local/sbin"
+
 path="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )/$(basename "${BASH_SOURCE[0]}")"
 cd "$TARGET_NAME"; pwd
 
@@ -41,6 +43,8 @@ args+=(-DCMAKE_OSX_ARCHITECTURES="$ARCHS")
 args+=(-DDCMTK_ENABLE_MANPAGES=OFF)
 
 args+=(-DCMAKE_INSTALL_PREFIX="$install_dir")
+
+args+=(-DCMAKE_IGNORE_PATH="/opt/local/include;/opt/local/lib")
 
 export PKG_CONFIG_PATH="$CONFIGURATION_TEMP_DIR/OpenJPEG.build/Install/lib/pkgconfig"
 

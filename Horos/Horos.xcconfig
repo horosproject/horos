@@ -1,0 +1,22 @@
+//
+//  Horos.xcconfig
+//  Horos
+//
+//  Created by Felix Ritter on 29.07.22.
+//  Copyright © 2022 The Horos Project. All rights reserved.
+//
+
+/// String that uniquely identifies the bundle
+PRODUCT_BUNDLE_IDENTIFIER_PREFIX = org.horosproject
+
+/// Current version of the project
+CURRENT_PROJECT_VERSION = 20220801
+
+/// User-visible version of the project
+MARKETING_VERSION = 4.0.0
+
+/// Copyright notice for the bundle
+HUMAN_READABLE_VERSION = Horos v4.0.0 RC5
+
+/// Copyright notice for the bundle
+HUMAN_READABLE_COPYRIGHT = © 2020 The Horos Project & OsiriX Team

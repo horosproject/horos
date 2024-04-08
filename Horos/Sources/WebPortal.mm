@@ -158,26 +158,26 @@ static NSString* DefaultWebPortalDatabasePath = nil;
     #else
     DefaultWebPortalDatabasePath = [[NSString alloc] initWithString: [@"~/Library/Application Support/Horos/WebUsers.sql" stringByExpandingTildeInPath]];
     #endif
-	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWadoServiceEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
+	[NSUserDefaultsController.sharedUserDefaultsController addObserver:(id)self forValuesKey:OsirixWadoServiceEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
 }
 
 #ifndef OSIRIX_LIGHT
 +(void)initializeWebPortalClass { // called from AppController
-	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalPortNumberDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
-	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalAddressDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
-	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalUsesSSLDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
-	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalPrefersCustomWebPagesKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
-	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalRequiresAuthenticationDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
-	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalUsersCanRestorePasswordDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
-	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalUsesWeasisDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
-	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalPrefersFlashDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
-	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWadoServiceEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
+	[NSUserDefaultsController.sharedUserDefaultsController addObserver:(id)self forValuesKey:OsirixWebPortalPortNumberDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
+	[NSUserDefaultsController.sharedUserDefaultsController addObserver:(id)self forValuesKey:OsirixWebPortalAddressDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
+	[NSUserDefaultsController.sharedUserDefaultsController addObserver:(id)self forValuesKey:OsirixWebPortalUsesSSLDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
+	[NSUserDefaultsController.sharedUserDefaultsController addObserver:(id)self forValuesKey:OsirixWebPortalPrefersCustomWebPagesKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
+	[NSUserDefaultsController.sharedUserDefaultsController addObserver:(id)self forValuesKey:OsirixWebPortalRequiresAuthenticationDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
+	[NSUserDefaultsController.sharedUserDefaultsController addObserver:(id)self forValuesKey:OsirixWebPortalUsersCanRestorePasswordDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
+	[NSUserDefaultsController.sharedUserDefaultsController addObserver:(id)self forValuesKey:OsirixWebPortalUsesWeasisDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
+	[NSUserDefaultsController.sharedUserDefaultsController addObserver:(id)self forValuesKey:OsirixWebPortalPrefersFlashDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
+	[NSUserDefaultsController.sharedUserDefaultsController addObserver:(id)self forValuesKey:OsirixWadoServiceEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
     
 	// last because this starts the listener
-	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
+	[NSUserDefaultsController.sharedUserDefaultsController addObserver:(id)self forValuesKey:OsirixWebPortalEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
 
-	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalNotificationsIntervalDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
-	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalNotificationsEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
+	[NSUserDefaultsController.sharedUserDefaultsController addObserver:(id)self forValuesKey:OsirixWebPortalNotificationsIntervalDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
+	[NSUserDefaultsController.sharedUserDefaultsController addObserver:(id)self forValuesKey:OsirixWebPortalNotificationsEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
     
     if (NSUserDefaults.webPortalEnabled)
         [CSMailMailClient mailClient]; //If authentication is required to read email password: ask it now !

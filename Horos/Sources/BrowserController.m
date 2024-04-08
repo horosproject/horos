@@ -141,7 +141,9 @@
 #import "ICloudDriveDetector.h"
 #import "NSException+N2.h"
 
+#if defined(USEHOMEPHONE)
 #import "homephone/HorosHomePhone.h"
+#endif
 
 #import "url.h"
 
@@ -14545,7 +14547,9 @@ static NSArray*	openSubSeriesArray = nil;
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"ROIColorRotation"];
     }
     
+#if defined(USEHOMEPHONE)
     [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_HOROS_STARTED detail:@"{}"];
+#endif
     
     [ICloudDriveDetector performStartupICloudDriveTasks:self];
     [O2HMigrationAssistant performStartupO2HTasks:self];
@@ -18663,8 +18667,10 @@ restart:
     
     if( item)
     {
+#if defined(USEHOMEPHONE)
         [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_HOROS_REPORT_REQUESTED detail:[NSString stringWithFormat:@"{\"reportsMode\": \"%d\"}",reportsMode]];
-        
+#endif
+
         if( reportsMode == 0 && [[NSWorkspace sharedWorkspace] fullPathForApplication:@"Microsoft Word"] == nil) // Would absolutePathForAppBundleWithIdentifier be better here? (DDP)
         {
             NSRunAlertPanel( NSLocalizedString(@"Report Error", nil), NSLocalizedString(@"Microsoft Word is required to open/generate '.doc' reports. You can change it to TextEdit in the Preferences.", nil), nil, nil, nil);
@@ -20244,8 +20250,10 @@ restart:
     
     [PluginManager startProtectForCrashWithFilter: filter];
     
+#if defined(USEHOMEPHONE)
     [[HorosHomePhone sharedHomePhone] callHomeInformingFunctionType:HOME_PHONE_PLUGIN_LAUNCHED detail:[NSString stringWithFormat:@"{\"PluginName\": \"%@\"}",name]];
-    
+#endif
+
     long result = [filter prepareFilter: nil];
     [filter filterImage: name];
     

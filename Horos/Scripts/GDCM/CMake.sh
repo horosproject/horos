@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export PATH="$PATH:/opt/local/bin:/opt/local/sbin"
+
 path="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )/$(basename "${BASH_SOURCE[0]}")"
 cd "$TARGET_NAME"; pwd
 
@@ -43,6 +45,9 @@ args+=(-DGDCM_BUILD_TESTING=OFF)
 args+=(-DGDCM_BUILD_DOCBOOK_MANPAGES=OFF)
 
 args+=(-DGDCM_USE_SYSTEM_OPENJPEG=ON)
+
+args+=(-DCMAKE_IGNORE_PATH="/opt/local/include;/opt/local/lib")
+
 export PKG_CONFIG_PATH="$CONFIGURATION_TEMP_DIR/OpenJPEG.build/Install/lib/pkgconfig"
 
 # currently, GDCM 2.8.3 uses CharLS 1.1, using our CharLS 2.0.0 won't compile

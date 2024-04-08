@@ -563,6 +563,10 @@ static BOOL protectedReentryWindowDidResize = NO;
 	{
         [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(windowWillCloseNotification:) name: NSWindowWillCloseNotification object: nil];
 	}
+
+    // Override toolbar style
+    self.window.toolbarStyle = NSWindowToolbarStyleExpanded;
+
 	return self;
 }
 

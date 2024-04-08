@@ -40,7 +40,9 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <ApplicationServices/ApplicationServices.h>
 
+#if defined(USEFEEDBACKREPORTER)
 #import <FeedbackReporter/FRFeedbackReporter.h>
+#endif
 
 #import "ToolbarPanel.h"
 #import "ThumbnailsListPanel.h"
@@ -686,49 +688,49 @@ void exceptionHandler(NSException *exception)
 + (BOOL)hasMacOSXSierra
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 12);
+    return (v.majorVersion > 10 || v.minorVersion >= 12);
 }
 
 +(BOOL) hasMacOSXElCapitan
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 11);
+    return (v.majorVersion > 10 || v.minorVersion >= 11);
 }
 
 +(BOOL) hasMacOSXYosemite
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 10);
+    return (v.majorVersion > 10 || v.minorVersion >= 10);
 }
 
 +(BOOL) hasMacOSXMaverick
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 9);
+    return (v.majorVersion > 10 || v.minorVersion >= 9);
 }
 
 +(BOOL) hasMacOSXMountainLion
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 8);
+    return (v.majorVersion > 10 || v.minorVersion >= 8);
 }
 
 +(BOOL) hasMacOSXLion
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 7);
+    return (v.majorVersion > 10 || v.minorVersion >= 7);
 }
 
 +(BOOL) hasMacOSXSnowLeopard
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 6);
+    return (v.majorVersion > 10 || v.minorVersion >= 6);
 }
 
 +(BOOL) hasMacOSXLeopard
 {
     NSOperatingSystemVersion v = [self.class operatingSystemVersion];
-    return (v.majorVersion >= 10 && v.minorVersion >= 5);
+    return (v.majorVersion > 10 || v.minorVersion >= 5);
 }
 
 + (void) createNoIndexDirectoryIfNecessary:(NSString*) path { // __deprecated
@@ -2836,12 +2838,12 @@ static BOOL initialized = NO;
 				//		exit(0);
 				//	}
 				
-				if ([AppController hasMacOSXElCapitan] == NO)
+                if ([AppController hasMacOSXElCapitan] == NO)
 				{
 					NSRunCriticalAlertPanel(NSLocalizedString(@"macOS", nil), NSLocalizedString(@"This application requires macOS 10.11 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"Quit", nil), nil, nil);
 					exit(0);
 				}
-                
+
                 int processors;
                 int mib[2] = {CTL_HW, HW_NCPU};
                 size_t dataLen = sizeof(int); // 'num' is an 'int'
@@ -3613,11 +3615,13 @@ static BOOL initialized = NO;
     }
 #endif
     
+#if defined(USEFEEDBACKREPORTER)
     //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [FRFeedbackReporter sharedReporter];
         });
     //});
+#endif
 }
 
 - (void) checkForOsirixMimeType
@@ -5727,6 +5731,7 @@ static NSMutableDictionary* _receivingDict = nil;
 {
     NSLog(@"Unicode test: مرحبا - 你好 - שלום");
     
+#if defined(USEFEEDBACKREPORTER)
     [[FRFeedbackReporter sharedReporter] setDelegate:(id<FRFeedbackReporterDelegate>) self];
 
     if ([[FRFeedbackReporter sharedReporter] reportIfCrash] == YES)
@@ -5734,6 +5739,7 @@ static NSMutableDictionary* _receivingDict = nil;
         NSLog(@"Crash found.");
         return YES;
     }
+#endif
     
     return NO;
 }

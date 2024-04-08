@@ -181,7 +181,7 @@
 
 - (void)setupImportFilterWithSize:(ImportFilterType::SizeType)size origin:(double[3])origin spacing:(double[3])spacing data:(float *)data filterWillOwnBuffer:(BOOL)filterWillOwnBuffer
 {
-	itk::MultiThreader::SetGlobalDefaultNumberOfThreads( [[NSProcessInfo processInfo] processorCount]);
+	itk::MultiThreaderBase::SetGlobalDefaultNumberOfThreads( [[NSProcessInfo processInfo] processorCount]);
 	
 	importFilter = ImportFilterType::New();
 //	importFilter->DebugOn();

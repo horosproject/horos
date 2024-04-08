@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export PATH="$PATH:/opt/local/bin:/opt/local/sbin"
+
 path="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )/$(basename "${BASH_SOURCE[0]}")"
 cd "$TARGET_NAME"; pwd
 
@@ -46,13 +48,15 @@ args+=(-DCMAKE_INSTALL_PREFIX="$TARGET_TEMP_DIR/Install")
 args+=(-DGROK_INSTALL_INCLUDE_DIR="include/OpenJPEG")
 args+=(-DGROK_INSTALL_LIB_DIR="lib")
 
-args+=(-DBUILD_CODEC=OFF)
+args+=(-DBUILD_CODEC=ON)
 args+=(-DBUILD_PLUGIN_LOADER=OFF)
 args+=(-DBUILD_DOC=OFF)
 args+=(-DBUILD_EXAMPLES=OFF)
 args+=(-DBUILD_SHARED_LIBS=OFF)
 args+=(-DBUILD_STATIC_LIBS=ON)
 args+=(-DBUILD_TESTING=OFF)
+
+args+=(-DCMAKE_IGNORE_PATH="/opt/local/include;/opt/local/lib")
 
 if [ "$CONFIGURATION" = 'Debug' ]; then
     cxxfs+=( -g )
@@ -80,6 +84,7 @@ fi
 if [ ${#ldfs[@]} -ne 0 ]; then
     ldfs="${ldfs[@]}"
     args+=(-DCMAKE_SHARED_LINKER_FLAGS="$ldfs")
+    args+=(-DCMAKE_EXE_LINKER_FLAGS="$ldfs")
 fi
 
 cd "$cmake_dir"

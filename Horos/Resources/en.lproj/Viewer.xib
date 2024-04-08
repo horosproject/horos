@@ -397,9 +397,9 @@
                     <constraints>
                         <constraint firstAttribute="width" constant="16" id="jLE-c3-Gf4"/>
                     </constraints>
-                    <popUpButtonCell key="cell" type="bevel" bezelStyle="regularSquare" alignment="left" borderStyle="bezel" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="odG-BV-hTy" id="2113">
-                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                        <font key="font" metaFont="menu"/>
+                    <popUpButtonCell key="cell" type="inline" bezelStyle="inline" alignment="left" transparent="YES" inset="2" pullsDown="YES" preferredEdge="maxY" selectedItem="odG-BV-hTy" id="2113">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="smallSystemBold"/>
                         <menu key="menu" title="OtherViews" id="577">
                             <items>
                                 <menuItem hidden="YES" id="590"/>

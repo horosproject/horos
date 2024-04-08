@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export PATH="$PATH:/opt/local/bin:/opt/local/sbin"
+
 path="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )/$(basename "${BASH_SOURCE[0]}")"
 cd "$TARGET_NAME"; pwd
 
@@ -55,8 +57,11 @@ args+=(-DModule_ITKLevelSets=ON)
 args+=(-DCMAKE_INSTALL_PREFIX="$install_dir")
 args+=(-DITK_INSTALL_INCLUDE_DIR="include")
 
-args+=(-DITK_USE_SYSTEM_GDCM=ON)
-args+=(-DGDCM_DIR="$CONFIGURATION_TEMP_DIR/GDCM.build/CMake")
+#args+=(-DITK_USE_SYSTEM_GDCM=ON)
+#args+=(-DGDCM_DIR="$CONFIGURATION_TEMP_DIR/GDCM.build/CMake")
+
+args+=(-DCMAKE_IGNORE_PATH="/opt/local/include;/opt/local/lib")
+
 lfs+=(-L"$CONFIGURATION_TEMP_DIR/OpenJPEG.build/Install/lib")
 
 if [ ! -z "$CLANG_CXX_LIBRARY" ] && [ "$CLANG_CXX_LIBRARY" != 'compiler-default' ]; then

@@ -104,7 +104,7 @@ OFCondition SiPrivateKey::loadPrivateKey(const char *filename, int filetype)
   pkey = NULL;
   if (filename)
   {
-    BIO *in = BIO_new(BIO_s_file_internal());
+    BIO *in = BIO_new(BIO_s_file());
     if (in)
     {
       if (BIO_read_filename(in, filename) > 0)
@@ -133,7 +133,7 @@ E_KeyType SiPrivateKey::getKeyType() const
   E_KeyType result = EKT_none;
   if (pkey)
   {
-    switch(pkey->type)
+    switch(EVP_PKEY_id(pkey))
     {
       case EVP_PKEY_RSA:
         result = EKT_RSA;
@@ -157,7 +157,7 @@ SiAlgorithm *SiPrivateKey::createAlgorithmForPrivateKey()
 {
   if (pkey)
   {
-    switch(pkey->type)
+    switch(EVP_PKEY_id(pkey))
     {
       case EVP_PKEY_RSA:
         return new SiRSA(EVP_PKEY_get1_RSA(pkey));

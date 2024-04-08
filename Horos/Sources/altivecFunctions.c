@@ -150,7 +150,9 @@ void vmin8(vector unsigned char *a, vector unsigned char *b, vector unsigned cha
 		*r++ = vec_min( *a++, *b++);
 	}
 }
-#else
+
+#elif __i386__ || __x86_64__
+
 void vmaxIntel( vFloat *a, vFloat *b, vFloat *r, long size)
 {
 	long i = size/4;
@@ -185,6 +187,28 @@ void vmin8Intel( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size)
 	while(i-- > 0)
 	{
 		*r++ = _mm_min_epu8( *a++, *b++);
+	}
+}
+
+#elif __arm64__
+
+void vmax8ARM( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size)
+{
+   long i = size/4;
+	
+	while(i-- > 0)
+	{
+		*r++ = vreinterpretq_s32_u8(vmaxq_u8(vreinterpretq_u8_s32( *a++ ), vreinterpretq_u8_s32( *b++ )));
+	}
+}
+
+void vmin8ARM( vUInt8 *a, vUInt8 *b, vUInt8 *r, long size)
+{
+	long i = size/4;
+	
+	while(i-- > 0)
+	{
+		*r++ = vreinterpretq_s32_u8(vminq_u8(vreinterpretq_u8_s32( *a++ ), vreinterpretq_u8_s32( *b++ )));
 	}
 }
 #endif

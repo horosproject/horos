@@ -44,7 +44,7 @@ The Horos Project was based originally upon the OsiriX Project which at the time
 
 //#define id Id
 
-#include <itkMultiThreader.h>
+#include <itkMultiThreaderBase.h>
 #include <itkImage.h>
 #include <itkMesh.h>
 #include <itkImportImageFilter.h>
@@ -343,7 +343,7 @@ The Horos Project was based originally upon the OsiriX Project which at the time
 
 + (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height numPoints:(long) numPoints largestRegion:(BOOL) largestRegion
 {
-	itk::MultiThreader::SetGlobalDefaultNumberOfThreads( [[NSProcessInfo processInfo] processorCount]);
+	itk::MultiThreaderBase::SetGlobalDefaultNumberOfThreads( [[NSProcessInfo processInfo] processorCount]);
 	
 	NSMutableArray	*tempArray = [NSMutableArray array];
 	int				dataExtent[ 6];
@@ -461,7 +461,7 @@ The Horos Project was based originally upon the OsiriX Project which at the time
 {
     if (self = [super init])
 	{
-		itk::MultiThreader::SetGlobalDefaultNumberOfThreads( [[NSProcessInfo processInfo] processorCount]);
+		itk::MultiThreaderBase::SetGlobalDefaultNumberOfThreads( [[NSProcessInfo processInfo] processorCount]);
 		_resampledData = resampleData;
 		NSLog(@"slice ID: %d", (int) slice);
 		itkImage = [[ITK alloc] initWithPix :(NSMutableArray*) pix volume:(float*) volumeData sliceCount:(long) slice resampleData:(BOOL)resampleData];
@@ -472,7 +472,7 @@ The Horos Project was based originally upon the OsiriX Project which at the time
 
 - (void) regionGrowing3D:(ViewerController*) srcViewer :(ViewerController*) destViewer :(long) slice :(NSPoint) startingPoint :(int) algorithmNumber :(NSArray*) parameters :(BOOL) setIn :(float) inValue :(BOOL) setOut :(float) outValue :(ToolMode) roiType :(long) roiResolution :(NSString*) newname :(BOOL) mergeWithExistingROIs;
 {
-	NSLog(@"ITK max number of threads: %d", itk::MultiThreader::GetGlobalDefaultNumberOfThreads());
+	NSLog(@"ITK max number of threads: %d", itk::MultiThreaderBase::GetGlobalDefaultNumberOfThreads());
 	
 	// Input image
 	typedef float InternalPixelType;
