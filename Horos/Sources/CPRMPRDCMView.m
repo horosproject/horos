@@ -1977,30 +1977,30 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	dontCheckRoiChange = NO;
 }
 
+
+// Probably could use MPRDCMView's method if refactored to a shared parent class as code is identical
+
 - (void) mouseDraggedImageScroll:(NSEvent *) event
 {
 	[self checkCursor];
 	
 	NSPoint current = [self currentPointInView: event];
-	
-	if( scrollMode == 0)
+	if (scrollMode == ScrollModeReady)
 	{
-		if( fabs( start.x - current.x) < fabs( start.y - current.y))
-		{
-			if( fabs( start.y - current.y) > 3) scrollMode = 1;
-		}
-		else if( fabs( start.x - current.x) >= fabs( start.y - current.y))
-		{
-			if( fabs( start.x - current.x) > 3) scrollMode = 2;
-		}
+		[self establishScrollModeFromInitialDragWithPoint: current];
 	}
 	
-	float delta;
+	float delta = 0.0;
 	
-	if( scrollMode == 1)
-		delta = ((previous.y - current.y) * 512. )/ ([self convertSizeToBacking: self.frame.size].width/2);
-	else
+	if (scrollMode == ScrollModeVertical) {
+		delta = ((previous.y - current.y) * 512. )/ ([self convertSizeToBacking: self.frame.size].height/2);
+	} else if (scrollMode == ScrollModeHorizontal) {
 		delta = ((current.x - previous.x) * 512. )/ ([self convertSizeToBacking: self.frame.size].width/2);
+	}
+
+	if ([self shouldReverseScrollDirectionForMouseDrag]) {
+        delta *= -1.0;
+	}
 	
 	[self restoreCamera];
 	windowController.lowLOD = YES;
