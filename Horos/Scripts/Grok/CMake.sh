@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export PATH="$PATH:/opt/local/bin:/opt/local/sbin"
+export PATH="$PATH:/opt/local/bin:/opt/local/sbin:/opt/homebrew/bin/"
 
 path="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )/$(basename "${BASH_SOURCE[0]}")"
 cd "$TARGET_NAME"; pwd
