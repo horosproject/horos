@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+    <dependencies>
+        <deployment version="101100" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+        <plugIn identifier="com.apple.WebKitIBPlugin" version="10117"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="PluginManagerController">
+            <connections>
+                <outlet property="NOTvalidatedInHorosBox" destination="Moc-ll-P3f" id="sKi-qB-ten"/>
+                <outlet property="horosPluginDownloadButton" destination="o5r-0p-bmI" id="59e-K3-qGK"/>
+                <outlet property="horosPluginListPopUp" destination="Mwb-gH-AXG" id="3pq-l5-Xee"/>
+                <outlet property="horosPluginStatusProgressIndicator" destination="7r0-Ju-Yye" id="Xon-c0-xDJ"/>
+                <outlet property="horosPluginStatusTextField" destination="vI0-L9-Zz4" id="KOz-L5-Gir"/>
+                <outlet property="horosPluginWebView" destination="nX3-8t-vsW" id="G3m-Fg-seb"/>
+                <outlet property="horosPluginsTabViewItem" destination="udo-0p-IM3" id="7Sr-GI-JMv"/>
+                <outlet property="installedPluginsTabViewItem" destination="14" id="89"/>
+                <outlet property="osirixPluginDownloadButton" destination="69" id="hSf-a7-kX0"/>
+                <outlet property="osirixPluginListPopUp" destination="48" id="fQm-2L-cfl"/>
+                <outlet property="osirixPluginStatusProgressIndicator" destination="72" id="i2S-nn-zNl"/>
+                <outlet property="osirixPluginStatusTextField" destination="73" id="cfs-Cs-G5Z"/>
+                <outlet property="osirixPluginWebView" destination="46" id="Fh9-wr-OsZ"/>
+                <outlet property="osirixPluginsTabViewItem" destination="12" id="J5i-ah-tNn"/>
+                <outlet property="pluginTable" destination="17" id="41"/>
+                <outlet property="pluginsArrayController" destination="26" id="125"/>
+                <outlet property="protectedModeLabel" destination="8vS-5X-10a" id="kd5-8q-WyE"/>
+                <outlet property="tabView" destination="11" id="83"/>
+                <outlet property="validatedInHorosBox" destination="s5u-lp-ART" id="JGA-kF-c22"/>
+                <outlet property="window" destination="5" id="21"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="Plugins Manager" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="5" userLabel="Window">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
+            <rect key="contentRect" x="242" y="378" width="923" height="720"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <value key="minSize" type="size" width="923" height="720"/>
+            <value key="maxSize" type="size" width="923" height="720"/>
+            <view key="contentView" id="6">
+                <rect key="frame" x="0.0" y="0.0" width="923" height="720"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <tabView id="11">
+                        <rect key="frame" x="13" y="10" width="897" height="704"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <font key="font" metaFont="system"/>
+                        <tabViewItems>
+                            <tabViewItem label="Installed Plugins" identifier="1" id="14">
+                                <view key="view" id="15">
+                                    <rect key="frame" x="10" y="33" width="877" height="658"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <scrollView autohidesScrollers="YES" horizontalLineScroll="62" horizontalPageScroll="0.0" verticalLineScroll="62" verticalPageScroll="0.0" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" id="16">
+                                            <rect key="frame" x="11" y="58" width="855" height="597"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <clipView key="contentView" copiesOnScroll="NO" id="MkC-fR-mLK">
+                                                <rect key="frame" x="1" y="0.0" width="853" height="596"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <tableView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowHeight="60" headerView="121" id="17" customClass="PluginsTableView">
+                                                        <rect key="frame" x="0.0" y="0.0" width="853" height="573"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                        <size key="intercellSpacing" width="2" height="2"/>
+                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        <tableViewGridLines key="gridStyleMask" vertical="YES"/>
+                                                        <color key="gridColor" white="0.90278942953020136" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <tableColumns>
+                                                            <tableColumn identifier="" width="60" minWidth="60" maxWidth="60" id="buy-xv-LBf">
+                                                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Type">
+                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                                </tableHeaderCell>
+                                                                <imageCell key="dataCell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="horosplugin" id="vxp-bj-G1s"/>
+                                                                <connections>
+                                                                    <binding destination="26" name="value" keyPath="arrangedObjects.typeIcon" id="Ceh-QB-oo3"/>
+                                                                </connections>
+                                                            </tableColumn>
+                                                            <tableColumn identifier="" editable="NO" width="120" minWidth="120" maxWidth="120" id="OCE-FJ-HJu">
+                                                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Horos Validated">
+                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                                </tableHeaderCell>
+                                                                <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="center" title="Text Cell" id="OPb-52-jeh" customClass="MiddleAlignedTextFieldCell">
+                                                                    <font key="font" metaFont="system" size="14"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                                <connections>
+                                                                    <binding destination="26" name="value" keyPath="arrangedObjects.HorosCompatiblePlugin" id="3VQ-68-8hs">
+                                                                        <dictionary key="options">
+                                                                            <bool key="NSConditionallySetsEditable" value="YES"/>
+                                                                        </dictionary>
+                                                                    </binding>
+                                                                </connections>
+                                                            </tableColumn>
+                                                            <tableColumn editable="NO" width="360" minWidth="360" maxWidth="360" id="19">
+                                                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Name">
+                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
+                                                                </tableHeaderCell>
+                                                                <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="center" title="Text Cell" id="117" customClass="MiddleAlignedTextFieldCell">
+                                                                    <font key="font" metaFont="system" size="16"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                                <sortDescriptor key="sortDescriptorPrototype" selector="caseInsensitiveCompare:" sortKey="name"/>
+                                                                <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
+                                                                <connections>
+                                                                    <binding destination="26" name="value" keyPath="arrangedObjects.name" id="78">
+                                                                        <dictionary key="options">
+                                                                            <integer key="NSAllowsEditingMultipleValuesSelection" value="0"/>
+                                                                            <integer key="NSConditionallySetsEditable" value="1"/>
+                                                                        </dictionary>
+                                                                    </binding>
+                                                                </connections>
+                                                            </tableColumn>
+                                                            <tableColumn editable="NO" width="120" minWidth="120" maxWidth="120" id="122">
+                                                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Version">
+                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                                                </tableHeaderCell>
+                                                                <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" alignment="center" title="Text Cell" id="123" customClass="MiddleAlignedTextFieldCell">
+                                                                    <font key="font" metaFont="system" size="14"/>
+                                                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                </textFieldCell>
+                                                                <connections>
+                                                                    <binding destination="26" name="value" keyPath="arrangedObjects.version" id="124">
+                                                                        <dictionary key="options">
+                                                                            <integer key="NSConditionallySetsEditable" value="1"/>
+                                                                        </dictionary>
+                                                                    </binding>
+                                                                </connections>
+                                                            </tableColumn>
+                                                            <tableColumn identifier="Availability" width="120" minWidth="120" maxWidth="120" id="92">
+                                                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Availability">
+                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                                                </tableHeaderCell>
+                                                                <popUpButtonCell key="dataCell" type="bevel" bezelStyle="rounded" alignment="center" lineBreakMode="truncatingTail" borderStyle="bezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="100">
+                                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="cellTitle"/>
+                                                                    <menu key="menu" id="118"/>
+                                                                    <connections>
+                                                                        <action selector="modifiyAvailability:" target="-2" id="108"/>
+                                                                    </connections>
+                                                                </popUpButtonCell>
+                                                                <connections>
+                                                                    <binding destination="104" name="contentValues" keyPath="arrangedObjects" id="106"/>
+                                                                    <binding destination="26" name="selectedValue" keyPath="arrangedObjects.availability" previousBinding="106" id="107">
+                                                                        <dictionary key="options">
+                                                                            <integer key="NSAllowsEditingMultipleValuesSelection" value="0"/>
+                                                                        </dictionary>
+                                                                    </binding>
+                                                                </connections>
+                                                            </tableColumn>
+                                                            <tableColumn width="60" minWidth="60" maxWidth="60" id="18">
+                                                                <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Enable">
+                                                                    <font key="font" metaFont="smallSystem"/>
+                                                                    <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                                    <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
+                                                                </tableHeaderCell>
+                                                                <buttonCell key="dataCell" type="check" bezelStyle="regularSquare" imagePosition="only" alignment="center" inset="2" id="20">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <connections>
+                                                                        <action selector="modifiyActivation:" target="-2" id="91"/>
+                                                                    </connections>
+                                                                </buttonCell>
+                                                                <connections>
+                                                                    <binding destination="26" name="value" keyPath="arrangedObjects.active" id="33"/>
+                                                                </connections>
+                                                            </tableColumn>
+                                                        </tableColumns>
+                                                        <connections>
+                                                            <outlet property="dataSource" destination="26" id="80"/>
+                                                            <outlet property="delegate" destination="-2" id="126"/>
+                                                        </connections>
+                                                    </tableView>
+                                                </subviews>
+                                                <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </clipView>
+                                            <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" controlSize="small" horizontal="YES" id="120">
+                                                <rect key="frame" x="-100" y="-100" width="673" height="14"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                            </scroller>
+                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" controlSize="small" horizontal="NO" id="119">
+                                                <rect key="frame" x="89" y="17" width="11" height="72"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                            </scroller>
+                                            <tableHeaderView key="headerView" id="121">
+                                                <rect key="frame" x="0.0" y="0.0" width="853" height="23"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                            </tableHeaderView>
+                                        </scrollView>
+                                        <button verticalHuggingPriority="750" id="dNG-hG-PSZ">
+                                            <rect key="frame" x="667" y="10" width="199" height="32"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                            <buttonCell key="cell" type="push" title="Uninstall selected plugin" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="e71-Z0-1iS">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="delete:" target="-2" id="Qdj-BX-UEt"/>
+                                            </connections>
+                                        </button>
+                                        <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" id="8vS-5X-10a">
+                                            <rect key="frame" x="9" y="17" width="319" height="21"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Plugins are not loaded in protected mode" id="6iv-KU-g57">
+                                                <font key="font" metaFont="system" size="17"/>
+                                                <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                    </subviews>
+                                </view>
+                            </tabViewItem>
+                            <tabViewItem label="Horos Plugins" identifier="" id="udo-0p-IM3">
+                                <view key="view" id="1OU-0x-4Ox">
+                                    <rect key="frame" x="10" y="33" width="877" height="658"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="12Z-Kn-O69">
+                                            <rect key="frame" x="17" y="613" width="42" height="42"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="horosplugin" id="0CC-BL-W1B"/>
+                                        </imageView>
+                                        <webView id="nX3-8t-vsW">
+                                            <rect key="frame" x="17" y="58" width="843" height="545"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
+                                                <nil key="identifier"/>
+                                            </webPreferences>
+                                        </webView>
+                                        <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" id="7r0-Ju-Yye">
+                                            <rect key="frame" x="17" y="19" width="16" height="16"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </progressIndicator>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="950" id="vI0-L9-Zz4">
+                                            <rect key="frame" x="34" y="20" width="282" height="14"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <textFieldCell key="cell" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Downloading..." id="2VA-SR-gXX">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" white="0.20000000000000001" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <popUpButton verticalHuggingPriority="750" id="Mwb-gH-AXG">
+                                            <rect key="frame" x="65" y="621" width="290" height="26"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="5oQ-Ne-yTa" id="OpI-2Z-46c">
+                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="menu"/>
+                                                <menu key="menu" title="OtherViews" id="1LI-az-tYF">
+                                                    <items>
+                                                        <menuItem title="Item1" state="on" id="5oQ-Ne-yTa"/>
+                                                        <menuItem title="Item2" id="wCz-JU-2Dp"/>
+                                                        <menuItem title="Item3" id="RYL-AY-xRy"/>
+                                                    </items>
+                                                </menu>
+                                            </popUpButtonCell>
+                                            <connections>
+                                                <action selector="changeHorosPluginWebView:" target="-2" id="70e-t0-unE"/>
+                                            </connections>
+                                        </popUpButton>
+                                        <button verticalHuggingPriority="750" id="o5r-0p-bmI">
+                                            <rect key="frame" x="708" y="10" width="158" height="32"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                            <buttonCell key="cell" type="push" title="Download &amp; Install" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="bfj-3m-US7">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="downloadHorosPlugin:" target="-2" id="VFT-P6-T5r"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                </view>
+                            </tabViewItem>
+                            <tabViewItem label="OsiriX Plugins" identifier="2" id="12">
+                                <view key="view" id="13">
+                                    <rect key="frame" x="10" y="33" width="877" height="658"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <popUpButton verticalHuggingPriority="750" id="48">
+                                            <rect key="frame" x="65" y="621" width="290" height="26"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="51" id="110">
+                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="menu"/>
+                                                <menu key="menu" title="OtherViews" id="49">
+                                                    <items>
+                                                        <menuItem title="Item1" state="on" id="51"/>
+                                                        <menuItem title="Item2" id="50"/>
+                                                        <menuItem title="Item3" id="52"/>
+                                                    </items>
+                                                </menu>
+                                            </popUpButtonCell>
+                                            <connections>
+                                                <action selector="changeOsiriXPluginWebView:" target="-2" id="eQF-w2-P7n"/>
+                                            </connections>
+                                        </popUpButton>
+                                        <webView id="46">
+                                            <rect key="frame" x="17" y="58" width="843" height="545"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
+                                                <nil key="identifier"/>
+                                            </webPreferences>
+                                        </webView>
+                                        <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" id="72">
+                                            <rect key="frame" x="17" y="19" width="16" height="16"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </progressIndicator>
+                                        <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="950" id="73">
+                                            <rect key="frame" x="34" y="20" width="282" height="14"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <textFieldCell key="cell" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Downloading..." id="113">
+                                                <font key="font" metaFont="smallSystem"/>
+                                                <color key="textColor" white="0.20000000000000001" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <button verticalHuggingPriority="750" id="69">
+                                            <rect key="frame" x="708" y="10" width="158" height="32"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                            <buttonCell key="cell" type="push" title="Download &amp; Install" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="112">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="downloadOsiriXPlugin:" target="-2" id="kTx-xF-JAg"/>
+                                            </connections>
+                                        </button>
+                                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="aIM-J4-1St">
+                                            <rect key="frame" x="17" y="613" width="42" height="42"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="osirixplugin" id="ObC-34-JQO"/>
+                                        </imageView>
+                                        <box hidden="YES" title="Box" borderType="bezel" titlePosition="noTitle" id="s5u-lp-ART">
+                                            <rect key="frame" x="284" y="2" width="309" height="48"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <view key="contentView" id="XJ0-ot-S2N">
+                                                <rect key="frame" x="3" y="3" width="303" height="42"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="5LM-Pg-AsS">
+                                                        <rect key="frame" x="20" y="3" width="36" height="36"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="Horos" id="1HI-fa-d8X"/>
+                                                    </imageView>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="dME-H3-8e3">
+                                                        <rect key="frame" x="62" y="11" width="223" height="21"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Plugin validated in Horos" id="uPe-vg-q54">
+                                                            <font key="font" metaFont="system" size="17"/>
+                                                            <color key="textColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                </subviews>
+                                            </view>
+                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </box>
+                                        <box hidden="YES" title="Box" borderType="bezel" titlePosition="noTitle" id="Moc-ll-P3f">
+                                            <rect key="frame" x="284" y="2" width="309" height="48"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <view key="contentView" id="ij0-fa-q7t">
+                                                <rect key="frame" x="3" y="3" width="303" height="42"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="HQ7-29-P05">
+                                                        <rect key="frame" x="20" y="3" width="36" height="36"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="Horos" id="ztJ-hQ-EiT"/>
+                                                    </imageView>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="iEg-Rd-vKc">
+                                                        <rect key="frame" x="62" y="11" width="223" height="21"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Plugin not validated in Horos" id="3be-Xt-Zbo">
+                                                            <font key="font" metaFont="system" size="17"/>
+                                                            <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                </subviews>
+                                            </view>
+                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </box>
+                                    </subviews>
+                                </view>
+                            </tabViewItem>
+                        </tabViewItems>
+                        <connections>
+                            <outlet property="delegate" destination="-2" id="88"/>
+                        </connections>
+                    </tabView>
+                </subviews>
+            </view>
+            <connections>
+                <outlet property="delegate" destination="-2" id="36"/>
+            </connections>
+            <point key="canvasLocation" x="303.5" y="498"/>
+        </window>
+        <arrayController id="26" userLabel="InstalledPlugins">
+            <declaredKeys>
+                <string>active</string>
+                <string>name</string>
+                <string>availability</string>
+                <string>version</string>
+            </declaredKeys>
+            <connections>
+                <binding destination="-2" name="contentArray" keyPath="plugins" id="77"/>
+            </connections>
+        </arrayController>
+        <arrayController id="104" userLabel="Availabilities">
+            <connections>
+                <binding destination="-2" name="contentArray" keyPath="availabilities" id="105"/>
+            </connections>
+        </arrayController>
+    </objects>
+    <resources>
+        <image name="Horos" width="512" height="512"/>
+        <image name="horosplugin" width="256" height="256"/>
+        <image name="osirixplugin" width="256" height="256"/>
+    </resources>
+</document>

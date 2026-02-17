@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="ThreeDPositionController">
+            <connections>
+                <outlet property="axialPan" destination="66" id="72"/>
+                <outlet property="matrixMode" destination="51" id="76"/>
+                <outlet property="verticalPan" destination="64" id="73"/>
+                <outlet property="window" destination="1" id="21"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="3D Position" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="1" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" nonactivatingPanel="YES" texturedBackground="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="196" y="397" width="311" height="113"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <view key="contentView" horizontalCompressionResistancePriority="1000" id="2">
+                <rect key="frame" x="0.0" y="0.0" width="311" height="113"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                <subviews>
+                    <imageView translatesAutoresizingMaskIntoConstraints="NO" id="66" customClass="ThreeDPanView">
+                        <rect key="frame" x="107" y="34" width="48" height="48"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="42" id="nIf-4J-1Tj"/>
+                            <constraint firstAttribute="width" constant="42" id="usR-5G-XHc"/>
+                        </constraints>
+                        <imageCell key="cell" enabled="NO" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" image="AxialSmall" id="67"/>
+                    </imageView>
+                    <button tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="35">
+                        <rect key="frame" x="75" y="43" width="29" height="28"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="8Gi-fE-NXf"/>
+                        </constraints>
+                        <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSRemoveTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="36">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="changePosition:" target="-2" id="46"/>
+                        </connections>
+                    </button>
+                    <button tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="29">
+                        <rect key="frame" x="117" y="83" width="29" height="28"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="Hkq-Vv-8Wt"/>
+                        </constraints>
+                        <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSAddTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="30">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system" size="10"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="changePosition:" target="-2" id="45"/>
+                        </connections>
+                    </button>
+                    <button tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="31">
+                        <rect key="frame" x="117" y="4" width="29" height="28"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="7Od-74-Ppg"/>
+                        </constraints>
+                        <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSRemoveTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="32">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system" size="10"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="changePosition:" target="-2" id="48"/>
+                        </connections>
+                    </button>
+                    <imageView tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="64" customClass="ThreeDPanView">
+                        <rect key="frame" x="228" y="34" width="48" height="48"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="42" id="KwV-kw-1el"/>
+                            <constraint firstAttribute="width" constant="42" id="gsG-Ve-00V"/>
+                        </constraints>
+                        <imageCell key="cell" enabled="NO" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" image="CorSmall" id="65"/>
+                    </imageView>
+                    <button tag="4" translatesAutoresizingMaskIntoConstraints="NO" id="37">
+                        <rect key="frame" x="237" y="83" width="29" height="28"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="1p2-mq-Wmb"/>
+                        </constraints>
+                        <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSAddTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="40">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system" size="10"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="changePosition:" target="-2" id="49"/>
+                        </connections>
+                    </button>
+                    <button tag="5" translatesAutoresizingMaskIntoConstraints="NO" id="38">
+                        <rect key="frame" x="237" y="3" width="29" height="28"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="PUg-5U-ssa"/>
+                        </constraints>
+                        <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSRemoveTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="39">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system" size="10"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="changePosition:" target="-2" id="50"/>
+                        </connections>
+                    </button>
+                    <matrix horizontalHuggingPriority="249" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="51">
+                        <rect key="frame" x="4" y="29" width="69" height="58"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        <size key="cellSize" width="63" height="18"/>
+                        <size key="intercellSpacing" width="4" height="2"/>
+                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" controlSize="small" inset="2" id="54">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                        </buttonCell>
+                        <cells>
+                            <column>
+                                <buttonCell type="radio" title="Axial" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" state="on" inset="2" id="52">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="smallSystem"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Coronal" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="53">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="smallSystem"/>
+                                </buttonCell>
+                                <buttonCell type="radio" title="Sagittal" imagePosition="left" alignment="left" controlSize="small" scrollable="YES" lineBreakMode="clipping" tag="2" inset="2" id="55">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="smallSystem"/>
+                                </buttonCell>
+                            </column>
+                        </cells>
+                        <connections>
+                            <action selector="changeMatrixMode:" target="-2" id="77"/>
+                        </connections>
+                    </matrix>
+                    <button translatesAutoresizingMaskIntoConstraints="NO" id="33">
+                        <rect key="frame" x="158" y="43" width="29" height="28"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="8p9-17-u0e"/>
+                        </constraints>
+                        <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSAddTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="34">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system" size="10"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="changePosition:" target="-2" id="47"/>
+                        </connections>
+                    </button>
+                    <button tag="7" translatesAutoresizingMaskIntoConstraints="NO" id="79">
+                        <rect key="frame" x="196" y="43" width="29" height="28"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="CKW-EV-5c8"/>
+                        </constraints>
+                        <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSRemoveTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="80">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system" size="10"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="changePosition:" target="-2" id="83"/>
+                        </connections>
+                    </button>
+                    <button tag="6" translatesAutoresizingMaskIntoConstraints="NO" id="78">
+                        <rect key="frame" x="279" y="43" width="29" height="28"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="25" id="jiq-gj-hPR"/>
+                        </constraints>
+                        <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="NSAddTemplate" imagePosition="only" alignment="center" continuous="YES" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="81">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system" size="10"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="changePosition:" target="-2" id="84"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="74">
+                        <rect key="frame" x="162" y="89" width="62" height="16"/>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="SAB-RW-sJQ"/>
+                        </constraints>
+                        <buttonCell key="cell" type="push" title="Reset" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="75">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="miniSystem"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="reset:" target="-2" id="82"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="37" firstAttribute="top" secondItem="29" secondAttribute="top" id="6bI-2c-SLU"/>
+                    <constraint firstItem="51" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="2" secondAttribute="leading" constant="4" id="6rt-Lj-2eN"/>
+                    <constraint firstItem="35" firstAttribute="leading" secondItem="51" secondAttribute="trailing" constant="4" id="8uZ-wI-PCC"/>
+                    <constraint firstItem="37" firstAttribute="leading" secondItem="74" secondAttribute="trailing" constant="16" id="97C-Yg-Zjx"/>
+                    <constraint firstItem="51" firstAttribute="top" secondItem="2" secondAttribute="top" constant="26" id="9Eg-lQ-hhH"/>
+                    <constraint firstItem="74" firstAttribute="top" secondItem="2" secondAttribute="top" constant="8" id="AjS-DU-Sgd"/>
+                    <constraint firstItem="33" firstAttribute="top" secondItem="35" secondAttribute="top" id="BZU-yF-mxw"/>
+                    <constraint firstAttribute="bottom" secondItem="38" secondAttribute="bottom" constant="6" id="CI9-Aw-eme"/>
+                    <constraint firstItem="79" firstAttribute="trailing" secondItem="74" secondAttribute="trailing" id="CdB-sA-ebF"/>
+                    <constraint firstItem="51" firstAttribute="centerY" secondItem="66" secondAttribute="centerY" id="Ej6-2S-jLg"/>
+                    <constraint firstItem="38" firstAttribute="leading" secondItem="37" secondAttribute="leading" id="JZZ-Jw-klO"/>
+                    <constraint firstItem="78" firstAttribute="leading" secondItem="64" secondAttribute="trailing" constant="8" symbolic="YES" id="JtE-Rw-z24"/>
+                    <constraint firstItem="31" firstAttribute="top" secondItem="66" secondAttribute="bottom" constant="7" id="LtF-j9-uiC"/>
+                    <constraint firstItem="38" firstAttribute="top" secondItem="64" secondAttribute="bottom" constant="8" symbolic="YES" id="Mu7-vc-l9Q"/>
+                    <constraint firstItem="35" firstAttribute="leading" secondItem="51" secondAttribute="trailing" constant="4" id="N4V-E8-hjg"/>
+                    <constraint firstItem="78" firstAttribute="top" secondItem="79" secondAttribute="top" id="NBh-0p-YcR"/>
+                    <constraint firstItem="29" firstAttribute="top" secondItem="2" secondAttribute="top" constant="4" id="NCa-8u-Awp"/>
+                    <constraint firstItem="29" firstAttribute="bottom" secondItem="37" secondAttribute="bottom" id="O1J-6W-Fb1"/>
+                    <constraint firstItem="66" firstAttribute="bottom" secondItem="64" secondAttribute="bottom" id="PAq-Ri-vIe"/>
+                    <constraint firstAttribute="trailing" secondItem="78" secondAttribute="trailing" constant="5" id="Seg-fD-sQS"/>
+                    <constraint firstAttribute="bottom" secondItem="31" secondAttribute="bottom" constant="7" id="XMh-WI-aXk"/>
+                    <constraint firstAttribute="bottom" secondItem="35" secondAttribute="bottom" constant="46" id="Zg1-oU-ZQm"/>
+                    <constraint firstItem="31" firstAttribute="trailing" secondItem="29" secondAttribute="trailing" id="av1-WS-une"/>
+                    <constraint firstItem="29" firstAttribute="leading" secondItem="31" secondAttribute="leading" id="bYs-7J-asw"/>
+                    <constraint firstItem="79" firstAttribute="bottom" secondItem="78" secondAttribute="bottom" id="dnC-QY-Bs9"/>
+                    <constraint firstItem="64" firstAttribute="top" secondItem="66" secondAttribute="top" id="eRh-y6-RlJ"/>
+                    <constraint firstAttribute="trailing" secondItem="37" secondAttribute="trailing" constant="47" id="fvc-K1-duT"/>
+                    <constraint firstItem="51" firstAttribute="leading" secondItem="2" secondAttribute="leading" constant="4" id="hHx-yz-4Wo"/>
+                    <constraint firstItem="29" firstAttribute="centerX" secondItem="66" secondAttribute="centerX" id="hKo-3j-xeI"/>
+                    <constraint firstItem="35" firstAttribute="bottom" secondItem="33" secondAttribute="bottom" id="lzY-wR-05t"/>
+                    <constraint firstItem="33" firstAttribute="bottom" secondItem="79" secondAttribute="bottom" id="mhI-21-8Qe"/>
+                    <constraint firstItem="64" firstAttribute="leading" secondItem="79" secondAttribute="trailing" constant="8" symbolic="YES" id="my3-fA-7cj"/>
+                    <constraint firstItem="74" firstAttribute="centerY" secondItem="37" secondAttribute="centerY" id="ovW-dc-Fv0"/>
+                    <constraint firstItem="74" firstAttribute="leading" secondItem="29" secondAttribute="trailing" constant="19" id="rNF-ZA-BGC"/>
+                    <constraint firstItem="38" firstAttribute="trailing" secondItem="37" secondAttribute="trailing" id="u7s-oK-mN8"/>
+                    <constraint firstItem="66" firstAttribute="leading" secondItem="35" secondAttribute="trailing" constant="8" symbolic="YES" id="x8J-QL-kAW"/>
+                    <constraint firstItem="79" firstAttribute="top" secondItem="33" secondAttribute="top" id="yiD-T4-DWl"/>
+                    <constraint firstItem="66" firstAttribute="top" secondItem="29" secondAttribute="bottom" constant="7" id="ylH-Ff-fnd"/>
+                    <constraint firstItem="33" firstAttribute="leading" secondItem="66" secondAttribute="trailing" constant="8" symbolic="YES" id="yxS-m8-2Fz"/>
+                    <constraint firstItem="33" firstAttribute="top" secondItem="74" secondAttribute="bottom" constant="21" id="zuZ-YB-LCE"/>
+                </constraints>
+            </view>
+            <contentBorderThickness minY="0.0" maxY="0.0"/>
+            <connections>
+                <outlet property="delegate" destination="-2" id="22"/>
+            </connections>
+        </window>
+    </objects>
+    <resources>
+        <image name="AxialSmall" width="60" height="60"/>
+        <image name="CorSmall" width="60" height="60"/>
+        <image name="NSAddTemplate" width="11" height="11"/>
+        <image name="NSRemoveTemplate" width="11" height="11"/>
+    </resources>
+</document>
