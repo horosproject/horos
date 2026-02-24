@@ -2987,7 +2987,15 @@ public:
 {
     if ([self eventToPlugins:theEvent]) return;
     
-    return [self scrollInStack: [theEvent deltaY]];
+	float delta = [theEvent deltaY];
+	// Match behaviour of -[DCMView shouldReverseScrollDirectionForMouseWheel]
+ 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"com.apple.swipescrolldirection"]) {
+ 		delta *= -1.0;
+	} else if (![[NSUserDefaults standardUserDefaults] boolForKey: @"Scroll Wheel Reversed"]) {
+		delta *= -1.0;
+	}
+
+    return [self scrollInStack: delta];
 }
 
 - (void)otherMouseDown:(NSEvent *)theEvent
