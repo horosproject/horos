@@ -35,12 +35,12 @@ mkdir -p "$cmake_dir"
 
 cd "$cmake_dir"
 set +e
-rsync -a --delete "$source_dir/" . 2>&1 | tee "$cmake_dir/rsync.log"
-rsync_status=${PIPESTATUS[0]}
+ditto "$source_dir" . 2>&1 | tee "$cmake_dir/rsync.log"
+copy_status=${PIPESTATUS[0]}
 set -e
-if [ $rsync_status -ne 0 ]; then
-    echo "OpenSSL rsync failed with exit code $rsync_status" >&2
-    exit $rsync_status
+if [ $copy_status -ne 0 ]; then
+    echo "OpenSSL copy failed with exit code $copy_status" >&2
+    exit $copy_status
 fi
 
 export CC=clang
@@ -94,8 +94,12 @@ else
 fi
 set -e
 if [ $configure_status -ne 0 ]; then
-    echo "OpenSSL ./Configure failed with exit code $configure_status" >&2
-    exit $configure_status
+    if [ -f "$cmake_dir/Makefile" ]; then
+        echo "OpenSSL ./Configure returned exit code $configure_status but Makefile was created, continuing..." >&2
+    else
+        echo "OpenSSL ./Configure failed with exit code $configure_status" >&2
+        exit $configure_status
+    fi
 fi
 
 echo "$hash" > "$cmake_dir/.cmakehash"

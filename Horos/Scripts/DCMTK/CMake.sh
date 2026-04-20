@@ -44,6 +44,7 @@ args+=(-DDCMTK_ENABLE_MANPAGES=OFF)
 
 args+=(-DCMAKE_INSTALL_PREFIX="$install_dir")
 
+args+=(-DCMAKE_POLICY_VERSION_MINIMUM=3.5)
 args+=(-DCMAKE_IGNORE_PATH="/opt/local/include;/opt/local/lib;/opt/homebrew/include;/opt/homebrew/lib")
 
 export PKG_CONFIG_PATH="$CONFIGURATION_TEMP_DIR/OpenJPEG.build/Install/lib/pkgconfig"
