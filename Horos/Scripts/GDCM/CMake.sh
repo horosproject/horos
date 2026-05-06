@@ -49,7 +49,11 @@ args+=(-DGDCM_USE_SYSTEM_OPENJPEG=ON)
 args+=(-DCMAKE_IGNORE_PATH="/opt/local/include;/opt/local/lib")
 
 openjpeg_install="$CONFIGURATION_TEMP_DIR/OpenJPEG.build/Install"
+export PKG_CONFIG_PATH="$openjpeg_install/lib/pkgconfig"
 openjpeg_include="$openjpeg_install/include/openjpeg-2.5"
+if [ ! -d "$openjpeg_include" ]; then
+    openjpeg_include="$openjpeg_install/include/OpenJPEG"
+fi
 if [ ! -d "$openjpeg_include" ]; then
     openjpeg_include="$openjpeg_install/include/openjpeg-2.3"
 fi
