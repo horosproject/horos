@@ -604,6 +604,15 @@
                             <menuItem isSeparatorItem="YES" id="13179">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
+                            <menuItem title="Crosshair" tag="8" id="16001">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="toggleCrosshair:" target="-1" id="16002"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="16003">
+                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                            </menuItem>
                             <menuItem title="Convert between BW / RGB" id="13182">
                                 <menu key="submenu" title="Convert between BW / RGB" id="13183">
                                     <items>

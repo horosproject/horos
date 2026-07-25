@@ -677,6 +677,7 @@ enum
 - (IBAction) endBlendingType:(id) sender;
 - (IBAction) endQuicktime:(id) sender;
 - (IBAction) setDefaultTool:(id) sender;
+- (IBAction) toggleCrosshair:(id) sender;
 - (id) viewCinit:(NSMutableArray*)f :(NSMutableArray*) d :(NSData*) v;
 - (id) initWithPix:(NSMutableArray*)f withFiles:(NSMutableArray*) d withVolume:(NSData*) v;
 - (IBAction) speedSliderAction:(id) sender;

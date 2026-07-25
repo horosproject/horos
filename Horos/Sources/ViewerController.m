@@ -934,7 +934,7 @@ static ViewerController *cachedFrontMostDisplayed2DViewer = nil;
         valid = YES;
         [item setState: [keyImageCheck state]];
     }
-    else if( [item action] == @selector(setROITool:) || [item action] == @selector(setDefaultTool:) || [item action] == @selector(setDefaultToolMenu:))
+    else if( [item action] == @selector(setROITool:) || [item action] == @selector(setDefaultTool:) || [item action] == @selector(setDefaultToolMenu:) || [item action] == @selector(toggleCrosshair:))
     {
         valid = YES;
         
@@ -6890,6 +6890,26 @@ static ViewerController *draggedController = nil;
         [toolsMatrix selectCellWithTag:[sender tag]];
         [imageView setCurrentTool: [sender tag]];
     }
+}
+
+-(IBAction) toggleCrosshair:(id) sender
+{
+    ToolMode nextTool = tCross;
+
+    if( [imageView currentTool] == tCross)
+    {
+        NSInteger previousTool = [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULTLEFTTOOL"];
+        if( previousTool < tWL || previousTool > tTAGT || previousTool == tCross)
+            previousTool = tWL;
+        nextTool = (ToolMode) previousTool;
+    }
+    else
+    {
+        [[NSUserDefaults standardUserDefaults] setInteger: [imageView currentTool] forKey: @"DEFAULTLEFTTOOL"];
+    }
+
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObject: [NSNumber numberWithInt: nextTool] forKey: @"toolIndex"];
+    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixDefaultToolModifiedNotification object: nil userInfo: userInfo];
 }
 
 - (NSMatrix*) buttonToolMatrix {return buttonToolMatrix;}
@@ -13310,6 +13330,7 @@ static float oldsetww, oldsetwl;
         case tTranslate:	filename = @"Move";				break;
         case tRotate:		filename = @"Rotate";			break;
         case tNext:			filename = @"Stack";			break;
+        case tCross:		filename = @"Cross";			break;
         case tMesure:		filename = @"Length";			break;
         case tAngle:		filename = @"Angle";			break;
         case tROI:			filename = @"Rectangle";		break;
