@@ -1141,6 +1141,36 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     }
 }
 
+- (void) drawCrosshair
+{
+    if( crosshairVisible == NO || currentTool != tCross || self.curDCM == nil)
+        return;
+
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    if( cgl_ctx == nil)
+        return;
+
+    float crossx = crosshairPosition.x - self.curDCM.pwidth/2.f;
+    float crossy = crosshairPosition.y - self.curDCM.pheight/2.f;
+    float gap = 5.f;
+
+    glColor3f(0.f, 1.f, 0.f);
+    glLineWidth(1.f * self.window.backingScaleFactor);
+    glBegin(GL_LINES);
+
+    glVertex2f(scaleValue * (-self.curDCM.pwidth/2.f), scaleValue * crossy);
+    glVertex2f(scaleValue * (crossx - gap), scaleValue * crossy);
+    glVertex2f(scaleValue * (crossx + gap), scaleValue * crossy);
+    glVertex2f(scaleValue * (self.curDCM.pwidth/2.f), scaleValue * crossy);
+
+    glVertex2f(scaleValue * crossx, scaleValue * (-self.curDCM.pheight/2.f));
+    glVertex2f(scaleValue * crossx, scaleValue * (crossy - gap));
+    glVertex2f(scaleValue * crossx, scaleValue * (crossy + gap));
+    glVertex2f(scaleValue * crossx, scaleValue * (self.curDCM.pheight/2.f));
+
+    glEnd();
+}
+
 - (void)drawRepulsorToolArea;
 {
     CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -1950,9 +1980,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     BOOL keepROITool = (i == tROISelector || i == tRepulsor || currentTool == tROISelector || currentTool == tRepulsor);
     
     keepROITool = keepROITool || [self roiTool:currentTool] || [self roiTool:i];
+    if( [self is2DViewer] && currentTool != i && (currentTool == tCross || i == tCross))
+        crosshairVisible = NO;
     currentTool = i;
     
-    if( [self is2DViewer])
+    if( [self is2DViewer] && currentTool != tCross)
         [[NSUserDefaults standardUserDefaults] setInteger:currentTool forKey: @"DEFAULTLEFTTOOL"];
     
     [self stopROIEditingForce: YES];
@@ -2655,6 +2687,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(BOOL) acceptsFirstMouse:(NSEvent*) theEvent
 {
+    if( currentTool == tCross) return YES;
     if (currentTool >= 5) return NO;  // A ROI TOOL !
     else return YES;
 }
@@ -4092,6 +4125,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     [instructions setObject: [NSNumber numberWithFloat: location[0]] forKey: @"point3DX"];
     [instructions setObject: [NSNumber numberWithFloat: location[1]] forKey: @"point3DY"];
     [instructions setObject: [NSNumber numberWithFloat: location[2]] forKey: @"point3DZ"];
+    if( currentTool == tCross)
+        [instructions setObject: [NSNumber numberWithBool:YES] forKey: @"crosshair"];
     
     if( thickDCM)
         [instructions setObject: thickDCM forKey: @"DCMPix2"];
@@ -5471,6 +5506,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void)mouseDraggedCrosshair:(NSEvent *)event
 {
+    if( [self is2DViewer] == NO || [event type] == NSRightMouseDown)
+        return;
+
+    NSPoint eventLocation = [self convertPoint:[event locationInWindow] fromView:nil];
+    eventLocation = [self ConvertFromNSView2GL:eventLocation];
+
+    crosshairPosition.x = MAX(0.f, MIN(eventLocation.x, self.curDCM.pwidth - 1.f));
+    crosshairPosition.y = MAX(0.f, MIN(eventLocation.y, self.curDCM.pheight - 1.f));
+    crosshairVisible = YES;
+    mouseXPos = crosshairPosition.x;
+    mouseYPos = crosshairPosition.y;
+    [self sync3DPosition];
+    [self setNeedsDisplay:YES];
 }
 
 // Methods for Zooming with mouse Drag
@@ -6468,6 +6516,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     curRoiList = nil;
     blendingMode = 0;
     display2DPoint = NSMakePoint(0,0);
+    crosshairPosition = NSMakePoint(0,0);
+    crosshairVisible = NO;
     colorBuf = nil;
     blendingColorBuf = nil;
     stringID = nil;
@@ -6934,6 +6984,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         if( [note object] != self && isKeyView == YES && matrix == 0 && newImage > -1)
         {
             NSDictionary *instructions = [note userInfo];
+            BOOL        crosshairSync = [[instructions valueForKey: @"crosshair"] boolValue];
             
             int			diff = [[instructions valueForKey: @"Direction"] intValue];
             int			pos = [[instructions valueForKey: @"Pos"] intValue];
@@ -6944,7 +6995,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             DCMPix		*oPix2 = [instructions valueForKey: @"DCMPix2"];
             DCMView		*otherView = [instructions valueForKey: @"view"];
             float		destPoint3D[ 3];
+            float       crosshairPoint3D[ 3];
             BOOL		point3D = NO;
+            BOOL        crosshairPlaneFound = NO;
             BOOL		same3DReferenceWorld = NO;
             
             if( otherView == blendingView || self == [otherView blendingView])
@@ -7008,12 +7061,24 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                         if( newIndex != -1)
                         {
                             newImage = newIndex;
-                            
-                            [self.curDCM convertDICOMCoords: resultPoint toSliceCoords: slicePoint3D];
-                            [self setNeedsDisplay:YES];
+                            if( crosshairSync)
+                            {
+                                crosshairPlaneFound = YES;
+                                crosshairPoint3D[ 0] = resultPoint[ 0];
+                                crosshairPoint3D[ 1] = resultPoint[ 1];
+                                crosshairPoint3D[ 2] = resultPoint[ 2];
+                            }
+                            else
+                            {
+                                DCMPix *targetPix = [dcmPixList objectAtIndex:newIndex];
+                                [targetPix convertDICOMCoords: resultPoint toSliceCoords: slicePoint3D];
+                                [self setNeedsDisplay:YES];
+                            }
                         }
                         else
                         {
+                            if( crosshairSync)
+                                crosshairVisible = NO;
                             if( slicePoint3D[ 0] != HUGE_VALF)
                             {
                                 slicePoint3D[ 0] = HUGE_VALF;
@@ -7197,13 +7262,30 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 {
                     if( avoidRecursiveSync <= 1)
                     {
-                        if((selfViewer != frontMostViewer && otherViewer == frontMostViewer) || otherViewer.timer)
+                        if( crosshairSync || (selfViewer != frontMostViewer && otherViewer == frontMostViewer) || otherViewer.timer)
                         {
                             if( listType == 'i') [self setIndex:newImage];
                             else [self setIndexWithReset:newImage :YES];
                             [[self windowController] adjustSlider];
                         }
                     }
+                }
+
+                if( crosshairSync)
+                {
+                    if( crosshairPlaneFound && curImage == newImage)
+                    {
+                        [self.curDCM convertDICOMCoords: crosshairPoint3D toSliceCoords: slicePoint3D];
+                        crosshairPosition.x = slicePoint3D[ 0] / self.curDCM.pixelSpacingX;
+                        crosshairPosition.y = slicePoint3D[ 1] / self.curDCM.pixelSpacingY;
+                        crosshairVisible = crosshairPosition.x >= 0 && crosshairPosition.x < self.curDCM.pwidth &&
+                                           crosshairPosition.y >= 0 && crosshairPosition.y < self.curDCM.pheight;
+                    }
+                    else
+                        crosshairVisible = NO;
+
+                    slicePoint3D[ 0] = HUGE_VALF;
+                    [self setNeedsDisplay:YES];
                 }
                 
                 if( same3DReferenceWorld || registeredViewer)
@@ -7931,7 +8013,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             currParallel = YES;
     }
     
-    int i = 0;
     for( DCMPix* pix in cleanedOutDcmPixArray)
     {
         if( volumicData != 1)
@@ -7959,10 +8040,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             }
             
             distance = tempDistance;
-            ii = i;
+            NSUInteger pixIndex = [dcmPixList indexOfObjectIdenticalTo: pix];
+            ii = pixIndex == NSNotFound ? -1 : (int) pixIndex;
         }
-        
-        i++;
     }
     
     if( ii != -1 )
@@ -9475,6 +9555,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                 {
                     [self draw2DPointMarker];
                     if( blendingView) [blendingView draw2DPointMarker];
+                    if( stringID == nil) [self drawCrosshair];
                 }
                 // Draw any Plugin objects
                 
@@ -13596,6 +13677,15 @@ static NSString * const O2PasteboardTypeEventModifierFlags = @"com.opensource.os
                 case RepulsorHotKeyAction:
                 case SelectorHotKeyAction:
                     if( [ViewerController getToolEquivalentToHotKey: key] >= 0)
+                    {
+                        userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:[ViewerController getToolEquivalentToHotKey: key]], @"toolIndex", nil];
+                        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixDefaultToolModifiedNotification object:nil userInfo: userInfo];
+                    }
+                    break;
+                case OrthoMPRCrossHotKeyAction:
+                    if( [self is2DViewer])
+                        [(ViewerController*) [self windowController] toggleCrosshair: self];
+                    else if( [ViewerController getToolEquivalentToHotKey: key] >= 0)
                     {
                         userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:[ViewerController getToolEquivalentToHotKey: key]], @"toolIndex", nil];
                         [[NSNotificationCenter defaultCenter] postNotificationName: OsirixDefaultToolModifiedNotification object:nil userInfo: userInfo];

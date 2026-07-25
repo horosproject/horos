@@ -262,6 +262,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	
 	NSPoint			display2DPoint;
     int             display2DPointIndex;
+	NSPoint			crosshairPosition;
+	BOOL			crosshairVisible;
 	
 	NSMutableDictionary	*stringTextureCache;
 	
@@ -498,6 +500,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) drawTextualData:(NSRect) size :(long) annotations;
 - (void) drawTextualData:(NSRect) size annotationsLevel:(long) annotations fullText: (BOOL) fullText onlyOrientation: (BOOL) onlyOrientation;
 - (void) draw2DPointMarker;
+- (void) drawCrosshair;
 - (void) drawImage:(NSImage *)image inBounds:(NSRect)rect;
 - (void) setScaleValueCentered:(float) x;
 - (void) updateCurrentImage: (NSNotification*) note;
