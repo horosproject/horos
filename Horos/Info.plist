@@ -203,7 +203,8 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>4.0.0</string>
+	<!-- Literal: OTHER_LDFLAGS embeds this file verbatim via -sectcreate __TEXT __info_plist, which does not expand build settings. Keep in sync with MARKETING_VERSION in Horos.xcconfig. -->
+	<string>4.0.2</string>
 	<key>CFBundleSignature</key>
 	<string>OsiX</string>
 	<key>CFBundleSupportedPlatforms</key>

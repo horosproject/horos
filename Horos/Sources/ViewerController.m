@@ -6189,7 +6189,7 @@ static ViewerController *draggedController = nil;
         [toolbarItem setLabel: NSLocalizedString(@"Browse", nil)];
         [toolbarItem setPaletteLabel: NSLocalizedString(@"Browse", nil)];
         [toolbarItem setToolTip: NSLocalizedString(@"Browse this series", nil)];
-        [toolbarItem setImage: [NSImage imageNamed: PlayToolbarItemIdentifier]];
+        [toolbarItem setImage: [AppController toolbarSizedImage: [NSImage imageNamed: PlayToolbarItemIdentifier]]];
         [toolbarItem setTarget: self];
         [toolbarItem setAction: @selector(PlayStop:)];
     }
@@ -7691,7 +7691,7 @@ static ViewerController *draggedController = nil;
             }
         if (samestudyviewer) {
             [imageView setSyncRelativeDiff:[[samestudyviewer imageView] syncRelativeDiff]];
-            [[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
+            [[self findSyncSeriesButton] setImage: [AppController toolbarSizedImage: [NSImage imageNamed: @"SyncLock.pdf"]]];
             [imageView setSyncSeriesIndex: 0];
             wedidsomethingsmart = YES;
         }
@@ -16492,13 +16492,13 @@ static float oldsetww, oldsetwl;
             float offset = [(DCMPix*)[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation] - [sliceLocation floatValue];
             
             [imageView setSyncRelativeDiff:offset];
-            [[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
+            [[self findSyncSeriesButton] setImage: [AppController toolbarSizedImage: [NSImage imageNamed: @"SyncLock.pdf"]]];
             
             [imageView setSyncSeriesIndex: 0];
         }
         else
         {
-            [[self findSyncSeriesButton] setImage: [NSImage imageNamed: SyncSeriesToolbarItemIdentifier]];
+            [[self findSyncSeriesButton] setImage: [AppController toolbarSizedImage: [NSImage imageNamed: SyncSeriesToolbarItemIdentifier]]];
             [imageView setSyncSeriesIndex: -1];
         }
     }
@@ -16506,11 +16506,11 @@ static float oldsetww, oldsetwl;
     {
         if( [imageView syncro] != syncroOFF)
         {
-            [[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
+            [[self findSyncSeriesButton] setImage: [AppController toolbarSizedImage: [NSImage imageNamed: @"SyncLock.pdf"]]];
         }
         else
         {
-            [[self findSyncSeriesButton] setImage: [NSImage imageNamed: SyncSeriesToolbarItemIdentifier]];
+            [[self findSyncSeriesButton] setImage: [AppController toolbarSizedImage: [NSImage imageNamed: SyncSeriesToolbarItemIdentifier]]];
         }
     }
 }
@@ -16534,7 +16534,7 @@ static float oldsetww, oldsetwl;
         
         for( ViewerController *v in [ViewerController getDisplayed2DViewers])
         {
-            [[v findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
+            [[v findSyncSeriesButton] setImage: [AppController toolbarSizedImage: [NSImage imageNamed: @"SyncLock.pdf"]]];
             [v.imageView setSyncSeriesIndex: 0];
         }
     }
@@ -17771,7 +17771,7 @@ static float oldsetww, oldsetwl;
         [timer release];
         timer = nil;
         
-        [sender setImage: [NSImage imageNamed: PlayToolbarItemIdentifier]];
+        [sender setImage: [AppController toolbarSizedImage: [NSImage imageNamed: PlayToolbarItemIdentifier]]];
         [sender setLabel: NSLocalizedString(@"Browse", nil)];
         [sender setPaletteLabel: NSLocalizedString(@"Browse", nil)];
         [sender setToolTip: NSLocalizedString(@"Browse this series", nil)];
@@ -17789,7 +17789,7 @@ static float oldsetww, oldsetwl;
         lastTime = [NSDate timeIntervalSinceReferenceDate];
         lastTimeFrame = [NSDate timeIntervalSinceReferenceDate];
         
-        [sender setImage: [NSImage imageNamed: PauseToolbarItemIdentifier]];
+        [sender setImage: [AppController toolbarSizedImage: [NSImage imageNamed: PauseToolbarItemIdentifier]]];
         [sender setLabel: NSLocalizedString(@"Stop", nil)];
         [sender setPaletteLabel: NSLocalizedString(@"Stop", nil)];
     }
@@ -22869,4 +22869,3 @@ static float oldsetww, oldsetwl;
 
 
 @end
-

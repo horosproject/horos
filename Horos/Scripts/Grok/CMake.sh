@@ -48,7 +48,7 @@ args+=(-DCMAKE_INSTALL_PREFIX="$TARGET_TEMP_DIR/Install")
 args+=(-DGROK_INSTALL_INCLUDE_DIR="include/OpenJPEG")
 args+=(-DGROK_INSTALL_LIB_DIR="lib")
 
-args+=(-DBUILD_CODEC=ON)
+args+=(-DBUILD_CODEC=OFF)
 args+=(-DBUILD_PLUGIN_LOADER=OFF)
 args+=(-DBUILD_DOC=OFF)
 args+=(-DBUILD_EXAMPLES=OFF)
@@ -56,6 +56,9 @@ args+=(-DBUILD_SHARED_LIBS=OFF)
 args+=(-DBUILD_STATIC_LIBS=ON)
 args+=(-DBUILD_TESTING=OFF)
 
+args+=(-DCMAKE_POLICY_VERSION_MINIMUM=3.5)
+args+=(-DCMAKE_PREFIX_PATH=/opt/homebrew)
+args+=(-DCMAKE_LIBRARY_PATH=/opt/homebrew/lib)
 args+=(-DCMAKE_IGNORE_PATH="/opt/local/include;/opt/local/lib")
 
 if [ "$CONFIGURATION" = 'Debug' ]; then
@@ -63,6 +66,8 @@ if [ "$CONFIGURATION" = 'Debug' ]; then
 else
     cxxfs+=( -O2 )
 fi
+
+ldfs+=(-L/opt/homebrew/lib)
 
 if [ ! -z "$CLANG_CXX_LIBRARY" ] && [ "$CLANG_CXX_LIBRARY" != 'compiler-default' ]; then
     cxxfs+=(-stdlib="$CLANG_CXX_LIBRARY")
@@ -94,4 +99,3 @@ echo "$hash" > "$cmake_dir/.cmakehash"
 echo "$env" > "$cmake_dir/.cmakeenv"
 
 exit 0
-

@@ -3,14 +3,17 @@
 export PATH="$PATH:/opt/local/bin:/opt/local/sbin:/opt/homebrew/bin/"
 
 path="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )/$(basename "${BASH_SOURCE[0]}")"
+# Backport of https://github.com/DCMTK/dcmtk/commit/c29bebcd1
+dcmtk_patch="$(dirname "$path")/DCMTK-3.6.7-GCC-15.patch"
 cd "$TARGET_NAME"; pwd
 
 env=$(env|sort|grep -v 'LLBUILD_BUILD_ID=\|LLBUILD_LANE_ID=\|LLBUILD_TASK_ID=\|Apple_PubSub_Socket_Render=\|DISPLAY=\|SHLVL=\|SSH_AUTH_SOCK=\|SECURITYSESSIONID=')
-hash="$(git describe --always --tags --dirty) $(md5 -q "$path")-$(md5 -qs "$env")"
+hash="$(git describe --always --tags --dirty) $(md5 -q "$path")-$(md5 -q "$dcmtk_patch")-$(md5 -qs "$env")"
 
 set -e; set -o xtrace
 
 source_dir="$PROJECT_DIR/$TARGET_NAME"
+compat_source_dir="$TARGET_TEMP_DIR/PatchedSource"
 cmake_dir="$TARGET_TEMP_DIR/CMake"
 install_dir="$TARGET_TEMP_DIR/Install"
 
@@ -30,8 +33,15 @@ command -v pkg-config >/dev/null 2>&1 || { echo >&2 "error: building $TARGET_NAM
 
 mv "$cmake_dir" "$cmake_dir.tmp"
 [ -d "$install_dir" ] && mv "$install_dir" "$install_dir.tmp"
-rm -Rf "$cmake_dir.tmp" "$install_dir.tmp"
+rm -Rf "$cmake_dir.tmp" "$install_dir.tmp" "$compat_source_dir"
 mkdir -p "$cmake_dir";
+
+# DCMTK 3.6.7's pre-C++11 move fallback has an invalid dependent member
+# reference rejected by newer compilers. Apply DCMTK's upstream GCC 15 fix to
+# a build-only source copy so the pinned submodule remains unchanged.
+ditto "$source_dir" "$compat_source_dir"
+/usr/bin/patch --silent -d "$compat_source_dir" -p0 < "$dcmtk_patch"
+source_dir="$compat_source_dir"
 
 args=( "$source_dir" )
 cfs=( $OTHER_CFLAGS )

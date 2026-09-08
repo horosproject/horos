@@ -10,13 +10,13 @@
 PRODUCT_BUNDLE_IDENTIFIER_PREFIX = org.horosproject
 
 /// Current version of the project
-CURRENT_PROJECT_VERSION = 20220801
+CURRENT_PROJECT_VERSION = 20260908
 
 /// User-visible version of the project
-MARKETING_VERSION = 4.0.0
+MARKETING_VERSION = 4.0.2
 
-/// Copyright notice for the bundle
-HUMAN_READABLE_VERSION = Horos v4.0.0 RC5
+/// User-visible name shown by Finder
+HUMAN_READABLE_VERSION = Horos v4.0.2
 
 /// Copyright notice for the bundle
 HUMAN_READABLE_COPYRIGHT = © 2020 The Horos Project & OsiriX Team

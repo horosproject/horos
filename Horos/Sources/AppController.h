@@ -174,6 +174,7 @@ extern AppController* OsiriX;
 + (ThumbnailsListPanel*)thumbnailsListPanelForScreen:(NSScreen*)screen;
 + (NSString*)printStackTrace:(NSException*)e __deprecated; // use -[NSException printStackTrace] from NSException+N2
 + (BOOL) isKDUEngineAvailable;
++ (NSImage*) toolbarSizedImage: (NSImage*) image; /**< Scales an oversized icon down to the toolbar item size */
 
 #pragma mark-
 #pragma mark HTML Templates

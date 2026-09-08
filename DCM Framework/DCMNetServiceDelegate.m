@@ -43,10 +43,114 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <net/if.h>
 #include <netdb.h>
 #include <unistd.h>
 
 static DCMNetServiceDelegate *_netServiceDelegate = nil;
+
+static NSString* DCMCanonicalNumericAddress(NSString* address, uint32_t* zoneIndex)
+{
+    if( zoneIndex)
+        *zoneIndex = 0;
+
+    if( [address isKindOfClass: [NSString class]] == NO)
+        return nil;
+
+    NSString* candidate = [address stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if( candidate.length > 2 && [candidate hasPrefix: @"["] && [candidate hasSuffix: @"]"])
+        candidate = [candidate substringWithRange: NSMakeRange(1, candidate.length-2)];
+
+    // inet_pton does not accept IPv6 zone identifiers. Horos omits the scope
+    // identifier when it creates a displayed DICOM destination address, but a
+    // manually saved link-local address may carry one: keep it, two interfaces
+    // can host the same link-local address without being the same node.
+    if( [candidate rangeOfString: @":"].location != NSNotFound)
+    {
+        NSRange scope = [candidate rangeOfString: @"%" options: NSBackwardsSearch];
+        if( scope.location != NSNotFound)
+        {
+            if( zoneIndex)
+            {
+                NSString* zone = [candidate substringFromIndex: NSMaxRange( scope)];
+                *zoneIndex = if_nametoindex( zone.UTF8String);
+                if( *zoneIndex == 0)
+                    *zoneIndex = (uint32_t) zone.intValue;
+            }
+
+            candidate = [candidate substringToIndex: scope.location];
+        }
+    }
+
+    const char* utf8 = candidate.UTF8String;
+    if( utf8 == NULL)
+        return nil;
+
+    char output[INET6_ADDRSTRLEN] = "";
+    struct in_addr ipv4;
+    if( inet_pton(AF_INET, utf8, &ipv4) == 1 && inet_ntop(AF_INET, &ipv4, output, sizeof(output)))
+        return [NSString stringWithUTF8String: output];
+
+    struct in6_addr ipv6;
+    if( inet_pton(AF_INET6, utf8, &ipv6) == 1 && inet_ntop(AF_INET6, &ipv6, output, sizeof(output)))
+        return [NSString stringWithUTF8String: output];
+
+    return nil;
+}
+
+static NSString* DCMNormalizedHostName(NSString* hostName)
+{
+    if( [hostName isKindOfClass: [NSString class]] == NO)
+        return nil;
+
+    NSString* normalized = [[hostName stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]] lowercaseString];
+    while( normalized.length && [normalized hasSuffix: @"."])
+        normalized = [normalized substringToIndex: normalized.length-1];
+
+    return normalized.length ? normalized : nil;
+}
+
+static BOOL DCMNetServiceContainsNumericAddress(NSNetService* service, NSString* address)
+{
+    uint32_t wantedZone = 0;
+    NSString* wanted = DCMCanonicalNumericAddress(address, &wantedZone);
+    if( wanted == nil)
+        return NO;
+
+    // Snapshot: the resolver mutates the service's address list on the main run
+    // loop while this runs on the SCP, web portal and XML-RPC threads
+    for( NSData* data in [[service.addresses copy] autorelease])
+    {
+        if( data.length < sizeof(struct sockaddr))
+            continue;
+
+        const struct sockaddr* socketAddress = data.bytes;
+        const void* source = NULL;
+        int family = socketAddress->sa_family;
+
+        if( family == AF_INET && data.length >= sizeof(struct sockaddr_in))
+            source = &((const struct sockaddr_in*) socketAddress)->sin_addr;
+        else if( family == AF_INET6 && data.length >= sizeof(struct sockaddr_in6))
+        {
+            const struct sockaddr_in6* ipv6Address = (const struct sockaddr_in6*) socketAddress;
+
+            // A saved address that names an interface only matches the service
+            // reached through that same interface
+            if( wantedZone && ipv6Address->sin6_scope_id && wantedZone != ipv6Address->sin6_scope_id)
+                continue;
+
+            source = &ipv6Address->sin6_addr;
+        }
+        else
+            continue;
+
+        char output[INET6_ADDRSTRLEN] = "";
+        if( inet_ntop(family, source, output, sizeof(output)) && [wanted isEqualToString: [NSString stringWithUTF8String: output]])
+            return YES;
+    }
+
+    return NO;
+}
 
 @implementation DCMNetServiceDelegate
 
@@ -406,18 +510,28 @@ static DCMNetServiceDelegate *_netServiceDelegate = nil;
                             
                             if( [[d valueForKey: @"Port"] intValue] == [[s valueForKey: @"Port"] intValue])
                             {
-                                if( [[d valueForKey: @"Address"] isEqualToString: [s valueForKey: @"Address"]])
-                                    alreadyHere = YES;
-                                else if( [[DCMNetServiceDelegate getIPAddress: [d valueForKey: @"Address"]] isEqualToString: [DCMNetServiceDelegate getIPAddress: [s valueForKey: @"Address"]]])
+                                NSString* savedAddress = [d objectForKey: @"Address"];
+                                NSString* bonjourAddress = [s objectForKey: @"Address"];
+                                BOOL sameAddress = [savedAddress isEqualToString: bonjourAddress];
+
+                                if( sameAddress == NO)
+                                    sameAddress = DCMNetServiceContainsNumericAddress(aServer, savedAddress);
+
+                                if( sameAddress == NO)
                                 {
-                                    // If one of these addresses is numeric -> keep the dns name
-                                    if( [[NSCharacterSet decimalDigitCharacterSet] characterIsMember: [[d valueForKey: @"Address"] characterAtIndex: 0]])
-                                    {
-                                        [serversArray objectAtIndex: v];
-                                        v--;
-                                    }
-                                    else
-                                        alreadyHere = YES;
+                                    NSString* savedHost = DCMNormalizedHostName(savedAddress);
+                                    NSString* serviceHost = DCMNormalizedHostName(aServer.hostName);
+                                    sameAddress = savedHost && [savedHost isEqualToString: serviceHost];
+                                }
+
+                                if( sameAddress)
+                                {
+                                    // Explicit saved configuration wins over the transient Bonjour copy.
+                                    // The previous rule (prefer the Bonjour DNS name over a numeric
+                                    // saved address) is intentionally gone: it never removed the entry
+                                    // it meant to and looped forever instead.
+                                    alreadyHere = YES;
+                                    break;
                                 }
                             }
                         }

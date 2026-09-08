@@ -34,6 +34,8 @@ rm -Rf "$cmake_dir.tmp" "$install_dir.tmp"
 mkdir -p "$cmake_dir"; cd "$cmake_dir"
 
 args=("$PROJECT_DIR/$TARGET_NAME") # -G Xcode
+# ITK also vendors the old libpng <fp.h> guard affected by TARGET_OS_MAC.
+cfs=( -include math.h )
 cxxfs=( -fvisibility=default )
 lfs=() # linker flags
 args+=(-DITK_USE_64BITS_IDS=ON)
@@ -44,6 +46,10 @@ args+=(-DBUILD_TESTING=OFF)
 args+=(-DCMAKE_POLICY_VERSION_MINIMUM=3.5)
 args+=(-DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET")
 args+=(-DCMAKE_OSX_ARCHITECTURES="$ARCHS")
+
+# ITK's bundled zlib treats TARGET_OS_MAC as the classic Mac toolchain and
+# defines fdopen away before modern SDK headers declare it.  Use macOS libz.
+args+=(-DITK_USE_SYSTEM_ZLIB=ON)
 
 args+=(-DITK_BUILD_DEFAULT_MODULES=OFF)
 args+=(-DModule_ITKIOImageBase=ON)
@@ -77,6 +83,10 @@ fi
 if [ ${#cxxfs[@]} -ne 0 ]; then
     cxxfss="${cxxfs[@]}"
     args+=(-DCMAKE_CXX_FLAGS="$cxxfss")
+fi
+if [ ${#cfs[@]} -ne 0 ]; then
+    cfss="${cfs[@]}"
+    args+=(-DCMAKE_C_FLAGS="$cfss")
 fi
 
 if [ ${#lfs[@]} -ne 0 ]; then

@@ -112,6 +112,7 @@
 #include <kdu_OsiriXSupport.h>
 
 #include <execinfo.h>
+#include <libproc.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -423,6 +424,72 @@ int GetAllPIDsForProcessName(const char* ProcessName,
         //found matches return success.
         return(kSuccess);
     }
+}
+
+static int GetAllPIDsForProcessNameUsingLibproc(const char* processName,
+                                                pid_t returnedPIDs[],
+                                                const unsigned int returnedPIDsCapacity,
+                                                unsigned int* matchesFound,
+                                                int* processListError)
+{
+    if (processName == NULL || returnedPIDs == NULL || returnedPIDsCapacity == 0 || matchesFound == NULL)
+        return kInvalidArgumentsError;
+
+    memset(returnedPIDs, 0, returnedPIDsCapacity * sizeof(pid_t));
+    *matchesFound = 0;
+    if (processListError != NULL)
+        *processListError = 0;
+
+    int pidCapacity = proc_listallpids(NULL, 0);
+    if (pidCapacity <= 0)
+    {
+        if (processListError != NULL)
+            *processListError = errno;
+        return kErrorGettingSizeOfBufferRequired;
+    }
+
+    pidCapacity += 64; // Leave room for processes created between the sizing and retrieval calls.
+    pid_t *pids = calloc(pidCapacity, sizeof(pid_t));
+    if (pids == NULL)
+    {
+        if (processListError != NULL)
+            *processListError = ENOMEM;
+        return kUnableToAllocateMemoryForBuffer;
+    }
+
+    int pidCount = proc_listallpids(pids, pidCapacity * sizeof(pid_t));
+    if (pidCount < 0)
+    {
+        if (processListError != NULL)
+            *processListError = errno;
+        free(pids);
+        return kErrorGettingSizeOfBufferRequired;
+    }
+
+    for (int index = 0; index < pidCount; index++)
+    {
+        if (pids[index] <= 0)
+            continue;
+
+        char currentProcessName[MAXCOMLEN + 1] = {0};
+        if (proc_name(pids[index], currentProcessName, sizeof(currentProcessName)) <= 0)
+            continue;
+
+        if (strncmp(currentProcessName, processName, MAXCOMLEN) == 0)
+        {
+            if (*matchesFound >= returnedPIDsCapacity)
+            {
+                free(pids);
+                return kPIDBufferOverrunError;
+            }
+
+            returnedPIDs[*matchesFound] = pids[index];
+            (*matchesFound)++;
+        }
+    }
+
+    free(pids);
+    return *matchesFound == 0 ? kCouldNotFindRequestedProcess : kSuccess;
 }
 
 NSString* documentsDirectoryFor(int mode, NSString *url) { // __deprecated
@@ -870,7 +937,7 @@ void exceptionHandler(NSException *exception)
 	
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SingleProcessMultiThreadedListener"] == NO)
     {
-        Error = GetAllPIDsForProcessName( [[[NSProcessInfo processInfo] processName] UTF8String], MyArray, kPIDArrayLength, &NumberOfMatches, NULL);
+        Error = GetAllPIDsForProcessNameUsingLibproc( [[[NSProcessInfo processInfo] processName] UTF8String], MyArray, kPIDArrayLength, &NumberOfMatches, NULL);
         
         if (Error == 0)
         {
@@ -889,7 +956,7 @@ void exceptionHandler(NSException *exception)
         }
     }
     
-    Error = GetAllPIDsForProcessName( "CrashReporter", MyArray, kPIDArrayLength, &NumberOfMatches, NULL);
+    Error = GetAllPIDsForProcessNameUsingLibproc( "CrashReporter", MyArray, kPIDArrayLength, &NumberOfMatches, NULL);
 	
 	if (Error == 0)
     {
@@ -2776,7 +2843,9 @@ static BOOL firstCall = YES;
         STORESCPTLS = [[NSRecursiveLock alloc] init];
         
         [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
-        
+
+        [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(normalizeToolbarItemImage:) name: NSToolbarWillAddItemNotification object: nil];
+
         #ifndef OSIRIX_LIGHT
         [VRView testGraphicBoard];
         #endif
@@ -2791,6 +2860,50 @@ static BOOL firstCall = YES;
 	return self;
 }
 
+
+// Starting with the macOS 26 SDK, NSToolbarItem no longer scales down oversized
+// images: image-based items are laid out at the image's intrinsic size, so a
+// 530-pt Import.pdf fills the whole toolbar.
+static const CGFloat toolbarImageSide = 32;
+static const CGFloat toolbarImageSideTolerance = 36; // leaves the slightly-over-sized icons alone
+
+// Returns an image that fits a toolbar item. Code replacing the image of an
+// item that is already in a toolbar has to call this itself: the notification
+// below only fires when the item is inserted.
++ (NSImage*) toolbarSizedImage: (NSImage*) image
+{
+    NSSize size = image.size;
+    CGFloat largestSide = MAX( size.width, size.height);
+
+    // Rejects nil images, zero sizes and non-finite sizes as well as small icons
+    if( isfinite( largestSide) == NO || largestSide <= toolbarImageSideTolerance)
+        return image;
+
+    // Keep the aspect ratio, but never let a very wide or very tall image round
+    // its minor side down to zero
+    NSSize scaled = NSMakeSize( round( toolbarImageSide * size.width / largestSide), round( toolbarImageSide * size.height / largestSide));
+
+    // Copy before resizing: -imageNamed: returns a shared cached instance
+    NSImage *resized = [image copy];
+    [resized setSize: NSMakeSize( MAX( scaled.width, 1), MAX( scaled.height, 1))];
+
+    return resized;
+}
+
+// Observed app-wide (object: nil) so toolbar items provided by plugins are
+// normalized too.
+- (void) normalizeToolbarItemImage: (NSNotification*) notification
+{
+    NSToolbarItem *item = [[notification userInfo] objectForKey: @"item"];
+
+    if( [item isKindOfClass: [NSToolbarItem class]] == NO)
+        return;
+
+    if( item.view != nil) // custom-view items are sized by their view, not their image
+        return;
+
+    item.image = [AppController toolbarSizedImage: item.image];
+}
 
 static BOOL initialized = NO;
 + (void) initialize

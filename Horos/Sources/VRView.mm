@@ -2220,6 +2220,9 @@ public:
 {
     if( volumeMapper)
     {
+        // Direct mapper renders can precede drawRect: (MPR, CPR and exports).
+        [self initializeVTKRenderWindowIfNeeded];
+
         aRenderer->SetDraw( 0);
         
         dontRenderVolumeRenderingOsiriX = 0;
@@ -2237,6 +2240,9 @@ public:
 {
     if( blendingVolumeMapper)
     {
+        // Direct mapper renders can precede drawRect: (MPR, CPR and exports).
+        [self initializeVTKRenderWindowIfNeeded];
+
         aRenderer->SetDraw( 0);
         
         dontRenderVolumeRenderingOsiriX = 0;

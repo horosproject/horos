@@ -1,4 +1,4 @@
-.PHONY: Horos clean
+.PHONY: Horos clean macos-27-compatibility-check
 
 CONFIG ?= Debug
 DERIVED_DATA ?= build
@@ -8,3 +8,6 @@ Horos:
 
 clean:
 	@rm -rf ./build
+
+macos-27-compatibility-check:
+	@./test-data/macos-27-compatibility-check.sh

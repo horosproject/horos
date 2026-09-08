@@ -563,7 +563,7 @@ unsigned int minimumStep;
         if( blendingView)
         {
             [blendingView getWLWW: &previousWL :&previousWW];
-            
+
             [vrView renderBlendedVolume];
             
             float *blendedImagePtr = nil;

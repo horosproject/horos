@@ -133,6 +133,7 @@
 	
 	IBOutlet NSPanel				*shadingPanel;
 	IBOutlet ShadingArrayController	*shadingsPresetsController;
+    ShadingArrayController *observedShadingsPresetsController;
 	BOOL							shadingEditable;
 	
 	NSMutableArray			*appliedConvolutionFilters;

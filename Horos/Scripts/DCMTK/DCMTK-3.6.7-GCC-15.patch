@@ -1,0 +1,7 @@
+--- ofstd/include/dcmtk/ofstd/ofutil.h
++++ ofstd/include/dcmtk/ofstd/ofutil.h
+@@ -78,2 +78,2 @@
+-        inline type(const OFrvalue_storage& rhs)
+-        : t( rhs.pt ) {}
++        inline type(const type& rhs)
++        : t( rhs.t ) {}

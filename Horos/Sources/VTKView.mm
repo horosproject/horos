@@ -91,14 +91,19 @@
     // not be what is wanted. If you allow this code then what you end up with is the
     // typical empty black OpenGL view which seems more 'correct' or at least is
     // more soothing to the eye.
+    [self initializeVTKRenderWindowIfNeeded];
+
+    // Let the vtkCocoaGLView do its regular drawing
+    [super drawRect:theRect];
+}
+
+- (void)initializeVTKRenderWindowIfNeeded
+{
     vtkRenderWindowInteractor* theRenWinInt = [self getInteractor];
     if (theRenWinInt && (theRenWinInt->GetInitialized() == NO))
     {
         theRenWinInt->Initialize();
     }
-    
-    // Let the vtkCocoaGLView do its regular drawing
-    [super drawRect:theRect];
 }
 
 - (void)initializeVTKSupport

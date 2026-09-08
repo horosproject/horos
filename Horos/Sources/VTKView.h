@@ -95,6 +95,7 @@ typedef char* vtkCocoaRenderWindow;
 -(void) prepareForRelease;
 
 - (void)initializeVTKSupport;
+- (void)initializeVTKRenderWindowIfNeeded;
 - (void)cleanUpVTKSupport;
 
 // Accessors

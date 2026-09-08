@@ -10080,6 +10080,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) setFrame:(NSRect)frameRect
 {
+    // Split-view layout can reapply the current frame on macOS 27.
+    // Do not invalidate constraints again when the geometry is unchanged.
+    if( NSEqualRects( [self frame], frameRect))
+        return;
+
     [super setFrame: frameRect];
     
     previousViewSize = frameRect.size;

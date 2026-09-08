@@ -35,12 +35,12 @@ mkdir -p "$cmake_dir"
 
 cd "$cmake_dir"
 set +e
-rsync -a --delete "$source_dir/" . 2>&1 | tee "$cmake_dir/rsync.log"
-rsync_status=${PIPESTATUS[0]}
+ditto "$source_dir" . 2>&1 | tee "$cmake_dir/copy.log"
+copy_status=${PIPESTATUS[0]}
 set -e
-if [ $rsync_status -ne 0 ]; then
-    echo "OpenSSL rsync failed with exit code $rsync_status" >&2
-    exit $rsync_status
+if [ $copy_status -ne 0 ]; then
+    echo "OpenSSL copy failed with exit code $copy_status" >&2
+    exit $copy_status
 fi
 
 export CC=clang
@@ -84,6 +84,12 @@ if [ -z "$arch" ]; then
     arch="$NATIVE_ARCH_ACTUAL"
 fi
 
+# The copy above mirrors the whole submodule working tree, so a Makefile left
+# behind by an in-tree ./Configure would come along with it. Drop the generated
+# files first: the tolerance below must only ever accept a Makefile that this
+# run produced.
+rm -f "$cmake_dir/Makefile" "$cmake_dir/configdata.pm"
+
 set +e
 if [ "$CONFIGURATION" = 'Debug' ]; then
     ./Configure "${configure_args[@]}" debug-darwin64-$arch-cc no-shared no-engine no-tests 2>&1 | tee "$cmake_dir/configure.log"
@@ -94,8 +100,14 @@ else
 fi
 set -e
 if [ $configure_status -ne 0 ]; then
-    echo "OpenSSL ./Configure failed with exit code $configure_status" >&2
-    exit $configure_status
+    if [ -f "$cmake_dir/Makefile" ]; then
+        # ./Configure exits non-zero while still generating a usable Makefile when
+        # it cannot write its own build metadata under xcodebuild's sandbox.
+        echo "OpenSSL ./Configure returned exit code $configure_status but Makefile was created, continuing..." >&2
+    else
+        echo "OpenSSL ./Configure failed with exit code $configure_status" >&2
+        exit $configure_status
+    fi
 fi
 
 echo "$hash" > "$cmake_dir/.cmakehash"

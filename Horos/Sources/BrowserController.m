@@ -19409,9 +19409,13 @@ restart:
     }
     else
     {
+        BOOL pluginToolbarItemProvided = NO;
+
         // Is it a plugin menu item?
         if( [[PluginManager pluginsDict] objectForKey: itemIdent] != nil)
         {
+            pluginToolbarItemProvided = YES;
+
             NSBundle *bundle = [[PluginManager pluginsDict] objectForKey: itemIdent];
             NSDictionary *info = [bundle infoDictionary];
             
@@ -19441,9 +19445,17 @@ restart:
                 NSToolbarItem *item = [[[PluginManager plugins] objectForKey:key] toolbarItemForItemIdentifier: itemIdent forBrowserController: self];
                 
                 if( item)
+                {
                     toolbarItem = item;
+                    pluginToolbarItemProvided = YES;
+                }
             }
         }
+
+        // NSToolbar can restore identifiers saved by a plugin that is no longer
+        // installed. Returning an empty item leaves a blank toolbar button.
+        if( !pluginToolbarItemProvided)
+            toolbarItem = nil;
     }
     
     return toolbarItem;

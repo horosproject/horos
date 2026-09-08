@@ -38,3 +38,7 @@ Binaries/EmbeddedPlugins/HorosCloud.horosplugin
 *.xcscmblueprint
 DICOMPrint/DICOMPrint
 Horos.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+
+# Local compatibility-build outputs and downloaded test fixtures
+/dist/
+/test-data/dicom-samples/*.dcm

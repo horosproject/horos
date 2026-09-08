@@ -105,6 +105,10 @@ static int fixedHeight = 100;
 		toolbar = [t retain];
         viewer = [v retain];
 
+        // Textured windows are deprecated and cause NSSlider vibrancy/layout to
+        // restart the display cycle indefinitely on macOS 27. ToolbarPanel.xib
+        // still declares texturedBackground: this line intentionally overrides it.
+        self.window.styleMask &= ~NSWindowStyleMaskTexturedBackground;
         self.window.toolbarStyle = NSWindowToolbarStyleExpanded;
 		
         [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
