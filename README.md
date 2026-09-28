@@ -18,7 +18,10 @@
 ### Option 2 (terminal)
 
 1. Go to the project root directory
-2. `make`
+2. `make` (or `make ADHOC=1` to sign ad-hoc if you're not a member of the project's development team, `make CONFIG=Release` for a release build)
+
+The Makefile sets `CMAKE_POLICY_VERSION_MINIMUM=3.5`, which CMake 4 needs to configure some submodules.
+When building from Xcode with CMake 4, set that variable in your environment first (e.g. `launchctl setenv CMAKE_POLICY_VERSION_MINIMUM 3.5`).
 
 ## Additional remarks
 
@@ -27,5 +30,22 @@ The build process takes care of these dependencies, but you can invoke the steps
 
 - To unzip the binaries, you can build the target `Unzip Binaries`
 - To initialize the submodules: `git submodule update --init --recursive`
+
+### Building on macOS 26 / Xcode 26
+
+Tested with macOS 26.5, Xcode 26.6, CMake 4 and Homebrew on Apple Silicon (`brew install cmake pkg-config git-lfs libtiff little-cms2 libpng`).
+The following adjustments make the build work with this toolchain:
+
+- **Third-party build scripts** (`Horos/Scripts/<Lib>/`):
+  - Grok, OpenJPEG: the codec executables link `-ltiff`/`-llcms2`/`-lpng` without the Homebrew library dirs; these are now added via `pkg-config`.
+  - OpenJPEG: `BUILD_THIRDPARTY=OFF`, as its bundled zlib doesn't compile with recent SDKs (`fdopen` macro); ITK now uses the SDK's zlib (`ITK_USE_SYSTEM_ZLIB=ON`), like VTK.
+  - VTK, ITK: bundled libpng includes the Classic Mac OS `<fp.h>` when `TARGET_OS_MAC` is defined; C files are now compiled with `-include math.h`, which skips it.
+  - VTK (bundled Eigen 3.3) and DCMTK 3.6.7 (`ofutil.h`) contain template code rejected by clang >= 19; the scripts patch those lines in the submodules before configuring.
+  - GDCM looks for the OpenJPEG headers in `include/OpenJPEG`, where the OpenJPEG script installs them; Grok only copies `libopenjp2.a` if `make install` didn't.
+  - OpenSSL: macOS' `rsync` (openrsync) fails intermittently under `xcodebuild` (exit code 20); the script falls back to `ditto`.
+- **App**:
+  - App Sandbox is disabled (`ENABLE_APP_SANDBOX = NO`): Horos isn't designed for it, and it blocked the DICOM Listener and file access.
+  - `UIDesignRequiresCompatibility` in `Info.plist` keeps the pre-macOS 26 look.
+  - Toolbar icons are large PDFs, which AppKit no longer scales down to the toolbar size when linked against the macOS 26 SDK; `NSToolbarItem -setImage:` is swizzled in `AppController.m` to scale them to 32×32.
 
 For more information on this code, visit [horosproject.org](https://horosproject.org/get-involved/)

@@ -58,6 +58,9 @@ args+=(-DModule_ITKLevelSets=ON)
 args+=(-DCMAKE_INSTALL_PREFIX="$install_dir")
 args+=(-DITK_INSTALL_INCLUDE_DIR="include")
 
+# bundled zlib breaks with recent macOS SDKs (fdopen macro); use the SDK's libz, like VTK does
+args+=(-DITK_USE_SYSTEM_ZLIB=ON)
+
 #args+=(-DITK_USE_SYSTEM_GDCM=ON)
 #args+=(-DGDCM_DIR="$CONFIGURATION_TEMP_DIR/GDCM.build/CMake")
 
@@ -78,6 +81,10 @@ if [ ${#cxxfs[@]} -ne 0 ]; then
     cxxfss="${cxxfs[@]}"
     args+=(-DCMAKE_CXX_FLAGS="$cxxfss")
 fi
+
+# Bundled libpng includes the Classic Mac OS <fp.h> when TARGET_OS_MAC is defined (always, with recent SDKs),
+# unless <math.h> was already included
+args+=(-DCMAKE_C_FLAGS="-include math.h")
 
 if [ ${#lfs[@]} -ne 0 ]; then
     lfss="${lfs[@]}"

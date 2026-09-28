@@ -51,7 +51,7 @@ args+=(-DBUILD_DOC=OFF)
 args+=(-DBUILD_SHARED_LIBS=OFF)
 args+=(-DBUILD_STATIC_LIBS=ON)
 args+=(-DBUILD_TESTING=OFF)
-args+=(-DBUILD_THIRDPARTY=ON)
+args+=(-DBUILD_THIRDPARTY=OFF) # bundled zlib breaks with recent macOS SDKs (fdopen macro); use Homebrew libs for the codec executables
 args+=(-DCMAKE_POLICY_VERSION_MINIMUM=3.5)
 
 args+=(-DCMAKE_PREFIX_PATH="/opt/homebrew")
@@ -65,6 +65,11 @@ if [ -f "/opt/homebrew/lib/libtiff.dylib" ]; then
 elif [ -f "/opt/homebrew/opt/libtiff/lib/libtiff.dylib" ]; then
     args+=(-DTIFF_LIBRARY="/opt/homebrew/opt/libtiff/lib/libtiff.dylib")
     args+=(-DTIFF_INCLUDE_DIR="/opt/homebrew/opt/libtiff/include")
+fi
+
+# the codec executables link -ltiff/-llcms2/-lpng (from pkg-config) without their library dirs (e.g. /opt/homebrew/lib on Apple Silicon)
+if pkg-config --exists libtiff-4 lcms2 libpng; then
+    args+=(-DCMAKE_EXE_LINKER_FLAGS="$(pkg-config --static --libs-only-L libtiff-4 lcms2 libpng)")
 fi
 
 args+=(-DCMAKE_IGNORE_PATH="/opt/local/include;/opt/local/lib")

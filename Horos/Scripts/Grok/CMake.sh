@@ -69,6 +69,11 @@ if [ ! -z "$CLANG_CXX_LIBRARY" ] && [ "$CLANG_CXX_LIBRARY" != 'compiler-default'
     ldfs+=(-lc++)
 fi
 
+# the codec executables link -ltiff (from pkg-config) without its library dir (e.g. /opt/homebrew/lib on Apple Silicon)
+if pkg-config --exists libtiff-4; then
+    ldfs+=($(pkg-config --static --libs-only-L libtiff-4))
+fi
+
 if [ ! -z "$CLANG_CXX_LANGUAGE_STANDARD" ]; then
     cxxfs+=(-std="$CLANG_CXX_LANGUAGE_STANDARD")
 fi

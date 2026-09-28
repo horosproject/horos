@@ -53,6 +53,9 @@ openjpeg_include="$openjpeg_install/include/openjpeg-2.5"
 if [ ! -d "$openjpeg_include" ]; then
     openjpeg_include="$openjpeg_install/include/openjpeg-2.3"
 fi
+if [ ! -d "$openjpeg_include" ]; then
+    openjpeg_include="$openjpeg_install/include/OpenJPEG" # OPENJPEG_INSTALL_INCLUDE_DIR in Scripts/OpenJPEG/CMake.sh
+fi
 args+=(-DOPENJPEG_LIBRARIES="$openjpeg_install/lib/libopenjp2.a")
 args+=(-DOPENJPEG_INCLUDE_DIRS="$openjpeg_include")
 
