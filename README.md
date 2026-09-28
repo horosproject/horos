@@ -49,5 +49,6 @@ The following adjustments make the build work with this toolchain:
   - `API.sh` copies `Horos.framework` under legacy names for old plugins and edits their `Info.plist`, which broke the app's code signature (macOS then reports the app as damaged); the copies are now re-signed with the app's identity.
   - Toolbar icons are large PDFs, which AppKit no longer scales down to the toolbar size when linked against the macOS 26 SDK; `NSToolbarItem -setImage:` is swizzled in `AppController.m` to scale them to 32×32.
   - Windows no longer use the deprecated textured style (`texturedBackground` removed from the XIBs' `styleMask`, along with their manual `contentBorderThickness`, which ibtool rejects on regular windows). On macOS 27, AppKit throws an exception in `-[NSWindow _postWindowNeedsDisplay]` when a textured window's toolbar contains an `NSSlider` (e.g. the viewer's cine sliders), which crashed Horos when opening images.
+  - The 3D MPR viewer renders through a hidden `VRView` that is never drawn, so its VTK render window (and GLEW, whose function pointers stay NULL) was never initialized: `-[VRView render]` now initializes it first, as `-[VTKView drawRect:]` does.
 
 For more information on this code, visit [horosproject.org](https://horosproject.org/get-involved/)
