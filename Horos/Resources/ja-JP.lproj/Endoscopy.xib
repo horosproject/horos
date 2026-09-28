@@ -55,8 +55,9 @@
                 <rect key="frame" x="0.0" y="0.0" width="619" height="615"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <splitView translatesAutoresizingMaskIntoConstraints="NO" id="35">
+                    <splitView id="35">
                         <rect key="frame" x="5" y="6" width="609" height="609"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <splitView fixedFrame="YES" vertical="YES" id="33">
                                 <rect key="frame" x="0.0" y="0.0" width="609" height="300"/>
@@ -119,12 +120,6 @@
                         </holdingPriorities>
                     </splitView>
                 </subviews>
-                <constraints>
-                    <constraint firstAttribute="bottom" secondItem="35" secondAttribute="bottom" constant="6" id="8qO-Rl-pgJ"/>
-                    <constraint firstItem="35" firstAttribute="centerX" secondItem="6" secondAttribute="centerX" id="Fv8-fy-gXX"/>
-                    <constraint firstItem="35" firstAttribute="leading" secondItem="6" secondAttribute="leading" constant="5" id="J1y-QM-Bhg"/>
-                    <constraint firstItem="35" firstAttribute="top" secondItem="6" secondAttribute="top" id="akF-b1-Q6g"/>
-                </constraints>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="22"/>
