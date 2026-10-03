@@ -20,7 +20,7 @@ cd "$cmake_dir"
 make "${args[@]}"
 make install
 
-rsync "$cmake_dir/src/lib/openjp2/libopenjp2.a" "$install_dir/lib/" # somehow the lib isn't copied by make-install
+[ -f "$install_dir/lib/libopenjp2.a" ] || rsync "$cmake_dir/src/lib/openjp2/libopenjp2.a" "$install_dir/lib/" # somehow the lib isn't copied by make-install (on some versions)
 rsync "$source_dir/src/bin/common/format_defs.h" "$install_dir/include/OpenJPEG/"     # we need this header
 
 find "$install_dir/lib" -name 'libopenjp2*.dylib' -delete # in Grok, dylib is always built (argh), and on linking process XCode prefers the dylib. TODO: check if there is a flag to prioritize .a

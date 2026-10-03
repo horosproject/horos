@@ -5,6 +5,10 @@ export PATH="$PATH:/opt/local/bin:/opt/local/sbin:/opt/homebrew/bin/"
 path="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )/$(basename "${BASH_SOURCE[0]}")"
 cd "$TARGET_NAME"; pwd
 
+# Bundled Eigen 3.3 doesn't compile with clang >= 19 (upstream Eigen fix: trt.derived() -> trt)
+sed -i '' 's/(matrix.derived(), trt.derived())/(matrix.derived(), trt)/' "ThirdParty/eigen/vtkeigen/eigen/src/Core/Transpositions.h"
+
+
 env=$(env|sort|grep -v 'LLBUILD_BUILD_ID=\|LLBUILD_LANE_ID=\|LLBUILD_TASK_ID=\|Apple_PubSub_Socket_Render=\|DISPLAY=\|SHLVL=\|SSH_AUTH_SOCK=\|SECURITYSESSIONID=')
 hash="$(git describe --always --tags --dirty) $(md5 -q "$path")-$(md5 -qs "$env")"
 
@@ -99,6 +103,10 @@ if [ ${#cxxfs[@]} -ne 0 ]; then
     cxxfss="${cxxfs[@]}"
     args+=(-DCMAKE_CXX_FLAGS="$cxxfss")
 fi
+
+# Bundled libpng includes the Classic Mac OS <fp.h> when TARGET_OS_MAC is defined (always, with recent SDKs),
+# unless <math.h> was already included
+args+=(-DCMAKE_C_FLAGS="-include math.h")
 
 # Force a modern C++ standard for VTK/eigen compatibility
 args+=(-DCMAKE_CXX_STANDARD=11)

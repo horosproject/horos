@@ -25,4 +25,11 @@ done
 cd "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX Headers.framework"
 sed -i '' "s/org.horosproject.OsiriX\ Headers/org.horosproject.OsiriXHeaders/" "Versions/A/Resources/Info.plist"
 
+# the copies above invalidate the signature inherited from Horos.framework; re-sign them with the app's identity
+if [ "$CODE_SIGNING_ALLOWED" = "YES" ] && [ -n "$EXPANDED_CODE_SIGN_IDENTITY" ]; then
+    for alt in "${alts[@]}"; do
+        codesign --force --sign "$EXPANDED_CODE_SIGN_IDENTITY" --timestamp=none "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/$alt.framework"
+    done
+fi
+
 exit 0

@@ -2216,10 +2216,23 @@ public:
     return dict;
 }
 
+// The render window's OpenGL context (and GLEW) is otherwise only initialized in -[VTKView drawRect:].
+// The hidden VRView used by the MPR viewer may render before it is ever drawn: GLEW's function pointers
+// are then still NULL and the volume mapper crashes (glActiveTexture).
+- (void) initializeRenderWindowIfNeeded
+{
+    vtkRenderWindowInteractor *interactor = [self getInteractor];
+    
+    if( interactor && interactor->GetInitialized() == NO)
+        interactor->Initialize();
+}
+
 - (void) render
 {
     if( volumeMapper)
     {
+        [self initializeRenderWindowIfNeeded];
+        
         aRenderer->SetDraw( 0);
         
         dontRenderVolumeRenderingOsiriX = 0;
@@ -2237,6 +2250,8 @@ public:
 {
     if( blendingVolumeMapper)
     {
+        [self initializeRenderWindowIfNeeded];
+        
         aRenderer->SetDraw( 0);
         
         dontRenderVolumeRenderingOsiriX = 0;

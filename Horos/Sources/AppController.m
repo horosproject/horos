@@ -638,6 +638,20 @@ void exceptionHandler(NSException *exception)
 }
 @end
 
+// Toolbar icons are large PDFs (~528 pt). Up to the macOS 15 SDK AppKit scaled image items down to the
+// regular toolbar size; when linked against the macOS 26 SDK it lays them out at their natural size.
+@implementation NSToolbarItem (HorosImageSize)
+- (void) HOROS_setImage:(NSImage *)image {
+    static const CGFloat maxSide = 32;
+    if (image && (image.size.width > maxSide || image.size.height > maxSide)) {
+        CGFloat scale = maxSide / MAX(image.size.width, image.size.height);
+        image = [image copy];
+        image.size = NSMakeSize(round(image.size.width * scale), round(image.size.height * scale));
+    }
+    [self HOROS_setImage:image];
+}
+@end
+
 
 
 
@@ -3860,6 +3874,11 @@ static BOOL initialized = NO;
     [NSWindow jr_swizzleMethod:@selector(showsFullScreenButton) withMethod:@selector(HOROS_showsFullScreenButton) error:&error];
     if (error) {
         NSLog(@"Unable to swizzle showsFullScreenButton: %@", error);
+    }
+    error = nil;
+    [NSToolbarItem jr_swizzleMethod:@selector(setImage:) withMethod:@selector(HOROS_setImage:) error:&error];
+    if (error) {
+        NSLog(@"Unable to swizzle NSToolbarItem setImage: %@", error);
     }
     
     if( [NSDate timeIntervalSinceReferenceDate] - [[NSUserDefaults standardUserDefaults] doubleForKey: @"lastDate32bitPipelineCheck"] > 60L*60L*24L) // 1 days

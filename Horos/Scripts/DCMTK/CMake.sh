@@ -5,6 +5,9 @@ export PATH="$PATH:/opt/local/bin:/opt/local/sbin:/opt/homebrew/bin/"
 path="$( cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )/$(basename "${BASH_SOURCE[0]}")"
 cd "$TARGET_NAME"; pwd
 
+# DCMTK 3.6.7's pre-C++11 OFrvalue fallback doesn't compile with clang >= 19 (member access on the wrong class)
+sed -i '' 's/inline type(const OFrvalue_storage\& rhs)/inline type(const type\& rhs)/; s/: t( rhs.pt ) {}/: t( rhs.t ) {}/' ofstd/include/dcmtk/ofstd/ofutil.h
+
 env=$(env|sort|grep -v 'LLBUILD_BUILD_ID=\|LLBUILD_LANE_ID=\|LLBUILD_TASK_ID=\|Apple_PubSub_Socket_Render=\|DISPLAY=\|SHLVL=\|SSH_AUTH_SOCK=\|SECURITYSESSIONID=')
 hash="$(git describe --always --tags --dirty) $(md5 -q "$path")-$(md5 -qs "$env")"
 

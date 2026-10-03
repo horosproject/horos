@@ -16,7 +16,7 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window title="3D Position" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="1" customClass="NSPanel">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" nonactivatingPanel="YES" texturedBackground="YES"/>
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" nonactivatingPanel="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="397" width="311" height="113"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
@@ -230,7 +230,6 @@
                     <constraint firstItem="33" firstAttribute="top" secondItem="74" secondAttribute="bottom" constant="21" id="zuZ-YB-LCE"/>
                 </constraints>
             </view>
-            <contentBorderThickness minY="0.0" maxY="0.0"/>
             <connections>
                 <outlet property="delegate" destination="-2" id="22"/>
             </connections>

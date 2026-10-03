@@ -37,6 +37,12 @@ cd "$cmake_dir"
 set +e
 rsync -a --delete "$source_dir/" . 2>&1 | tee "$cmake_dir/rsync.log"
 rsync_status=${PIPESTATUS[0]}
+if [ $rsync_status -ne 0 ]; then
+    # macOS openrsync intermittently fails under xcodebuild (exit 20); the destination is freshly created, so ditto is equivalent
+    echo "OpenSSL rsync failed with exit code $rsync_status, retrying with ditto"
+    ditto "$source_dir" .
+    rsync_status=$?
+fi
 set -e
 if [ $rsync_status -ne 0 ]; then
     echo "OpenSSL rsync failed with exit code $rsync_status" >&2

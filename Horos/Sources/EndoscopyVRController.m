@@ -246,6 +246,10 @@
 - (void)dealloc {
 //    [shadingsPresetsController removeObserver:self forKeyPath:@"selectedObjects" context:EndoscopyVRController.class];
     
+    // -initWithPix::::: never calls VRController's, so the shadings controller isn't observed, and it's already
+    // released with the Endoscopy nib: keep -[VRController dealloc] from removing an observer on it
+    shadingsPresetsController = nil;
+    
     [super dealloc];
 }
 
